@@ -1,4 +1,3 @@
-
 generator client {
   provider = "prisma-client-js"
   output   = "../src/generated/prisma"
@@ -9,16 +8,169 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
-model Leads {
-  id Int @id @default(autoincrement())
-  first_name String
-  last_name String
-  company String
-  email String
-  phone_number String
-  assigned_to String
-  source String
-  gst_No String @unique
+model User {
+  id             Int         @id @default(autoincrement())
+  first_name     String
+  last_name      String
+  email          String      @unique
+  phone          String      @unique
+  password       String
+  quotation_code String?
+  department     Department
+  leads          Lead[]
+  deal           Deal[]
+  recipient_list Recipient[]
+}
+
+model Company {
+  id         Int         @id @default(autoincrement())
+  name       String
+  address    String
+  gst_no     String?     @unique
+  created_at DateTime    @default(now())
+  lead       Lead[]
+  deal       Deal[]
+  quotation  Quotation[]
+}
+
+model Lead {
+  id          Int      @id @default(autoincrement())
+  first_name  String
+  last_name   String
+  phone       String
+  email       String   @unique
+  created_at  DateTime @default(now())
+  description String?
+  company_id  Int
+  assigned_to Int
+  source      Source
   product String
-  address String
+  company     Company  @relation(fields: [company_id], references: [id])
+  user        User     @relation(fields: [assigned_to], references: [id])
+}
+
+model Notification {
+  id             Int               @id @default(autoincrement())
+  message        String
+  title          String
+  created_at     DateTime          @default(now())
+  send_at        DateTime?
+  is_sent        Boolean           @default(false)
+  related_id     Int?
+  type           Notification_Type
+  related_type   Related_Type?
+  recipient_list Recipient[]
+}
+
+model Recipient {
+  id              Int          @id @default(autoincrement())
+  is_read         Boolean      @default(false)
+  read_at         DateTime?
+  notification_id Int
+  user_id         Int
+  notification    Notification @relation(fields: [notification_id], references: [id])
+  user            User         @relation(fields: [user_id], references: [id])
+}
+
+model Deal {
+  id           Int         @id @default(autoincrement())
+  deal_status  Deal_Status
+  created_at   DateTime    @default(now())
+  last_updated DateTime    @updatedAt
+  assigned_to  Int
+  company_id   Int
+  company      Company     @relation(fields: [company_id], references: [id])
+  user         User        @relation(fields: [assigned_to], references: [id])
+  drawing      Drawing[]
+  quotation    Quotation[]
+}
+
+model Drawing {
+  id          Int       @id @default(autoincrement())
+  drawing_url String    @unique
+  title       String
+  version     String
+  approved    Boolean   @default(false)
+  uploaded_at DateTime
+  approved_at DateTime?
+  locked      Boolean   @default(false)
+  deal_id     Int
+  deal        Deal      @relation(fields: [deal_id], references: [id])
+}
+
+model Quotation {
+  id                 Int                @id @default(autoincrement())
+  created_at         DateTime           @default(now())
+  company_id         Int
+  deal_id            Int
+  quotation_template Quotation_Template
+  deal               Deal               @relation(fields: [deal_id], references: [id])
+  company            Company            @relation(fields: [company_id], references: [id])
+  order              Order[]
+}
+
+model Order {
+  id           Int       @id @default(autoincrement())
+  order_number String    @unique
+  created_at   DateTime  @default(now())
+  po_number    String?
+  pi_number    String?
+  colour       String
+  balance      Int 
+  height       Int
+  total_body   Int
+  quotation_id Int
+  quotation    Quotation @relation(fields: [quotation_id], references: [id])
+  advance      Advance[]
+  
+}
+
+model Advance {
+  id             Int      @id @default(autoincrement())
+  advance_amount Int
+  advance_date   DateTime
+  order_id       Int
+  order          Order    @relation(fields: [order_id], references: [id])
+}
+
+enum Related_Type {
+  LEAD
+  DEAL
+  ORDER
+}
+
+enum Notification_Type {
+  COLOR_CHANGED
+  DRAWING_UPLOADED
+  DRAWING_APPROVED
+  DRAWING_REJECTED
+  CLIENT_MEETING
+}
+
+enum Quotation_Template {
+  A
+  B
+  C
+  D
+}
+
+enum Deal_Status {
+  DRAWING
+  QUOTATION
+  HIGH_ORDER_VALUE
+  NEGOTIATION
+  ORDER_LOST
+  ORDER_CONFIRMED
+}
+
+enum Source {
+  INDIAMART
+  GOOGLEADS
+}
+
+enum Department {
+  MARKETING
+  ADMIN
+  FACTORY
+  DRAWING
 }
