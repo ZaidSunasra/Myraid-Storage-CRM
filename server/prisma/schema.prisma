@@ -1,6 +1,5 @@
 generator client {
   provider = "prisma-client-js"
-  output   = "../src/generated/prisma"
 }
 
 datasource db {
@@ -44,7 +43,7 @@ model Lead {
   company_id  Int
   assigned_to Int
   source      Source
-  product String
+  product     String
   company     Company  @relation(fields: [company_id], references: [id])
   user        User     @relation(fields: [assigned_to], references: [id])
 }
@@ -107,6 +106,16 @@ model Quotation {
   deal               Deal               @relation(fields: [deal_id], references: [id])
   company            Company            @relation(fields: [company_id], references: [id])
   order              Order[]
+  items              QuotationItem[]
+}
+
+model QuotationItem {
+  id          Int        @id @default(autoincrement())
+  quotation_id Int
+  item_name String
+  rate Decimal
+  quantity Decimal
+  quotation   Quotation @relation(fields: [quotation_id], references: [id])
 }
 
 model Order {
@@ -116,13 +125,12 @@ model Order {
   po_number    String?
   pi_number    String?
   colour       String
-  balance      Int 
+  balance      Int
   height       Int
   total_body   Int
   quotation_id Int
   quotation    Quotation @relation(fields: [quotation_id], references: [id])
   advance      Advance[]
-  
 }
 
 model Advance {
