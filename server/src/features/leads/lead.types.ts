@@ -1,11 +1,13 @@
-export interface  addLead {
+export interface addLead {
     first_name: string,
     last_name: string,
-    comapny: string,
+    phone: string,
     email: string,
-    phone_no: string,
+    description: string,
+    assigned_to: number,
+    source: "INDIAMART" | "GOOGLEADS",
+    product: string,
+    company_name: string,
     address: string,
-    gst_no?: string,
-    source: string
-     
+    gst_no: string,
 }
