@@ -14,7 +14,7 @@ export const findExistingUser = async (email: string): Promise<Boolean> => {
     return user?.id ? true : false;
 }
 
-export const findExistingCompany = async (company_name: string, gst_no: string, address: string): Promise<boolean> => {
+export const findExistingCompany = async (company_name: string, gst_no: string, address: string): Promise<Boolean> => {
     const data = await prisma.company.findFirst({
         where: {
             OR: [
@@ -35,7 +35,7 @@ export const findExistingCompany = async (company_name: string, gst_no: string, 
     return data?.id ? true : false;
 }
 
-export const addLeadService = async ({ first_name, last_name, phone, email, description, assigned_to, source, product, company_name, address, gst_no }: addLead): Promise<any> => {
+export const addLeadService = async ({ first_name, last_name, phone, email, description, assigned_to, source, product, company_name, address, gst_no }: addLead): Promise<number> => {
     try {
         const result = await prisma.$transaction(async (tx) => {
             const company = await tx.company.create({
@@ -58,7 +58,7 @@ export const addLeadService = async ({ first_name, last_name, phone, email, desc
                     product: product
                 }
             });
-            return { company, lead };
+            return lead.id;
         })
         return result;
     } catch (error) {

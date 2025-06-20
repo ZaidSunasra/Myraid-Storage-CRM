@@ -11,3 +11,13 @@ export interface addLead {
     address: string,
     gst_no: string,
 }
+
+export type LeadSuccessResponse = {
+    message: string,
+    id: number
+};
+
+export type LeadErrorResponse = {
+    message: string,
+    error?: any
+}
