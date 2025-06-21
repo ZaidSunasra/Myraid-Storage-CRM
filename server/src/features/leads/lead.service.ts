@@ -1,6 +1,6 @@
 import { Prisma } from "@prisma/client";
 import { prisma } from "../../libs/prisma"
-import { addLead } from "./lead.types";
+import { AddLead } from "./lead.types";
 
 export const findExistingUser = async (email: string): Promise<Boolean> => {
     const user = await prisma.lead.findFirst({
@@ -35,7 +35,7 @@ export const findExistingCompany = async (company_name: string, gst_no: string, 
     return data?.id ? true : false;
 }
 
-export const addLeadService = async ({ first_name, last_name, phone, email, description, assigned_to, source, product, company_name, address, gst_no }: addLead): Promise<number> => {
+export const addLeadService = async ({ first_name, last_name, phone, email, description, assigned_to, source, product, company_name, address, gst_no }: AddLead): Promise<number> => {
     try {
         const result = await prisma.$transaction(async (tx) => {
             const company = await tx.company.create({

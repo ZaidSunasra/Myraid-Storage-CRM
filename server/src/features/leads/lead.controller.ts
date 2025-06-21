@@ -3,7 +3,7 @@ import { addLeadSchema } from "./lead.schema";
 import { addLeadService, findExistingCompany, findExistingUser } from "./lead.service";
 import { LeadErrorResponse, LeadSuccessResponse } from "./lead.types";
 
-export const addLeadController = async (req: Request, res: Response<LeadErrorResponse | LeadSuccessResponse>): Promise<Response> => {
+export const addLeadController = async (req: Request, res: Response<LeadErrorResponse | LeadSuccessResponse>): Promise<any> => {
     const { first_name, last_name, phone, email, description, assigned_to, source, product, company_name, address, gst_no } = req.body;
 
     const validation = addLeadSchema.safeParse(req.body);
