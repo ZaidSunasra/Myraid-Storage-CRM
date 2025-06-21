@@ -1,6 +1,6 @@
 import { Request, Response } from "express";
 import { addLeadSchema } from "./lead.schema";
-import { addLeadService, findExistingCompany, findExistingUser } from "./lead.service";
+import { addLeadService, findExistingCompany, findExistingEmail } from "./lead.service";
 import { LeadErrorResponse, LeadSuccessResponse } from "./lead.types";
 
 export const addLeadController = async (req: Request, res: Response<LeadErrorResponse | LeadSuccessResponse>): Promise<any> => {
@@ -15,7 +15,7 @@ export const addLeadController = async (req: Request, res: Response<LeadErrorRes
     }
     try {
         const checkCompany = await findExistingCompany(company_name, gst_no, address);
-        const checkEmail = await findExistingUser(email); 
+        const checkEmail = await findExistingEmail(email); 
         if (checkCompany) {
             return res.status(400).json({
                 message: "Comapny detail already exists"

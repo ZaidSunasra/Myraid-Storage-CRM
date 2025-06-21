@@ -2,7 +2,7 @@ import { Prisma } from "@prisma/client";
 import { prisma } from "../../libs/prisma"
 import { AddLead } from "./lead.types";
 
-export const findExistingUser = async (email: string): Promise<Boolean> => {
+export const findExistingEmail = async (email: string): Promise<Boolean> => {
     const user = await prisma.lead.findFirst({
         where: {
             email: email
