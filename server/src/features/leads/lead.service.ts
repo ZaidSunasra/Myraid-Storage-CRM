@@ -1,17 +1,14 @@
-import { Prisma } from "@prisma/client";
+import { Lead, Prisma } from "@prisma/client";
 import { prisma } from "../../libs/prisma"
 import { AddLead } from "./lead.types";
 
-export const findExistingEmail = async (email: string): Promise<Boolean> => {
-    const user = await prisma.lead.findFirst({
+export const findExistingEmail = async (email: string): Promise<Lead | null> => {
+    const user = await prisma.lead.findUnique({
         where: {
             email: email
         },
-        select: {
-            id: true
-        }
     });
-    return user?.id ? true : false;
+    return user;
 }
 
 export const findExistingCompany = async (company_name: string, gst_no: string, address: string): Promise<Boolean> => {
