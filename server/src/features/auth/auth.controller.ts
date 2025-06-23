@@ -5,7 +5,7 @@ import { addUser, comparePassword, findExistingUser, hashPassword } from "./auth
 import { cookieOptions } from "../../utils/constant";
 import { LoginFailureResponse, LoginSuccessResponse, SignupResponse } from "./auth.types";
 
-export const loginController = async (req: Request, res: Response <LoginSuccessResponse | LoginFailureResponse> ): Promise<any> => {
+export const loginController = async (req: Request, res: Response<LoginSuccessResponse | LoginFailureResponse>): Promise<any> => {
 
     const { email, password } = req.body;
 
@@ -79,6 +79,7 @@ export const signupController = async (req: Request, res: Response<SignupRespons
             message: "Account created successfully",
         })
     } catch (error) {
+        console.log(error);
         return res.status(500).json({
             message: "Internal server error",
             error: error

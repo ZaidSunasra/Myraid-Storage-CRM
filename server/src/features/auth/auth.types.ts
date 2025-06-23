@@ -20,7 +20,4 @@ export type LoginFailureResponse = {
     error?: any
 };
 
-export type SignupResponse = {
-    message: string,
-    error?: any
-};
+export type SignupResponse = LoginFailureResponse;
