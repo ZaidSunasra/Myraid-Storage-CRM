@@ -86,3 +86,16 @@ export const signupController = async (req: Request, res: Response<SignupRespons
         });
     }
 }
+
+export const logoutController = async (req: Request, res: Response): Promise<any> => {
+    try {
+        res.clearCookie("Token");
+        return res.status(200).send({
+            message: "Logout successful",
+        });
+    } catch (error) {
+        return res.status(500).send({
+            message: "Internal server error",
+        });
+    }
+}
