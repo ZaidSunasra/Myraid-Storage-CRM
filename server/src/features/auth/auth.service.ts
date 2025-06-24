@@ -1,6 +1,6 @@
 import bcrypt from "bcryptjs"
 import { prisma } from "../../libs/prisma"
-import { AddUser } from "./auth.types"
+import { AddUser } from "zs-crm-common"
 import { User } from "@prisma/client";
 
 export const findExistingUser = async (email: string) : Promise<User | null> => {

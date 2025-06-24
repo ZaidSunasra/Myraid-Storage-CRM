@@ -9,7 +9,3 @@ export const cookieOptions = {
     httpOnly: true,
     secure: process.env.NODE_ENV === "production",
 }
-
-export const DEPARTMENTS = ["MARKETING", "ADMIN", "FACTORY", "DRAWING"] as const;
-
-export const SOURCES = ["INDIAMART", "GOOGLEADS"] as const;

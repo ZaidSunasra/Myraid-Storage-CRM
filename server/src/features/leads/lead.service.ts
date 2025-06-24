@@ -1,6 +1,7 @@
-import { Company, Lead, Prisma } from "@prisma/client";
+import { Prisma } from "@prisma/client";
 import { prisma } from "../../libs/prisma";
-import { AddLead, EditLead, FetchLeadOutput } from "./lead.types";
+import { EditLead, FetchLeadOutput } from "./lead.types";
+import { AddLead } from "zs-crm-common"
 
 export const findExistingEmail = async (email: string, excludedId?: number): Promise<boolean> => {
     if (excludedId !== undefined) {
@@ -43,7 +44,7 @@ export const findExistingCompany = async (company_name: string, gst_no: string, 
     return data?.id ? true : false;
 }
 
-export const findExistingGST = async (id: number, gst_no: string): Promise< boolean> => {
+export const findExistingGST = async (id: number, gst_no: string): Promise<boolean> => {
     const comapny = await prisma.company.findFirst({
         where: {
             gst_no,

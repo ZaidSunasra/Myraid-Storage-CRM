@@ -1,5 +1,5 @@
 import { Request, Response } from "express";
-import { leadSchema } from "./lead.schema";
+import { leadSchema } from "zs-crm-common";
 import { addLeadService, editLeadService, findExistingCompany, findExistingEmail, findExistingGST, getLeadsService } from "./lead.service";
 import { LeadErrorResponse, AddLeadSuccessResponse, FetchLeadSuccessResponse, LeadSuccessResponse } from "./lead.types";
 

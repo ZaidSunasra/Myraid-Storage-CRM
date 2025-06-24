@@ -1,5 +1,6 @@
-import { z } from "zod/v4";
-import { SOURCES } from "../../utils/constant";
+import { z } from "zod/v4"; 
+
+export const SOURCES = ["INDIAMART", "GOOGLEADS"] as const;
 
 export const leadSchema = z.object({
     first_name: z.string(),
@@ -14,3 +15,5 @@ export const leadSchema = z.object({
     address: z.string(),
     gst_no: z.string().optional(),
 });
+
+export type AddLead = z.infer<typeof leadSchema>;

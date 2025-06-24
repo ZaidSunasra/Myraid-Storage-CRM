@@ -1,6 +1,6 @@
 import { Request, Response } from "express";
 import jwt from "jsonwebtoken";
-import { loginSchema, signupSchema } from "./auth.schema";
+import { loginSchema, signupSchema } from "zs-crm-common";
 import { addUser, comparePassword, findExistingUser, hashPassword } from "./auth.service";
 import { cookieOptions } from "../../utils/constant";
 import { LoginFailureResponse, LoginSuccessResponse, SignupResponse } from "./auth.types";

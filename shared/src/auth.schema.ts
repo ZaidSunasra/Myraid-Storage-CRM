@@ -1,5 +1,6 @@
-import { z } from "zod/v4";
-import { DEPARTMENTS } from "../../utils/constant";
+import { z } from "zod/v4"; 
+
+export const DEPARTMENTS = ["MARKETING", "ADMIN", "FACTORY", "DRAWING"] as const;
 
 export const loginSchema = z.object({
     email: z.email(),
@@ -15,3 +16,5 @@ export const signupSchema = z.object({
     department: z.enum(DEPARTMENTS),
     quotation_code: z.string().optional()
 });
+
+export type AddUser = z.infer<typeof signupSchema>;

@@ -1,0 +1,19 @@
+{
+  "name": "zs-crm-common",
+  "version": "1.0.0",
+  "main": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "scripts": {
+    "build": "tsc"
+  },
+  "keywords": ["common schemas and types"],
+  "author": "Zaid Sunasra",
+  "license": "MIT",
+  "description": "Shared types and schemas used in Myraid CRM",
+  "devDependencies": {
+    "typescript": "^5.8.3"
+  },
+  "dependencies": {
+    "zod": "^3.25.67"
+  }
+}

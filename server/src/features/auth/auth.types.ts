@@ -1,8 +1,5 @@
-import { z } from "zod/v4"
-import { signupSchema } from "./auth.schema"
-import { DEPARTMENTS } from "../../utils/constant"
+import {DEPARTMENTS} from "zs-crm-common";
 
-export type AddUser = z.infer<typeof signupSchema>;
 type department = typeof DEPARTMENTS[number]; 
 
 export type LoginSuccessResponse = {

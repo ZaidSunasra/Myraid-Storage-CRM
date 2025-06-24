@@ -1,10 +1,7 @@
-import {z} from "zod/v4"
-import { leadSchema } from "./lead.schema";
-import { SOURCES } from "../../utils/constant";
+import { SOURCES, AddLead } from "zs-crm-common";
 import { Prisma, Lead } from "@prisma/client";
 
-export type AddLead = z.infer<typeof leadSchema>;
-export type EditLead = AddLead & {id : number};
+export type EditLead = AddLead & { id: number };
 
 type sources = typeof SOURCES[number];
 
