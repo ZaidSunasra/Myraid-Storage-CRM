@@ -1,10 +1,11 @@
 {
   "name": "zs-crm-common",
-  "version": "1.0.0",
+  "version": "1.0.2",
   "main": "./dist/index.js",
   "types": "./dist/index.d.ts",
   "scripts": {
-    "build": "tsc"
+    "build": "tsc",
+    "publish": "npm publish --access=public"
   },
   "keywords": ["common schemas and types"],
   "author": "Zaid Sunasra",
