@@ -1,7 +1,7 @@
 import { Request, Response } from "express";
-import { leadSchema } from "zs-crm-common";
+import { LeadErrorResponse, AddLeadSuccessResponse, leadSchema, LeadSuccessResponse } from "zs-crm-common";
 import { addLeadService, editLeadService, findExistingCompany, findExistingEmail, findExistingGST, getLeadsService } from "./lead.service";
-import { LeadErrorResponse, AddLeadSuccessResponse, FetchLeadSuccessResponse, LeadSuccessResponse } from "./lead.types";
+import { FetchLeadSuccessResponse } from "./lead.types";
 
 export const addLeadController = async (req: Request, res: Response<LeadErrorResponse | AddLeadSuccessResponse>): Promise<any> => {
     const { first_name, last_name, phone, email, description, assigned_to, source, product, company_name, address, gst_no } = req.body;

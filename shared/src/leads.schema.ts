@@ -1,6 +1,7 @@
 import { z } from "zod/v4";
 
 export const SOURCES = ["INDIAMART", "GOOGLEADS"] as const;
+type sources = typeof SOURCES[number];
 
 export const leadSchema = z.object({
     first_name: z.string("First name required"),
@@ -15,6 +16,19 @@ export const leadSchema = z.object({
     address: z.string("Address required"),
     gst_no: z.string().optional(),
 });
+
+export type LeadSuccessResponse = {
+    message: string,
+};
+
+export type LeadErrorResponse = {
+    message: string,
+    error?: any,
+}
+
+export type AddLeadSuccessResponse = LeadSuccessResponse & {
+    id: number
+}
 
 export type AddLead = z.infer<typeof leadSchema>;
 

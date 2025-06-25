@@ -1,6 +1,7 @@
 import { z } from "zod/v4"; 
 
 export const DEPARTMENTS = ["MARKETING", "ADMIN", "FACTORY", "DRAWING"] as const;
+type department = typeof DEPARTMENTS[number]; 
 
 export const loginSchema = z.object({
     email: z.email("Invalid email address"),
@@ -16,6 +17,21 @@ export const signupSchema = z.object({
     department: z.enum(DEPARTMENTS),
     quotation_code: z.string().optional()
 });
+
+export type LoginSuccessResponse = {
+    message: string,
+    userData: {
+        email: string,
+        code: string | null,
+        name: string,
+        department: department
+    }
+};
+
+export type SignupResponse = {
+    message: string,
+    error?: any
+};;
 
 export type AddUser = z.infer<typeof signupSchema>;
 export type LoginUser = z.infer<typeof loginSchema>;

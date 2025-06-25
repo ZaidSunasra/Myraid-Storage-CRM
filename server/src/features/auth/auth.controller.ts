@@ -1,9 +1,9 @@
 import { Request, Response } from "express";
 import jwt from "jsonwebtoken";
-import { loginSchema, signupSchema } from "zs-crm-common";
+import { loginSchema, signupSchema,  LoginSuccessResponse, SignupResponse } from "zs-crm-common";
 import { addUser, comparePassword, findExistingUser, hashPassword } from "./auth.service";
 import { cookieOptions } from "../../utils/constant";
-import { LoginFailureResponse, LoginSuccessResponse, SignupResponse } from "./auth.types";
+import { LoginFailureResponse } from "./auth.types";
 
 export const loginController = async (req: Request, res: Response<LoginSuccessResponse | LoginFailureResponse>): Promise<any> => {
 
