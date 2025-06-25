@@ -1,7 +1,5 @@
-import { SOURCES, AddLead } from "zs-crm-common";
+import { SOURCES } from "zs-crm-common";
 import { Prisma, Lead } from "@prisma/client";
-
-export type EditLead = AddLead & { id: number };
 
 type sources = typeof SOURCES[number];
 

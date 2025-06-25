@@ -1,7 +1,7 @@
 import { Prisma } from "@prisma/client";
 import { prisma } from "../../libs/prisma";
-import { EditLead, FetchLeadOutput } from "./lead.types";
-import { AddLead } from "zs-crm-common"
+import { FetchLeadOutput } from "./lead.types";
+import { AddLead, EditLead } from "zs-crm-common"
 
 export const findExistingEmail = async (email: string, excludedId?: number): Promise<boolean> => {
     if (excludedId !== undefined) {

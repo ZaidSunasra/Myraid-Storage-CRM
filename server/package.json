@@ -10,6 +10,7 @@
   "license": "ISC",
   "devDependencies": {
     "@types/cookie-parser": "^1.4.9",
+    "@types/cors": "^2.8.19",
     "@types/express": "^5.0.3",
     "@types/jsonwebtoken": "^9.0.10",
     "@types/pg": "^8.15.4",
@@ -27,6 +28,6 @@
     "jsonwebtoken": "^9.0.2",
     "pg": "^8.16.0",
     "zod": "^3.25.67",
-    "zs-crm-common": "^1.0.0"
+    "zs-crm-common": "^1.0.2"
   }
 }
