@@ -5,7 +5,7 @@ type User = {
   name: string;
   email: string;
   department: typeof DEPARTMENTS[number];
-  code: string;
+  code?: string;
 };
 
 type UserContextType = {
