@@ -1,5 +1,5 @@
 import LandingPage from "@/features/auth/pages/LandingPage";
-import LoginPage from "@/features/auth/pages/LoginPage";
+import LeadsPage from "@/features/leads/pages/LeadsPage";
 import { BrowserRouter, Route, Routes } from "react-router"
 
 const Router = () => {
@@ -7,7 +7,7 @@ const Router = () => {
         <BrowserRouter>
             <Routes>
                 <Route path="/" element={<LandingPage />} />
-                <Route path="/login" element= {<LoginPage />} /> 
+                <Route path="/lead" element={<LeadsPage />} />
             </Routes>
         </BrowserRouter>
     </>

@@ -5,8 +5,6 @@ import { Button } from "@/shared/components/ui/button";
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/shared/components/ui/form";
 import { Input } from "@/shared/components/ui/input";
 import { useLogin } from "@/api/auth/auth.mutation";
-import { useNavigate } from "react-router";
-import {ArrowLeft} from "lucide-react";
 
 const LoginPage = () => {
 
@@ -19,23 +17,19 @@ const LoginPage = () => {
     });
 
     const login = useLogin();
-    const navigate = useNavigate();
 
     const onSubmit = (data: LoginUser) => {
         login.mutate(data);
     }
 
-    return <div className="w-screen h-screen flex justify-center items-center font-mono bg-primary-foreground">
-        <nav className="fixed top-0 w-screen p-4">
-            <Button onClick={() =>navigate("/") }> <ArrowLeft />Back</Button>
-        </nav>
+    return <div>
         <Form {...form}>
-            <form onSubmit={form.handleSubmit(onSubmit)} className="w-1/4 border-2 p-4 rounded">
+            <form onSubmit={form.handleSubmit(onSubmit)} className="w-full space-y-4 px-4">
                 <FormField
                     control={form.control}
                     name="email"
                     render={({ field }) => (
-                        <FormItem className="mb-4">
+                        <FormItem>
                             <FormLabel>Email*</FormLabel>
                             <FormControl>
                                 <Input placeholder="Enter email" {...field} />
@@ -48,7 +42,7 @@ const LoginPage = () => {
                     control={form.control}
                     name="password"
                     render={({ field }) => (
-                        <FormItem className="mb-4">
+                        <FormItem>
                             <FormLabel>Password*</FormLabel>
                             <FormControl>
                                 <Input placeholder="Enter password" {...field} type="password" />
@@ -57,7 +51,7 @@ const LoginPage = () => {
                         </FormItem>
                     )}
                 />
-                <Button type="submit">Submit</Button>
+                <Button type="submit" className="w-full mt-2">Submit</Button>
             </form>
         </Form>
     </div>
