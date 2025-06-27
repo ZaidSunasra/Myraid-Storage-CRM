@@ -1,6 +1,6 @@
 import { Prisma } from "@prisma/client";
 import { prisma } from "../../libs/prisma";
-import { FetchLeadOutput } from "./lead.types";
+import { FetchLeadSuccessResponse } from "./lead.types";
 import { AddLead, EditLead } from "zs-crm-common"
 
 export const findExistingEmail = async (email: string, excludedId?: number): Promise<boolean> => {
@@ -98,14 +98,28 @@ export const addLeadService = async ({ first_name, last_name, phone, email, desc
     }
 }
 
-export const getLeadsService = async (user: any): Promise<FetchLeadOutput[]> => {
+export const getLeadsService = async (user: any, page: number): Promise<FetchLeadSuccessResponse> => {
     const leads = await prisma.lead.findMany({
+        take: 10,
+        skip: (page - 1) * 10,
         where: user.department == "ADMIN" ? {} : { assigned_to: user.id },
         include: {
-            company: true
+            company: true,
+            user: {
+                select: {
+                    first_name: true,
+                    last_name: true
+                }
+            }
+        },
+        orderBy: {
+            created_at: 'desc'
         }
     });
-    return leads;
+    const totalLeads = await prisma.lead.count({
+        where: user.department === "ADMIN" ? {} : { assigned_to: user.id }
+    });
+    return { leads, totalLeads };
 }
 
 export const editLeadService = async ({ id, first_name, last_name, phone, email, description, assigned_to, source, product, company_name, address, gst_no }: EditLead): Promise<any> => {

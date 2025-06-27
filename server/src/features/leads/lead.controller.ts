@@ -43,12 +43,14 @@ export const addLeadController = async (req: Request, res: Response<LeadErrorRes
 export const fetchAllLeadsController = async (req: Request, res: Response<LeadErrorResponse | FetchLeadSuccessResponse>): Promise<any> => {
 
     const user = res.locals.user;
+    const page = parseInt(req.query.page as string, 10) || 1;
 
     try {
-        const leads = await getLeadsService(user);
+        const { leads, totalLeads } = await getLeadsService(user, page);
         return res.status(200).json({
             message: "Leads fetched successfully",
-            leads
+            leads,
+            totalLeads
         })
     } catch (error) {
         console.log("Error in fetching lead", error);

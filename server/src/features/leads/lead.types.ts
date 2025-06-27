@@ -5,6 +5,7 @@ export type FetchLeadOutput = Lead & {
 }
 
 export type FetchLeadSuccessResponse = {
-    message: string,
-    leads: FetchLeadOutput[]
+    message?: string,
+    leads: FetchLeadOutput[],
+    totalLeads: number,
 }
