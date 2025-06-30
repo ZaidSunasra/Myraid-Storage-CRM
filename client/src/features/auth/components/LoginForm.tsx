@@ -1,19 +1,19 @@
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod"
 import { loginSchema, type LoginUser } from "zs-crm-common";
+import { useLogin } from "@/api/auth/auth.mutation";
 import { Button } from "@/shared/components/ui/button";
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/shared/components/ui/form";
 import { Input } from "@/shared/components/ui/input";
-import { useLogin } from "@/api/auth/auth.mutation";
 
-const LoginPage = () => {
+const LoginForm = () => {
 
     const form = useForm<LoginUser>({
         resolver: zodResolver(loginSchema),
         defaultValues: ({
             email: "",
             password: ""
-        })
+        }),
     });
 
     const login = useLogin();
@@ -51,10 +51,12 @@ const LoginPage = () => {
                         </FormItem>
                     )}
                 />
-                <Button type="submit" className="w-full mt-2">Submit</Button>
+                <Button type="submit" className="w-full mt-2" disabled={form.formState.isSubmitting}>
+                    {form.formState.isSubmitting ? "Logging in..." : "Login"}
+                </Button>
             </form>
         </Form>
     </div>
 }
 
-export default LoginPage;
+export default LoginForm;

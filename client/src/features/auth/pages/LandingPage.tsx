@@ -1,4 +1,4 @@
-import LoginPage from "./LoginPage";
+import LoginForm from "../components/LoginForm";
 import { Button } from "@/shared/components/ui/button";
 import { Sheet, SheetContent, SheetDescription, SheetHeader, SheetTitle, SheetTrigger, } from "@/shared/components/ui/sheet";
 
@@ -18,7 +18,7 @@ const LandingPage = () => {
                             Welcome back! Please log in with your email and password to continue.
                         </SheetDescription>
                     </SheetHeader>
-                    <LoginPage />
+                    <LoginForm />
                 </SheetContent>
             </Sheet>
         </div>
