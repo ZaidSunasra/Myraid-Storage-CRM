@@ -1,6 +1,6 @@
 import { Prisma } from "@prisma/client";
 import { prisma } from "../../libs/prisma";
-import { FetchLeadSuccessResponse } from "./lead.types";
+import { FetchEmployeeOutput, FetchLeadSuccessResponse } from "./lead.types";
 import { AddLead, EditLead } from "zs-crm-common"
 
 export const findExistingEmail = async (email: string, excludedId?: number): Promise<boolean> => {
@@ -98,11 +98,39 @@ export const addLeadService = async ({ first_name, last_name, phone, email, desc
     }
 }
 
-export const getLeadsService = async (user: any, page: number): Promise<FetchLeadSuccessResponse> => {
+export const getLeadsService = async (user: any, page: number, search: any, id: any): Promise<FetchLeadSuccessResponse> => {
+    const isAdmin = user.department === "ADMIN";
+
     const leads = await prisma.lead.findMany({
         take: 10,
         skip: (page - 1) * 10,
-        where: user.department == "ADMIN" ? {} : { assigned_to: user.id },
+        where: {
+            AND: [
+                search ? {
+                    OR: [
+                        {
+                            company: {
+                                name: {
+                                    contains: search,
+                                    mode: 'insensitive'
+                                }
+                            }
+                        },
+                        {
+                            first_name: {contains: search, mode: 'insensitive'}
+                        },
+                        {
+                            last_name: {contains: search, mode: 'insensitive'}
+                        }
+                    ]
+                } : {},
+                !isAdmin
+                    ? { assigned_to: user.id } 
+                    : id.length > 0
+                        ? { assigned_to: { in: id.map(Number) } } 
+                        : {},
+            ]
+        },
         include: {
             company: true,
             user: {
@@ -122,7 +150,7 @@ export const getLeadsService = async (user: any, page: number): Promise<FetchLea
     return { leads, totalLeads };
 }
 
-export const editLeadService = async ({ id, first_name, last_name, phone, email, description, assigned_to, source, product, company_name, address, gst_no }: EditLead): Promise<any> => {
+export const editLeadService = async ({ id, first_name, last_name, phone, email, description, assigned_to, source, product, company_name, address, gst_no }: EditLead): Promise<void> => {
     await prisma.$transaction(async (tx) => {
         const updatedLead = await prisma.lead.update({
             where: {
@@ -150,4 +178,21 @@ export const editLeadService = async ({ id, first_name, last_name, phone, email,
             }
         });
     });
+}
+
+export const fetchEmployeeService = async (): Promise<FetchEmployeeOutput[]> => {
+    const employees = await prisma.user.findMany({
+        where: {
+            OR: [
+                { department: "ADMIN" },
+                { department: "MARKETING" }
+            ]
+        },
+        select: {
+            first_name: true,
+            last_name: true,
+            id: true
+        }
+    });
+    return employees;
 }

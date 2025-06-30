@@ -9,3 +9,14 @@ export type FetchLeadSuccessResponse = {
     leads: FetchLeadOutput[],
     totalLeads: number,
 }
+
+export type FetchEmployeeOutput = {
+    first_name: string,
+    last_name: string,
+    id: number
+}
+
+export type FetchEmployeeSuccessResponse = {
+    message: string,
+    employees: FetchEmployeeOutput[]
+}
