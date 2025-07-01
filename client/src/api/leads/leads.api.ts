@@ -1,3 +1,4 @@
+import type { AddReminder } from "zs-crm-common";
 import axiosInstance from "../axiosInstance"
 
 export const getLeads = async({page = 1, search, employeeIDs} : {page: number, search: string, employeeIDs: string[]}) : Promise<any> => {
@@ -17,5 +18,15 @@ export const getLeadById = async(id: string) : Promise<any> => {
 
 export const addDescription = async({data, id} : {data: any, id:string}) : Promise<any> => {
     const response = await axiosInstance.put(`/leads/addDescription/${id}`, data);
+    return response.data;
+}
+
+export const addReminder = async(data: AddReminder) : Promise<any> => {
+    const response = await axiosInstance.post("/leads/addReminder", data);
+    return response.data;
+}
+
+export const getReminders = async(id: string) : Promise<any> => {
+    const response = await axiosInstance.get(`/leads/getReminders/${id}`);
     return response.data;
 }
