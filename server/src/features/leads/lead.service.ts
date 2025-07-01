@@ -1,6 +1,6 @@
 import { Prisma } from "@prisma/client";
 import { prisma } from "../../libs/prisma";
-import { FetchEmployeeOutput, FetchLeadSuccessResponse } from "./lead.types";
+import { FetchEmployeeOutput, FetchLeadOutput, FetchLeadSuccessResponse } from "./lead.types";
 import { AddLead, EditLead } from "zs-crm-common"
 
 export const findExistingEmail = async (email: string, excludedId?: number): Promise<boolean> => {
@@ -117,17 +117,17 @@ export const getLeadsService = async (user: any, page: number, search: any, id: 
                             }
                         },
                         {
-                            first_name: {contains: search, mode: 'insensitive'}
+                            first_name: { contains: search, mode: 'insensitive' }
                         },
                         {
-                            last_name: {contains: search, mode: 'insensitive'}
+                            last_name: { contains: search, mode: 'insensitive' }
                         }
                     ]
                 } : {},
                 !isAdmin
-                    ? { assigned_to: user.id } 
+                    ? { assigned_to: user.id }
                     : id.length > 0
-                        ? { assigned_to: { in: id.map(Number) } } 
+                        ? { assigned_to: { in: id.map(Number) } }
                         : {},
             ]
         },
@@ -195,4 +195,33 @@ export const fetchEmployeeService = async (): Promise<FetchEmployeeOutput[]> => 
         }
     });
     return employees;
+}
+
+export const getLeadByIdService = async (id: string): Promise<FetchLeadOutput | null> => {
+    const lead = await prisma.lead.findUnique({
+        where: {
+            id: parseInt(id)
+        },
+        include: {
+            company: true,
+            user: {
+                select: {
+                    first_name: true,
+                    last_name: true
+                }
+            }
+        }
+    });
+    return lead;
+}
+
+export const addDescriptionService = async (id: string, description:string) : Promise <void> => {
+    await prisma.lead.update({
+        where: {
+            id: parseInt(id)
+        },
+        data: {
+            description: description
+        }
+    });
 }

@@ -1,13 +1,15 @@
 import express from "express";
-import { addLeadController, editLeadController, fetchAllLeadsController, fetchEmployeeController } from "./lead.controller";
+import { addDescriptionController, addLeadController, editLeadController, fetchAllLeadsController, fetchEmployeeController, fetchLeadByIdController } from "./lead.controller";
 import authMiddleware from "../../middlewares/auth.middleware";
 import checkDepartment from "../../middlewares/department.middleware";
 
 const leadRouter = express.Router();
 
 leadRouter.post("/add", authMiddleware, checkDepartment(["ADMIN", "MARKETING"]), addLeadController);
+leadRouter.put("/addDescription/:id", authMiddleware, checkDepartment(["ADMIN", "MARKETING"]), addDescriptionController)
 leadRouter.get("/get", authMiddleware, checkDepartment(["ADMIN", "MARKETING"]), fetchAllLeadsController);
 leadRouter.put("/edit/:id", authMiddleware, checkDepartment(["ADMIN","MARKETING"]), editLeadController);
 leadRouter.get("/fetchEmployee", authMiddleware, checkDepartment(["ADMIN", "MARKETING"]), fetchEmployeeController);
+leadRouter.get("/get/:id", authMiddleware, checkDepartment(["ADMIN", "MARKETING"]), fetchLeadByIdController);
 
 export default leadRouter;

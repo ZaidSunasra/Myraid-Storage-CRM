@@ -9,3 +9,13 @@ export const getEmployeee = async() : Promise<any> => {
     const response = await axiosInstance.get("/leads/fetchEmployee");
     return response.data;
 }
+
+export const getLeadById = async(id: string) : Promise<any> => {
+    const response = await axiosInstance.get(`/leads/get/${id}`);
+    return response.data;
+}
+
+export const addDescription = async({data, id} : {data: any, id:string}) : Promise<any> => {
+    const response = await axiosInstance.put(`/leads/addDescription/${id}`, data);
+    return response.data;
+}

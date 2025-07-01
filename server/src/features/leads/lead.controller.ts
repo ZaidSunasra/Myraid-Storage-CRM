@@ -1,7 +1,7 @@
 import { Request, Response } from "express";
 import { LeadErrorResponse, AddLeadSuccessResponse, leadSchema, LeadSuccessResponse } from "zs-crm-common";
-import { addLeadService, editLeadService, fetchEmployeeService, findExistingCompany, findExistingEmail, findExistingGST, getLeadsService } from "./lead.service";
-import { FetchEmployeeSuccessResponse, FetchLeadSuccessResponse } from "./lead.types";
+import { addDescriptionService, addLeadService, editLeadService, fetchEmployeeService, findExistingCompany, findExistingEmail, findExistingGST, getLeadByIdService, getLeadsService } from "./lead.service";
+import { FetchEmployeeSuccessResponse, FetchLeadByIdSuccessResponse, FetchLeadSuccessResponse } from "./lead.types";
 
 export const addLeadController = async (req: Request, res: Response<LeadErrorResponse | AddLeadSuccessResponse>): Promise<any> => {
     const { first_name, last_name, phone, email, description, assigned_to, source, product, company_name, address, gst_no } = req.body;
@@ -46,7 +46,7 @@ export const fetchAllLeadsController = async (req: Request, res: Response<LeadEr
     const page = parseInt(req.query.page as string, 10) || 1;
     const search = req.query.search;
     const employeeId = req.query.employeeID as string | undefined;
-    const id = employeeId ? employeeId.split(",").filter(Boolean)  : [];
+    const id = employeeId ? employeeId.split(",").filter(Boolean) : [];
 
     try {
         const { leads, totalLeads } = await getLeadsService(user, page, search, id);
@@ -111,6 +111,42 @@ export const fetchEmployeeController = async (req: Request, res: Response<LeadEr
         })
     } catch (error) {
         console.log("Error in fetching employee", error);
+        return res.status(500).send({
+            message: "Internal server error",
+            error: error
+        });
+    }
+}
+
+export const fetchLeadByIdController = async (req: Request, res: Response<LeadErrorResponse | FetchLeadByIdSuccessResponse>): Promise<any> => {
+    const id = req.params.id;
+    try {
+        const lead = await getLeadByIdService(id);
+        return res.status(200).json({
+            message: `Lead with ID: ${id} fetched successfully`,
+            lead
+        })
+    } catch (error) {
+        console.log(`Error in fetching lead with ID: ${id}`, error);
+        return res.status(500).send({
+            message: "Internal server error",
+            error: error
+        });
+    }
+}
+
+export const addDescriptionController = async (req: Request, res: Response<LeadSuccessResponse | LeadErrorResponse>): Promise<any> => {
+
+    const id = req.params.id;
+    const {description} = req.body;
+
+    try {
+        await addDescriptionService(id, description);
+        return res.status(200).json({
+            message: `Description added successfully`,
+        })
+    } catch (error) {
+        console.log(`Error in adding description`, error);
         return res.status(500).send({
             message: "Internal server error",
             error: error
