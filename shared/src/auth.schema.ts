@@ -9,10 +9,10 @@ export const loginSchema = z.object({
 });
 
 export const signupSchema = z.object({
-    first_name: z.string("First name required"),
-    last_name: z.string("Last name required"),
+    first_name: z.string().min(1,"First name required"),
+    last_name: z.string().min(1,"Last name required"),
     email: z.email("Invalid email address"),
-    phone: z.string().max(10, "Invalid phone number"),
+    phone: z.string().max(15, "Invalid phone number"),
     password: z.string().min(6, "Password should be atleast 6 characters long"),
     department: z.enum(DEPARTMENTS),
     quotation_code: z.string().optional()
