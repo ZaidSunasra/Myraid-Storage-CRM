@@ -145,24 +145,24 @@ const LeadsTable = () => {
                     </TableHeader>
                     <TableBody>
                         {leadsData.leads.map((lead: any) => (
-                            <TableRow key={lead.id}>
+                            <TableRow key={lead.id} className="text-accent-foreground">
                                 <TableCell>
                                     <div className="font-medium">{lead.first_name}  {lead.last_name}</div>
                                 </TableCell>
                                 <TableCell>
                                     <div className="flex items-center">
-                                        <Building2 className="h-4 w-4 mr-2 text-gray-400" />
+                                        <Building2 className="h-4 w-4 mr-2 " />
                                         {lead.company.name}
                                     </div>
                                 </TableCell>
                                 <TableCell>
                                     <div className="space-y-1">
                                         <div className="flex items-center text-sm">
-                                            <Mail className="h-3 w-3 mr-1 text-gray-400" />
+                                            <Mail className="h-3 w-3 mr-1" />
                                             {lead.email}
                                         </div>
-                                        <div className="flex items-center text-sm text-gray-600">
-                                            <Phone className="h-3 w-3 mr-1 text-gray-400" />
+                                        <div className="flex items-center text-sm">
+                                            <Phone className="h-3 w-3 mr-1" />
                                             {lead.phone}
                                         </div>
                                     </div>
@@ -170,11 +170,11 @@ const LeadsTable = () => {
                                 <TableCell>{lead.source}</TableCell>
                                 <TableCell>
                                     <div className="flex items-center">
-                                        <User className="h-4 w-4 mr-2 text-gray-400" />
+                                        <User className="h-4 w-4 mr-2" />
                                         {lead.user.first_name} {lead.user.last_name}
                                     </div>
                                 </TableCell>
-                                <TableCell className="text-gray-600">
+                                <TableCell>
                                     {new Date(lead.created_at).toLocaleString("en-IN", {
                                         day: "2-digit",
                                         month: "2-digit",
@@ -184,7 +184,7 @@ const LeadsTable = () => {
                                     })}
                                 </TableCell>
                                 <TableCell>
-                                    <Button variant="ghost" size="icon" onClick={() => navigate("/")}>
+                                    <Button variant="ghost" size="icon" onClick={() => navigate(`/lead/${lead.id}`)}>
                                         <InfoIcon className="h-4 w-4" />
                                         <span className="sr-only">Open menu</span>
                                     </Button>
