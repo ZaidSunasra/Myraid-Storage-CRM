@@ -1,7 +1,7 @@
 import { Prisma } from "@prisma/client";
 import { prisma } from "../../libs/prisma";
 import { FetchEmployeeOutput, FetchLeadOutput, FetchLeadSuccessResponse } from "./lead.types";
-import { AddLead, EditLead } from "zs-crm-common"
+import { AddLead, AddReminder, EditLead } from "zs-crm-common"
 
 export const findExistingEmail = async (email: string, excludedId?: number): Promise<boolean> => {
     if (excludedId !== undefined) {
@@ -215,7 +215,7 @@ export const getLeadByIdService = async (id: string): Promise<FetchLeadOutput | 
     return lead;
 }
 
-export const addDescriptionService = async (id: string, description:string) : Promise <void> => {
+export const addDescriptionService = async (id: string, description: string): Promise<void> => {
     await prisma.lead.update({
         where: {
             id: parseInt(id)
@@ -224,4 +224,52 @@ export const addDescriptionService = async (id: string, description:string) : Pr
             description: description
         }
     });
+}
+
+export const addReminderService = async ({ title, send_at, message, related_id, reminder_type, related_type }: AddReminder, id: number): Promise<void> => {
+    const admins = await prisma.user.findMany({
+        where: {
+            department: "ADMIN"
+        },
+        select: {
+            id: true
+        }
+    });
+
+    let recipientId = [...admins.map((admin) => admin.id)];
+    if (!recipientId.includes(id)) {
+        recipientId.push(id);
+    }
+
+    await prisma.$transaction(async (tx) => {
+        const notification = await tx.notification.create({
+            data: {
+                message: message,
+                title: title,
+                send_at: new Date(send_at),
+                related_id: parseInt(related_id),
+                type: reminder_type,
+                related_type: related_type
+            },
+            select: {
+                id: true
+            }
+        });
+        await tx.recipient.createMany({
+            data: recipientId.map(id => ({
+                notification_id: notification.id,
+                user_id: id
+            }))
+        });
+    });
+}
+
+export const getReminders = async(id: string) : Promise<any> => {
+    const reminders = await prisma.notification.findMany({
+        where: {
+            related_id: parseInt(id),
+            related_type: "LEAD"
+        }
+    });
+    return reminders;
 }

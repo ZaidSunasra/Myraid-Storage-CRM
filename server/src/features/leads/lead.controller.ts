@@ -1,6 +1,6 @@
 import { Request, Response } from "express";
-import { LeadErrorResponse, AddLeadSuccessResponse, leadSchema, LeadSuccessResponse } from "zs-crm-common";
-import { addDescriptionService, addLeadService, editLeadService, fetchEmployeeService, findExistingCompany, findExistingEmail, findExistingGST, getLeadByIdService, getLeadsService } from "./lead.service";
+import { LeadErrorResponse, AddLeadSuccessResponse, leadSchema, LeadSuccessResponse, addReminderSchema } from "zs-crm-common";
+import { addDescriptionService, addLeadService, addReminderService, editLeadService, fetchEmployeeService, findExistingCompany, findExistingEmail, findExistingGST, getLeadByIdService, getLeadsService, getReminders } from "./lead.service";
 import { FetchEmployeeSuccessResponse, FetchLeadByIdSuccessResponse, FetchLeadSuccessResponse } from "./lead.types";
 
 export const addLeadController = async (req: Request, res: Response<LeadErrorResponse | AddLeadSuccessResponse>): Promise<any> => {
@@ -138,7 +138,7 @@ export const fetchLeadByIdController = async (req: Request, res: Response<LeadEr
 export const addDescriptionController = async (req: Request, res: Response<LeadSuccessResponse | LeadErrorResponse>): Promise<any> => {
 
     const id = req.params.id;
-    const {description} = req.body;
+    const { description } = req.body;
 
     try {
         await addDescriptionService(id, description);
@@ -147,6 +147,53 @@ export const addDescriptionController = async (req: Request, res: Response<LeadS
         })
     } catch (error) {
         console.log(`Error in adding description`, error);
+        return res.status(500).send({
+            message: "Internal server error",
+            error: error
+        });
+    }
+}
+
+export const addReminderController = async (req: Request, res: Response<LeadSuccessResponse | LeadErrorResponse>): Promise<any> => {
+
+    const { title, send_at, message, related_id, reminder_type, related_type } = req.body;
+    const id = res.locals.user.id
+
+    const validation = addReminderSchema.safeParse(req.body);
+    if (!validation.success) {
+        return res.status(400).json({
+            message: "Input validation error",
+            error: validation.error.issues
+        })
+    }
+
+    try {
+        await addReminderService({ title, send_at, message, related_id, reminder_type, related_type }, id)
+        return res.status(200).json({
+            message: `Reminder added successfully`,
+        })
+    } catch (error) {
+        console.log(`Error in adding reminder`, error);
+        return res.status(500).send({
+            message: "Internal server error",
+            error: error
+        });
+    }
+
+}
+
+export const fetchRemindersController = async (req: Request, res: Response): Promise<any> => {
+
+    const id = req.params.id;
+
+    try {
+        const reminders = await getReminders(id);
+        return res.status(200).json({
+            message: `Reminder fetched successfully`,
+            reminders
+        })
+    } catch (error) {
+        console.log(`Error in fetching reminder`, error);
         return res.status(500).send({
             message: "Internal server error",
             error: error
