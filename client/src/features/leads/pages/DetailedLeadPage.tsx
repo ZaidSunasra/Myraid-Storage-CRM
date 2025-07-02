@@ -6,6 +6,7 @@ import { Button } from "@/shared/components/ui/button";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/shared/components/ui/tabs";
 import { ArrowLeft, Edit } from "lucide-react";
 import LeadDescription from "../components/LeadDescription";
+import LeadSideBar from "../components/LeadSidebar";
 
 const DetailedLeadPage = () => {
 
@@ -50,12 +51,15 @@ const DetailedLeadPage = () => {
           </TabsList>
           <TabsContent value="info" className="space-y-6">
             <LeadDetails data={data.lead} />
-            <LeadDescription data={data.lead.description} id={data.lead.id}/>
+            <LeadDescription data={data.lead.description} id={data.lead.id} />
           </TabsContent>
           <TabsContent value="scheduling" className="space-y-6">
             <LeadScheduling />
           </TabsContent>
         </Tabs>
+      </div>
+      <div className="lg:col-span-1">
+        <LeadSideBar />
       </div>
     </div>
   </div>

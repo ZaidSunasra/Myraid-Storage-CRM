@@ -17,7 +17,6 @@ const ScheduledMeeting = () => {
     if (isError) {
         return <>Error...</>
     }
-    console.log(data);
 
     return <Card>
         <CardHeader>
