@@ -1,0 +1,40 @@
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/shared/components/ui/card";
+import { Check } from "lucide-react";
+
+const FormSideBar = ({currentStep} : {currentStep: number}) => {
+    return <Card className="sticky top-6">
+        <CardHeader>
+            <CardTitle>Progress</CardTitle>
+            <CardDescription>Complete all steps to add the lead</CardDescription>
+        </CardHeader>
+        <CardContent className="space-y-4">
+            <div className="space-y-3">
+                <div className="flex items-center space-x-3">
+                    <div className={`flex items-center justify-center w-8 h-8 rounded-full text-sm font-medium ${currentStep >= 1 ? "bg-primary text-primary-foreground" : "bg-muted text-muted-foreground"}`}>
+                        {currentStep > 1 ? <Check className="h-4 w-4" /> : "1"}
+                    </div>
+                    <div className="flex-1">
+                        <div className={`font-medium ${currentStep >= 1 ? "text-foreground" : "text-muted-foreground"}`}>
+                            Company Details
+                        </div>
+                        <div className="text-sm text-muted-foreground">Basic company information</div>
+                    </div>
+                </div>
+                <div className="ml-4 w-px h-6 bg-border"></div>
+                <div className="flex items-center space-x-3">
+                    <div className={`flex items-center justify-center w-8 h-8 rounded-full text-sm font-medium ${currentStep >= 2 ? "bg-primary text-primary-foreground" : "bg-muted text-muted-foreground"}`}  >
+                        {currentStep > 2 ? <Check className="h-4 w-4" /> : "2"}
+                    </div>
+                    <div className="flex-1">
+                        <div className={`font-medium ${currentStep >= 2 ? "text-foreground" : "text-muted-foreground"}`} >
+                            Lead Details
+                        </div>
+                        <div className="text-sm text-muted-foreground">Contact and product information</div>
+                    </div>
+                </div>
+            </div>
+        </CardContent>
+    </Card>
+}
+
+export default FormSideBar;

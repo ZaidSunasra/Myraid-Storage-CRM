@@ -1,10 +1,13 @@
 import LeadsTable from "../components/LeadsTable";
-import  {Button} from "@/shared/components/ui/button";
+import { Button } from "@/shared/components/ui/button";
 import Navbar from "@/shared/components/Navbar";
 import { Plus } from "lucide-react";
+import { useNavigate } from "react-router";
 
 
 const LeadsPage = () => {
+
+    const navigate = useNavigate();
 
     return <div className="bg-accent min-h-screen">
         <Navbar />
@@ -14,7 +17,7 @@ const LeadsPage = () => {
                     <h1 className="text-2xl font-bold text-primary">Leads</h1>
                     <p className="text-muted-foreground">Manage and track your sales leads</p>
                 </div>
-                <Button>
+                <Button onClick={() => navigate("/lead/add")}>
                     <Plus className="h-4 w-4 mr-2" />
                     Add Lead
                 </Button>

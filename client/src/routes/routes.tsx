@@ -1,5 +1,6 @@
 import LandingPage from "@/features/auth/pages/LandingPage";
-import LeadLayoutPage from "@/features/leads/pages/LeadLayoutPage";
+import AddLeadPage from "@/features/leads/pages/AddLeadPage";
+import DetailedLeadPage from "@/features/leads/pages/DetailedLeadPage";
 import LeadsPage from "@/features/leads/pages/LeadsPage";
 import { BrowserRouter, Route, Routes } from "react-router"
 
@@ -9,7 +10,8 @@ const Router = () => {
             <Routes>
                 <Route path="/" element={<LandingPage />} />
                 <Route path="/lead" element={<LeadsPage />} />
-                <Route path="/lead/:id" element={<LeadLayoutPage />} />
+                <Route path="/lead/:id" element={<DetailedLeadPage />} />
+                <Route path="/lead/add" element={<AddLeadPage />} />
             </Routes>
         </BrowserRouter>
     </>
