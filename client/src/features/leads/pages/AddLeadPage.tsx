@@ -8,9 +8,9 @@ import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { NavLink } from "react-router";
 import { leadSchema, type AddLead, type sources } from "zs-crm-common";
-import FormSideBar from "../components/AddLeadFormSideBar";
-import AddCompanyDetails from "../components/AddCompanyDetails";
-import AddLeadDetails from "../components/AddLeadDetails";
+import FormSideBar from "../components/FormSideBar";
+import AddEditCompanyDetails from "../components/AddEditCompanyDetails";
+import AddEditLeadDetails from "../components/AddEditLeadDetails";
 import { useAddLead } from "@/api/leads/leads.mutation";
 
 const AddLeadPage = () => {
@@ -71,12 +71,12 @@ const AddLeadPage = () => {
                     </div>
                     <div className="lg:col-span-3">
                         <Form {...form}>
-                            <form onSubmit={form.handleSubmit(onSubmit, )} className="space-y-8">
+                            <form onSubmit={form.handleSubmit(onSubmit,)} className="space-y-8">
                                 {currentStep === 1 && (
-                                    <AddCompanyDetails form={form} handleClick={handleNext} />
+                                    <AddEditCompanyDetails form={form} handleClick={handleNext} />
                                 )}
                                 {currentStep === 2 && (
-                                    <AddLeadDetails form={form} handleClick={handlePrev} />
+                                    <AddEditLeadDetails form={form} handleClick={handlePrev} />
                                 )}
                             </form>
                         </Form>

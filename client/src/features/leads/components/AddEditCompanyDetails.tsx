@@ -5,10 +5,10 @@ import { Input } from "@/shared/components/ui/input";
 import { Textarea } from "@/shared/components/ui/textarea";
 import { Building2, ChevronRight } from "lucide-react";
 
-const AddCompanyDetails = ({form, handleClick} : {form : any, handleClick: () => void}) => {
+const AddEditCompanyDetails = ({form, handleClick} : {form : any, handleClick: () => void}) => {
 
     const {watch} = form;
-    const isStep1Valid = watch("company_name").trim() && watch("address").trim() && watch("gst_no")?.trim();
+    const isStep1Valid = watch("company_name")?.trim() && watch("address")?.trim() && watch("gst_no")?.trim();
 
     return <>
         <Card>
@@ -84,4 +84,4 @@ const AddCompanyDetails = ({form, handleClick} : {form : any, handleClick: () =>
     </>
 }
 
-export default AddCompanyDetails;
+export default AddEditCompanyDetails;

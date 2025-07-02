@@ -1,4 +1,4 @@
-import { NavLink, useParams } from "react-router";
+import { NavLink, useNavigate, useParams } from "react-router";
 import LeadDetails from "../components/LeadDetails";
 import LeadScheduling from "../components/LeadScheduling";
 import { fetchLeadById } from "@/api/leads/leads.queries";
@@ -12,7 +12,8 @@ import Navbar from "@/shared/components/Navbar";
 const DetailedLeadPage = () => {
 
   const { id } = useParams();
-  const { data, isPending, isError } = fetchLeadById(id || "")
+  const { data, isPending, isError } = fetchLeadById(id || "");
+  const navigate = useNavigate();
 
   if (isPending) {
     return <div>Loading</div>
@@ -39,7 +40,7 @@ const DetailedLeadPage = () => {
               </p>
             </div>
           </div>
-          <Button>
+          <Button onClick={() => navigate(`/lead/edit/${id}`)}>
             <Edit className="h-4 w-4 mr-2" />
             Edit Lead
           </Button>

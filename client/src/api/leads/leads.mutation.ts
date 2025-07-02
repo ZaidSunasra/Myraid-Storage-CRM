@@ -1,8 +1,10 @@
 import { useQueryClient, useMutation } from "@tanstack/react-query"
-import { addDescription, addLead, addReminder } from "./leads.api"
+import { addDescription, addLead, addReminder, editLead } from "./leads.api"
 import { toast } from "sonner"
 import type { LeadSuccessResponse, LoginSuccessResponse } from "zs-crm-common"
 import { useNavigate } from "react-router"
+
+
 
 export const useAddDescription = () => {
     const queryClient = useQueryClient();
@@ -24,7 +26,7 @@ export const useAddReminder = () => {
         mutationFn: addReminder,
         onSuccess: (data: LoginSuccessResponse) => {
             toast.success(data.message),
-            queryClient.invalidateQueries({ queryKey: ['reminders'] })
+                queryClient.invalidateQueries({ queryKey: ['reminders'] })
         },
         onError: (error: any) => {
             toast.error(error.response?.data.message)
@@ -33,14 +35,30 @@ export const useAddReminder = () => {
 }
 
 export const useAddLead = () => {
-   const queryClient = useQueryClient();
-   const navigate = useNavigate()
+    const queryClient = useQueryClient();
+    const navigate = useNavigate();
     return useMutation({
         mutationFn: addLead,
         onSuccess: (data: LeadSuccessResponse) => {
             toast.success(data.message),
-            queryClient.invalidateQueries({ queryKey: ['leads'] }),
-            navigate("/lead")
+                queryClient.invalidateQueries({ queryKey: ['leads'] }),
+                navigate("/lead")
+        },
+        onError: (error: any) => {
+            toast.error(error.response?.data.message)
+        },
+    })
+}
+
+export const useEditLead = (id: string) => {
+    const queryClient = useQueryClient();
+    const navigate = useNavigate();
+    return useMutation({
+        mutationFn: editLead,
+        onSuccess: (data: LeadSuccessResponse) => {
+            toast.success(data.message),
+                queryClient.invalidateQueries({ queryKey: ['leadById'] }),
+                navigate(`/lead/${id}`)
         },
         onError: (error: any) => {
             toast.error(error.response?.data.message)

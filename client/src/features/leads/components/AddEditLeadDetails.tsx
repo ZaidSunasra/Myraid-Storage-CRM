@@ -6,7 +6,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Textarea } from "@/shared/components/ui/textarea";
 import { ArrowLeft, User } from "lucide-react";
 
-const AddLeadDetails = ({form, handleClick} : {form: any, handleClick: () => void}) => {
+const AddEditLeadDetails = ({form, handleClick} : {form: any, handleClick: () => void}) => {
     return <Card>
         <CardHeader>
             <CardTitle className="flex items-center space-x-2">
@@ -162,4 +162,4 @@ const AddLeadDetails = ({form, handleClick} : {form: any, handleClick: () => voi
     </Card>
 }
 
-export default AddLeadDetails;
+export default AddEditLeadDetails;
