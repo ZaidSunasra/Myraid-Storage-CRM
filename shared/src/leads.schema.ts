@@ -12,7 +12,7 @@ export const leadSchema = z.object({
     first_name: z.string().min(1, "First name required"),
     last_name: z.string().min(1, "Last name required"),
     phone: z.string().max(15, "Invalid phone number"),
-    email: z.string().min(1, "Invalid email address"),
+    email: z.email("Invalid email address"),
     description: z.string().optional(),
     assigned_to: z.coerce.number(),
     source: z.enum(SOURCES),
