@@ -17,7 +17,8 @@ export const useLogin = () => {
                 name: data.userData.name,
                 email: data.userData.email,
                 department: data.userData.department,
-                code: data.userData.code || ""
+                code: data.userData.code || "",
+                id: data.userData.id 
             });
             toast.success(data.message);
             navigate("/lead")

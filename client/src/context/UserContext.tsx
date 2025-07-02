@@ -5,6 +5,7 @@ type User = {
   name: string;
   email: string;
   department: typeof DEPARTMENTS[number];
+  id: number;
   code?: string;
 };
 

@@ -24,7 +24,8 @@ export type LoginSuccessResponse = {
         email: string,
         code: string | null,
         name: string,
-        department: department
+        department: department,
+        id: number
     }
 };
 

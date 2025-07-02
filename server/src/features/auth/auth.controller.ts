@@ -45,7 +45,8 @@ export const loginController = async (req: Request, res: Response<LoginSuccessRe
                 department: user.department,
                 name: user.first_name + " " + user.last_name,
                 email: user.email,
-                code: user.quotation_code
+                code: user.quotation_code,
+                id: user.id
             }
         })
     } catch (error) {
