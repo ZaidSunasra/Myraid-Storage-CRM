@@ -5,10 +5,7 @@ import { Input } from "@/shared/components/ui/input";
 import { Textarea } from "@/shared/components/ui/textarea";
 import { Building2, ChevronRight } from "lucide-react";
 
-const AddEditCompanyDetails = ({form, handleClick} : {form : any, handleClick: () => void}) => {
-
-    const {watch} = form;
-    const isStep1Valid = watch("company_name")?.trim() && watch("address")?.trim() && watch("gst_no")?.trim();
+const AddEditCompanyDetails = ({ form, handleClick }: { form: any, handleClick: () => void }) => {
 
     return <>
         <Card>
@@ -45,7 +42,7 @@ const AddEditCompanyDetails = ({form, handleClick} : {form : any, handleClick: (
                             render={({ field }) => (
                                 <FormItem>
                                     <div className="space-y-2">
-                                        <FormLabel>GST No*</FormLabel>
+                                        <FormLabel>GST No</FormLabel>
                                         <FormControl>
                                             <Input id="gst_no" placeholder="Enter GST No" {...field} />
                                         </FormControl>
@@ -74,7 +71,7 @@ const AddEditCompanyDetails = ({form, handleClick} : {form : any, handleClick: (
                     />
                 </div>
                 <div className="flex justify-end">
-                    <Button onClick={handleClick} disabled={!isStep1Valid}>
+                    <Button onClick={handleClick} >
                         Next
                         <ChevronRight className="h-4 w-4 ml-2" />
                     </Button>
@@ -85,3 +82,7 @@ const AddEditCompanyDetails = ({form, handleClick} : {form : any, handleClick: (
 }
 
 export default AddEditCompanyDetails;
+
+// disabled={!isStep1Valid}
+// const {watch} = form;
+// const isStep1Valid = watch("company_name")?.trim() && watch("address")?.trim();

@@ -58,7 +58,7 @@ const AddEditLeadDetails = ({form, handleClick} : {form: any, handleClick: () =>
                         render={({ field }) => (
                             <FormItem>
                                 <div className="space-y-2">
-                                    <FormLabel>Email*</FormLabel>
+                                    <FormLabel>Email</FormLabel>
                                     <FormControl>
                                         <Input id="email" placeholder="Enter email address" {...field} />
                                     </FormControl>
@@ -99,8 +99,8 @@ const AddEditLeadDetails = ({form, handleClick} : {form: any, handleClick: () =>
                                         </SelectTrigger>
                                     </FormControl>
                                     <SelectContent>
-                                        <SelectItem value="GOOGLEADS">Google Ads</SelectItem>
-                                        <SelectItem value="INDIAMART">India Mart</SelectItem>
+                                        <SelectItem value="google_ads">Google Ads</SelectItem>
+                                        <SelectItem value="india_mart">India Mart</SelectItem>
                                     </SelectContent>
                                 </Select>
                                 <FormMessage />

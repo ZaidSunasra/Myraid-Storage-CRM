@@ -28,8 +28,8 @@ const LeadScheduling = () => {
             send_at: undefined,
             message: "",
             related_id: id,
-            related_type: "LEAD",
-            reminder_type: "CLIENT_MEETING"
+            related_type: "lead",
+            reminder_type: "client_meeting"
         })
     })
 
@@ -118,7 +118,7 @@ const LeadScheduling = () => {
                             render={({ field }) => (
                                 <FormItem>
                                     <div className="space-y-2 ">
-                                        <FormLabel>Meeting Notes*</FormLabel>
+                                        <FormLabel>Meeting Notes</FormLabel>
                                         <FormControl>
                                             <Textarea id="meeting-notes" placeholder="Add meeting agenda or notes..." rows={3} {...field} />
                                         </FormControl>

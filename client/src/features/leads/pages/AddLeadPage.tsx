@@ -71,7 +71,7 @@ const AddLeadPage = () => {
                     </div>
                     <div className="lg:col-span-3">
                         <Form {...form}>
-                            <form onSubmit={form.handleSubmit(onSubmit,)} className="space-y-8">
+                            <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
                                 {currentStep === 1 && (
                                     <AddEditCompanyDetails form={form} handleClick={handleNext} />
                                 )}
