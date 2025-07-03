@@ -6,7 +6,8 @@ import checkDepartment from "../../middlewares/department.middleware";
 const authRouter = express.Router();
 
 authRouter.post("/login", loginController);
-authRouter.post("/signup",  authMiddleware, checkDepartment(["ADMIN"]), signupController);
-authRouter.post("/logout", authMiddleware, checkDepartment(["ADMIN", "MARKETING", "FACTORY", "DRAWING"]), logoutController);
+authRouter.post("/signup", authMiddleware, checkDepartment(["admin"]), signupController);
+authRouter.post("/logout", authMiddleware, checkDepartment(["admin", "sales", "factory", "drawing"]), logoutController);
 
 export default authRouter;
+

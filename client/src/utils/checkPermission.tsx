@@ -2,16 +2,15 @@ import { fetchLeadById } from "@/api/leads/leads.queries";
 import { useUser } from "@/context/UserContext";
 import { Navigate, Outlet, useLocation, useParams } from "react-router";
 import { toast } from "sonner";
-import type { DEPARTMENTS } from "zs-crm-common";
+import type { department } from "zs-crm-common";
 
-type department = typeof DEPARTMENTS[number];
 
 const ProtectedRoute = ({ allowedDepartment, checkOwnership = false }: { allowedDepartment: department[], checkOwnership?: boolean }) => {
     const location = useLocation();
     const { user } = useUser();
     const { id } = useParams();
 
-    const shouldFetch = checkOwnership && user?.department === "MARKETING" && Boolean(id);
+    const shouldFetch = checkOwnership && user?.department === "sales" && Boolean(id);
 
     const { data, isPending, isError } = fetchLeadById(id || "");
 

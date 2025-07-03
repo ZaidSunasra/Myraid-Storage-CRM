@@ -5,13 +5,13 @@ import checkDepartment from "../../middlewares/department.middleware";
 
 const leadRouter = express.Router();
 
-leadRouter.post("/add", authMiddleware, checkDepartment(["ADMIN", "MARKETING"]), addLeadController);
-leadRouter.put("/addDescription/:id", authMiddleware, checkDepartment(["ADMIN", "MARKETING"]), addDescriptionController)
-leadRouter.get("/get", authMiddleware, checkDepartment(["ADMIN", "MARKETING"]), fetchAllLeadsController);
-leadRouter.put("/edit/:id", authMiddleware, checkDepartment(["ADMIN", "MARKETING"]), editLeadController);
-leadRouter.get("/fetchEmployee", authMiddleware, checkDepartment(["ADMIN", "MARKETING"]), fetchEmployeeController);
-leadRouter.get("/get/:id", authMiddleware, checkDepartment(["ADMIN", "MARKETING"]), fetchLeadByIdController);
-leadRouter.post("/addReminder", authMiddleware, checkDepartment(["ADMIN", "MARKETING"]), addReminderController);
-leadRouter.get("/getReminders/:id", authMiddleware, checkDepartment(["ADMIN", "MARKETING"]), fetchRemindersController)
+leadRouter.post("/add", authMiddleware, checkDepartment(["admin", "sales"]), addLeadController);
+leadRouter.put("/addDescription/:id", authMiddleware, checkDepartment(["admin", "sales"]), addDescriptionController)
+leadRouter.get("/get", authMiddleware, checkDepartment(["admin", "sales"]), fetchAllLeadsController);
+leadRouter.put("/edit/:id", authMiddleware, checkDepartment(["admin", "sales"]), editLeadController);
+leadRouter.get("/fetchEmployee", authMiddleware, checkDepartment(["admin", "sales"]), fetchEmployeeController);
+leadRouter.get("/get/:id", authMiddleware, checkDepartment(["admin", "sales"]), fetchLeadByIdController);
+leadRouter.post("/addReminder", authMiddleware, checkDepartment(["admin", "sales"]), addReminderController);
+leadRouter.get("/getReminders/:id", authMiddleware, checkDepartment(["admin", "sales"]), fetchRemindersController)
 
 export default leadRouter;

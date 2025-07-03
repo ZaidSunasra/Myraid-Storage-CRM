@@ -1,7 +1,7 @@
 import { Prisma } from "@prisma/client";
 import { prisma } from "../../libs/prisma";
 import { FetchEmployeeOutput, FetchLeadOutput, FetchLeadSuccessResponse } from "./lead.types";
-import { AddLead, AddReminder, EditLead } from "zs-crm-common"
+import { AddLead, AddReminder, EditLead, DEPARTMENTS } from "zs-crm-common"
 
 export const findExistingEmail = async (email: string, excludedId?: number): Promise<boolean> => {
     if (excludedId !== undefined) {
@@ -15,7 +15,7 @@ export const findExistingEmail = async (email: string, excludedId?: number): Pro
         });
         return user?.email ? true : false;
     }
-    const user = await prisma.lead.findUnique({
+    const user = await prisma.lead.findFirst({
         where: {
             email
         },
@@ -27,7 +27,7 @@ export const findExistingCompany = async (company_name: string, gst_no: string, 
     const data = await prisma.company.findFirst({
         where: {
             OR: [
-                { gst_no: gst_no },
+                ...(gst_no ? [{ gst_no }] : []),
                 {
                     AND: [
                         { name: company_name },
@@ -98,8 +98,8 @@ export const addLeadService = async ({ first_name, last_name, phone, email, desc
     }
 }
 
-export const getLeadsService = async (user: any, page: number, search: any, id: any, rows:number): Promise<FetchLeadSuccessResponse> => {
-    const isAdmin = user.department === "ADMIN";
+export const getLeadsService = async (user: any, page: number, search: any, id: any, rows: number): Promise<FetchLeadSuccessResponse> => {
+    const isAdmin = user.department === DEPARTMENTS[1];
 
     const leads = await prisma.lead.findMany({
         take: rows,
@@ -110,10 +110,7 @@ export const getLeadsService = async (user: any, page: number, search: any, id: 
                     OR: [
                         {
                             company: {
-                                name: {
-                                    contains: search,
-                                    mode: 'insensitive'
-                                }
+                                name: { contains: search, mode: 'insensitive' }
                             }
                         },
                         {
@@ -145,7 +142,7 @@ export const getLeadsService = async (user: any, page: number, search: any, id: 
         }
     });
     const totalLeads = await prisma.lead.count({
-        where: user.department === "ADMIN" ? {} : { assigned_to: user.id }
+        where: user.department === DEPARTMENTS[1] ? {} : { assigned_to: user.id }
     });
     return { leads, totalLeads };
 }
@@ -184,8 +181,8 @@ export const fetchEmployeeService = async (): Promise<FetchEmployeeOutput[]> => 
     const employees = await prisma.user.findMany({
         where: {
             OR: [
-                { department: "ADMIN" },
-                { department: "MARKETING" }
+                { department: DEPARTMENTS[1] },
+                { department: DEPARTMENTS[0] }
             ]
         },
         select: {
@@ -229,7 +226,7 @@ export const addDescriptionService = async (id: string, description: string): Pr
 export const addReminderService = async ({ title, send_at, message, related_id, reminder_type, related_type }: AddReminder, id: number): Promise<void> => {
     const admins = await prisma.user.findMany({
         where: {
-            department: "ADMIN"
+            department: DEPARTMENTS[1]
         },
         select: {
             id: true
@@ -264,11 +261,11 @@ export const addReminderService = async ({ title, send_at, message, related_id, 
     });
 }
 
-export const getReminders = async(id: string) : Promise<any> => {
+export const getReminders = async (id: string): Promise<any> => {
     const reminders = await prisma.notification.findMany({
         where: {
             related_id: parseInt(id),
-            related_type: "LEAD"
+            related_type: "lead"
         }
     });
     return reminders;
