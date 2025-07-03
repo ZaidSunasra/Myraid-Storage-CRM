@@ -25,7 +25,7 @@ model Company {
   id         Int         @id @default(autoincrement())
   name       String
   address    String
-  gst_no     String?     @unique
+  gst_no     String?    
   created_at DateTime    @default(now())
   lead       Lead[]
   deal       Deal[]
@@ -37,7 +37,7 @@ model Lead {
   first_name  String
   last_name   String
   phone       String
-  email       String   @unique
+  email       String?
   created_at  DateTime @default(now())
   description String?
   company_id  Int
@@ -50,7 +50,7 @@ model Lead {
 
 model Notification {
   id             Int               @id @default(autoincrement())
-  message        String
+  message        String?
   title          String
   created_at     DateTime          @default(now())
   send_at        DateTime?
@@ -142,17 +142,17 @@ model Advance {
 }
 
 enum Related_Type {
-  LEAD
-  DEAL
-  ORDER
+  lead
+  deal
+  order
 }
 
 enum Notification_Type {
-  COLOR_CHANGED
-  DRAWING_UPLOADED
-  DRAWING_APPROVED
-  DRAWING_REJECTED
-  CLIENT_MEETING
+  color_changed
+  drawing_uploaded
+  drawing_approved
+  drawing_rejected
+  client_meeting
 }
 
 enum Quotation_Template {
@@ -163,22 +163,22 @@ enum Quotation_Template {
 }
 
 enum Deal_Status {
-  DRAWING
-  QUOTATION
-  HIGH_ORDER_VALUE
-  NEGOTIATION
-  ORDER_LOST
-  ORDER_CONFIRMED
+  drawing
+  quotation
+  high_order_value
+  negotiation
+  order_lost
+  order_confirmed
 }
 
 enum Source {
-  INDIAMART
-  GOOGLEADS
+  india_mart
+  google_ads
 }
 
 enum Department {
-  MARKETING
-  ADMIN
-  FACTORY
-  DRAWING
+  sales
+  admin
+  factory
+  drawing
 }
