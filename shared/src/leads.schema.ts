@@ -1,8 +1,8 @@
 import { z } from "zod/v4";
 
-export const SOURCES = ["INDIAMART", "GOOGLEADS"] as const;
-export const NOTIFICATION_TYPE = ["COLOR_CHANGED", "DRAWING_UPLOADED", "DRAWING_APPROVED", "DRAWING_REJECTED", "CLIENT_MEETING"] as const;
-export const RELATED_TYPE = ["LEAD", "DEAL", "ORDER"] as const;
+export const SOURCES = ["india_mart", "google_ads"] as const;
+export const NOTIFICATION_TYPE = ["color_changed", "drawing_uploaded", "drawing_approved", "drawing_rejected", "client_meeting"] as const;
+export const RELATED_TYPE = ["lead", "deal", "order"] as const;
 
 export type sources = typeof SOURCES[number];
 export type reminder_type = typeof NOTIFICATION_TYPE[number];
@@ -12,7 +12,7 @@ export const leadSchema = z.object({
     first_name: z.string().min(1, "First name required"),
     last_name: z.string().min(1, "Last name required"),
     phone: z.string().max(15, "Invalid phone number"),
-    email: z.email("Invalid email address"),
+    email: z.email().or(z.literal("")).optional(),
     description: z.string().optional(),
     assigned_to: z.coerce.number(),
     source: z.enum(SOURCES),
@@ -28,7 +28,7 @@ export const addDescriptionSchema = z.object({
 
 export const addReminderSchema = z.object({
     title: z.string().min(1, "Title is required"),
-    message: z.string().min(1, "Message is required"),
+    message: z.string().optional(),
     send_at: z.preprocess(
         (val) => (val ? new Date(val as string) : undefined),
         z.date("Date is required")

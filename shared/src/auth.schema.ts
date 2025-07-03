@@ -1,7 +1,7 @@
 import { z } from "zod/v4"; 
 
-export const DEPARTMENTS = ["MARKETING", "ADMIN", "FACTORY", "DRAWING"] as const;
-type department = typeof DEPARTMENTS[number]; 
+export const DEPARTMENTS = ["sales", "admin", "factory", "drawing"] as const;
+export type department = typeof DEPARTMENTS[number]; 
 
 export const loginSchema = z.object({
     email: z.email("Invalid email address"),
