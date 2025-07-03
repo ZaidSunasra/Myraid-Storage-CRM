@@ -9,7 +9,7 @@ import { Input } from "@/shared/components/ui/input";
 import { Checkbox } from "@/shared/components/ui/checkbox";
 import { Popover, PopoverContent, PopoverTrigger, } from "@/shared/components/ui/popover"
 import { Command, CommandEmpty, CommandGroup, CommandInput, CommandItem, CommandList } from "@/shared/components/ui/command"
-import { Building2, Mail, Phone, User, ChevronLeft, ChevronsLeftIcon, ChevronsRightIcon, ChevronRight, Search, ChevronsUpDown, InfoIcon } from "lucide-react";
+import { Building2, Mail, Phone, User, ChevronLeft, ChevronsLeftIcon, ChevronsRightIcon, ChevronRight, Search, ChevronsUpDown } from "lucide-react";
 import { Select, SelectContent, SelectGroup, SelectItem, SelectLabel, SelectTrigger, SelectValue } from "@/shared/components/ui/select";
 
 const LeadsTable = () => {
@@ -28,7 +28,7 @@ const LeadsTable = () => {
     const { data: employeeData, isError: employeeError, isPending: employeePending } = fetchEmployees();
     const { data: leadsData, isPending: leadsPending, isError: leadsError } = fetchLeads({ page, search, employeeIDs, rows });
 
-    const lastPage = Math.ceil(leadsData?.totalLeads / rows);
+    const lastPage = Math.ceil(leadsData?.totalLeads / rows) == 0 ? 1 : Math.ceil(leadsData?.totalLeads / rows);
 
     const navigate = useNavigate();
 
