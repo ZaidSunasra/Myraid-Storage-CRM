@@ -45,11 +45,12 @@ export const fetchAllLeadsController = async (req: Request, res: Response<LeadEr
     const user = res.locals.user;
     const page = parseInt(req.query.page as string, 10) || 1;
     const search = req.query.search;
+    const rows = parseInt(req.query.rows as string, 10) || 10;
     const employeeId = req.query.employeeID as string | undefined;
     const id = employeeId ? employeeId.split(",").filter(Boolean) : [];
 
     try {
-        const { leads, totalLeads } = await getLeadsService(user, page, search, id);
+        const { leads, totalLeads } = await getLeadsService(user, page, search, id, rows);
         return res.status(200).json({
             message: "Leads fetched successfully",
             leads,

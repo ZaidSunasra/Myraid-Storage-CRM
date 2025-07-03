@@ -10,6 +10,7 @@ import { Checkbox } from "@/shared/components/ui/checkbox";
 import { Popover, PopoverContent, PopoverTrigger, } from "@/shared/components/ui/popover"
 import { Command, CommandEmpty, CommandGroup, CommandInput, CommandItem, CommandList } from "@/shared/components/ui/command"
 import { Building2, Mail, Phone, User, ChevronLeft, ChevronsLeftIcon, ChevronsRightIcon, ChevronRight, Search, ChevronsUpDown, InfoIcon } from "lucide-react";
+import { Select, SelectContent, SelectGroup, SelectItem, SelectLabel, SelectTrigger, SelectValue } from "@/shared/components/ui/select";
 
 const LeadsTable = () => {
 
@@ -17,6 +18,7 @@ const LeadsTable = () => {
 
     const search: string = searchParams.get("search") || "";
     const page: number = parseInt(searchParams.get("page") || "1", 10);
+    const rows: number = parseInt(searchParams.get("rows") || "25", 10);
     const rawEmployeeIDs = searchParams.get("employeeID") || "";
     const employeeIDs: string[] = useMemo(() => rawEmployeeIDs.split(",").filter(Boolean), [rawEmployeeIDs]);
 
@@ -24,9 +26,9 @@ const LeadsTable = () => {
     const debouncedSearch = useDebounce(searchInput, 500);
 
     const { data: employeeData, isError: employeeError, isPending: employeePending } = fetchEmployees();
-    const { data: leadsData, isPending: leadsPending, isError: leadsError } = fetchLeads({ page, search, employeeIDs });
+    const { data: leadsData, isPending: leadsPending, isError: leadsError } = fetchLeads({ page, search, employeeIDs, rows });
 
-    const lastPage = Math.ceil(leadsData?.totalLeads / 10);
+    const lastPage = Math.ceil(leadsData?.totalLeads / rows);
 
     const navigate = useNavigate();
 
@@ -39,6 +41,7 @@ const LeadsTable = () => {
                     params.delete("search");
                 }
                 params.set("page", "1");
+                params.set("rows", String(rows));
                 return params;
             });
         }
@@ -59,6 +62,7 @@ const LeadsTable = () => {
                 params.delete("employeeID");
             }
             params.set("page", "1");
+            params.set("rows", String(rows));
             return params;
         });
     };
@@ -66,8 +70,17 @@ const LeadsTable = () => {
     const setPage = (newPage: number) => {
         setSearchParams(params => {
             params.set("page", String(newPage));
+            params.set("rows", String(rows));
             return params;
         })
+    }
+
+    const handleRowChange = (value: string) => {
+        setSearchParams(params => {
+            searchParams.set("rows", value);
+            searchParams.set("page", "1");
+            return params;
+        });
     }
 
     if (leadsPending || employeePending) {
@@ -127,6 +140,21 @@ const LeadsTable = () => {
                         </PopoverContent>
                     </Popover>
                 </div >
+                <div>
+                    <Select onValueChange={handleRowChange} value={String(rows)}>
+                        <SelectTrigger className="w-[200px]">
+                            <SelectValue placeholder="Select number of rows" />
+                        </SelectTrigger>
+                        <SelectContent>
+                            <SelectGroup>
+                                <SelectLabel>Rows</SelectLabel>
+                                <SelectItem value="10">10</SelectItem>
+                                <SelectItem value="25">25</SelectItem>
+                                <SelectItem value="50">50</SelectItem>
+                            </SelectGroup>
+                        </SelectContent>
+                    </Select>
+                </div>
             </div>
         </CardHeader>
         <CardContent>
@@ -134,18 +162,18 @@ const LeadsTable = () => {
                 <Table>
                     <TableHeader>
                         <TableRow>
-                            <TableHead>Lead</TableHead>
+                            <TableHead>Name</TableHead>
                             <TableHead>Company</TableHead>
                             <TableHead>Contact</TableHead>
                             <TableHead>Source</TableHead>
                             <TableHead>Assigned To</TableHead>
+                            <TableHead>Product</TableHead>
                             <TableHead>Created</TableHead>
-                            <TableHead className="w-[50px]"></TableHead>
                         </TableRow>
                     </TableHeader>
                     <TableBody>
                         {leadsData.leads.map((lead: any) => (
-                            <TableRow key={lead.id} className="text-accent-foreground">
+                            <TableRow key={lead.id} className="text-accent-foreground" onClick={() => navigate(`/lead/${lead.id}`)}>
                                 <TableCell>
                                     <div className="font-medium">{lead.first_name}  {lead.last_name}</div>
                                 </TableCell>
@@ -175,6 +203,9 @@ const LeadsTable = () => {
                                     </div>
                                 </TableCell>
                                 <TableCell>
+                                    {lead.product}
+                                </TableCell>
+                                <TableCell>
                                     {new Date(lead.created_at).toLocaleString("en-IN", {
                                         day: "2-digit",
                                         month: "2-digit",
@@ -183,19 +214,13 @@ const LeadsTable = () => {
                                         minute: "2-digit"
                                     })}
                                 </TableCell>
-                                <TableCell>
-                                    <Button variant="ghost" size="icon" onClick={() => navigate(`/lead/${lead.id}`)}>
-                                        <InfoIcon className="h-4 w-4" />
-                                        <span className="sr-only">Open menu</span>
-                                    </Button>
-                                </TableCell>
                             </TableRow>
                         ))}
                     </TableBody>
                 </Table>
             </div>
         </CardContent>
-        <CardFooter className="flex justify-center">
+        <CardFooter className="flex justify-center gap-4">
             <div className=" flex  gap-2 mt-4 lg:ml-0">
                 <Button
                     variant="outline"

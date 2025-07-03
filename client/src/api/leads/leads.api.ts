@@ -1,8 +1,8 @@
-import type { AddLead, AddReminder, EditLead } from "zs-crm-common";
+import type { AddLead, AddReminder } from "zs-crm-common";
 import axiosInstance from "../axiosInstance"
 
-export const getLeads = async({page = 1, search, employeeIDs} : {page: number, search: string, employeeIDs: string[]}) : Promise<any> => {
-    const response = await axiosInstance.get(`/leads/get?page=${page}&search=${search}&employeeID=${employeeIDs}`);
+export const getLeads = async({page = 1, search, employeeIDs, rows} : {page: number, search: string, employeeIDs: string[], rows:number}) : Promise<any> => {
+    const response = await axiosInstance.get(`/leads/get?page=${page}&rows=${rows}&search=${search}&employeeID=${employeeIDs}`);
     return response.data;
 }
 

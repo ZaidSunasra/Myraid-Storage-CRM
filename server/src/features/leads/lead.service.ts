@@ -98,12 +98,12 @@ export const addLeadService = async ({ first_name, last_name, phone, email, desc
     }
 }
 
-export const getLeadsService = async (user: any, page: number, search: any, id: any): Promise<FetchLeadSuccessResponse> => {
+export const getLeadsService = async (user: any, page: number, search: any, id: any, rows:number): Promise<FetchLeadSuccessResponse> => {
     const isAdmin = user.department === "ADMIN";
 
     const leads = await prisma.lead.findMany({
-        take: 10,
-        skip: (page - 1) * 10,
+        take: rows,
+        skip: (page - 1) * rows,
         where: {
             AND: [
                 search ? {
