@@ -1,4 +1,4 @@
-import { Prisma, Lead } from "@prisma/client";
+import { Prisma, Lead, Notification } from "@prisma/client";
 
 export type FetchLeadOutput = Lead & {
     company: Prisma.CompanyGetPayload<{}>
@@ -7,6 +7,22 @@ export type FetchLeadOutput = Lead & {
             first_name: true,
             last_name: true
         }
+    }>
+    client_detail: Prisma.ClientGetPayload<{
+        select: {
+            first_name: true,
+            last_name: true,
+            email: {
+                select: {
+                    email: true
+                }
+            },
+            phone: {
+                select: {
+                    phone: true
+                }
+            }
+        },
     }>
 }
 
@@ -30,4 +46,9 @@ export type FetchEmployeeOutput = {
 export type FetchEmployeeSuccessResponse = {
     message: string,
     employees: FetchEmployeeOutput[]
+}
+
+export type FetchReminderSuccessResponse = {
+    message: string,
+    reminders: Notification[]
 }

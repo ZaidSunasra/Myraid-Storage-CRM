@@ -1,11 +1,10 @@
 import { Request, Response } from "express";
-import { LeadErrorResponse, AddLeadSuccessResponse, leadSchema, LeadSuccessResponse, addReminderSchema } from "zs-crm-common";
-import { addDescriptionService, addLeadService, addReminderService, editLeadService, fetchEmployeeService, findExistingCompany, findExistingEmail, findExistingGST, getLeadByIdService, getLeadsService, getReminders } from "./lead.service";
-import { FetchEmployeeSuccessResponse, FetchLeadByIdSuccessResponse, FetchLeadSuccessResponse } from "./lead.types";
+import { LeadErrorResponse, AddLeadSuccessResponse, LeadSuccessResponse, addReminderSchema, leadSchema } from "zs-crm-common";
+import { addDescriptionService, addLeadService, addReminderService, convertEmailIntoArray, editLeadService, fetchEmployeeService, findExistingCompany, findExistingEmail, findExistingGST, getLeadByIdService, getLeadsService, getReminders } from "./lead.service";
+import { FetchEmployeeSuccessResponse, FetchLeadByIdSuccessResponse, FetchLeadSuccessResponse, FetchReminderSuccessResponse } from "./lead.types";
 
 export const addLeadController = async (req: Request, res: Response<LeadErrorResponse | AddLeadSuccessResponse>): Promise<any> => {
-    const { first_name, last_name, phone, email, description, assigned_to, source, product, company_name, address, gst_no } = req.body;
-
+    const { first_name, last_name, phones, emails, description, assigned_to, source, product, company_name, address, gst_no } = req.body;
     const validation = leadSchema.safeParse(req.body);
     if (!validation.success) {
         return res.status(400).json({
@@ -14,24 +13,20 @@ export const addLeadController = async (req: Request, res: Response<LeadErrorRes
         })
     }
     try {
+        const emailStrings = convertEmailIntoArray(emails);
         const checkCompany = await findExistingCompany(company_name, gst_no, address);
-        const cleanedEmail = email?.trim();
-        if (cleanedEmail) {
-            const checkEmail = await findExistingEmail(email);
-            if (checkEmail) {
-                return res.status(400).json({
-                    message: "Email already exists in lead"
-                })
-            }
-        }
-
         if (checkCompany) {
             return res.status(400).json({
                 message: "Comapny detail already exists"
             })
         }
-
-        const lead_id = await addLeadService({ first_name, last_name, phone, email, description, assigned_to, source, product, company_name, address, gst_no });
+        const checkEmail = await findExistingEmail(emailStrings);
+        if (checkEmail) {
+            return res.status(400).json({
+                message: "Email already exists in lead"
+            })
+        }
+        const lead_id = await addLeadService({ first_name, last_name, phones, emails, description, assigned_to, source, product, company_name, address, gst_no });
         return res.status(200).json({
             message: "Lead generated successfully",
             id: lead_id
@@ -46,14 +41,12 @@ export const addLeadController = async (req: Request, res: Response<LeadErrorRes
 }
 
 export const fetchAllLeadsController = async (req: Request, res: Response<LeadErrorResponse | FetchLeadSuccessResponse>): Promise<any> => {
-
     const user = res.locals.user;
     const page = parseInt(req.query.page as string, 10) || 1;
     const search = req.query.search;
     const rows = parseInt(req.query.rows as string, 10) || 10;
     const employeeId = req.query.employeeID as string | undefined;
     const id = employeeId ? employeeId.split(",").filter(Boolean) : [];
-
     try {
         const { leads, totalLeads } = await getLeadsService(user, page, search, id, rows);
         return res.status(200).json({
@@ -71,10 +64,8 @@ export const fetchAllLeadsController = async (req: Request, res: Response<LeadEr
 }
 
 export const editLeadController = async (req: Request, res: Response<LeadErrorResponse | LeadSuccessResponse>): Promise<any> => {
-
     const id = parseInt(req.params.id);
-    const { first_name, last_name, phone, email, description, assigned_to, source, product, company_name, address, gst_no } = req.body;
-
+    const { first_name, last_name, phones, emails, description, assigned_to, source, product, company_name, address, gst_no } = req.body;
     const validation = leadSchema.safeParse(req.body);
     if (!validation.success) {
         return res.status(400).json({
@@ -83,7 +74,8 @@ export const editLeadController = async (req: Request, res: Response<LeadErrorRe
         })
     }
     try {
-        const checkEmail = await findExistingEmail(email, id);
+        const emailStrings = convertEmailIntoArray(emails);
+        const checkEmail = await findExistingEmail(emailStrings, id);
         if (checkEmail) {
             return res.status(400).json({
                 message: "Email already exists in another lead"
@@ -95,7 +87,7 @@ export const editLeadController = async (req: Request, res: Response<LeadErrorRe
                 message: "GST number already associated with another company"
             });
         }
-        await editLeadService({ id, first_name, last_name, phone, email, description, assigned_to, source, product, company_name, address, gst_no })
+        await editLeadService({ id, first_name, last_name, phones, emails, description, assigned_to, source, product, company_name, address, gst_no })
         return res.status(200).json({
             message: "Lead edited successfully"
         })
@@ -142,10 +134,8 @@ export const fetchLeadByIdController = async (req: Request, res: Response<LeadEr
 }
 
 export const addDescriptionController = async (req: Request, res: Response<LeadSuccessResponse | LeadErrorResponse>): Promise<any> => {
-
     const id = req.params.id;
     const { description } = req.body;
-
     try {
         await addDescriptionService(id, description);
         return res.status(200).json({
@@ -161,10 +151,8 @@ export const addDescriptionController = async (req: Request, res: Response<LeadS
 }
 
 export const addReminderController = async (req: Request, res: Response<LeadSuccessResponse | LeadErrorResponse>): Promise<any> => {
-
     const { title, send_at, message, related_id, reminder_type, related_type } = req.body;
     const id = res.locals.user.id
-
     const validation = addReminderSchema.safeParse(req.body);
     if (!validation.success) {
         return res.status(400).json({
@@ -172,7 +160,6 @@ export const addReminderController = async (req: Request, res: Response<LeadSucc
             error: validation.error.issues
         })
     }
-
     try {
         await addReminderService({ title, send_at, message, related_id, reminder_type, related_type }, id)
         return res.status(200).json({
@@ -185,13 +172,10 @@ export const addReminderController = async (req: Request, res: Response<LeadSucc
             error: error
         });
     }
-
 }
 
-export const fetchRemindersController = async (req: Request, res: Response): Promise<any> => {
-
+export const fetchRemindersController = async (req: Request, res: Response<FetchReminderSuccessResponse | LeadErrorResponse>): Promise<any> => {
     const id = req.params.id;
-
     try {
         const reminders = await getReminders(id);
         return res.status(200).json({
