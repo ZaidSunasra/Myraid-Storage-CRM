@@ -11,8 +11,8 @@ export type related_type = typeof RELATED_TYPE[number];
 export const leadSchema = z.object({
     first_name: z.string().min(1, "First name required"),
     last_name: z.string().min(1, "Last name required"),
-    phone: z.string().max(15, "Invalid phone number"),
-    email: z.email().or(z.literal("")).optional(),
+    phones: z.array(z.object({number: z.string().min(5, "Phone number too short").max(15, "Phone number too long")})).min(1, "Atleast 1 phone number required"),
+    emails: z.array(z.object({ email: z.string().optional()})).optional(),
     description: z.string().optional(),
     assigned_to: z.coerce.number(),
     source: z.enum(SOURCES),
