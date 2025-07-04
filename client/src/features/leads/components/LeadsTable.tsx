@@ -175,7 +175,7 @@ const LeadsTable = () => {
                         {leadsData.leads.map((lead: any) => (
                             <TableRow key={lead.id} className="text-accent-foreground" onClick={() => navigate(`/lead/${lead.id}`)}>
                                 <TableCell>
-                                    <div className="font-medium">{lead.first_name}  {lead.last_name}</div>
+                                    <div className="font-medium">{lead.client_detail.first_name}  {lead.client_detail.last_name}</div>
                                 </TableCell>
                                 <TableCell>
                                     <div className="flex items-center">
@@ -187,15 +187,15 @@ const LeadsTable = () => {
                                     <div className="space-y-1">
                                         <div className="flex items-center text-sm">
                                             <Mail className="h-3 w-3 mr-1" />
-                                            {lead.email}
+                                            {lead.client_detail?.email[0]?.email == "" ? "No email provided" : lead.client_detail?.email[0]?.email}
                                         </div>
                                         <div className="flex items-center text-sm">
                                             <Phone className="h-3 w-3 mr-1" />
-                                            {lead.phone}
+                                            {lead.client_detail?.phone[0]?.phone || "No phone provided"}
                                         </div>
                                     </div>
                                 </TableCell>
-                                <TableCell>{lead.source}</TableCell>
+                                <TableCell>{lead.source.replace("_", " ").replace(/\b\w/g, (char: string) => char.toUpperCase())}</TableCell>
                                 <TableCell>
                                     <div className="flex items-center">
                                         <User className="h-4 w-4 mr-2" />
@@ -203,7 +203,7 @@ const LeadsTable = () => {
                                     </div>
                                 </TableCell>
                                 <TableCell>
-                                    {lead.product}
+                                    {lead.product.replace(/\b\w/g, (char: string) => char.toUpperCase())}
                                 </TableCell>
                                 <TableCell>
                                     {new Date(lead.created_at).toLocaleString("en-IN", {

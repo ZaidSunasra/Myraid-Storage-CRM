@@ -4,6 +4,7 @@ import { Building2, Mail, MapPin, Phone, User } from "lucide-react";
 
 const LeadDetails = ({ data }: { data: any }) => {
 
+    console.log(data);
     return <>
         <Card className="bg-background">
             <CardHeader>
@@ -15,7 +16,7 @@ const LeadDetails = ({ data }: { data: any }) => {
                         <Label>Full Name</Label>
                         <div className="flex items-center space-x-2">
                             <User className="h-4 w-4 text-gray-400" />
-                            <span> {data.first_name} {data.last_name}</span>
+                            <span> {data.client_detail.first_name} {data.client_detail.last_name}</span>
                         </div>
                     </div>
                     <div className="space-y-2">
@@ -31,16 +32,24 @@ const LeadDetails = ({ data }: { data: any }) => {
                     </div>
                     <div className="space-y-2">
                         <Label>Email</Label>
-                        <div className="flex items-center space-x-2">
-                            <Mail className="h-4 w-4 text-gray-400" />
-                            <span>{data.email}</span>
+                        <div className="flex flex-col space-y-2">
+                            {data.client_detail.email.length == 0 ? "No email provided" : data.client_detail.email.map((e: {email: string}) => (
+                                <div key={e.email} className="flex items-center gap-x-2">
+                                    <Mail className="h-4 w-4 text-gray-400" />
+                                    <span>{e.email}</span>
+                                </div>
+                            ))}
                         </div>
                     </div>
                     <div className="space-y-2">
                         <Label>Phone</Label>
-                        <div className="flex items-center space-x-2">
-                            <Phone className="h-4 w-4 text-gray-400" />
-                            <span>{data.phone}</span>
+                        <div className="flex flex-col space-y-2">
+                            {data.client_detail.phone.length == 0 ? "No phone provided" : data.client_detail.phone.map((p: {phone: string}) => (
+                                <div key={p.phone} className="flex items-center gap-x-2">
+                                    <Phone className="h-4 w-4 text-gray-400" />
+                                    <span>{p.phone}</span>
+                                </div>
+                            ))}
                         </div>
                     </div>
                     <div className="space-y-2">
@@ -61,7 +70,7 @@ const LeadDetails = ({ data }: { data: any }) => {
                 <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
                     <div className="space-y-2">
                         <Label>Source</Label>
-                        <span> {data.source}</span>
+                        <span>{data.source.replace("_", " ").replace(/\b\w/g, (char: string) => char.toUpperCase())}</span>
                     </div>
                     <div className="space-y-2">
                         <Label>Assigned To</Label>
@@ -81,7 +90,7 @@ const LeadDetails = ({ data }: { data: any }) => {
                     </div>
                     <div className="space-y-2">
                         <Label>Product</Label>
-                        <span>{data.product}</span>
+                        <span>  {data.product.replace(/\b\w/g, (char: string) => char.toUpperCase())}</span>
                     </div>
                 </div>
             </CardContent>
