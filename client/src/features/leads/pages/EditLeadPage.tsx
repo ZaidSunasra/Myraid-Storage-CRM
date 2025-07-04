@@ -26,10 +26,10 @@ const EditLeadPage = () => {
             company_name: data?.lead.company.name,
             gst_no: data?.lead.company.gst_no,
             address: data?.lead.company.address,
-            first_name: data?.lead.first_name,
-            last_name: data?.lead.last_name,
-            email: data?.lead.email,
-            phone: data?.lead.phone,
+            first_name: data?.lead.client_detail.first_name,
+            last_name: data?.lead.client_detail.last_name,
+            emails: data?.lead.client_detail.email?.map((e: any) => ({ email: e.email })) || [],
+            phones: data?.lead.client_detail.phone?.map((p: any) => ({ number: p.phone })) || [],
             source: data?.lead.source as sources,
             product: data?.lead.product,
             description: data?.lead.description || "",
@@ -49,6 +49,10 @@ const EditLeadPage = () => {
 
     const handlePrev = () => {
         setCurrentStep(1)
+    }
+
+    const onError = (error: any) => {
+        console.log(error)
     }
 
     if (isPending) {
@@ -76,7 +80,7 @@ const EditLeadPage = () => {
                     </div>
                     <div className="lg:col-span-3">
                         <Form {...form}>
-                            <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
+                            <form onSubmit={form.handleSubmit(onSubmit, onError)} className="space-y-6">
                                 {currentStep === 1 && (
                                     <AddEditCompanyDetails form={form} handleClick={handleNext} />
                                 )}

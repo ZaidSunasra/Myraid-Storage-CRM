@@ -4,9 +4,21 @@ import { FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/shar
 import { Input } from "@/shared/components/ui/input";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/shared/components/ui/select";
 import { Textarea } from "@/shared/components/ui/textarea";
-import { ArrowLeft, User } from "lucide-react";
+import { ArrowLeft, Plus, Trash, User } from "lucide-react";
+import { useFieldArray } from "react-hook-form";
 
-const AddEditLeadDetails = ({form, handleClick} : {form: any, handleClick: () => void}) => {
+const AddEditLeadDetails = ({ form, handleClick }: { form: any, handleClick: () => void }) => {
+
+    const { fields: phoneField, append: phoneAppend, remove: phoneRemove } = useFieldArray({
+        control: form.control,
+        name: "phones",
+    });
+
+    const { fields: emailFields, append: emailAppend, remove: emailRemove } = useFieldArray({
+        control: form.control,
+        name: "emails",
+    });
+
     return <Card>
         <CardHeader>
             <CardTitle className="flex items-center space-x-2">
@@ -52,38 +64,52 @@ const AddEditLeadDetails = ({form, handleClick} : {form: any, handleClick: () =>
                     />
                 </div>
                 <div className="space-y-2">
-                    <FormField
-                        control={form.control}
-                        name="email"
-                        render={({ field }) => (
-                            <FormItem>
-                                <div className="space-y-2">
-                                    <FormLabel>Email</FormLabel>
+                    <FormLabel className="mb-2">Email</FormLabel>
+                    {emailFields.map((field, index) => (
+                        <FormField
+                            key={field.id}
+                            control={form.control}
+                            name={`emails.${index}.email`}
+                            render={({ field }) => (
+                                <FormItem className="flex items-center gap-2 mb-2">
                                     <FormControl>
-                                        <Input id="email" placeholder="Enter email address" {...field} />
+                                        <Input {...field} placeholder="Enter email" />
                                     </FormControl>
+                                    <Button type="button" variant="destructive" onClick={() => emailRemove(index)}>
+                                        <Trash />
+                                    </Button>
                                     <FormMessage />
-                                </div>
-                            </FormItem>
-                        )}
-                    />
+                                </FormItem>
+                            )}
+                        />
+                    ))}
+                    <Button type="button" onClick={() => emailAppend({ email: "" })} variant="outline" >
+                        <Plus />Add Email
+                    </Button>
                 </div>
                 <div className="space-y-2">
-                    <FormField
-                        control={form.control}
-                        name="phone"
-                        render={({ field }) => (
-                            <FormItem>
-                                <div className="space-y-2">
-                                    <FormLabel>Phone No*</FormLabel>
+                    <FormLabel className="mb-2">Phone Numbers *</FormLabel>
+                    {phoneField.map((field, index) => (
+                        <FormField
+                            key={field.id}
+                            control={form.control}
+                            name={`phones.${index}.number`}
+                            render={({ field }) => (
+                                <FormItem className="flex items-center gap-2 mb-2">
                                     <FormControl>
-                                        <Input id="phone" placeholder="Enter phone number" {...field} />
+                                        <Input {...field} placeholder="Enter phone number" />
                                     </FormControl>
+                                    <Button type="button" variant="destructive" onClick={() => phoneRemove(index)}>
+                                        <Trash />
+                                    </Button>
                                     <FormMessage />
-                                </div>
-                            </FormItem>
-                        )}
-                    />
+                                </FormItem>
+                            )}
+                        />
+                    ))}
+                    <Button type="button" onClick={() => phoneAppend({ number: "" })} variant="outline" >
+                        <Plus /> Add Phone
+                    </Button>
                 </div>
                 <div className="space-y-2">
                     <FormField
@@ -159,7 +185,7 @@ const AddEditLeadDetails = ({form, handleClick} : {form: any, handleClick: () =>
                 </Button>
             </div>
         </CardContent>
-    </Card>
+    </Card >
 }
 
 export default AddEditLeadDetails;

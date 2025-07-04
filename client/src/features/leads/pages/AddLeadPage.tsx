@@ -24,8 +24,8 @@ const AddLeadPage = () => {
         defaultValues: ({
             first_name: "",
             last_name: "",
-            email: "",
-            phone: "",
+            emails: [{ email: "" }],
+            phones: [{ number: "" }],
             description: "",
             source: "" as sources,
             product: "",
@@ -49,6 +49,7 @@ const AddLeadPage = () => {
     const onSubmit = (data: AddLead) => {
         addLead.mutate(data);
     }
+
 
     return <div className="bg-accent min-h-screen">
         <Navbar />
