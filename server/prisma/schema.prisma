@@ -22,30 +22,54 @@ model User {
 }
 
 model Company {
-  id         Int         @id @default(autoincrement())
-  name       String
-  address    String
-  gst_no     String?    
-  created_at DateTime    @default(now())
-  lead       Lead[]
-  deal       Deal[]
-  quotation  Quotation[]
+  id             Int         @id @default(autoincrement())
+  name           String
+  address        String
+  gst_no         String?
+  created_at     DateTime    @default(now())
+  client_details Client[]
+  lead           Lead[]
+  deal           Deal[]
+  quotation      Quotation[]
 }
 
 model Lead {
-  id          Int      @id @default(autoincrement())
-  first_name  String
-  last_name   String
-  phone       String
-  email       String?
-  created_at  DateTime @default(now())
-  description String?
-  company_id  Int
-  assigned_to Int
-  source      Source
-  product     String
-  company     Company  @relation(fields: [company_id], references: [id])
-  user        User     @relation(fields: [assigned_to], references: [id])
+  id            Int      @id @default(autoincrement())
+  created_at    DateTime @default(now())
+  description   String?
+  company_id    Int
+  client_id     Int
+  assigned_to   Int
+  source        Source
+  product       String
+  company       Company  @relation(fields: [company_id], references: [id])
+  user          User     @relation(fields: [assigned_to], references: [id])
+  client_detail Client   @relation(fields: [client_id], references: [id])
+}
+
+model Client {
+  id         Int     @id @default(autoincrement())
+  first_name String
+  last_name  String
+  company    Company @relation(fields: [company_id], references: [id])
+  company_id Int
+  lead       Lead[]
+  email      Email[]
+  phone      Phone[]
+}
+
+model Email {
+  id       Int     @id @default(autoincrement())
+  email    String?
+  client   Client @relation(fields: [client_id], references: [id])
+  client_id Int
+}
+
+model Phone {
+  id       Int     @id @default(autoincrement())
+  phone    String
+  client   Client @relation(fields: [client_id], references: [id])
+  client_id Int
 }
 
 model Notification {
@@ -110,12 +134,12 @@ model Quotation {
 }
 
 model QuotationItem {
-  id          Int        @id @default(autoincrement())
+  id           Int       @id @default(autoincrement())
   quotation_id Int
-  item_name String
-  rate Decimal
-  quantity Decimal
-  quotation   Quotation @relation(fields: [quotation_id], references: [id])
+  item_name    String
+  rate         Decimal
+  quantity     Decimal
+  quotation    Quotation @relation(fields: [quotation_id], references: [id])
 }
 
 model Order {
