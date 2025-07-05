@@ -2,12 +2,17 @@ import { Prisma, Lead, Notification } from "@prisma/client";
 
 export type FetchLeadOutput = Lead & {
     company: Prisma.CompanyGetPayload<{}>
-    user: Prisma.UserGetPayload<{
+    assigned_to: Prisma.AsigneeGetPayload<{
         select: {
-            first_name: true,
-            last_name: true
+            user: {
+                select: {
+                    first_name: true,
+                    last_name: true,
+                    id: true
+                }
+            }
         }
-    }>
+    }>[]
     client_detail: Prisma.ClientGetPayload<{
         select: {
             first_name: true,
