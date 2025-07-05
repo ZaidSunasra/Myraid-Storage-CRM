@@ -11,6 +11,8 @@ import { Popover, PopoverContent, PopoverTrigger, } from "@/shared/components/ui
 import { Command, CommandEmpty, CommandGroup, CommandInput, CommandItem, CommandList } from "@/shared/components/ui/command"
 import { Building2, Mail, Phone, User, ChevronLeft, ChevronsLeftIcon, ChevronsRightIcon, ChevronRight, Search, ChevronsUpDown } from "lucide-react";
 import { Select, SelectContent, SelectGroup, SelectItem, SelectLabel, SelectTrigger, SelectValue } from "@/shared/components/ui/select";
+import { Calendar } from "@/shared/components/ui/calendar";
+import { CalendarIcon, X } from "lucide-react";
 
 const LeadsTable = () => {
 
@@ -19,14 +21,17 @@ const LeadsTable = () => {
     const search: string = searchParams.get("search") || "";
     const page: number = parseInt(searchParams.get("page") || "1", 10);
     const rows: number = parseInt(searchParams.get("rows") || "25", 10);
+    const startDate: string = searchParams.get("startDate") || "";
+    const endDate: string = searchParams.get("endDate") || "";
     const rawEmployeeIDs = searchParams.get("employeeID") || "";
     const employeeIDs: string[] = useMemo(() => rawEmployeeIDs.split(",").filter(Boolean), [rawEmployeeIDs]);
 
+    const [datePopoverOpen, setDatePopoverOpen] = useState(false);
     const [searchInput, setSearchInput] = useState(search);
     const debouncedSearch = useDebounce(searchInput, 500);
 
     const { data: employeeData, isError: employeeError, isPending: employeePending } = fetchEmployees();
-    const { data: leadsData, isPending: leadsPending, isError: leadsError } = fetchLeads({ page, search, employeeIDs, rows });
+    const { data: leadsData, isPending: leadsPending, isError: leadsError } = fetchLeads({ page, search, employeeIDs, rows, startDate, endDate});
 
     const lastPage = Math.ceil(leadsData?.totalLeads / rows) == 0 ? 1 : Math.ceil(leadsData?.totalLeads / rows);
 
@@ -79,6 +84,32 @@ const LeadsTable = () => {
         setSearchParams(params => {
             searchParams.set("rows", value);
             searchParams.set("page", "1");
+            return params;
+        });
+    }
+
+    function formatDateLocal(date: Date) {
+        const year = date.getFullYear();
+        const month = String(date.getMonth() + 1).padStart(2, "0");
+        const day = String(date.getDate()).padStart(2, "0");
+        return `${year}-${month}-${day}`;
+    }
+
+    const setDate = (date: Date | undefined, type: "start" | "end"| "clear") => {
+        const val = date ? formatDateLocal(date) : "";
+        setSearchParams(params => {
+            if (type === "start") {
+                if (val) params.set("startDate", val);
+                else params.delete("startDate");
+            } else if(type === "end"){
+                if (val) params.set("endDate", val);
+                else params.delete("endDate");
+            } else {
+                params.delete("startDate");
+                params.delete("endDate");
+            }
+            params.set("page", "1");
+            params.set("rows", String(rows));
             return params;
         });
     }
@@ -168,7 +199,43 @@ const LeadsTable = () => {
                             <TableHead>Source</TableHead>
                             <TableHead>Assigned To</TableHead>
                             <TableHead>Product</TableHead>
-                            <TableHead>Created</TableHead>
+                            <TableHead className="flex justify-between items-center">
+                                Created
+                                <Popover open={datePopoverOpen} onOpenChange={setDatePopoverOpen}>
+                                    <PopoverTrigger asChild>
+                                        <Button variant="ghost" size="icon" className="ml-2">
+                                            <CalendarIcon className="h-4 w-4" />
+                                        </Button>
+                                    </PopoverTrigger>
+                                    <PopoverContent className="flex flex-col gap-4 w-auto">
+                                        <div className="flex gap-4">
+                                            <div>
+                                                <div className="text-xs font-medium mb-1">Start Date</div>
+                                                <Calendar
+                                                    mode="single"
+                                                    selected={startDate ? new Date(startDate) : undefined}
+                                                    onSelect={(date) => setDate(date, "start")}
+                                                />
+                                            </div>
+                                            <div>
+                                                <div className="text-xs font-medium mb-1">End Date</div>
+                                                <Calendar
+                                                    mode="single"
+                                                    selected={endDate ? new Date(endDate) : undefined}
+                                                    onSelect={(date) => setDate(date, "end")}
+                                                    disabled= {(date) => date > new Date() }
+                                                />
+                                            </div>
+                                        </div>
+                                        {(startDate || endDate) && (
+                                            <Button variant="outline" size="sm" className="mt-2" onClick={() => setDate(undefined, "clear")}>
+                                                <X className="h-4 w-4 mr-1" />
+                                                Clear
+                                            </Button>
+                                        )}
+                                    </PopoverContent>
+                                </Popover>
+                            </TableHead>
                         </TableRow>
                     </TableHeader>
                     <TableBody>
