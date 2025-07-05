@@ -25,7 +25,8 @@ const ProtectedRoute = ({ allowedDepartment, checkOwnership = false }: { allowed
 
     if (shouldFetch) {
         if (isPending) return <div>Loading...</div>;
-        if (isError || data?.lead.assigned_to !== user?.id) {
+        const assignedIds = data?.lead.assigned_to?.map((a: any) => a.user.id) || [];
+        if (isError || !assignedIds.includes(user?.id)) {
             return <Navigate to="/" replace />;
         }
     }

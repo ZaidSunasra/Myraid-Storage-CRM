@@ -12,9 +12,9 @@ export const leadSchema = z.object({
     first_name: z.string().min(1, "First name required"),
     last_name: z.string().min(1, "Last name required"),
     phones: z.array(z.object({number: z.string().min(5, "Phone number too short").max(15, "Phone number too long")})).min(1, "Atleast 1 phone number required"),
-    emails: z.array(z.object({ email: z.string().optional()})).optional(),
+    emails: z.array(z.object({ email: z.email("Enter valid email address").optional()})).optional(),
     description: z.string().optional(),
-    assigned_to: z.coerce.number(),
+    assigned_to: z.array(z.object({id: z.coerce.number().min(1, "Enter valid Id")})).min(1, "Atleast 1 Id required"),
     source: z.enum(SOURCES),
     product: z.string().min(1, "Product required"),
     company_name: z.string().min(1, "Company name required"),
@@ -29,10 +29,7 @@ export const addDescriptionSchema = z.object({
 export const addReminderSchema = z.object({
     title: z.string().min(1, "Title is required"),
     message: z.string().optional(),
-    send_at: z.preprocess(
-        (val) => (val ? new Date(val as string) : undefined),
-        z.date("Date is required")
-    ),
+    send_at: z.coerce.date("Date and time are required"),
     related_id: z.string(),
     reminder_type: z.enum(NOTIFICATION_TYPE),
     related_type: z.enum(RELATED_TYPE)

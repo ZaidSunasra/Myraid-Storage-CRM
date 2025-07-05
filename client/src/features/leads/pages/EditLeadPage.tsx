@@ -33,7 +33,7 @@ const EditLeadPage = () => {
             source: data?.lead.source as sources,
             product: data?.lead.product,
             description: data?.lead.description || "",
-            assigned_to: data?.lead.assigned_to,
+            assigned_to: data?.lead.assigned_to.map((i: any) => ({ id: String(i.user.id) })) || [],
         },
     })
 
@@ -49,10 +49,6 @@ const EditLeadPage = () => {
 
     const handlePrev = () => {
         setCurrentStep(1)
-    }
-
-    const onError = (error: any) => {
-        console.log(error)
     }
 
     if (isPending) {
@@ -80,7 +76,7 @@ const EditLeadPage = () => {
                     </div>
                     <div className="lg:col-span-3">
                         <Form {...form}>
-                            <form onSubmit={form.handleSubmit(onSubmit, onError)} className="space-y-6">
+                            <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
                                 {currentStep === 1 && (
                                     <AddEditCompanyDetails form={form} handleClick={handleNext} />
                                 )}

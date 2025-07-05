@@ -15,6 +15,11 @@ export const convertPhoneIntoArray = (phones: { number: string }[]): string[] =>
     return phoneStrings;
 }
 
+export const covertAssignIdsIntoArray = (assigned_to: { id: number }[]): number[] => {
+    const idStrings = assigned_to?.map((e: any) => e.id).filter((e: any): e is number => !!e) ?? [];
+    return idStrings;
+}
+
 export const findExistingEmail = async (emails: string[], excludedId?: number): Promise<boolean> => {
     if (excludedId !== undefined) {
         const user = await prisma.lead.findFirst({
@@ -89,6 +94,7 @@ export const addLeadService = async ({ first_name, last_name, phones, emails, de
     try {
         const editedEmail = convertEmailIntoArray(emails);
         const editedPhone = convertPhoneIntoArray(phones);
+        const editedId = covertAssignIdsIntoArray(assigned_to);
         const result = await prisma.$transaction(async (tx) => {
             const company = await tx.company.create({
                 data: {
@@ -124,12 +130,17 @@ export const addLeadService = async ({ first_name, last_name, phones, emails, de
                 data: {
                     description: description,
                     company_id: company.id,
-                    assigned_to: assigned_to,
                     client_id: client.id,
                     source: source,
                     product: product
                 }
             });
+            await tx.asignee.createMany({
+                data: editedId.map((id) => ({
+                    lead_id: lead.id,
+                    user_id: id
+                }))
+            })
             return lead.id;
         })
         return result;
@@ -171,15 +182,24 @@ export const getLeadsService = async (user: any, page: number, search: any, id: 
                         }
                     ]
                 } : {},
-                !isAdmin ? { assigned_to: user.id } : id.length > 0 ? { assigned_to: { in: id.map(Number) } } : {},
+                !isAdmin
+                    ? { assigned_to: { some: { user_id: user.id } } }
+                    : id.length > 0
+                        ? { assigned_to: { some: { user_id: { in: id.map(Number) } } } }
+                        : {},
             ]
         },
         include: {
             company: true,
-            user: {
+            assigned_to: {
                 select: {
-                    first_name: true,
-                    last_name: true
+                    user: {
+                        select: {
+                            first_name: true,
+                            last_name: true,
+                            id: true
+                        }
+                    }
                 }
             },
             client_detail:
@@ -205,7 +225,7 @@ export const getLeadsService = async (user: any, page: number, search: any, id: 
         }
     });
     const totalLeads = await prisma.lead.count({
-        where: user.department === DEPARTMENTS[1] ? {} : { assigned_to: user.id }
+        where: user.department === DEPARTMENTS[1] ? {} : { assigned_to: { some: {user_id: user.id}} }
     });
     return { leads, totalLeads };
 }
@@ -213,6 +233,7 @@ export const getLeadsService = async (user: any, page: number, search: any, id: 
 export const editLeadService = async ({ id, first_name, last_name, phones, emails, description, assigned_to, source, product, company_name, address, gst_no }: EditLead): Promise<void> => {
     const editedEmail = convertEmailIntoArray(emails);
     const editedPhone = convertPhoneIntoArray(phones);
+    const editedId = covertAssignIdsIntoArray(assigned_to);
     await prisma.$transaction(async (tx) => {
         const updatedLead = await tx.lead.update({
             where: {
@@ -220,7 +241,6 @@ export const editLeadService = async ({ id, first_name, last_name, phones, email
             },
             data: {
                 description: description,
-                assigned_to: assigned_to,
                 source: source,
                 product: product
             },
@@ -244,6 +264,11 @@ export const editLeadService = async ({ id, first_name, last_name, phones, email
                 last_name: last_name
             }
         });
+        await tx.asignee.deleteMany({
+            where: {
+                lead_id: updatedLead.id
+            }
+        })
         await tx.email.deleteMany({
             where: {
                 client_id: updatedLead.client_id
@@ -266,6 +291,12 @@ export const editLeadService = async ({ id, first_name, last_name, phones, email
             data: editedPhone.map((phone) => ({
                 client_id: updatedLead.client_id,
                 phone
+            }))
+        })
+        await tx.asignee.createMany({
+            data: editedId.map((id) => ({
+                lead_id: updatedLead.id,
+                user_id: id
             }))
         })
     });
@@ -295,10 +326,15 @@ export const getLeadByIdService = async (id: string): Promise<FetchLeadOutput | 
         },
         include: {
             company: true,
-            user: {
+            assigned_to: {
                 select: {
-                    first_name: true,
-                    last_name: true
+                    user: {
+                        select: {
+                            first_name: true,
+                            last_name: true,
+                            id: true
+                        }
+                    }
                 }
             },
             client_detail:

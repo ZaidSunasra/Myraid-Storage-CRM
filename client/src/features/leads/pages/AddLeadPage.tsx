@@ -32,7 +32,7 @@ const AddLeadPage = () => {
             company_name: "",
             address: "",
             gst_no: "",
-            assigned_to: user?.id
+            assigned_to: [{ id: String(user?.id) }]
         }),
     });
 
@@ -49,7 +49,6 @@ const AddLeadPage = () => {
     const onSubmit = (data: AddLead) => {
         addLead.mutate(data);
     }
-
 
     return <div className="bg-accent min-h-screen">
         <Navbar />
