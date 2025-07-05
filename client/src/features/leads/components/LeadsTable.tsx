@@ -197,9 +197,13 @@ const LeadsTable = () => {
                                 </TableCell>
                                 <TableCell>{lead.source.replace("_", " ").replace(/\b\w/g, (char: string) => char.toUpperCase())}</TableCell>
                                 <TableCell>
-                                    <div className="flex items-center">
-                                        <User className="h-4 w-4 mr-2" />
-                                        {lead.user.first_name} {lead.user.last_name}
+                                    <div className="flex flex-col gap-1">
+                                        {lead.assigned_to.map((assignee: any) => (
+                                            <div className="flex items-center" key={assignee.user.id}>
+                                                <User className="h-4 w-4 mr-2" />
+                                                {assignee.user.first_name} {assignee.user.last_name}
+                                            </div>
+                                        ))}
                                     </div>
                                 </TableCell>
                                 <TableCell>

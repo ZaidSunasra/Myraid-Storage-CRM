@@ -20,7 +20,7 @@ const LeadDetails = ({ data }: { data: any }) => {
                     </div>
                     <div className="space-y-2">
                         <Label>GST No.</Label>
-                        <span>{data.company.gst_no} </span>
+                        <span>{data.company.gst_no == "" ? "No GST provided" : data.company.gst_no} </span>
                     </div>
                     <div className="space-y-2">
                         <Label>Company</Label>
@@ -32,7 +32,7 @@ const LeadDetails = ({ data }: { data: any }) => {
                     <div className="space-y-2">
                         <Label>Email</Label>
                         <div className="flex flex-col space-y-2">
-                            {data.client_detail.email.length == 0 ? "No email provided" : data.client_detail.email.map((e: {email: string}) => (
+                            {data.client_detail.email.length == 0 ? "No email provided" : data.client_detail.email.map((e: { email: string }) => (
                                 <div key={e.email} className="flex items-center gap-x-2">
                                     <Mail className="h-4 w-4 text-gray-400" />
                                     <span>{e.email}</span>
@@ -43,7 +43,7 @@ const LeadDetails = ({ data }: { data: any }) => {
                     <div className="space-y-2">
                         <Label>Phone</Label>
                         <div className="flex flex-col space-y-2">
-                            {data.client_detail.phone.length == 0 ? "No phone provided" : data.client_detail.phone.map((p: {phone: string}) => (
+                            {data.client_detail.phone.length == 0 ? "No phone provided" : data.client_detail.phone.map((p: { phone: string }) => (
                                 <div key={p.phone} className="flex items-center gap-x-2">
                                     <Phone className="h-4 w-4 text-gray-400" />
                                     <span>{p.phone}</span>
@@ -73,7 +73,14 @@ const LeadDetails = ({ data }: { data: any }) => {
                     </div>
                     <div className="space-y-2">
                         <Label>Assigned To</Label>
-                        <span> {data.user.first_name} {data.user.last_name}</span>
+                        <div className="space-y-1">
+                            {data.assigned_to.map((assignee: any, idx:number) => (
+                                <div  key={assignee.user.id ?? idx} className="flex items-center">
+                                    <User className="h-4 w-4 text-gray-400 mr-2" />
+                                    <span>{assignee.user.first_name} {assignee.user.last_name}</span>
+                                </div>
+                            ))}
+                        </div>
                     </div>
                     <div className="space-y-2">
                         <Label>Created Date</Label>
