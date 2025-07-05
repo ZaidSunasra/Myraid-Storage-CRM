@@ -3,6 +3,7 @@ import { NavLink } from "react-router";
 import { Avatar } from "@/shared/components/ui/avatar";
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuLabel, DropdownMenuSeparator, DropdownMenuTrigger } from "@/shared/components/ui/dropdown-menu";
 import { Menu, User, X } from "lucide-react";
+import { useLogout } from "@/api/auth/auth.mutation";
 
 const Navbar = () => {
 
@@ -30,6 +31,12 @@ const Navbar = () => {
     ];
 
     const [menuOpen, setMenuOpen] = useState(false);
+
+    const logout = useLogout()
+
+    const onSubmit = () => {
+        logout.mutate();
+    }
 
     return <nav className="bg-background">
         <div className="max-w-7xl mx-auto sm:px-6 lg:px-8">
@@ -69,7 +76,7 @@ const Navbar = () => {
                             <DropdownMenuItem>Profile</DropdownMenuItem>
                             <DropdownMenuItem>Settings</DropdownMenuItem>
                             <DropdownMenuSeparator />
-                            <DropdownMenuItem>Sign out</DropdownMenuItem>
+                            <DropdownMenuItem onClick={onSubmit}>Sign out</DropdownMenuItem>
                         </DropdownMenuContent>
                     </DropdownMenu>
                     <div className="sm:hidden h-8 w-8 flex items-center">
