@@ -1,3 +1,4 @@
+import { fetchEmployees } from "@/api/leads/leads.queries";
 import { Button } from "@/shared/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/shared/components/ui/card";
 import { FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/shared/components/ui/form";
@@ -9,6 +10,8 @@ import { useFieldArray } from "react-hook-form";
 
 const AddEditLeadDetails = ({ form, handleClick }: { form: any, handleClick: () => void }) => {
 
+    const { data: employeeData, isError: employeeError, isPending: employeePending } = fetchEmployees();
+
     const { fields: phoneField, append: phoneAppend, remove: phoneRemove } = useFieldArray({
         control: form.control,
         name: "phones",
@@ -18,6 +21,14 @@ const AddEditLeadDetails = ({ form, handleClick }: { form: any, handleClick: () 
         control: form.control,
         name: "emails",
     });
+
+    const { fields: assignField, append: assignAppend, remove: assignRemove } = useFieldArray({
+        control: form.control,
+        name: "assigned_to",
+    });
+
+    if (employeePending) return <>Loading...</>
+    if (employeeError) return <>Erroor..</>
 
     return <Card>
         <CardHeader>
@@ -71,13 +82,15 @@ const AddEditLeadDetails = ({ form, handleClick }: { form: any, handleClick: () 
                             control={form.control}
                             name={`emails.${index}.email`}
                             render={({ field }) => (
-                                <FormItem className="flex items-center gap-2 mb-2">
-                                    <FormControl>
-                                        <Input {...field} placeholder="Enter email" />
-                                    </FormControl>
-                                    <Button type="button" variant="destructive" onClick={() => emailRemove(index)}>
-                                        <Trash />
-                                    </Button>
+                                <FormItem className="">
+                                    <div className="flex items-center gap-2">
+                                        <FormControl>
+                                            <Input {...field} placeholder="Enter email" />
+                                        </FormControl>
+                                        <Button type="button" variant="destructive" onClick={() => emailRemove(index)}>
+                                            <Trash />
+                                        </Button>
+                                    </div>
                                     <FormMessage />
                                 </FormItem>
                             )}
@@ -95,13 +108,15 @@ const AddEditLeadDetails = ({ form, handleClick }: { form: any, handleClick: () 
                             control={form.control}
                             name={`phones.${index}.number`}
                             render={({ field }) => (
-                                <FormItem className="flex items-center gap-2 mb-2">
-                                    <FormControl>
-                                        <Input {...field} placeholder="Enter phone number" />
-                                    </FormControl>
-                                    <Button type="button" variant="destructive" onClick={() => phoneRemove(index)}>
-                                        <Trash />
-                                    </Button>
+                                <FormItem className="">
+                                    <div className="flex items-center gap-2">
+                                        <FormControl>
+                                            <Input {...field} placeholder="Enter phone number" />
+                                        </FormControl>
+                                        <Button type="button" variant="destructive" onClick={() => phoneRemove(index)}>
+                                            <Trash />
+                                        </Button>
+                                    </div>
                                     <FormMessage />
                                 </FormItem>
                             )}
@@ -156,6 +171,41 @@ const AddEditLeadDetails = ({ form, handleClick }: { form: any, handleClick: () 
                             </FormItem>
                         )}
                     />
+                </div>
+                <div className="space-y-2">
+                    <FormLabel className="mb-2">Select User*</FormLabel>
+                    {assignField.map((field, index) => (
+                        <FormField
+                            key={field.id}
+                            control={form.control}
+                            name={`assigned_to.${index}.id`}
+                            render={({ field }) => (
+                                <FormItem className="flex items-center gap-2 mb-2">
+                                    <FormControl>
+                                        <Select onValueChange={field.onChange} defaultValue={field.value}>
+                                            <SelectTrigger className="w-full">
+                                                <SelectValue placeholder="Select user to assign" />
+                                            </SelectTrigger>
+                                            <SelectContent>
+                                                {employeeData.employees.map((employee: any) => (
+                                                    <SelectItem key={employee.id} value={String(employee.id)}>
+                                                        {employee.first_name} {employee.last_name}
+                                                    </SelectItem>
+                                                ))}
+                                            </SelectContent>
+                                        </Select>
+                                    </FormControl>
+                                    <Button type="button" variant="destructive" onClick={() => assignRemove(index)}>
+                                        <Trash />
+                                    </Button>
+                                    <FormMessage />
+                                </FormItem>
+                            )}
+                        />
+                    ))}
+                    <Button type="button" onClick={() => assignAppend({ id: "" })} variant="outline" >
+                        <Plus /> Add User
+                    </Button>
                 </div>
             </div>
             <div className="space-y-2">
