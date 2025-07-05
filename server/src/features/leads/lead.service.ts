@@ -225,7 +225,7 @@ export const getLeadsService = async (user: any, page: number, search: any, id: 
         }
     });
     const totalLeads = await prisma.lead.count({
-        where: user.department === DEPARTMENTS[1] ? {} : { assigned_to: { some: {user_id: user.id}} }
+        where: user.department === DEPARTMENTS[1] ? {} : { assigned_to: { some: { user_id: user.id } } }
     });
     return { leads, totalLeads };
 }
@@ -380,7 +380,23 @@ export const addReminderService = async ({ title, send_at, message, related_id, 
         }
     });
 
+    const asignees = await prisma.asignee.findMany({
+        where: {
+            lead_id: parseInt(related_id)
+        },
+        select: {
+            user_id: true
+        }
+    });
+
     let recipientId = [...admins.map((admin) => admin.id)];
+
+    asignees.forEach(a => {
+        if (!recipientId.includes(a.user_id)) {
+            recipientId.push(a.user_id);
+        }
+    })
+
     if (!recipientId.includes(id)) {
         recipientId.push(id);
     }
@@ -408,7 +424,7 @@ export const addReminderService = async ({ title, send_at, message, related_id, 
     });
 }
 
-export const getReminders = async (id: string): Promise<Notification[]> => {
+export const getRemindersService = async (id: string): Promise<Notification[]> => {
     const reminders = await prisma.notification.findMany({
         where: {
             related_id: parseInt(id),
@@ -416,4 +432,20 @@ export const getReminders = async (id: string): Promise<Notification[]> => {
         }
     });
     return reminders;
+}
+
+export const deleteReminderService = async (id: string): Promise<void> => {
+    await prisma.$transaction(async (tx) => {
+        await tx.recipient.deleteMany({
+            where: {
+                notification_id: parseInt(id)
+            }
+        })
+        await tx.notification.delete({
+            where: {
+                id: parseInt(id)
+            }
+        })
+    })
+
 }

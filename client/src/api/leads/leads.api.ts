@@ -40,3 +40,8 @@ export const editLead = async({data, id} : {data: AddLead, id: string|undefined}
     const response = await axiosInstance.put(`/leads/edit/${id}`, data);
     return response.data;
 }
+
+export const deleteReminder = async(id: string) : Promise<any> => {
+    const response = await axiosInstance.delete(`/leads/deleteReminder/${id}`);
+    return response.data;
+}

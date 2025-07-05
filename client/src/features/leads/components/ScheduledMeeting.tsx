@@ -1,14 +1,20 @@
 import { useParams } from "react-router"
 import { fetchReminders } from "@/api/leads/leads.queries"
-import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuSeparator, DropdownMenuTrigger } from "@/shared/components/ui/dropdown-menu"
 import { Card, CardContent, CardHeader, CardTitle } from "@/shared/components/ui/card"
-import { CalendarIcon, Edit } from "lucide-react"
+import { CalendarIcon,  Trash } from "lucide-react"
 import { Button } from "@/shared/components/ui/button"
+import { Dialog, DialogClose, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle, DialogTrigger } from "@/shared/components/ui/dialog"
+import { useDeleteReminder } from "@/api/leads/leads.mutation"
 
 const ScheduledMeeting = () => {
 
     const { id } = useParams();
     const { data, isPending, isError } = fetchReminders(id || "");
+    const deleteReminder = useDeleteReminder();
+
+    const onSubmit = (id: string) => {
+        deleteReminder.mutate(id);
+    }
 
     if (isPending) {
         return <>Loading</>
@@ -49,19 +55,27 @@ const ScheduledMeeting = () => {
                             </div>
                         </div>
                         <div className="col-span-1 flex justify-end">
-                            <DropdownMenu>
-                                <DropdownMenuTrigger asChild>
-                                    <Button variant="ghost" size="icon">
-                                        <Edit className="h-4 w-4" />
+                            <Dialog >
+                                <DialogTrigger asChild>
+                                    <Button variant="destructive">
+                                        <Trash className="h-4 w-4" />
                                     </Button>
-                                </DropdownMenuTrigger>
-                                <DropdownMenuContent>
-                                    <DropdownMenuItem>Edit Meeting</DropdownMenuItem>
-                                    <DropdownMenuItem>Reschedule</DropdownMenuItem>
-                                    <DropdownMenuSeparator />
-                                    <DropdownMenuItem className="text-red-600">Cancel Meeting</DropdownMenuItem>
-                                </DropdownMenuContent>
-                            </DropdownMenu>
+                                </DialogTrigger>
+                                <DialogContent className="sm:max-w-[425px]">
+                                    <DialogHeader>
+                                        <DialogTitle>Delete Reminder</DialogTitle>
+                                        <DialogDescription>
+                                            Are you sure you want to delete? This cannot be undone.
+                                        </DialogDescription>
+                                    </DialogHeader>
+                                    <DialogFooter>
+                                        <DialogClose asChild>
+                                            <Button variant="outline">Cancel</Button>
+                                        </DialogClose>
+                                        <Button type="submit" variant="destructive" onClick={() =>onSubmit(meeting.id)}>Delete</Button>
+                                    </DialogFooter>
+                                </DialogContent>
+                            </Dialog>
                         </div>
                     </div>
                 ))}

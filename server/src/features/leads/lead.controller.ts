@@ -1,6 +1,6 @@
 import { Request, Response } from "express";
 import { LeadErrorResponse, AddLeadSuccessResponse, LeadSuccessResponse, addReminderSchema, leadSchema } from "zs-crm-common";
-import { addDescriptionService, addLeadService, addReminderService, convertEmailIntoArray, editLeadService, fetchEmployeeService, findExistingCompany, findExistingEmail, findExistingGST, getLeadByIdService, getLeadsService, getReminders } from "./lead.service";
+import { addDescriptionService, addLeadService, addReminderService, convertEmailIntoArray, deleteReminderService, editLeadService, fetchEmployeeService, findExistingCompany, findExistingEmail, findExistingGST, getLeadByIdService, getLeadsService, getRemindersService } from "./lead.service";
 import { FetchEmployeeSuccessResponse, FetchLeadByIdSuccessResponse, FetchLeadSuccessResponse, FetchReminderSuccessResponse } from "./lead.types";
 
 export const addLeadController = async (req: Request, res: Response<LeadErrorResponse | AddLeadSuccessResponse>): Promise<any> => {
@@ -177,13 +177,29 @@ export const addReminderController = async (req: Request, res: Response<LeadSucc
 export const fetchRemindersController = async (req: Request, res: Response<FetchReminderSuccessResponse | LeadErrorResponse>): Promise<any> => {
     const id = req.params.id;
     try {
-        const reminders = await getReminders(id);
+        const reminders = await getRemindersService(id);
         return res.status(200).json({
             message: `Reminder fetched successfully`,
             reminders
         })
     } catch (error) {
         console.log(`Error in fetching reminder`, error);
+        return res.status(500).send({
+            message: "Internal server error",
+            error: error
+        });
+    }
+}
+
+export const deleteReminderController = async (req: Request, res: Response<LeadSuccessResponse | LeadErrorResponse>) : Promise<any> => {
+    const id = req.params.id;
+    try {
+        await deleteReminderService(id);
+           return res.status(200).json({
+            message: `Reminder deleted successfully`,
+        })
+    } catch (error) {
+        console.log(`Error in deleting reminder`, error);
         return res.status(500).send({
             message: "Internal server error",
             error: error

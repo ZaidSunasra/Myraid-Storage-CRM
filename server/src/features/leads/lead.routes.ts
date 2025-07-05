@@ -1,5 +1,5 @@
 import express from "express";
-import { addDescriptionController, addLeadController, addReminderController, editLeadController, fetchAllLeadsController, fetchEmployeeController, fetchLeadByIdController, fetchRemindersController } from "./lead.controller";
+import { addDescriptionController, addLeadController, addReminderController, deleteReminderController, editLeadController, fetchAllLeadsController, fetchEmployeeController, fetchLeadByIdController, fetchRemindersController } from "./lead.controller";
 import authMiddleware from "../../middlewares/auth.middleware";
 import checkDepartment from "../../middlewares/department.middleware";
 
@@ -12,6 +12,7 @@ leadRouter.put("/edit/:id", authMiddleware, checkDepartment(["admin", "sales"]),
 leadRouter.get("/fetchEmployee", authMiddleware, checkDepartment(["admin", "sales"]), fetchEmployeeController);
 leadRouter.get("/get/:id", authMiddleware, checkDepartment(["admin", "sales"]), fetchLeadByIdController);
 leadRouter.post("/addReminder", authMiddleware, checkDepartment(["admin", "sales"]), addReminderController);
-leadRouter.get("/getReminders/:id", authMiddleware, checkDepartment(["admin", "sales"]), fetchRemindersController)
+leadRouter.get("/getReminders/:id", authMiddleware, checkDepartment(["admin", "sales"]), fetchRemindersController);
+leadRouter.delete("/deleteReminder/:id", authMiddleware, checkDepartment(["admin", "sales"]), deleteReminderController)
 
 export default leadRouter;
