@@ -39,12 +39,8 @@ const LeadDescription = ({ data, id }: { data: AddDescription, id: string }) => 
         form.reset();
     }
 
-    const onError = (error: any) => {
-        console.log(error)
-    }
-
     return <Form {...form}>
-        <form onSubmit={form.handleSubmit(onSubmit, onError)} className="w-full space-y-4">
+        <form onSubmit={form.handleSubmit(onSubmit)} className="w-full space-y-4">
             <Card className="bg-background">
                 <CardHeader>
                     <CardTitle>Description & Notes</CardTitle>

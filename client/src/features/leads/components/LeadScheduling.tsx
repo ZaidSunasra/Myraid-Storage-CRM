@@ -8,16 +8,18 @@ import { useAddReminder } from "@/api/leads/leads.mutation"
 import { Button } from "@/shared/components/ui/button"
 import { Calendar } from "@/shared/components/ui/calendar"
 import { Card, CardContent, CardHeader, CardTitle } from "@/shared/components/ui/card"
-import { Form, FormControl, FormDescription, FormField, FormItem, FormLabel, FormMessage } from "@/shared/components/ui/form"
+import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/shared/components/ui/form"
 import { Input } from "@/shared/components/ui/input"
 import { Popover, PopoverContent, PopoverTrigger } from "@/shared/components/ui/popover"
 import { Textarea } from "@/shared/components/ui/textarea"
 import { CalendarIcon } from "lucide-react"
 import ScheduledMeeting from "./ScheduledMeeting"
+import { useState } from "react"
 
 const LeadScheduling = () => {
 
     const { id } = useParams();
+    const [time, setTime] = useState<string>("09:00")
 
     const saveReminder = useAddReminder();
 
@@ -34,6 +36,12 @@ const LeadScheduling = () => {
     })
 
     function onSubmit(data: AddReminder) {
+        let sendAt = data.send_at;
+        if (sendAt && time) {
+            const [hours, minutes] = time.split(":").map(Number)
+            sendAt.setHours(hours, minutes, 0, 0);
+            data.send_at = sendAt
+        }
         saveReminder.mutate(data, {
             onSuccess: () => {
                 form.reset();
@@ -73,39 +81,46 @@ const LeadScheduling = () => {
                                 render={({ field }) => (
                                     <FormItem className="flex flex-col">
                                         <div className="space-y-2">
-                                            <FormLabel>Date of reminder*</FormLabel>
-                                            <Popover>
-                                                <PopoverTrigger asChild>
-                                                    <FormControl>
-                                                        <Button
-                                                            variant={"outline"}
-                                                            className={cn(
-                                                                "w-full pl-3 text-left font-normal",
-                                                                !field.value && "text-muted-foreground"
-                                                            )}
-                                                        >
-                                                            {field.value ? (
-                                                                format(field.value as Date, "PPP")
-                                                            ) : (
-                                                                <span>Pick a date</span>
-                                                            )}
-                                                            <CalendarIcon className="ml-auto h-4 w-4 opacity-50" />
-                                                        </Button>
-                                                    </FormControl>
-                                                </PopoverTrigger>
-                                                <PopoverContent className="w-auto p-0" align="start">
-                                                    <Calendar
-                                                        mode="single"
-                                                        selected={field.value as Date | undefined}
-                                                        onSelect={field.onChange}
-                                                        disabled={(date) =>
-                                                            date < new Date()
-                                                        }
-                                                        captionLayout="dropdown"
-                                                    />
-                                                </PopoverContent>
-                                            </Popover>
-                                            <FormDescription></FormDescription>
+                                            <FormLabel>Date & Time of reminder*</FormLabel>
+                                            <div className="flex space-x-2">
+                                                <Popover>
+                                                    <PopoverTrigger asChild>
+                                                        <FormControl>
+                                                            <Button
+                                                                variant={"outline"}
+                                                                className={cn(
+                                                                    "w-1/2 pl-3 text-left font-normal",
+                                                                    !field.value && "text-muted-foreground"
+                                                                )}
+                                                            >
+                                                                {field.value ? (
+                                                                    format(field.value as Date, "PPP")
+                                                                ) : (
+                                                                    <span>Pick a date</span>
+                                                                )}
+                                                                <CalendarIcon className="ml-auto h-4 w-4 opacity-50" />
+                                                            </Button>
+                                                        </FormControl>
+                                                    </PopoverTrigger>
+                                                    <PopoverContent className="w-auto p-0" align="start">
+                                                        <Calendar
+                                                            mode="single"
+                                                            selected={field.value as Date | undefined}
+                                                            onSelect={field.onChange}
+                                                            disabled={(date) =>
+                                                                date < new Date()
+                                                            }
+                                                            captionLayout="dropdown"
+                                                        />
+                                                    </PopoverContent>
+                                                </Popover>
+                                                <Input
+                                                    type="time"
+                                                    value={time}
+                                                    onChange={e => setTime(e.target.value)}
+                                                    className="w-1/2"
+                                                />
+                                            </div>
                                             <FormMessage />
                                         </div>
                                     </FormItem>
@@ -132,7 +147,7 @@ const LeadScheduling = () => {
                 </Card >
             </form>
         </Form >
-       <ScheduledMeeting />
+        <ScheduledMeeting />
     </>
 }
 
