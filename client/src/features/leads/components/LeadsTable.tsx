@@ -215,6 +215,7 @@ const LeadsTable = () => {
                                                     mode="single"
                                                     selected={startDate ? new Date(startDate) : undefined}
                                                     onSelect={(date) => setDate(date, "start")}
+                                                     disabled= {(date) => date > new Date() }
                                                 />
                                             </div>
                                             <div>

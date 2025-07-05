@@ -167,19 +167,19 @@ export const getLeadsService = async (user: any, page: number, search: string, i
                 startDate && endDate ? {
                     created_at: {
                         gte: new Date(startDate),
-                        lte: new Date(endDate)
+                        lte: new Date(new Date(endDate).setHours(23, 59, 59, 999))
                     }
-                }: startDate ? {
+                } : startDate ? {
                     created_at: {
                         gte: new Date(startDate),
                         lte: new Date()
                     }
-                }: endDate ? {
-                    created_at:{
-                        lte: new Date(startDate),
-                        gte: new Date("2020 01 01")
+                } : endDate ? {
+                    created_at: {
+                        gte: new Date("2020 01 01"),
+                        lte: new Date(new Date(endDate).setHours(23, 59, 59, 999))
                     }
-                }: {},
+                } : {},
                 search ? {
                     OR: [
                         {
