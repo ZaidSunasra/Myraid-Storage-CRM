@@ -3,8 +3,7 @@ import { Label } from "@/shared/components/ui/label";
 import { Building2, Mail, MapPin, Phone, User } from "lucide-react";
 
 const LeadDetails = ({ data }: { data: any }) => {
-
-    console.log(data);
+    
     return <>
         <Card className="bg-background">
             <CardHeader>

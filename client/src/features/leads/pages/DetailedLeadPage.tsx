@@ -55,7 +55,7 @@ const DetailedLeadPage = () => {
             </TabsList>
             <TabsContent value="info" className="space-y-6">
               <LeadDetails data={data.lead} />
-              <LeadDescription data={data.lead.description} id={data.lead.id} />
+              <LeadDescription data={data.lead} id={data.lead.id} />
             </TabsContent>
             <TabsContent value="scheduling" className="space-y-6">
               <LeadScheduling />
