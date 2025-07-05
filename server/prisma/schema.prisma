@@ -16,9 +16,9 @@ model User {
   password       String
   quotation_code String?
   department     Department
-  leads          Lead[]
   deal           Deal[]
   recipient_list Recipient[]
+  asignee        Asignee[]
 }
 
 model Company {
@@ -34,17 +34,26 @@ model Company {
 }
 
 model Lead {
-  id            Int      @id @default(autoincrement())
-  created_at    DateTime @default(now())
+  id            Int       @id @default(autoincrement())
+  created_at    DateTime  @default(now())
   description   String?
   company_id    Int
   client_id     Int
-  assigned_to   Int
+  assigned_to   Asignee[]
   source        Source
   product       String
-  company       Company  @relation(fields: [company_id], references: [id])
-  user          User     @relation(fields: [assigned_to], references: [id])
-  client_detail Client   @relation(fields: [client_id], references: [id])
+  company       Company   @relation(fields: [company_id], references: [id])
+  client_detail Client    @relation(fields: [client_id], references: [id])
+}
+
+model Asignee {
+  id      Int   @id @default(autoincrement())
+  lead    Lead  @relation(fields: [lead_id], references: [id])
+  lead_id Int
+  user    User @relation(fields: [user_id], references: [id])
+  user_id  Int
+
+  @@unique([lead_id, user_id])
 }
 
 model Client {
@@ -59,16 +68,16 @@ model Client {
 }
 
 model Email {
-  id       Int     @id @default(autoincrement())
-  email    String?
-  client   Client @relation(fields: [client_id], references: [id])
+  id        Int     @id @default(autoincrement())
+  email     String?
+  client    Client  @relation(fields: [client_id], references: [id])
   client_id Int
 }
 
 model Phone {
-  id       Int     @id @default(autoincrement())
-  phone    String
-  client   Client @relation(fields: [client_id], references: [id])
+  id        Int    @id @default(autoincrement())
+  phone     String
+  client    Client @relation(fields: [client_id], references: [id])
   client_id Int
 }
 
