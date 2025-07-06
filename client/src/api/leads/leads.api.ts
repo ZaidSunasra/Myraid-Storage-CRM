@@ -45,3 +45,13 @@ export const deleteReminder = async(id: string) : Promise<any> => {
     const response = await axiosInstance.delete(`/leads/deleteReminder/${id}`);
     return response.data;
 }
+
+export const getProducts = async () : Promise<any> => {
+    const response = await axiosInstance.get("/leads/getProducts");
+    return response.data;
+}
+
+export const getSources = async () : Promise<any> => {
+    const response = await axiosInstance.get("/leads/getSources");
+    return response.data;
+}
