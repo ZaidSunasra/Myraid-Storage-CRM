@@ -1,4 +1,4 @@
-import { Notification, Prisma } from "@prisma/client";
+import { Notification, Prisma, Product, Source } from "@prisma/client";
 import { prisma } from "../../libs/prisma";
 import { FetchEmployeeOutput, FetchLeadOutput, FetchLeadSuccessResponse } from "./lead.types";
 import { AddLead, AddReminder, EditLead, DEPARTMENTS } from "zs-crm-common"
@@ -90,7 +90,7 @@ export const findExistingGST = async (id: number, gst_no: string): Promise<boole
     return comapny?.gst_no ? true : false;
 }
 
-export const addLeadService = async ({ first_name, last_name, phones, emails, description, assigned_to, source, product, company_name, address, gst_no }: AddLead): Promise<number> => {
+export const addLeadService = async ({ first_name, last_name, phones, emails, description, assigned_to, source_id, product_id, company_name, address, gst_no }: AddLead): Promise<number> => {
     try {
         const editedEmail = convertEmailIntoArray(emails);
         const editedPhone = convertPhoneIntoArray(phones);
@@ -131,8 +131,8 @@ export const addLeadService = async ({ first_name, last_name, phones, emails, de
                     description: description,
                     company_id: company.id,
                     client_id: client.id,
-                    source: source,
-                    product: product
+                    source_id: source_id,
+                    product_id: product_id
                 }
             });
             await tx.asignee.createMany({
@@ -156,7 +156,7 @@ export const addLeadService = async ({ first_name, last_name, phones, emails, de
     }
 }
 
-export const getLeadsService = async (user: any, page: number, search: string, id: any, rows: number, startDate: string, endDate: string): Promise<FetchLeadSuccessResponse> => {
+export const getLeadsService = async (user: any, page: number, search: string, employeeId: string[], rows: number, startDate: string, endDate: string, sourceId: string[]): Promise<FetchLeadSuccessResponse> => {
 
     const isAdmin = user.department === DEPARTMENTS[1];
     const leads = await prisma.lead.findMany({
@@ -164,22 +164,25 @@ export const getLeadsService = async (user: any, page: number, search: string, i
         skip: (page - 1) * rows,
         where: {
             AND: [
+                sourceId.length > 0 ? {
+                    source_id: { in: sourceId.map(Number) }
+                } : {},
                 startDate && endDate ? {
                     created_at: {
                         gte: new Date(startDate),
-                        lte: new Date(endDate)
+                        lte: new Date(new Date(endDate).setHours(23, 59, 59, 999))
                     }
-                }: startDate ? {
+                } : startDate ? {
                     created_at: {
                         gte: new Date(startDate),
                         lte: new Date()
                     }
-                }: endDate ? {
-                    created_at:{
-                        lte: new Date(startDate),
-                        gte: new Date("2020 01 01")
+                } : endDate ? {
+                    created_at: {
+                        gte: new Date("2020 01 01"),
+                        lte: new Date(new Date(endDate).setHours(23, 59, 59, 999))
                     }
-                }: {},
+                } : {},
                 search ? {
                     OR: [
                         {
@@ -201,13 +204,15 @@ export const getLeadsService = async (user: any, page: number, search: string, i
                 } : {},
                 !isAdmin
                     ? { assigned_to: { some: { user_id: user.id } } }
-                    : id.length > 0
-                        ? { assigned_to: { some: { user_id: { in: id.map(Number) } } } }
+                    : employeeId.length > 0
+                        ? { assigned_to: { some: { user_id: { in: employeeId.map(Number) } } } }
                         : {},
             ]
         },
         include: {
             company: true,
+            source: true,
+            product: true,
             assigned_to: {
                 select: {
                     user: {
@@ -247,7 +252,7 @@ export const getLeadsService = async (user: any, page: number, search: string, i
     return { leads, totalLeads };
 }
 
-export const editLeadService = async ({ id, first_name, last_name, phones, emails, description, assigned_to, source, product, company_name, address, gst_no }: EditLead): Promise<void> => {
+export const editLeadService = async ({ id, first_name, last_name, phones, emails, description, assigned_to, source_id, product_id, company_name, address, gst_no }: EditLead): Promise<void> => {
     const editedEmail = convertEmailIntoArray(emails);
     const editedPhone = convertPhoneIntoArray(phones);
     const editedId = covertAssignIdsIntoArray(assigned_to);
@@ -258,8 +263,8 @@ export const editLeadService = async ({ id, first_name, last_name, phones, email
             },
             data: {
                 description: description,
-                source: source,
-                product: product
+                source_id: source_id,
+                product_id: product_id
             },
         });
         await tx.company.update({
@@ -343,6 +348,8 @@ export const getLeadByIdService = async (id: string): Promise<FetchLeadOutput | 
         },
         include: {
             company: true,
+            source: true,
+            product: true,
             assigned_to: {
                 select: {
                     user: {
@@ -465,4 +472,14 @@ export const deleteReminderService = async (id: string): Promise<void> => {
         })
     })
 
+}
+
+export const getProductsService = async () : Promise<Product[]> => {
+    const products = await prisma.product.findMany();
+    return products;
+}
+
+export const getSourcesService = async () : Promise<Source[]> => {
+    const sources = await prisma.source.findMany();
+    return sources;
 }

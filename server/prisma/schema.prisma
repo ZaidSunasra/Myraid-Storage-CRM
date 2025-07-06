@@ -39,19 +39,33 @@ model Lead {
   description   String?
   company_id    Int
   client_id     Int
+  source_id     Int 
+  product_id     Int
   assigned_to   Asignee[]
-  source        Source
-  product       String
   company       Company   @relation(fields: [company_id], references: [id])
   client_detail Client    @relation(fields: [client_id], references: [id])
+  source        Source    @relation(fields: [source_id], references: [id])
+  product       Product  @relation(fields: [product_id], references: [id])
+}
+
+model Source {
+  id   Int    @id @default(autoincrement())
+  name String
+  lead Lead[]
+}
+
+model Product {
+  id   Int    @id @default(autoincrement())
+  name String
+  lead Lead[]
 }
 
 model Asignee {
-  id      Int   @id @default(autoincrement())
-  lead    Lead  @relation(fields: [lead_id], references: [id])
+  id      Int  @id @default(autoincrement())
+  lead    Lead @relation(fields: [lead_id], references: [id])
   lead_id Int
   user    User @relation(fields: [user_id], references: [id])
-  user_id  Int
+  user_id Int
 
   @@unique([lead_id, user_id])
 }
@@ -202,11 +216,6 @@ enum Deal_Status {
   negotiation
   order_lost
   order_confirmed
-}
-
-enum Source {
-  india_mart
-  google_ads
 }
 
 enum Department {

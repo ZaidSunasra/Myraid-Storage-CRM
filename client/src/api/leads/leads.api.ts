@@ -1,8 +1,8 @@
 import type { AddLead, AddReminder } from "zs-crm-common";
 import axiosInstance from "../axiosInstance"
 
-export const getLeads = async({page = 1, search, employeeIDs, rows, startDate, endDate} : {page: number, search: string, employeeIDs: string[], rows:number, startDate: string, endDate: string}) : Promise<any> => {
-    const response = await axiosInstance.get(`/leads/get?page=${page}&rows=${rows}&search=${search}&employeeID=${employeeIDs}&startDate=${startDate}&endDate=${endDate}`);
+export const getLeads = async({page = 1, search, employeeIDs, rows, startDate, endDate, selectedSources} : {page: number, search: string, employeeIDs: string[], rows:number, startDate: string, endDate: string, selectedSources: string[]}) : Promise<any> => {
+    const response = await axiosInstance.get(`/leads/get?page=${page}&rows=${rows}&search=${search}&employeeID=${employeeIDs}&startDate=${startDate}&endDate=${endDate}&sources=${selectedSources}`);
     return response.data;
 }
 
@@ -43,5 +43,15 @@ export const editLead = async({data, id} : {data: AddLead, id: string|undefined}
 
 export const deleteReminder = async(id: string) : Promise<any> => {
     const response = await axiosInstance.delete(`/leads/deleteReminder/${id}`);
+    return response.data;
+}
+
+export const getProducts = async () : Promise<any> => {
+    const response = await axiosInstance.get("/leads/getProducts");
+    return response.data;
+}
+
+export const getSources = async () : Promise<any> => {
+    const response = await axiosInstance.get("/leads/getSources");
     return response.data;
 }

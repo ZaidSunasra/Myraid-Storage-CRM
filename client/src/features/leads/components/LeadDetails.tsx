@@ -69,7 +69,7 @@ const LeadDetails = ({ data }: { data: any }) => {
                 <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
                     <div className="space-y-2">
                         <Label>Source</Label>
-                        <span>{data.source.replace("_", " ").replace(/\b\w/g, (char: string) => char.toUpperCase())}</span>
+                        <span>{data.source.name.replace("_", " ").replace(/\b\w/g, (char: string) => char.toUpperCase())}</span>
                     </div>
                     <div className="space-y-2">
                         <Label>Assigned To</Label>
@@ -96,7 +96,7 @@ const LeadDetails = ({ data }: { data: any }) => {
                     </div>
                     <div className="space-y-2">
                         <Label>Product</Label>
-                        <span>  {data.product.replace(/\b\w/g, (char: string) => char.toUpperCase())}</span>
+                        <span>  {data.product.name.replace(/\b\w/g, (char: string) => char.toUpperCase())}</span>
                     </div>
                 </div>
             </CardContent>

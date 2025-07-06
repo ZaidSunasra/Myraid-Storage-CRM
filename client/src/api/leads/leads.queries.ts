@@ -1,10 +1,10 @@
 import { useQuery, keepPreviousData } from "@tanstack/react-query"
-import { getEmployeee, getLeadById, getLeads, getReminders } from "./leads.api"
+import { getEmployeee, getLeadById, getLeads, getProducts, getReminders, getSources } from "./leads.api"
 
-export const fetchLeads = ({ page, search, employeeIDs, rows, startDate, endDate}: { page: number, search: string, employeeIDs: string[], rows: number, startDate: string, endDate: string}) => {
+export const fetchLeads = ({ page, search, employeeIDs, rows, startDate, endDate, selectedSources}: { page: number, search: string, employeeIDs: string[], rows: number, startDate: string, endDate: string, selectedSources: string[]}) => {
     return useQuery({
-        queryKey: ['leads', page, search, employeeIDs, rows, startDate, endDate],
-        queryFn: () => getLeads({ page, search, employeeIDs, rows, startDate, endDate}),
+        queryKey: ['leads', page, search, employeeIDs, rows, startDate, endDate, selectedSources],
+        queryFn: () => getLeads({ page, search, employeeIDs, rows, startDate, endDate, selectedSources}),
         placeholderData: keepPreviousData
     })
 }
@@ -27,5 +27,19 @@ export const fetchReminders = (id: string) => {
     return useQuery({
         queryKey: ['reminders', id],
         queryFn: () => getReminders(id)
+    })
+}
+
+export const fetchProducts = () => {
+    return useQuery({
+        queryKey: ['products'],
+        queryFn: getProducts
+    })
+}
+
+export const fetchSources = () => {
+    return useQuery({
+        queryKey: ['sources'],
+        queryFn: getSources
     })
 }

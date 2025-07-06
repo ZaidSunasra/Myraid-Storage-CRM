@@ -3,7 +3,7 @@ import { ArrowLeft } from "lucide-react";
 import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { NavLink, useParams } from "react-router";
-import { leadSchema, type AddLead, type sources } from "zs-crm-common";
+import { leadSchema, type AddLead } from "zs-crm-common";
 import Navbar from "@/shared/components/Navbar";
 import { Button } from "@/shared/components/ui/button";
 import { fetchLeadById } from "@/api/leads/leads.queries";
@@ -30,8 +30,8 @@ const EditLeadPage = () => {
             last_name: data?.lead.client_detail.last_name,
             emails: data?.lead.client_detail.email?.map((e: any) => ({ email: e.email })) || [],
             phones: data?.lead.client_detail.phone?.map((p: any) => ({ number: p.phone })) || [],
-            source: data?.lead.source as sources,
-            product: data?.lead.product,
+            source_id: String(data?.lead.source.id),
+            product_id: String(data?.lead.product.id),
             description: data?.lead.description || "",
             assigned_to: data?.lead.assigned_to.map((i: any) => ({ id: String(i.user.id) })) || [],
         },
