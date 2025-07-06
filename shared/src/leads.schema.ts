@@ -1,10 +1,8 @@
 import { z } from "zod/v4";
 
-export const SOURCES = ["india_mart", "google_ads"] as const;
 export const NOTIFICATION_TYPE = ["color_changed", "drawing_uploaded", "drawing_approved", "drawing_rejected", "client_meeting"] as const;
 export const RELATED_TYPE = ["lead", "deal", "order"] as const;
 
-export type sources = typeof SOURCES[number];
 export type reminder_type = typeof NOTIFICATION_TYPE[number];
 export type related_type = typeof RELATED_TYPE[number];
 
@@ -15,8 +13,8 @@ export const leadSchema = z.object({
     emails: z.array(z.object({ email: z.email("Enter valid email address").optional()})).optional(),
     description: z.string().optional(),
     assigned_to: z.array(z.object({id: z.coerce.number().min(1, "Enter valid Id")})).min(1, "Atleast 1 Id required"),
-    source: z.enum(SOURCES),
-    product: z.string().min(1, "Product required"),
+    source_id: z.coerce.number().min(1, "Source is required"),
+    product_id: z.coerce.number().min(1, "Product is required"),
     company_name: z.string().min(1, "Company name required"),
     address: z.string().min(1, "Address required"),
     gst_no: z.string().optional(),
