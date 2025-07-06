@@ -1,7 +1,7 @@
 import { useEffect, useMemo, useState } from "react";
 import { useNavigate, useSearchParams } from "react-router";
 import useDebounce from "@/hooks/useDebounce";
-import { fetchLeads, fetchEmployees } from "@/api/leads/leads.queries";
+import { fetchLeads, fetchEmployees, fetchSources } from "@/api/leads/leads.queries";
 import { Button } from "@/shared/components/ui/button";
 import { Card, CardHeader, CardContent, CardFooter } from "@/shared/components/ui/card";
 import { Table, TableHeader, TableRow, TableHead, TableBody, TableCell } from "@/shared/components/ui/table";
@@ -26,14 +26,15 @@ const LeadsTable = () => {
     const rawEmployeeIDs = searchParams.get("employeeID") || "";
     const rawSources = searchParams.get("sources") || "";
     const employeeIDs: string[] = useMemo(() => rawEmployeeIDs.split(",").filter(Boolean), [rawEmployeeIDs]);
-    const selectedSources: string[]= useMemo(() => rawSources.split(",").filter(Boolean), [rawSources]);
+    const selectedSources: string[] = useMemo(() => rawSources.split(",").filter(Boolean), [rawSources]);
 
     const [datePopoverOpen, setDatePopoverOpen] = useState(false);
     const [searchInput, setSearchInput] = useState(search);
     const debouncedSearch = useDebounce(searchInput, 500);
 
     const { data: employeeData, isError: employeeError, isPending: employeePending } = fetchEmployees();
-    const { data: leadsData, isPending: leadsPending, isError: leadsError } = fetchLeads({ page, search, employeeIDs, rows, startDate, endDate, selectedSources});
+    const { data: leadsData, isPending: leadsPending, isError: leadsError } = fetchLeads({ page, search, employeeIDs, rows, startDate, endDate, selectedSources });
+    const { data: sourceData, isError: sourceError, isPending: sourcePending } = fetchSources();
 
     const lastPage = Math.ceil(leadsData?.totalLeads / rows) == 0 ? 1 : Math.ceil(leadsData?.totalLeads / rows);
 
@@ -74,12 +75,12 @@ const LeadsTable = () => {
         });
     };
 
-    const toggleSource = (source: string) => {
+    const toggleSource = (id: string) => {
         const current = new Set(selectedSources);
-        if (current.has(source)) {
-            current.delete(source);
+        if (current.has(id)) {
+            current.delete(id);
         } else {
-            current.add(source);
+            current.add(id);
         }
 
         setSearchParams(params => {
@@ -138,13 +139,13 @@ const LeadsTable = () => {
         });
     }
 
-    if (leadsPending || employeePending) {
+    if (leadsPending || employeePending || sourcePending) {
         return <>
             Loading....
         </>
     }
 
-    if (leadsError || employeeError) {
+    if (leadsError || employeeError || sourceError) {
         return <>
             Error while loading page
         </>
@@ -179,10 +180,9 @@ const LeadsTable = () => {
                                     <CommandEmpty>No employees found.</CommandEmpty>
                                     <CommandGroup>
                                         {employeeData.employees.map((employee: any) => (
-                                            <CommandItem
-                                                key={employee.id}
-                                            >
-                                                <Checkbox className="mr-2"
+                                            <CommandItem key={employee.id}>
+                                                <Checkbox
+                                                    className="mr-2"
                                                     checked={employeeIDs.includes(String(employee.id))}
                                                     onCheckedChange={() => toggleEmployee(String(employee.id))}
                                                 />
@@ -234,14 +234,14 @@ const LeadsTable = () => {
                                             <CommandList>
                                                 <CommandEmpty>No source found.</CommandEmpty>
                                                 <CommandGroup>
-                                                    {["india_mart", "google_ads"].map((source) => (
-                                                        <CommandItem key={source} onSelect={() => toggleSource(source)}>
+                                                    {sourceData.sources.map((source: any) => (
+                                                        <CommandItem key={source.id}>
                                                             <Checkbox
                                                                 className="mr-2"
-                                                                checked={selectedSources.includes(source)}
-                                                                onCheckedChange={() => toggleSource(source)}
+                                                                checked={selectedSources.includes(String(source.id))}
+                                                                onCheckedChange={() => toggleSource(String(source.id))}
                                                             />
-                                                            {source.replace("_", " ").replace(/\b\w/g, c => c.toUpperCase())}
+                                                            {source.name.replace(/\b\w/g, (c: any) => c.toUpperCase())}
                                                         </CommandItem>
                                                     ))}
                                                 </CommandGroup>
@@ -316,7 +316,7 @@ const LeadsTable = () => {
                                         </div>
                                     </div>
                                 </TableCell>
-                                <TableCell>{lead.source.replace("_", " ").replace(/\b\w/g, (char: string) => char.toUpperCase())}</TableCell>
+                                <TableCell>{lead.source.name.replace("_", " ").replace(/\b\w/g, (char: string) => char.toUpperCase())}</TableCell>
                                 <TableCell>
                                     <div className="flex flex-col gap-1">
                                         {lead.assigned_to.map((assignee: any) => (
@@ -328,7 +328,7 @@ const LeadsTable = () => {
                                     </div>
                                 </TableCell>
                                 <TableCell>
-                                    {lead.product.replace(/\b\w/g, (char: string) => char.toUpperCase())}
+                                    {lead.product.name.replace(/\b\w/g, (char: string) => char.toUpperCase())}
                                 </TableCell>
                                 <TableCell>
                                     {new Date(lead.created_at).toLocaleString("en-IN", {
