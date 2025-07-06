@@ -1,7 +1,7 @@
 import { Notification, Prisma } from "@prisma/client";
 import { prisma } from "../../libs/prisma";
 import { FetchEmployeeOutput, FetchLeadOutput, FetchLeadSuccessResponse } from "./lead.types";
-import { AddLead, AddReminder, EditLead, DEPARTMENTS } from "zs-crm-common"
+import { AddLead, AddReminder, EditLead, DEPARTMENTS, sources } from "zs-crm-common"
 
 export const convertEmailIntoArray = (emails?: { email?: string }[]): string[] => {
     const emailStrings = emails?.map((e: any) => e.email?.trim()).filter((e: any): e is string => !!e) ?? [];
@@ -156,7 +156,7 @@ export const addLeadService = async ({ first_name, last_name, phones, emails, de
     }
 }
 
-export const getLeadsService = async (user: any, page: number, search: string, id: any, rows: number, startDate: string, endDate: string): Promise<FetchLeadSuccessResponse> => {
+export const getLeadsService = async (user: any, page: number, search: string, id: any, rows: number, startDate: string, endDate: string, sourceArray: string[]): Promise<FetchLeadSuccessResponse> => {
 
     const isAdmin = user.department === DEPARTMENTS[1];
     const leads = await prisma.lead.findMany({
@@ -164,6 +164,9 @@ export const getLeadsService = async (user: any, page: number, search: string, i
         skip: (page - 1) * rows,
         where: {
             AND: [
+                sourceArray.length > 0 ? {
+                    source: { in: sourceArray as sources[]}
+                } : {},
                 startDate && endDate ? {
                     created_at: {
                         gte: new Date(startDate),

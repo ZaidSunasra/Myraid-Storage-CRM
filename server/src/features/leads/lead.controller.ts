@@ -1,5 +1,5 @@
 import { Request, Response } from "express";
-import { LeadErrorResponse, AddLeadSuccessResponse, LeadSuccessResponse, addReminderSchema, leadSchema } from "zs-crm-common";
+import { LeadErrorResponse, AddLeadSuccessResponse, LeadSuccessResponse, addReminderSchema, leadSchema, sources } from "zs-crm-common";
 import { addDescriptionService, addLeadService, addReminderService, convertEmailIntoArray, deleteReminderService, editLeadService, fetchEmployeeService, findExistingCompany, findExistingEmail, findExistingGST, getLeadByIdService, getLeadsService, getRemindersService } from "./lead.service";
 import { FetchEmployeeSuccessResponse, FetchLeadByIdSuccessResponse, FetchLeadSuccessResponse, FetchReminderSuccessResponse } from "./lead.types";
 
@@ -47,12 +47,14 @@ export const fetchAllLeadsController = async (req: Request, res: Response<LeadEr
     const search = req.query.search as string;
     const startDate = req.query.startDate as string;
     const endDate = req.query.endDate as string;
-
     const employeeId = req.query.employeeID as string | undefined;
+    const sources = req.query.sources as string | undefined;
+
     const id = employeeId ? employeeId.split(",").filter(Boolean) : [];
+    const sourceArray= sources ? sources.split(",").filter(Boolean): []
     
     try {
-        const { leads, totalLeads } = await getLeadsService(user, page, search, id, rows, startDate, endDate);
+        const { leads, totalLeads } = await getLeadsService(user, page, search, id, rows, startDate, endDate, sourceArray);
         return res.status(200).json({
             message: "Leads fetched successfully",
             leads,

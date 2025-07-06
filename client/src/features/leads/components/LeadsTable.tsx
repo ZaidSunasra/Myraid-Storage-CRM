@@ -24,14 +24,16 @@ const LeadsTable = () => {
     const startDate: string = searchParams.get("startDate") || "";
     const endDate: string = searchParams.get("endDate") || "";
     const rawEmployeeIDs = searchParams.get("employeeID") || "";
+    const rawSources = searchParams.get("sources") || "";
     const employeeIDs: string[] = useMemo(() => rawEmployeeIDs.split(",").filter(Boolean), [rawEmployeeIDs]);
+    const selectedSources: string[]= useMemo(() => rawSources.split(",").filter(Boolean), [rawSources]);
 
     const [datePopoverOpen, setDatePopoverOpen] = useState(false);
     const [searchInput, setSearchInput] = useState(search);
     const debouncedSearch = useDebounce(searchInput, 500);
 
     const { data: employeeData, isError: employeeError, isPending: employeePending } = fetchEmployees();
-    const { data: leadsData, isPending: leadsPending, isError: leadsError } = fetchLeads({ page, search, employeeIDs, rows, startDate, endDate});
+    const { data: leadsData, isPending: leadsPending, isError: leadsError } = fetchLeads({ page, search, employeeIDs, rows, startDate, endDate, selectedSources});
 
     const lastPage = Math.ceil(leadsData?.totalLeads / rows) == 0 ? 1 : Math.ceil(leadsData?.totalLeads / rows);
 
@@ -72,6 +74,28 @@ const LeadsTable = () => {
         });
     };
 
+    const toggleSource = (source: string) => {
+        const current = new Set(selectedSources);
+        if (current.has(source)) {
+            current.delete(source);
+        } else {
+            current.add(source);
+        }
+
+        setSearchParams(params => {
+            const updated = Array.from(current);
+            if (updated.length > 0) {
+                params.set("sources", updated.join(","));
+            } else {
+                params.delete("sources");
+            }
+            params.set("page", "1");
+            params.set("rows", String(rows))
+            return params;
+        });
+    };
+
+
     const setPage = (newPage: number) => {
         setSearchParams(params => {
             params.set("page", String(newPage));
@@ -95,13 +119,13 @@ const LeadsTable = () => {
         return `${year}-${month}-${day}`;
     }
 
-    const setDate = (date: Date | undefined, type: "start" | "end"| "clear") => {
+    const setDate = (date: Date | undefined, type: "start" | "end" | "clear") => {
         const val = date ? formatDateLocal(date) : "";
         setSearchParams(params => {
             if (type === "start") {
                 if (val) params.set("startDate", val);
                 else params.delete("startDate");
-            } else if(type === "end"){
+            } else if (type === "end") {
                 if (val) params.set("endDate", val);
                 else params.delete("endDate");
             } else {
@@ -196,7 +220,36 @@ const LeadsTable = () => {
                             <TableHead>Name</TableHead>
                             <TableHead>Company</TableHead>
                             <TableHead>Contact</TableHead>
-                            <TableHead>Source</TableHead>
+                            <TableHead className="flex justify-between items-center">
+                                Source
+                                <Popover>
+                                    <PopoverTrigger asChild>
+                                        <Button variant="ghost" className="ml-2" size="icon">
+                                            <ChevronsUpDown className="h-4 w-4" />
+                                        </Button>
+                                    </PopoverTrigger>
+                                    <PopoverContent className="w-64 p-0">
+                                        <Command>
+                                            <CommandInput placeholder="Search sources..." />
+                                            <CommandList>
+                                                <CommandEmpty>No source found.</CommandEmpty>
+                                                <CommandGroup>
+                                                    {["india_mart", "google_ads"].map((source) => (
+                                                        <CommandItem key={source} onSelect={() => toggleSource(source)}>
+                                                            <Checkbox
+                                                                className="mr-2"
+                                                                checked={selectedSources.includes(source)}
+                                                                onCheckedChange={() => toggleSource(source)}
+                                                            />
+                                                            {source.replace("_", " ").replace(/\b\w/g, c => c.toUpperCase())}
+                                                        </CommandItem>
+                                                    ))}
+                                                </CommandGroup>
+                                            </CommandList>
+                                        </Command>
+                                    </PopoverContent>
+                                </Popover>
+                            </TableHead>
                             <TableHead>Assigned To</TableHead>
                             <TableHead>Product</TableHead>
                             <TableHead className="flex justify-between items-center">
@@ -215,7 +268,7 @@ const LeadsTable = () => {
                                                     mode="single"
                                                     selected={startDate ? new Date(startDate) : undefined}
                                                     onSelect={(date) => setDate(date, "start")}
-                                                     disabled= {(date) => date > new Date() }
+                                                    disabled={(date) => date > new Date()}
                                                 />
                                             </div>
                                             <div>
@@ -224,7 +277,7 @@ const LeadsTable = () => {
                                                     mode="single"
                                                     selected={endDate ? new Date(endDate) : undefined}
                                                     onSelect={(date) => setDate(date, "end")}
-                                                    disabled= {(date) => date > new Date() }
+                                                    disabled={(date) => date > new Date()}
                                                 />
                                             </div>
                                         </div>
