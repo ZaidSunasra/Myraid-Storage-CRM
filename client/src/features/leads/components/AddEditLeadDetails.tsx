@@ -1,4 +1,4 @@
-import { fetchEmployees } from "@/api/leads/leads.queries";
+import { fetchEmployees, fetchProducts, fetchSources } from "@/api/leads/leads.queries";
 import { Button } from "@/shared/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/shared/components/ui/card";
 import { FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/shared/components/ui/form";
@@ -11,6 +11,8 @@ import { useFieldArray } from "react-hook-form";
 const AddEditLeadDetails = ({ form, handleClick }: { form: any, handleClick: () => void }) => {
 
     const { data: employeeData, isError: employeeError, isPending: employeePending } = fetchEmployees();
+    const { data: sourceData, isError: sourceError, isPending: sourcePending } = fetchSources();
+    const { data: productData, isError: productError, isPending: productPending } = fetchProducts();
 
     const { fields: phoneField, append: phoneAppend, remove: phoneRemove } = useFieldArray({
         control: form.control,
@@ -27,8 +29,8 @@ const AddEditLeadDetails = ({ form, handleClick }: { form: any, handleClick: () 
         name: "assigned_to",
     });
 
-    if (employeePending) return <>Loading...</>
-    if (employeeError) return <>Erroor..</>
+    if (employeePending || sourcePending || productPending) return <>Loading...</>
+    if (employeeError || sourceError || productError) return <>Erroor..</>
 
     return <Card>
         <CardHeader>
@@ -129,7 +131,7 @@ const AddEditLeadDetails = ({ form, handleClick }: { form: any, handleClick: () 
                 <div className="space-y-2">
                     <FormField
                         control={form.control}
-                        name="source"
+                        name="source_id"
                         render={({ field }) => (
                             <FormItem>
                                 <FormLabel>Source*</FormLabel>
@@ -140,8 +142,11 @@ const AddEditLeadDetails = ({ form, handleClick }: { form: any, handleClick: () 
                                         </SelectTrigger>
                                     </FormControl>
                                     <SelectContent>
-                                        <SelectItem value="google_ads">Google Ads</SelectItem>
-                                        <SelectItem value="india_mart">India Mart</SelectItem>
+                                        {sourceData.sources.map((source: any) => (
+                                            <SelectItem key={source.id} value={String(source.id)}>
+                                                {source.name.replace(/\b\w/g, (c: any) => c.toUpperCase())}
+                                            </SelectItem>
+                                        ))}
                                     </SelectContent>
                                 </Select>
                                 <FormMessage />
@@ -152,7 +157,7 @@ const AddEditLeadDetails = ({ form, handleClick }: { form: any, handleClick: () 
                 <div className="space-y-2">
                     <FormField
                         control={form.control}
-                        name="product"
+                        name="product_id"
                         render={({ field }) => (
                             <FormItem>
                                 <FormLabel>Product*</FormLabel>
@@ -163,8 +168,11 @@ const AddEditLeadDetails = ({ form, handleClick }: { form: any, handleClick: () 
                                         </SelectTrigger>
                                     </FormControl>
                                     <SelectContent>
-                                        <SelectItem value="compactor">Compactor</SelectItem>
-                                        <SelectItem value="locker">Locker</SelectItem>
+                                        {productData.products.map((product: any) => (
+                                            <SelectItem key={product.id} value={String(product.id)}>
+                                                {product.name.replace(/\b\w/g, (c: any) => c.toUpperCase())}
+                                            </SelectItem>
+                                        ))}
                                     </SelectContent>
                                 </Select>
                                 <FormMessage />

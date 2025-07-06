@@ -7,7 +7,7 @@ import { ArrowLeft } from "lucide-react";
 import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { NavLink } from "react-router";
-import { leadSchema, type AddLead, type sources } from "zs-crm-common";
+import { leadSchema, type AddLead } from "zs-crm-common";
 import FormSideBar from "../components/FormSideBar";
 import AddEditCompanyDetails from "../components/AddEditCompanyDetails";
 import AddEditLeadDetails from "../components/AddEditLeadDetails";
@@ -27,8 +27,8 @@ const AddLeadPage = () => {
             emails: [{ email: "" }],
             phones: [{ number: "" }],
             description: "",
-            source: "" as sources,
-            product: "",
+            source_id: "",
+            product_id: "",
             company_name: "",
             address: "",
             gst_no: "",
