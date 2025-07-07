@@ -1,6 +1,6 @@
 import { Request, Response } from "express";
 import { LeadErrorResponse, AddLeadSuccessResponse, LeadSuccessResponse, addReminderSchema, leadSchema } from "zs-crm-common";
-import { addDescriptionService, addLeadService, addReminderService, convertEmailIntoArray, deleteReminderService, editLeadService, fetchEmployeeService, findExistingCompany, findExistingEmail, findExistingGST, getLeadByDurationService, getLeadByIdService, getLeadsService, getProductsService, getRemindersService, getSourcesService } from "./lead.service";
+import { addDescriptionService, addLeadService, addReminderService, convertEmailIntoArray, deleteReminderService, editLeadService, fetchEmployeeService, findExistingCompany, findExistingEmail, findExistingGST, getLeadByDurationService, getLeadByIdService, getLeadsService, getProductsService, getReminderByDateService, getRemindersService, getSourcesService } from "./lead.service";
 import { FetchEmployeeSuccessResponse, FetchLeadByIdSuccessResponse, FetchLeadSuccessResponse, FetchReminderSuccessResponse } from "./lead.types";
 
 export const addLeadController = async (req: Request, res: Response<LeadErrorResponse | AddLeadSuccessResponse>): Promise<any> => {
@@ -264,4 +264,24 @@ export const fetchLeadsByDurationController = async (req: Request, res: Response
         });
     }
 
+}
+
+export const fetchRemindersByMonthController = async (req: Request, res: Response): Promise<any> => {
+
+   const user = res.locals.user;
+   const month = req.params.month;
+
+    try {
+        const reminders = await getReminderByDateService(user, month);
+        return res.status(200).json({
+            message: `Reminders by month fetched successfully`,
+            reminders
+        })
+    } catch (error) {
+        console.log(`Error in fetching reminders by month`, error);
+        return res.status(500).send({
+            message: "Internal server error",
+            error: error
+        });
+    }
 }
