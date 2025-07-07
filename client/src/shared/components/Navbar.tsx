@@ -27,6 +27,10 @@ const Navbar = () => {
         {
             title: "Settings",
             url: "/setting"
+        },
+        {
+            title: "Calender",
+            url: "/calender"
         }
     ];
 

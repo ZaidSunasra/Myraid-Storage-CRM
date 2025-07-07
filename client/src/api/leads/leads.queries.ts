@@ -1,10 +1,10 @@
 import { useQuery, keepPreviousData } from "@tanstack/react-query"
-import { getEmployeee, getLeadByDuration, getLeadById, getLeads, getProducts, getReminders, getSources } from "./leads.api"
+import { getEmployeee, getLeadByDuration, getLeadById, getLeads, getProducts, getReminderByMonth, getReminders, getSources } from "./leads.api"
 
-export const fetchLeads = ({ page, search, employeeIDs, rows, startDate, endDate, selectedSources}: { page: number, search: string, employeeIDs: string[], rows: number, startDate: string, endDate: string, selectedSources: string[]}) => {
+export const fetchLeads = ({ page, search, employeeIDs, rows, startDate, endDate, selectedSources }: { page: number, search: string, employeeIDs: string[], rows: number, startDate: string, endDate: string, selectedSources: string[] }) => {
     return useQuery({
         queryKey: ['leads', page, search, employeeIDs, rows, startDate, endDate, selectedSources],
-        queryFn: () => getLeads({ page, search, employeeIDs, rows, startDate, endDate, selectedSources}),
+        queryFn: () => getLeads({ page, search, employeeIDs, rows, startDate, endDate, selectedSources }),
         placeholderData: keepPreviousData
     })
 }
@@ -45,8 +45,15 @@ export const fetchSources = () => {
 }
 
 export const fetchLeadByDuration = (duration: "today" | "weekly" | "monthly" | "yearly" | "all") => {
-    return useQuery ({
+    return useQuery({
         queryKey: ['byDuration', duration],
         queryFn: () => getLeadByDuration(duration)
+    })
+}
+
+export const fetchReminderByMonth = (month: string) => {
+    return useQuery({
+        queryKey: ['reminderByMonth', month],
+        queryFn: () => getReminderByMonth(month)
     })
 }

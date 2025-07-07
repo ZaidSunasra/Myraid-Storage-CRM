@@ -60,3 +60,8 @@ export const getLeadByDuration = async (duration: "today" | "weekly" | "monthly"
     const response = await axiosInstance.get(`/leads/getBy/${duration}`);
     return response.data;
 }
+
+export const getReminderByMonth = async (month: string) : Promise<any> => {
+    const response = await axiosInstance.get(`/leads/getRemindersByMonth/${month}`);
+    return response.data;
+}
