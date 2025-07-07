@@ -40,6 +40,7 @@ export const useAddLead = () => {
         onSuccess: (data: LeadSuccessResponse) => {
             toast.success(data.message),
                 queryClient.invalidateQueries({ queryKey: ['leads'] }),
+                queryClient.invalidateQueries({queryKey: ['byDuration']})
                 navigate("/lead")
         },
         onError: (error: any) => {

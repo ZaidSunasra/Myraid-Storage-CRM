@@ -1,6 +1,6 @@
 import { Request, Response } from "express";
 import { LeadErrorResponse, AddLeadSuccessResponse, LeadSuccessResponse, addReminderSchema, leadSchema } from "zs-crm-common";
-import { addDescriptionService, addLeadService, addReminderService, convertEmailIntoArray, deleteReminderService, editLeadService, fetchEmployeeService, findExistingCompany, findExistingEmail, findExistingGST, getLeadByIdService, getLeadsService, getProductsService, getRemindersService, getSourcesService } from "./lead.service";
+import { addDescriptionService, addLeadService, addReminderService, convertEmailIntoArray, deleteReminderService, editLeadService, fetchEmployeeService, findExistingCompany, findExistingEmail, findExistingGST, getLeadByDurationService, getLeadByIdService, getLeadsService, getProductsService, getRemindersService, getSourcesService } from "./lead.service";
 import { FetchEmployeeSuccessResponse, FetchLeadByIdSuccessResponse, FetchLeadSuccessResponse, FetchReminderSuccessResponse } from "./lead.types";
 
 export const addLeadController = async (req: Request, res: Response<LeadErrorResponse | AddLeadSuccessResponse>): Promise<any> => {
@@ -243,4 +243,25 @@ export const getSourcesController = async (req: Request, res: Response): Promise
             error: error
         });
     }
+}
+
+export const fetchLeadsByDurationController = async (req: Request, res: Response): Promise<any> => {
+
+    const duration = req.params.duration as "today" | "weekly" | "monthly" | "yearly" | "all";
+
+    try {
+        const { employeeLeadCount, totalLeads } = await getLeadByDurationService(duration);
+        return res.status(200).json({
+            message: `Leads by duration fetched successfully`,
+            employeeLeadCount, 
+            totalLeads
+        })
+    } catch (error) {
+        console.log(`Error in fetching leads data by duration`, error);
+        return res.status(500).send({
+            message: "Internal server error",
+            error: error
+        });
+    }
+
 }

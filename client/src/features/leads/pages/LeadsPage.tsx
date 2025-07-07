@@ -3,6 +3,7 @@ import { Button } from "@/shared/components/ui/button";
 import Navbar from "@/shared/components/Navbar";
 import { Plus } from "lucide-react";
 import { useNavigate } from "react-router";
+import LeadAnalytics from "../components/LeadAnalytics";
 
 
 const LeadsPage = () => {
@@ -22,6 +23,7 @@ const LeadsPage = () => {
                     Add Lead
                 </Button>
             </div>
+            <LeadAnalytics />
             <LeadsTable />
         </div>
     </div>

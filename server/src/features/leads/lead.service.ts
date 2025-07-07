@@ -474,12 +474,74 @@ export const deleteReminderService = async (id: string): Promise<void> => {
 
 }
 
-export const getProductsService = async () : Promise<Product[]> => {
+export const getProductsService = async (): Promise<Product[]> => {
     const products = await prisma.product.findMany();
     return products;
 }
 
-export const getSourcesService = async () : Promise<Source[]> => {
+export const getSourcesService = async (): Promise<Source[]> => {
     const sources = await prisma.source.findMany();
     return sources;
+}
+
+const getDate = (range: "today" | "weekly" | "monthly" | "yearly" | "all") => {
+    const now = new Date()
+    const dayOfWeek = now.getDay() || 7;
+    switch (range) {
+        case "today":
+            return {
+                gte: new Date(now.getFullYear(), now.getMonth(), now.getDate(), 0, 0, 0, 0),
+                lte: new Date(now.getFullYear(), now.getMonth(), now.getDate(), 23,59,59,999)
+            }
+        case "weekly":
+            return {
+                gte: new Date(now.getFullYear(), now.getMonth(), now.getDate() - (dayOfWeek - 1), 0, 0, 0, 0),
+                lte: new Date(now.getFullYear(), now.getMonth(), now.getDate(), 23,59,59,999)
+            }
+        case "monthly":
+            return {
+                gte: new Date(now.getFullYear(), now.getMonth(), 0, 0, 0, 0, 0),
+                lte: new Date(now)
+            }
+        case "weekly":
+            return {
+                gte: new Date(now.getFullYear(), 0, 0, 0, 0, 0, 0),
+                lte: new Date(now)
+            }
+        default:
+            return undefined;
+    }
+}
+
+export const getLeadByDurationService = async (duration: "today" | "weekly" | "monthly" | "yearly" | "all"): Promise<any> => {
+    
+    const dateFilter = getDate(duration);
+    const whereClause = dateFilter ? { created_at: dateFilter } : {};
+
+    const leads = await prisma.lead.findMany({
+        where: whereClause,
+        select: {
+            assigned_to: {
+                select: {
+                    user: {
+                        select: {
+                            id: true,
+                            first_name: true,
+                            last_name: true
+                        }
+                    }
+                }
+            }
+        }
+    });
+
+    const totalLeads = leads.length;
+    const employeeLeadCount : Record<string, number> ={};
+    for(const lead of leads){
+        for (const asignee of lead.assigned_to){
+            const fullName = `${asignee.user.first_name} ${asignee.user.last_name}`;
+            employeeLeadCount[fullName] = (employeeLeadCount[fullName] || 0) + 1
+        }
+    }
+    return {employeeLeadCount, totalLeads}
 }

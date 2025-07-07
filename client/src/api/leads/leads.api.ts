@@ -55,3 +55,8 @@ export const getSources = async () : Promise<any> => {
     const response = await axiosInstance.get("/leads/getSources");
     return response.data;
 }
+
+export const getLeadByDuration = async (duration: "today" | "weekly" | "monthly" | "yearly" | "all"): Promise<any> => {
+    const response = await axiosInstance.get(`/leads/getBy/${duration}`);
+    return response.data;
+}
