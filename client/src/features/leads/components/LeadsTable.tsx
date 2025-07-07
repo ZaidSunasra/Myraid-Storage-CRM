@@ -13,6 +13,7 @@ import { Building2, Mail, Phone, User, ChevronLeft, ChevronsLeftIcon, ChevronsRi
 import { Select, SelectContent, SelectGroup, SelectItem, SelectLabel, SelectTrigger, SelectValue } from "@/shared/components/ui/select";
 import { Calendar } from "@/shared/components/ui/calendar";
 import { CalendarIcon, X } from "lucide-react";
+import formatDate from "@/utils/formatDate";
 
 const LeadsTable = () => {
 
@@ -113,15 +114,8 @@ const LeadsTable = () => {
         });
     }
 
-    function formatDateLocal(date: Date) {
-        const year = date.getFullYear();
-        const month = String(date.getMonth() + 1).padStart(2, "0");
-        const day = String(date.getDate()).padStart(2, "0");
-        return `${year}-${month}-${day}`;
-    }
-
     const setDate = (date: Date | undefined, type: "start" | "end" | "clear") => {
-        const val = date ? formatDateLocal(date) : "";
+        const val = date ? formatDate(date) : "";
         setSearchParams(params => {
             if (type === "start") {
                 if (val) params.set("startDate", val);
