@@ -29,6 +29,6 @@
     "jsonwebtoken": "^9.0.2",
     "pg": "^8.16.0",
     "zod": "^3.25.67",
-    "zs-crm-common": "^1.0.26"
+    "zs-crm-common": "^1.0.27"
   }
 }

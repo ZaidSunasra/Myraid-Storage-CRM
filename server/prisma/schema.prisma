@@ -16,7 +16,6 @@ model User {
   password       String
   quotation_code String?
   department     Department
-  deal           Deal[]
   recipient_list Recipient[]
   asignee        Asignee[]
 }
@@ -34,18 +33,19 @@ model Company {
 }
 
 model Lead {
-  id            Int       @id @default(autoincrement())
-  created_at    DateTime  @default(now())
+  id            Int            @id @default(autoincrement())
+  created_at    DateTime       @default(now())
   description   String?
   company_id    Int
   client_id     Int
-  source_id     Int 
-  product_id     Int
+  source_id     Int
+  product_id    Int
   assigned_to   Asignee[]
-  company       Company   @relation(fields: [company_id], references: [id])
-  client_detail Client    @relation(fields: [client_id], references: [id])
-  source        Source    @relation(fields: [source_id], references: [id])
-  product       Product  @relation(fields: [product_id], references: [id])
+  notification  Notification[]
+  company       Company        @relation(fields: [company_id], references: [id])
+  client_detail Client         @relation(fields: [client_id], references: [id])
+  source        Source         @relation(fields: [source_id], references: [id])
+  product       Product        @relation(fields: [product_id], references: [id])
 }
 
 model Source {
@@ -61,11 +61,13 @@ model Product {
 }
 
 model Asignee {
-  id      Int  @id @default(autoincrement())
-  lead    Lead @relation(fields: [lead_id], references: [id])
-  lead_id Int
-  user    User @relation(fields: [user_id], references: [id])
+  id      Int   @id @default(autoincrement())
+  lead    Lead? @relation(fields: [lead_id], references: [id])
+  lead_id Int?
+  user    User  @relation(fields: [user_id], references: [id])
   user_id Int
+  deal    Deal? @relation(fields: [deal_id], references: [id])
+  deal_id Int?
 
   @@unique([lead_id, user_id])
 }
@@ -102,10 +104,12 @@ model Notification {
   created_at     DateTime          @default(now())
   send_at        DateTime?
   is_sent        Boolean           @default(false)
-  related_id     Int?
   type           Notification_Type
-  related_type   Related_Type?
   recipient_list Recipient[]
+  lead           Lead?             @relation(fields: [lead_id], references: [id])
+  lead_id        Int?
+  deal           Deal?             @relation(fields: [deal_id], references: [id])
+  deal_id         Int?
 }
 
 model Recipient {
@@ -119,14 +123,14 @@ model Recipient {
 }
 
 model Deal {
-  id           Int         @id @default(autoincrement())
+  id           Int            @id @default(autoincrement())
   deal_status  Deal_Status
-  created_at   DateTime    @default(now())
-  last_updated DateTime    @updatedAt
-  assigned_to  Int
+  created_at   DateTime       @default(now())
+  last_updated DateTime       @updatedAt
+  assigned_to  Asignee[]
   company_id   Int
-  company      Company     @relation(fields: [company_id], references: [id])
-  user         User        @relation(fields: [assigned_to], references: [id])
+  notification Notification[]
+  company      Company        @relation(fields: [company_id], references: [id])
   drawing      Drawing[]
   quotation    Quotation[]
 }
@@ -186,12 +190,6 @@ model Advance {
   advance_date   DateTime
   order_id       Int
   order          Order    @relation(fields: [order_id], references: [id])
-}
-
-enum Related_Type {
-  lead
-  deal
-  order
 }
 
 enum Notification_Type {

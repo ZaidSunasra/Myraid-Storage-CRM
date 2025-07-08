@@ -1,10 +1,8 @@
 import { z } from "zod/v4";
 
 export const NOTIFICATION_TYPE = ["color_changed", "drawing_uploaded", "drawing_approved", "drawing_rejected", "client_meeting"] as const;
-export const RELATED_TYPE = ["lead", "deal", "order"] as const;
 
 export type reminder_type = typeof NOTIFICATION_TYPE[number];
-export type related_type = typeof RELATED_TYPE[number];
 
 export const leadSchema = z.object({
     first_name: z.string().min(1, "First name required"),
@@ -28,9 +26,9 @@ export const addReminderSchema = z.object({
     title: z.string().min(1, "Title is required"),
     message: z.string().optional(),
     send_at: z.coerce.date("Date and time are required"),
-    related_id: z.string(),
     reminder_type: z.enum(NOTIFICATION_TYPE),
-    related_type: z.enum(RELATED_TYPE)
+    lead_id: z.coerce.number().optional(),
+    deal_id: z.coerce.number().optional()
 })
 
 export type LeadSuccessResponse = {
