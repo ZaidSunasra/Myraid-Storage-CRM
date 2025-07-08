@@ -5,7 +5,6 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/sha
 import { FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/shared/components/ui/form";
 import { Input } from "@/shared/components/ui/input";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/shared/components/ui/select";
-import { Textarea } from "@/shared/components/ui/textarea";
 import { ArrowLeft, Plus, Trash, User } from "lucide-react";
 import { useFieldArray } from "react-hook-form";
 import { DEPARTMENTS } from "zs-crm-common";
@@ -222,23 +221,6 @@ const AddEditLeadDetails = ({ form, handleClick }: { form: any, handleClick: () 
                     </div>
                     : <></>
                 }
-            </div>
-            <div className="space-y-2">
-                <FormField
-                    control={form.control}
-                    name="description"
-                    render={({ field }) => (
-                        <FormItem>
-                            <div className="space-y-2">
-                                <FormLabel>Description</FormLabel>
-                                <FormControl>
-                                    <Textarea id="description" placeholder="Add any additional notes or description about the lead" rows={4}  {...field} />
-                                </FormControl>
-                                <FormMessage />
-                            </div>
-                        </FormItem>
-                    )}
-                />
             </div>
             <div className="flex justify-between">
                 <Button variant="outline" onClick={handleClick}>

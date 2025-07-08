@@ -26,7 +26,6 @@ const AddLeadPage = () => {
             last_name: "",
             emails: [{ email: "" }],
             phones: [{ number: "" }],
-            description: "",
             source_id: "",
             product_id: "",
             company_name: "",

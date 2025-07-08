@@ -32,7 +32,6 @@ const EditLeadPage = () => {
             phones: data?.lead.client_detail.phone?.map((p: any) => ({ number: p.phone })) || [],
             source_id: String(data?.lead.source.id),
             product_id: String(data?.lead.product.id),
-            description: data?.lead.description || "",
             assigned_to: data?.lead.assigned_to.map((i: any) => ({ id: String(i.user.id) })) || [],
         },
     })
