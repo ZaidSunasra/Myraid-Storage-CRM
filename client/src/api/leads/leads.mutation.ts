@@ -1,5 +1,5 @@
 import { useQueryClient, useMutation } from "@tanstack/react-query"
-import { addDescription, addLead, addReminder, deleteReminder, editLead } from "./leads.api"
+import { addDescription, addLead, addReminder, deleteDescription, deleteReminder, editDescription, editLead } from "./leads.api"
 import { toast } from "sonner"
 import type { LeadSuccessResponse, LoginSuccessResponse } from "zs-crm-common"
 import { useNavigate } from "react-router"
@@ -10,7 +10,38 @@ export const useAddDescription = () => {
         mutationFn: addDescription,
         onSuccess: (data: LoginSuccessResponse) => {
             toast.success(data.message),
-                queryClient.invalidateQueries({ queryKey: ['leadById'] })
+                queryClient.invalidateQueries({ queryKey: ['leadById'] }),
+                queryClient.invalidateQueries({ queryKey: ['description'] })
+        },
+        onError: (error: any) => {
+            toast.error(error.response?.data.message)
+        },
+    });
+}
+
+export const useEditDescription = () => {
+    const queryClient = useQueryClient();
+    return useMutation({
+        mutationFn: editDescription,
+        onSuccess: (data: LoginSuccessResponse) => {
+            toast.success(data.message),
+                queryClient.invalidateQueries({ queryKey: ['leadById'] }),
+                queryClient.invalidateQueries({ queryKey: ['description'] })
+        },
+        onError: (error: any) => {
+            toast.error(error.response?.data.message)
+        },
+    });
+}
+
+export const useDeleteDescription = () => {
+    const queryClient = useQueryClient();
+    return useMutation({
+        mutationFn: deleteDescription,
+        onSuccess: (data: LoginSuccessResponse) => {
+            toast.success(data.message),
+                queryClient.invalidateQueries({ queryKey: ['leadById'] }),
+                queryClient.invalidateQueries({ queryKey: ['description'] })
         },
         onError: (error: any) => {
             toast.error(error.response?.data.message)
@@ -40,8 +71,8 @@ export const useAddLead = () => {
         onSuccess: (data: LeadSuccessResponse) => {
             toast.success(data.message),
                 queryClient.invalidateQueries({ queryKey: ['leads'] }),
-                queryClient.invalidateQueries({queryKey: ['byDuration']})
-                navigate("/lead")
+                queryClient.invalidateQueries({ queryKey: ['byDuration'] })
+            navigate("/lead")
         },
         onError: (error: any) => {
             toast.error(error.response?.data.message)

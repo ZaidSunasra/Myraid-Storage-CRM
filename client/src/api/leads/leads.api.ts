@@ -17,7 +17,27 @@ export const getLeadById = async(id: string) : Promise<any> => {
 }
 
 export const addDescription = async({data, id} : {data: any, id:string}) : Promise<any> => {
-    const response = await axiosInstance.put(`/leads/addDescription/${id}`, data);
+    const response = await axiosInstance.post(`/leads/addDescription/${id}`, data);
+    return response.data;
+}
+
+export const getDescription = async (id: string) : Promise<any> => {
+    const response = await axiosInstance.get(`/leads/getDescription/${id}`);
+    return response.data;
+}
+
+export const getDescriptionById = async (id: string) : Promise<any> => {
+    const response = await axiosInstance.get(`/leads/get/${id}`);
+    return response.data;
+}
+
+export const editDescription = async ({data, id} : {data: any, id: string}) : Promise<any> => {
+    const response = await axiosInstance.put(`/leads/editDescription/${id}`, data);
+    return response.data;
+}
+
+export const deleteDescription = async (id: string) : Promise<any> => {
+    const response = await axiosInstance.delete(`/leads/delete/${id}`);
     return response.data;
 }
 

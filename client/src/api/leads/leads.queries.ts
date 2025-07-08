@@ -1,5 +1,5 @@
 import { useQuery, keepPreviousData } from "@tanstack/react-query"
-import { getEmployeee, getLeadByDuration, getLeadById, getLeads, getProducts, getReminderByMonth, getReminders, getSources } from "./leads.api"
+import { getDescription, getEmployeee, getLeadByDuration, getLeadById, getLeads, getProducts, getReminderByMonth, getReminders, getSources } from "./leads.api"
 
 export const fetchLeads = ({ page, search, employeeIDs, rows, startDate, endDate, selectedSources }: { page: number, search: string, employeeIDs: string[], rows: number, startDate: string, endDate: string, selectedSources: string[] }) => {
     return useQuery({
@@ -20,6 +20,13 @@ export const fetchLeadById = (id: string) => {
     return useQuery({
         queryKey: ['leadById', id],
         queryFn: () => getLeadById(id)
+    })
+}
+
+export const fetchDescription = (id: string) => {
+    return useQuery({
+        queryKey: ['description', id],
+        queryFn: () => getDescription(id)
     })
 }
 
