@@ -1,4 +1,5 @@
 import { fetchEmployees, fetchProducts, fetchSources } from "@/api/leads/leads.queries";
+import { useUser } from "@/context/UserContext";
 import { Button } from "@/shared/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/shared/components/ui/card";
 import { FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/shared/components/ui/form";
@@ -7,12 +8,15 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Textarea } from "@/shared/components/ui/textarea";
 import { ArrowLeft, Plus, Trash, User } from "lucide-react";
 import { useFieldArray } from "react-hook-form";
+import { DEPARTMENTS } from "zs-crm-common";
 
 const AddEditLeadDetails = ({ form, handleClick }: { form: any, handleClick: () => void }) => {
 
     const { data: employeeData, isError: employeeError, isPending: employeePending } = fetchEmployees();
     const { data: sourceData, isError: sourceError, isPending: sourcePending } = fetchSources();
     const { data: productData, isError: productError, isPending: productPending } = fetchProducts();
+
+    const { user } = useUser();
 
     const { fields: phoneField, append: phoneAppend, remove: phoneRemove } = useFieldArray({
         control: form.control,
@@ -180,41 +184,44 @@ const AddEditLeadDetails = ({ form, handleClick }: { form: any, handleClick: () 
                         )}
                     />
                 </div>
-                <div className="space-y-2">
-                    <FormLabel className="mb-2">Select User*</FormLabel>
-                    {assignField.map((field, index) => (
-                        <FormField
-                            key={field.id}
-                            control={form.control}
-                            name={`assigned_to.${index}.id`}
-                            render={({ field }) => (
-                                <FormItem className="flex items-center gap-2 mb-2">
-                                    <FormControl>
-                                        <Select onValueChange={field.onChange} defaultValue={field.value}>
-                                            <SelectTrigger className="w-full">
-                                                <SelectValue placeholder="Select user to assign" />
-                                            </SelectTrigger>
-                                            <SelectContent>
-                                                {employeeData.employees.map((employee: any) => (
-                                                    <SelectItem key={employee.id} value={String(employee.id)}>
-                                                        {employee.first_name} {employee.last_name}
-                                                    </SelectItem>
-                                                ))}
-                                            </SelectContent>
-                                        </Select>
-                                    </FormControl>
-                                    <Button type="button" variant="destructive" onClick={() => assignRemove(index)}>
-                                        <Trash />
-                                    </Button>
-                                    <FormMessage />
-                                </FormItem>
-                            )}
-                        />
-                    ))}
-                    <Button type="button" onClick={() => assignAppend({ id: "" })} variant="outline" >
-                        <Plus /> Add User
-                    </Button>
-                </div>
+                {user?.department === DEPARTMENTS[1] ?
+                    <div className="space-y-2">
+                        <FormLabel className="mb-2">Select User*</FormLabel>
+                        {assignField.map((field, index) => (
+                            <FormField
+                                key={field.id}
+                                control={form.control}
+                                name={`assigned_to.${index}.id`}
+                                render={({ field }) => (
+                                    <FormItem className="flex items-center gap-2 mb-2">
+                                        <FormControl>
+                                            <Select onValueChange={field.onChange} defaultValue={field.value}>
+                                                <SelectTrigger className="w-full">
+                                                    <SelectValue placeholder="Select user to assign" />
+                                                </SelectTrigger>
+                                                <SelectContent>
+                                                    {employeeData.employees.map((employee: any) => (
+                                                        <SelectItem key={employee.id} value={String(employee.id)}>
+                                                            {employee.first_name} {employee.last_name}
+                                                        </SelectItem>
+                                                    ))}
+                                                </SelectContent>
+                                            </Select>
+                                        </FormControl>
+                                        <Button type="button" variant="destructive" onClick={() => assignRemove(index)}>
+                                            <Trash />
+                                        </Button>
+                                        <FormMessage />
+                                    </FormItem>
+                                )}
+                            />
+                        ))}
+                        <Button type="button" onClick={() => assignAppend({ id: "" })} variant="outline" >
+                            <Plus /> Add User
+                        </Button>
+                    </div>
+                    : <></>
+                }
             </div>
             <div className="space-y-2">
                 <FormField

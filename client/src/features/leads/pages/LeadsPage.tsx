@@ -4,11 +4,14 @@ import Navbar from "@/shared/components/Navbar";
 import { Plus } from "lucide-react";
 import { useNavigate } from "react-router";
 import LeadAnalytics from "../components/LeadAnalytics";
+import { useUser } from "@/context/UserContext";
+import { DEPARTMENTS } from "zs-crm-common";
 
 
 const LeadsPage = () => {
 
     const navigate = useNavigate();
+    const {user} = useUser();
 
     return <div className="bg-accent min-h-screen">
         <Navbar />
@@ -23,7 +26,7 @@ const LeadsPage = () => {
                     Add Lead
                 </Button>
             </div>
-            <LeadAnalytics />
+            {user?.department === DEPARTMENTS[1] ? <LeadAnalytics /> : <></>}
             <LeadsTable />
         </div>
     </div>
