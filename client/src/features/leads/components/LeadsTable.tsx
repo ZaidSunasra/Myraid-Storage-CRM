@@ -1,6 +1,9 @@
 import { useEffect, useMemo, useState } from "react";
 import { useNavigate, useSearchParams } from "react-router";
+import { DEPARTMENTS } from "zs-crm-common";
 import useDebounce from "@/hooks/useDebounce";
+import { toggleEmployee, toggleSource, setPage, setDate, setSearch, clearFilter } from "@/hooks/useLeadsSearchParams";
+import { useUser } from "@/context/UserContext";
 import { fetchLeads, fetchEmployees, fetchSources } from "@/api/leads/leads.queries";
 import { Button } from "@/shared/components/ui/button";
 import { Card, CardHeader, CardContent, CardFooter } from "@/shared/components/ui/card";
@@ -9,11 +12,9 @@ import { Input } from "@/shared/components/ui/input";
 import { Checkbox } from "@/shared/components/ui/checkbox";
 import { Popover, PopoverContent, PopoverTrigger, } from "@/shared/components/ui/popover"
 import { Command, CommandEmpty, CommandGroup, CommandInput, CommandItem, CommandList } from "@/shared/components/ui/command"
-import { Building2, Mail, Phone, User, ChevronLeft, ChevronsLeftIcon, ChevronsRightIcon, ChevronRight, Search, ChevronsUpDown } from "lucide-react";
 import { Select, SelectContent, SelectGroup, SelectItem, SelectLabel, SelectTrigger, SelectValue } from "@/shared/components/ui/select";
 import { Calendar } from "@/shared/components/ui/calendar";
-import { CalendarIcon, X } from "lucide-react";
-import formatDate from "@/utils/formatDate";
+import { Building2, Mail, Phone, User, ChevronLeft, ChevronsLeftIcon, ChevronsRightIcon, ChevronRight, Search, ChevronsUpDown, CalendarIcon, X } from "lucide-react";
 
 const LeadsTable = () => {
 
@@ -26,8 +27,8 @@ const LeadsTable = () => {
     const endDate: string = searchParams.get("endDate") || "";
     const rawEmployeeIDs = searchParams.get("employeeID") || "";
     const rawSources = searchParams.get("sources") || "";
-    const employeeIDs: string[] = useMemo(() => rawEmployeeIDs.split(",").filter(Boolean), [rawEmployeeIDs]);
-    const selectedSources: string[] = useMemo(() => rawSources.split(",").filter(Boolean), [rawSources]);
+    let employeeIDs: string[] = useMemo(() => rawEmployeeIDs.split(",").filter(Boolean), [rawEmployeeIDs]);
+    let selectedSources: string[] = useMemo(() => rawSources.split(",").filter(Boolean), [rawSources]);
 
     const [datePopoverOpen, setDatePopoverOpen] = useState(false);
     const [searchInput, setSearchInput] = useState(search);
@@ -40,95 +41,16 @@ const LeadsTable = () => {
     const lastPage = Math.ceil(leadsData?.totalLeads / rows) == 0 ? 1 : Math.ceil(leadsData?.totalLeads / rows);
 
     const navigate = useNavigate();
+    const { user } = useUser();
 
     useEffect(() => {
-        if (debouncedSearch !== search) {
-            setSearchParams(params => {
-                if (debouncedSearch) {
-                    params.set("search", debouncedSearch);
-                } else {
-                    params.delete("search");
-                }
-                params.set("page", "1");
-                params.set("rows", String(rows));
-                return params;
-            });
-        }
+        setSearch(debouncedSearch, search, setSearchParams, rows)
     }, [debouncedSearch, search, setSearchParams]);
-
-    const toggleEmployee = (id: string) => {
-        const current = new Set(employeeIDs);
-        if (current.has(id)) {
-            current.delete(id);
-        } else {
-            current.add(id);
-        }
-        setSearchParams(params => {
-            const updated = Array.from(current);
-            if (updated.length > 0) {
-                params.set("employeeID", updated.join(","));
-            } else {
-                params.delete("employeeID");
-            }
-            params.set("page", "1");
-            params.set("rows", String(rows));
-            return params;
-        });
-    };
-
-    const toggleSource = (id: string) => {
-        const current = new Set(selectedSources);
-        if (current.has(id)) {
-            current.delete(id);
-        } else {
-            current.add(id);
-        }
-
-        setSearchParams(params => {
-            const updated = Array.from(current);
-            if (updated.length > 0) {
-                params.set("sources", updated.join(","));
-            } else {
-                params.delete("sources");
-            }
-            params.set("page", "1");
-            params.set("rows", String(rows))
-            return params;
-        });
-    };
-
-
-    const setPage = (newPage: number) => {
-        setSearchParams(params => {
-            params.set("page", String(newPage));
-            params.set("rows", String(rows));
-            return params;
-        })
-    }
 
     const handleRowChange = (value: string) => {
         setSearchParams(params => {
-            searchParams.set("rows", value);
-            searchParams.set("page", "1");
-            return params;
-        });
-    }
-
-    const setDate = (date: Date | undefined, type: "start" | "end" | "clear") => {
-        const val = date ? formatDate(date) : "";
-        setSearchParams(params => {
-            if (type === "start") {
-                if (val) params.set("startDate", val);
-                else params.delete("startDate");
-            } else if (type === "end") {
-                if (val) params.set("endDate", val);
-                else params.delete("endDate");
-            } else {
-                params.delete("startDate");
-                params.delete("endDate");
-            }
+            params.set("rows", value);
             params.set("page", "1");
-            params.set("rows", String(rows));
             return params;
         });
     }
@@ -159,7 +81,7 @@ const LeadsTable = () => {
                         />
                     </div>
                 </div>
-                <div className="w-full sm:w-64 ">
+                {user?.department === DEPARTMENTS[1] ? <div className="w-full sm:w-64 ">
                     <Popover>
                         <PopoverTrigger asChild>
                             <Button variant="outline" className="flex justify-between w-full">
@@ -178,7 +100,7 @@ const LeadsTable = () => {
                                                 <Checkbox
                                                     className="mr-2"
                                                     checked={employeeIDs.includes(String(employee.id))}
-                                                    onCheckedChange={() => toggleEmployee(String(employee.id))}
+                                                    onCheckedChange={() => toggleEmployee(String(employee.id), setSearchParams, employeeIDs, rows)}
                                                 />
                                                 {employee.first_name} {employee.last_name}
                                             </CommandItem>
@@ -188,7 +110,7 @@ const LeadsTable = () => {
                             </Command>
                         </PopoverContent>
                     </Popover>
-                </div >
+                </div > : <></>}
                 <div>
                     <Select onValueChange={handleRowChange} value={String(rows)}>
                         <SelectTrigger className="w-[200px]">
@@ -203,6 +125,16 @@ const LeadsTable = () => {
                             </SelectGroup>
                         </SelectContent>
                     </Select>
+                </div>
+                <div>
+                    <Button variant="ghost" onClick={() => {
+                        selectedSources = [];
+                        employeeIDs = [];
+                        setSearchInput("");
+                        clearFilter(setSearchParams)
+                    }}>
+                        <X className="h-4 w-4" /> Clear filter
+                    </Button>
                 </div>
             </div>
         </CardHeader>
@@ -233,7 +165,7 @@ const LeadsTable = () => {
                                                             <Checkbox
                                                                 className="mr-2"
                                                                 checked={selectedSources.includes(String(source.id))}
-                                                                onCheckedChange={() => toggleSource(String(source.id))}
+                                                                onCheckedChange={() => toggleSource(String(source.id), setSearchParams, selectedSources, rows)}
                                                             />
                                                             {source.name.replace(/\b\w/g, (c: any) => c.toUpperCase())}
                                                         </CommandItem>
@@ -261,7 +193,7 @@ const LeadsTable = () => {
                                                 <Calendar
                                                     mode="single"
                                                     selected={startDate ? new Date(startDate) : undefined}
-                                                    onSelect={(date) => setDate(date, "start")}
+                                                    onSelect={(date) => setDate(date, "start", setSearchParams, rows)}
                                                     disabled={(date) => date > new Date()}
                                                 />
                                             </div>
@@ -270,13 +202,13 @@ const LeadsTable = () => {
                                                 <Calendar
                                                     mode="single"
                                                     selected={endDate ? new Date(endDate) : undefined}
-                                                    onSelect={(date) => setDate(date, "end")}
+                                                    onSelect={(date) => setDate(date, "end", setSearchParams, rows)}
                                                     disabled={(date) => date > new Date()}
                                                 />
                                             </div>
                                         </div>
                                         {(startDate || endDate) && (
-                                            <Button variant="outline" size="sm" className="mt-2" onClick={() => setDate(undefined, "clear")}>
+                                            <Button variant="outline" size="sm" className="mt-2" onClick={() => setDate(undefined, "clear", setSearchParams, rows)}>
                                                 <X className="h-4 w-4 mr-1" />
                                                 Clear
                                             </Button>
@@ -344,7 +276,7 @@ const LeadsTable = () => {
                 <Button
                     variant="outline"
                     className="hidden h-8 w-8 p-0 lg:flex"
-                    onClick={() => setPage(1)}
+                    onClick={() => setPage(1, setSearchParams, rows)}
                     disabled={page == 1}
                 >
                     <span className="sr-only">Go to first page</span>
@@ -354,7 +286,7 @@ const LeadsTable = () => {
                     variant="outline"
                     className="size-8"
                     size="icon"
-                    onClick={() => setPage(page - 1)}
+                    onClick={() => setPage(page - 1, setSearchParams, rows)}
                     disabled={page == 1}
                 >
                     <span className="sr-only">Go to previous page</span>
@@ -365,7 +297,7 @@ const LeadsTable = () => {
                     variant="outline"
                     className="size-8"
                     size="icon"
-                    onClick={() => setPage(page + 1)}
+                    onClick={() => setPage(page + 1, setSearchParams, rows)}
                     disabled={page == lastPage}
                 >
                     <span className="sr-only">Go to next page</span>
@@ -375,7 +307,7 @@ const LeadsTable = () => {
                     variant="outline"
                     className="hidden size-8 lg:flex"
                     size="icon"
-                    onClick={() => setPage(lastPage)}
+                    onClick={() => setPage(lastPage, setSearchParams, rows)}
                     disabled={page == lastPage}
                 >
                     <span className="sr-only">Go to last page</span>
@@ -387,4 +319,3 @@ const LeadsTable = () => {
 }
 
 export default LeadsTable;
-
