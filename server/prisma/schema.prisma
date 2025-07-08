@@ -8,16 +8,17 @@ datasource db {
 }
 
 model User {
-  id             Int         @id @default(autoincrement())
+  id             Int           @id @default(autoincrement())
   first_name     String
   last_name      String
-  email          String      @unique
-  phone          String      @unique
+  email          String        @unique
+  phone          String        @unique
   password       String
   quotation_code String?
   department     Department
   recipient_list Recipient[]
   asignee        Asignee[]
+  description    Description[]
 }
 
 model Company {
@@ -35,7 +36,7 @@ model Company {
 model Lead {
   id            Int            @id @default(autoincrement())
   created_at    DateTime       @default(now())
-  description   String?
+  description   Description[]
   company_id    Int
   client_id     Int
   source_id     Int
@@ -46,6 +47,17 @@ model Lead {
   client_detail Client         @relation(fields: [client_id], references: [id])
   source        Source         @relation(fields: [source_id], references: [id])
   product       Product        @relation(fields: [product_id], references: [id])
+}
+
+model Description {
+  id         Int       @id @default(autoincrement())
+  lead       Lead      @relation(fields: [lead_id], references: [id])
+  lead_id    Int
+  created_at DateTime  @default(now())
+  updated_at DateTime? @updatedAt
+  notes      String
+  user       User     @relation(fields: [updated_by], references: [id])
+  updated_by     Int
 }
 
 model Source {
@@ -109,7 +121,7 @@ model Notification {
   lead           Lead?             @relation(fields: [lead_id], references: [id])
   lead_id        Int?
   deal           Deal?             @relation(fields: [deal_id], references: [id])
-  deal_id         Int?
+  deal_id        Int?
 }
 
 model Recipient {
