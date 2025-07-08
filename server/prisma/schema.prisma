@@ -208,6 +208,7 @@ enum Quotation_Template {
 }
 
 enum Deal_Status {
+  pending
   drawing
   quotation
   high_order_value
