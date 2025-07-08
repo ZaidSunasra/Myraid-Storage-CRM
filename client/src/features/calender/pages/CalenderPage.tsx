@@ -77,7 +77,7 @@ const CalendarPage = () => {
                                         >
                                             {meeting.title.length > 20
                                                 ? meeting.title.slice(0, 20) + "..."
-                                                : meeting.title}
+                                                : meeting.title} - {meeting.client_name} from {meeting.company_name}
                                         </div>
                                     )
                                 )}
