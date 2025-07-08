@@ -157,7 +157,7 @@ export const addDescriptionController = async (req: Request, res: Response<LeadS
 }
 
 export const addReminderController = async (req: Request, res: Response<LeadSuccessResponse | LeadErrorResponse>): Promise<any> => {
-    const { title, send_at, message, related_id, reminder_type, related_type } = req.body;
+    const { title, send_at, message, lead_id, reminder_type } = req.body;
     const id = res.locals.user.id
     const validation = addReminderSchema.safeParse(req.body);
     if (!validation.success) {
@@ -167,7 +167,7 @@ export const addReminderController = async (req: Request, res: Response<LeadSucc
         })
     }
     try {
-        await addReminderService({ title, send_at, message, related_id, reminder_type, related_type }, id)
+        await addReminderService({ title, send_at, message, lead_id, reminder_type  }, id)
         return res.status(200).json({
             message: `Reminder added successfully`,
         })
