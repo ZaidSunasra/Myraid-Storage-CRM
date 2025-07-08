@@ -91,7 +91,7 @@ export const findExistingGST = async (id: number, gst_no: string): Promise<boole
     return comapny?.gst_no ? true : false;
 }
 
-export const addLeadService = async ({ first_name, last_name, phones, emails, description, assigned_to, source_id, product_id, company_name, address, gst_no }: AddLead): Promise<number> => {
+export const addLeadService = async ({ first_name, last_name, phones, emails, assigned_to, source_id, product_id, company_name, address, gst_no }: AddLead): Promise<number> => {
     try {
         const editedEmail = convertEmailIntoArray(emails);
         const editedPhone = convertPhoneIntoArray(phones);
@@ -129,7 +129,6 @@ export const addLeadService = async ({ first_name, last_name, phones, emails, de
             }
             const lead = await tx.lead.create({
                 data: {
-                    description: description,
                     company_id: company.id,
                     client_id: client.id,
                     source_id: source_id,
@@ -253,7 +252,7 @@ export const getLeadsService = async (user: any, page: number, search: string, e
     return { leads, totalLeads };
 }
 
-export const editLeadService = async ({ id, first_name, last_name, phones, emails, description, assigned_to, source_id, product_id, company_name, address, gst_no }: EditLead): Promise<void> => {
+export const editLeadService = async ({ id, first_name, last_name, phones, emails, assigned_to, source_id, product_id, company_name, address, gst_no }: EditLead): Promise<void> => {
     const editedEmail = convertEmailIntoArray(emails);
     const editedPhone = convertPhoneIntoArray(phones);
     const editedId = covertAssignIdsIntoArray(assigned_to);
@@ -263,7 +262,6 @@ export const editLeadService = async ({ id, first_name, last_name, phones, email
                 id: id
             },
             data: {
-                description: description,
                 source_id: source_id,
                 product_id: product_id
             },
@@ -384,13 +382,64 @@ export const getLeadByIdService = async (id: string): Promise<FetchLeadOutput | 
     return lead;
 }
 
-export const addDescriptionService = async (id: string, description: string): Promise<void> => {
-    await prisma.lead.update({
+export const getDescriptionsService = async (id: string): Promise<any> => {
+    const descriptions = await prisma.description.findMany({
+        where: {
+            lead_id: parseInt(id)
+        },
+        select: {
+            id: true,
+            notes: true,
+            updated_at: true,
+            updated_by: true,
+            lead_id: true,
+            created_at: true,
+            user: {
+                select: {
+                    first_name: true,
+                    last_name: true
+                }
+            }
+        }
+    });
+    return descriptions;
+}
+
+export const getDescriptionByIdService = async (id: string): Promise<any> => {
+    const description = await prisma.description.findUnique({
+        where: {
+            id: parseInt(id)
+        }
+    });
+    return description;
+}
+
+export const addDescriptionService = async (id: string, description: string, author: string): Promise<void> => {
+    await prisma.description.create({
+        data: {
+            notes: description,
+            lead_id: parseInt(id),
+            updated_by: parseInt(author)
+        }
+    });
+}
+
+export const editDescriptionService = async (id: string, description: string, author: string): Promise<void> => {
+    await prisma.description.update({
         where: {
             id: parseInt(id)
         },
         data: {
-            description: description
+            notes: description,
+            updated_by: parseInt(author)
+        }
+    });
+}
+
+export const deleteDescriptionService = async (id: string): Promise<void> => {
+    await prisma.description.delete({
+        where: {
+            id: parseInt(id)
         }
     });
 }

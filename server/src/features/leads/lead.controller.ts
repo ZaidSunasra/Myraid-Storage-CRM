@@ -1,10 +1,10 @@
 import { Request, Response } from "express";
 import { LeadErrorResponse, AddLeadSuccessResponse, LeadSuccessResponse, addReminderSchema, leadSchema } from "zs-crm-common";
-import { addDescriptionService, addLeadService, addReminderService, convertEmailIntoArray, deleteReminderService, editLeadService, fetchEmployeeService, findExistingCompany, findExistingEmail, findExistingGST, getLeadByDurationService, getLeadByIdService, getLeadsService, getProductsService, getReminderByDateService, getRemindersService, getSourcesService } from "./lead.service";
+import { addDescriptionService, addLeadService, addReminderService, convertEmailIntoArray, deleteDescriptionService, deleteReminderService, editDescriptionService, editLeadService, fetchEmployeeService, findExistingCompany, findExistingEmail, findExistingGST, getDescriptionByIdService, getDescriptionsService, getLeadByDurationService, getLeadByIdService, getLeadsService, getProductsService, getReminderByDateService, getRemindersService, getSourcesService } from "./lead.service";
 import { FetchEmployeeSuccessResponse, FetchLeadByIdSuccessResponse, FetchLeadSuccessResponse, FetchReminderSuccessResponse } from "./lead.types";
 
 export const addLeadController = async (req: Request, res: Response<LeadErrorResponse | AddLeadSuccessResponse>): Promise<any> => {
-    const { first_name, last_name, phones, emails, description, assigned_to, source_id, product_id, company_name, address, gst_no } = req.body;
+    const { first_name, last_name, phones, emails, assigned_to, source_id, product_id, company_name, address, gst_no } = req.body;
     const validation = leadSchema.safeParse(req.body);
     if (!validation.success) {
         return res.status(400).json({
@@ -26,7 +26,7 @@ export const addLeadController = async (req: Request, res: Response<LeadErrorRes
                 message: "Email already exists in lead"
             })
         }
-        const lead_id = await addLeadService({ first_name, last_name, phones, emails, description, assigned_to, source_id, product_id, company_name, address, gst_no });
+        const lead_id = await addLeadService({ first_name, last_name, phones, emails, assigned_to, source_id, product_id, company_name, address, gst_no });
         return res.status(200).json({
             message: "Lead generated successfully",
             id: lead_id
@@ -71,7 +71,7 @@ export const fetchAllLeadsController = async (req: Request, res: Response<LeadEr
 
 export const editLeadController = async (req: Request, res: Response<LeadErrorResponse | LeadSuccessResponse>): Promise<any> => {
     const id = parseInt(req.params.id);
-    const { first_name, last_name, phones, emails, description, assigned_to, source_id, product_id, company_name, address, gst_no } = req.body;
+    const { first_name, last_name, phones, emails, assigned_to, source_id, product_id, company_name, address, gst_no } = req.body;
     const validation = leadSchema.safeParse(req.body);
     if (!validation.success) {
         return res.status(400).json({
@@ -93,7 +93,7 @@ export const editLeadController = async (req: Request, res: Response<LeadErrorRe
                 message: "GST number already associated with another company"
             });
         }
-        await editLeadService({ id, first_name, last_name, phones, emails, description, assigned_to, source_id, product_id, company_name, address, gst_no })
+        await editLeadService({ id, first_name, last_name, phones, emails, assigned_to, source_id, product_id, company_name, address, gst_no })
         return res.status(200).json({
             message: "Lead edited successfully"
         })
@@ -139,16 +139,85 @@ export const fetchLeadByIdController = async (req: Request, res: Response<LeadEr
     }
 }
 
+export const getDescriptionsController = async (req: Request, res: Response): Promise<any> => {
+    const id = req.params.id;
+    try {
+        const descriptions = await getDescriptionsService(id);
+        return res.status(200).json({
+            message: `Description fetched successfully`,
+            descriptions
+        })
+    } catch (error) {
+        console.log(`Error in fetching description`, error);
+        return res.status(500).send({
+            message: "Internal server error",
+            error: error
+        });
+    }
+}
+
+export const getDescriptionByIdController = async (req: Request, res: Response): Promise<any> => {
+    const id = req.params.id;
+    try {
+        const description = await getDescriptionByIdService(id);
+        return res.status(200).json({
+            message: `Description with id:${id} fetched successfully`,
+            description
+        })
+    } catch (error) {
+        console.log(`Error in fetching description with id:${id}`, error);
+        return res.status(500).send({
+            message: "Internal server error",
+            error: error
+        });
+    }
+}
+
 export const addDescriptionController = async (req: Request, res: Response<LeadSuccessResponse | LeadErrorResponse>): Promise<any> => {
     const id = req.params.id;
     const { description } = req.body;
+    const author = res.locals.user.id;
     try {
-        await addDescriptionService(id, description);
+        await addDescriptionService(id, description, author);
         return res.status(200).json({
             message: `Description added successfully`,
         })
     } catch (error) {
         console.log(`Error in adding description`, error);
+        return res.status(500).send({
+            message: "Internal server error",
+            error: error
+        });
+    }
+}
+
+export const editDescriptionController = async (req: Request, res: Response): Promise<any> => {
+    const id = req.params.id;
+    const { description } = req.body;
+    const author = res.locals.user.id;
+    try {
+        await editDescriptionService(id, description, author);
+        return res.status(200).json({
+            message: `Description edited successfully`
+        })
+    } catch (error) {
+        console.log(`Error in editing description`, error);
+        return res.status(500).send({
+            message: "Internal server error",
+            error: error
+        });
+    }
+}
+
+export const deleteDescriptionController = async (req: Request, res: Response): Promise<any> => {
+    const id = req.params.id;
+    try {
+        await deleteDescriptionService(id);
+        return res.status(200).json({
+            message: `Description deleted successfully`,
+        })
+    } catch (error) {
+        console.log(`Error in deleted description`, error);
         return res.status(500).send({
             message: "Internal server error",
             error: error
@@ -167,7 +236,7 @@ export const addReminderController = async (req: Request, res: Response<LeadSucc
         })
     }
     try {
-        await addReminderService({ title, send_at, message, lead_id, reminder_type  }, id)
+        await addReminderService({ title, send_at, message, lead_id, reminder_type }, id)
         return res.status(200).json({
             message: `Reminder added successfully`,
         })
@@ -253,7 +322,7 @@ export const fetchLeadsByDurationController = async (req: Request, res: Response
         const { employeeLeadCount, totalLeads } = await getLeadByDurationService(duration);
         return res.status(200).json({
             message: `Leads by duration fetched successfully`,
-            employeeLeadCount, 
+            employeeLeadCount,
             totalLeads
         })
     } catch (error) {
@@ -268,8 +337,8 @@ export const fetchLeadsByDurationController = async (req: Request, res: Response
 
 export const fetchRemindersByMonthController = async (req: Request, res: Response): Promise<any> => {
 
-   const user = res.locals.user;
-   const month = req.params.month;
+    const user = res.locals.user;
+    const month = req.params.month;
 
     try {
         const reminders = await getReminderByDateService(user, month);

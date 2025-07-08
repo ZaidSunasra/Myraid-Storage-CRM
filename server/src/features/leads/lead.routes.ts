@@ -1,5 +1,5 @@
 import express from "express";
-import { addDescriptionController, addLeadController, addReminderController, deleteReminderController, editLeadController, fetchAllLeadsController, fetchEmployeeController, fetchLeadByIdController, fetchLeadsByDurationController, fetchRemindersByMonthController, fetchRemindersController, getProductsController, getSourcesController } from "./lead.controller";
+import { addDescriptionController, addLeadController, addReminderController, deleteDescriptionController, deleteReminderController, editDescriptionController, editLeadController, fetchAllLeadsController, fetchEmployeeController, fetchLeadByIdController, fetchLeadsByDurationController, fetchRemindersByMonthController, fetchRemindersController, getDescriptionByIdController, getDescriptionsController, getProductsController, getSourcesController } from "./lead.controller";
 import authMiddleware from "../../middlewares/auth.middleware";
 import checkDepartment from "../../middlewares/department.middleware";
 
@@ -9,8 +9,13 @@ leadRouter.get("/get", authMiddleware, checkDepartment(["admin", "sales"]), fetc
 leadRouter.get("/get/:id", authMiddleware, checkDepartment(["admin", "sales"]), fetchLeadByIdController);
 leadRouter.post("/add", authMiddleware, checkDepartment(["admin", "sales"]), addLeadController);
 leadRouter.put("/edit/:id", authMiddleware, checkDepartment(["admin", "sales"]), editLeadController);
-leadRouter.put("/addDescription/:id", authMiddleware, checkDepartment(["admin", "sales"]), addDescriptionController);
-leadRouter.get("/getBy/:duration", authMiddleware, checkDepartment(["admin", "sales"]), fetchLeadsByDurationController)
+leadRouter.get("/getBy/:duration", authMiddleware, checkDepartment(["admin", "sales"]), fetchLeadsByDurationController);
+
+leadRouter.get("/getDescription/:id", authMiddleware, checkDepartment(["admin", "sales"]), getDescriptionsController);
+leadRouter.get("/get/:id", authMiddleware, checkDepartment(["admin", "sales"]), getDescriptionByIdController)
+leadRouter.post("/addDescription/:id", authMiddleware, checkDepartment(["admin", "sales"]), addDescriptionController);
+leadRouter.put("/editDescription/:id", authMiddleware, checkDepartment(["admin", "sales"]), editDescriptionController);
+leadRouter.delete("/delete/:id",authMiddleware, checkDepartment(["admin", "sales"]),  deleteDescriptionController)
 
 leadRouter.get("/fetchEmployee", authMiddleware, checkDepartment(["admin", "sales"]), fetchEmployeeController);
 
