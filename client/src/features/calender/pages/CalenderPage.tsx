@@ -1,17 +1,25 @@
 import { useState } from "react";
 import { startOfMonth, endOfMonth, startOfWeek, endOfWeek, addDays, addMonths, subMonths, format, isSameDay } from "date-fns";
-import Navbar from "@/shared/components/Navbar";
-import { Button } from "@/shared/components/ui/button";
-import { ChevronLeft, ChevronRight } from "lucide-react";
+import DailyData from "../components/DailyData";
+import { useUser } from "@/context/UserContext";
+import { DEPARTMENTS } from "zs-crm-common";
 import { fetchReminderByMonth } from "@/api/leads/leads.queries";
 import formatDate from "@/utils/formatDate";
 import { useNavigate } from "react-router";
+import Navbar from "@/shared/components/Navbar";
+import { Button } from "@/shared/components/ui/button";
+import { ChevronLeft, ChevronRight } from "lucide-react";
+import { Sheet, SheetContent, SheetDescription, SheetHeader, SheetTitle, SheetTrigger } from "@/shared/components/ui/sheet";
+import { Popover, PopoverContent, PopoverTrigger } from "@/shared/components/ui/popover";
+import { Input } from "@/shared/components/ui/input";
 
 const CalendarPage = () => {
 
     const [currentMonth, setCurrentMonth] = useState(new Date());
     const { data, isError, isPending } = fetchReminderByMonth(formatDate(currentMonth));
-    const navigate = useNavigate()
+
+    const navigate = useNavigate();
+    const { user } = useUser()
 
     const days = (() => {
         const start = startOfWeek(startOfMonth(currentMonth), { weekStartsOn: 0 });
@@ -32,11 +40,32 @@ const CalendarPage = () => {
     const prevMonth = () => setCurrentMonth((prev) => subMonths(prev, 1));
 
     if (isPending) return <>Loading..</>
-    if(isError) return <>Error...</>
+    if (isError) return <>Error...</>
 
     return <div className="bg-accent min-h-screen">
         <Navbar />
         <div className="p-4 max-w-7xl mx-auto bg-background mt-8 rounded-lg">
+            <div className="mb-4 flex justify-end">
+                <Popover>
+                    <PopoverTrigger asChild>
+                        <Button variant="outline">Select Month & Year</Button>
+                    </PopoverTrigger>
+                    <PopoverContent className="w-fit">
+                        <div className="space-y-2">
+                            <div className="font-medium text-sm">Jump to Month</div>
+                            <Input
+                                type="month"
+                                className="border rounded px-3 py-2 text-sm w-full"
+                                value={format(currentMonth, "yyyy-MM")}
+                                onChange={(e) => {
+                                    const selectedDate = new Date(`${e.target.value}-01`);
+                                    setCurrentMonth(selectedDate);
+                                }}
+                            />
+                        </div>
+                    </PopoverContent>
+                </Popover>
+            </div>
             <div className="flex items-center justify-between mb-4">
                 <Button onClick={prevMonth} className="text-sm px-2 py-1 border rounded"  >
                     <ChevronLeft />
@@ -56,33 +85,73 @@ const CalendarPage = () => {
             <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-7 gap-2">
                 {days.map((day) => {
                     const formatted = format(day, "yyyy-MM-dd");
-                    const meetings = data.reminders[formatted] || [];
-                    return (
-                        <div
-                            key={formatted}
-                            className={`border rounded p-2 min-h-24 flex flex-col justify-between
-                                hover:bg-blue-300 hover:border-blue-500 
-                                ${format(day, "MM") !== format(currentMonth, "MM") ? "opacity-30" : ""} 
-                                ${isSameDay(formatted, new Date()) ? "border-blue-500" : ""}`}
-                        >
-                            <div className="font-medium text-sm">{format(day, "d")}</div>
-                            {meetings.length > 0 &&
-                                [...new Map(meetings.map((m: any) => [m.lead_id, m])).values()].map(
-                                    (meeting: any) => (
+                    const meetings = data.remindersByDay[formatted] || [];
+                    return <div key={formatted}>
+                        {
+                            user?.department === DEPARTMENTS[1] ?
+                                (<Sheet>
+                                    <SheetTrigger asChild>
                                         <div
-                                            key={meeting.lead_id}
-                                            className="bg-blue-500 mb-2 p-3 rounded text-white text-sm shadow hover:bg-blue-600 transition duration-200 cursor-pointer"
-                                            onClick={() => navigate(`/lead/${meeting.lead_id}?tab=scheduling`)}
-                                            title={meeting.title}
+                                            key={formatted}
+                                            className={`border rounded p-2 min-h-24 flex flex-col justify-between
+                                            hover:bg-blue-300 hover:border-blue-500  
+                                            ${format(day, "MM") !== format(currentMonth, "MM") ? "opacity-30" : ""} 
+                                            ${isSameDay(formatted, new Date()) ? "border-blue-500" : ""}`}
                                         >
-                                            {meeting.title.length > 20
-                                                ? meeting.title.slice(0, 20) + "..."
-                                                : meeting.title} - {meeting.client_name} from {meeting.company_name}
+                                            <div className="font-medium text-sm">{format(day, "d")}</div>
+                                            {meetings.length > 0 && meetings.map(
+                                                (meeting: any) => (
+                                                    <div
+                                                        key={meeting.lead_id}
+                                                        className="bg-blue-500 mb-2 p-3 rounded text-white text-sm shadow hover:bg-blue-600 transition duration-200 cursor-pointer"
+                                                        onClick={() => navigate(`/lead/${meeting.lead_id}?tab=scheduling`)}
+                                                        title={meeting.title}
+                                                    >
+                                                        {meeting.title.length > 20
+                                                            ? meeting.title.slice(0, 20) + "..."
+                                                            : meeting.title} - {meeting.client_name} from {meeting.company_name}
+                                                    </div>
+                                                )
+                                            )}
                                         </div>
-                                    )
-                                )}
-                        </div>
-                    );
+                                    </SheetTrigger>
+                                    <SheetContent>
+                                        <SheetHeader>
+                                            <SheetTitle>Team Activity Recap</SheetTitle>
+                                            <SheetDescription>
+                                                Catch up on today's progress — leads added, client updates, and who did what. Everything you need to stay informed.
+                                            </SheetDescription>
+
+                                        </SheetHeader>
+                                        <DailyData leadsData={data.leadsGrouped[formatted]} meetingData={data.remindersByDay[formatted]} />
+                                    </SheetContent>
+                                </Sheet>) : (
+                                    <div
+                                        key={formatted}
+                                        className={`border rounded p-2 min-h-24 flex flex-col justify-between
+                                       hover:bg-blue-300 hover:border-blue-500 
+                                        ${format(day, "MM") !== format(currentMonth, "MM") ? "opacity-30" : ""} 
+                                        ${isSameDay(formatted, new Date()) ? "border-blue-500" : ""}`}
+                                    >
+                                        <div className="font-medium text-sm">{format(day, "d")}</div>
+                                        {meetings.length > 0 && meetings.map(
+                                            (meeting: any) => (
+                                                <div
+                                                    key={meeting.lead_id}
+                                                    className="bg-blue-500 mb-2 p-3 rounded text-white text-sm shadow hover:bg-blue-600 transition duration-200 cursor-pointer"
+                                                    onClick={() => navigate(`/lead/${meeting.lead_id}?tab=scheduling`)}
+                                                    title={meeting.title}
+                                                >
+                                                    {meeting.title.length > 20
+                                                        ? meeting.title.slice(0, 20) + "..."
+                                                        : meeting.title} - {meeting.client_name} from {meeting.company_name}
+                                                </div>
+                                            )
+                                        )}
+                                    </div>
+                                )
+                        }
+                    </div>
                 })}
             </div>
         </div>
