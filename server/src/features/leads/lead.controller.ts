@@ -365,10 +365,11 @@ export const fetchRemindersByMonthController = async (req: Request, res: Respons
     const month = req.params.month;
 
     try {
-        const reminders = await getReminderByDateService(user, month);
+        const {remindersByDay, leadsGrouped} = await getReminderByDateService(user, month);
         return res.status(200).json({
             message: `Reminders by month fetched successfully`,
-            reminders
+            remindersByDay,
+            leadsGrouped
         })
     } catch (error) {
         console.log(`Error in fetching reminders by month`, error);

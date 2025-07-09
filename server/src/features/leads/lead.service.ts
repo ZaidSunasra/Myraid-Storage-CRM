@@ -2,7 +2,7 @@ import { Notification, Prisma, Product, Source } from "@prisma/client";
 import { prisma } from "../../libs/prisma";
 import { FetchEmployeeOutput, FetchLeadOutput, FetchLeadSuccessResponse } from "./lead.types";
 import { AddLead, AddReminder, EditLead, DEPARTMENTS, reminder_type } from "zs-crm-common"
-import { endOfMonth, startOfMonth } from "date-fns";
+import { endOfMonth, format, startOfMonth } from "date-fns";
 
 export const convertEmailIntoArray = (emails?: { email?: string }[]): string[] => {
     const emailStrings = emails?.map((e: any) => e.email?.trim()).filter((e: any): e is string => !!e) ?? [];
@@ -497,7 +497,7 @@ export const addReminderService = async ({ title, send_at, message, lead_id, rem
     });
 }
 
-export const editReminderService = async ({ title, send_at, message, lead_id, reminder_type }  : any, id: string) : Promise<any> => {
+export const editReminderService = async ({ title, send_at, message, lead_id, reminder_type }: any, id: string): Promise<any> => {
     await prisma.notification.update({
         where: {
             id: parseInt(id)
@@ -610,10 +610,10 @@ export const getLeadByDurationService = async (duration: "today" | "weekly" | "m
 }
 
 export const getReminderByDateService = async (user: any, month: string): Promise<any> => {
+    
     const now = new Date(month);
     const start = startOfMonth(now);
     const end = endOfMonth(now);
-
     const isAdmin = user.department === DEPARTMENTS[1];
 
     const reminders = await prisma.notification.findMany({
@@ -638,16 +638,6 @@ export const getReminderByDateService = async (user: any, month: string): Promis
             title: true,
             send_at: true,
             lead_id: true,
-            recipient_list: {
-                select: {
-                    user: {
-                        select: {
-                            first_name: true,
-                            last_name: true,
-                        },
-                    },
-                },
-            },
             lead: {
                 select: {
                     company: {
@@ -669,24 +659,68 @@ export const getReminderByDateService = async (user: any, month: string): Promis
         },
     });
 
+    const leads = await prisma.lead.findMany({
+        where: {
+            created_at: {
+                gte: start,
+                lte: end
+            },
+            ...(isAdmin
+                ? {}
+                : {
+                    assigned_to: {
+                        some: {
+                            user_id: user.id,
+                        },
+                    },
+                }),
+        },
+        select: {
+            id: true,
+            created_at: true,
+            company: true,
+            client_detail: true,
+            assigned_to: {
+                select: {
+                    user: {
+                        select: {
+                            id: true,
+                            first_name: true,
+                            last_name: true,
+                        },
+                    },
+                }
+            }
+        },
+        orderBy: {
+            created_at: 'asc',
+        }
+    });
+
     const remindersByDay: Record<string, any[]> = {};
-
     for (const reminder of reminders) {
-        const day = reminder.send_at?.toISOString().split("T")[0] ?? "unknown";
-
+        const day = format(reminder.send_at as Date, "yyyy-MM-dd");
         if (!remindersByDay[day]) {
             remindersByDay[day] = [];
         }
-
-        for (const recipient of reminder.recipient_list) {
-            remindersByDay[day].push({
-                title: reminder.title,
-                lead_id: reminder.lead_id,
-                employee_name: `${recipient.user.first_name} ${recipient.user.last_name}`,
-                company_name: reminder.lead?.company.name,
-                client_name: `${reminder.lead?.client_detail.first_name} ${reminder.lead?.client_detail.last_name}`
-            });
-        }
+        remindersByDay[day].push({
+            title: reminder.title,
+            lead_id: reminder.lead_id,
+            company_name: reminder.lead?.company.name,
+            client_name: `${reminder.lead?.client_detail.first_name} ${reminder.lead?.client_detail.last_name}`
+        });
     }
-    return remindersByDay;
+
+    const leadsGrouped = leads.reduce((acc: any, lead) => {
+        const date = format(lead.created_at, "yyyy-MM-dd");
+        if (!acc[date]) acc[date] = {};
+        lead.assigned_to.forEach(({ user }) => {
+            const name = `${user.first_name} ${user.last_name}`;
+            if (!acc[date][name]) acc[date][name] = [];
+            acc[date][name].push(lead);
+        });
+        return acc;
+    }, {});
+
+    return {remindersByDay, leadsGrouped};
 }
