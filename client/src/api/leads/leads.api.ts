@@ -1,77 +1,82 @@
 import type { AddLead, AddReminder } from "zs-crm-common";
 import axiosInstance from "../axiosInstance"
 
-export const getLeads = async({page = 1, search, employeeIDs, rows, startDate, endDate, selectedSources} : {page: number, search: string, employeeIDs: string[], rows:number, startDate: string, endDate: string, selectedSources: string[]}) : Promise<any> => {
+export const getLeads = async ({ page = 1, search, employeeIDs, rows, startDate, endDate, selectedSources }: { page: number, search: string, employeeIDs: string[], rows: number, startDate: string, endDate: string, selectedSources: string[] }): Promise<any> => {
     const response = await axiosInstance.get(`/leads/get?page=${page}&rows=${rows}&search=${search}&employeeID=${employeeIDs}&startDate=${startDate}&endDate=${endDate}&sources=${selectedSources}`);
     return response.data;
 }
 
-export const getEmployeee = async() : Promise<any> => {
+export const getEmployeee = async (): Promise<any> => {
     const response = await axiosInstance.get("/leads/fetchEmployee");
     return response.data;
 }
 
-export const getLeadById = async(id: string) : Promise<any> => {
+export const getLeadById = async (id: string): Promise<any> => {
     const response = await axiosInstance.get(`/leads/get/${id}`);
     return response.data;
 }
 
-export const addDescription = async({data, id} : {data: any, id:string}) : Promise<any> => {
+export const addDescription = async ({ data, id }: { data: any, id: string }): Promise<any> => {
     const response = await axiosInstance.post(`/leads/addDescription/${id}`, data);
     return response.data;
 }
 
-export const getDescription = async (id: string) : Promise<any> => {
+export const getDescription = async (id: string): Promise<any> => {
     const response = await axiosInstance.get(`/leads/getDescription/${id}`);
     return response.data;
 }
 
-export const getDescriptionById = async (id: string) : Promise<any> => {
+export const getDescriptionById = async (id: string): Promise<any> => {
     const response = await axiosInstance.get(`/leads/get/${id}`);
     return response.data;
 }
 
-export const editDescription = async ({data, id} : {data: any, id: string}) : Promise<any> => {
+export const editDescription = async ({ data, id }: { data: any, id: string }): Promise<any> => {
     const response = await axiosInstance.put(`/leads/editDescription/${id}`, data);
     return response.data;
 }
 
-export const deleteDescription = async (id: string) : Promise<any> => {
+export const deleteDescription = async (id: string): Promise<any> => {
     const response = await axiosInstance.delete(`/leads/delete/${id}`);
     return response.data;
 }
 
-export const addReminder = async(data: AddReminder) : Promise<any> => {
+export const addReminder = async (data: AddReminder): Promise<any> => {
     const response = await axiosInstance.post("/leads/addReminder", data);
     return response.data;
 }
 
-export const getReminders = async(id: string) : Promise<any> => {
+export const getReminders = async (id: string): Promise<any> => {
     const response = await axiosInstance.get(`/leads/getReminders/${id}`);
     return response.data;
 }
 
-export const addLead = async(data: AddLead) : Promise<any> => {
+export const editReminder = async ({ data, id }: { data: AddReminder, id: string }): Promise<any> => {
+    const response = await axiosInstance.put(`/leads/editReminder/${id}`, data);
+    return response.data;
+}
+
+export const addLead = async (data: AddLead): Promise<any> => {
     const response = await axiosInstance.post("/leads/add", data);
     return response.data;
 }
 
-export const editLead = async({data, id} : {data: AddLead, id: string|undefined}) : Promise<any> => {
+export const editLead = async ({ data, id }: { data: AddLead, id: string | undefined }): Promise<any> => {
     const response = await axiosInstance.put(`/leads/edit/${id}`, data);
     return response.data;
 }
 
-export const deleteReminder = async(id: string) : Promise<any> => {
+export const deleteReminder = async (id: string): Promise<any> => {
     const response = await axiosInstance.delete(`/leads/deleteReminder/${id}`);
     return response.data;
 }
 
-export const getProducts = async () : Promise<any> => {
+export const getProducts = async (): Promise<any> => {
     const response = await axiosInstance.get("/leads/getProducts");
     return response.data;
 }
 
-export const getSources = async () : Promise<any> => {
+export const getSources = async (): Promise<any> => {
     const response = await axiosInstance.get("/leads/getSources");
     return response.data;
 }
@@ -81,7 +86,7 @@ export const getLeadByDuration = async (duration: "today" | "weekly" | "monthly"
     return response.data;
 }
 
-export const getReminderByMonth = async (month: string) : Promise<any> => {
+export const getReminderByMonth = async (month: string): Promise<any> => {
     const response = await axiosInstance.get(`/leads/getRemindersByMonth/${month}`);
     return response.data;
 }

@@ -1,5 +1,5 @@
 import { useQueryClient, useMutation } from "@tanstack/react-query"
-import { addDescription, addLead, addReminder, deleteDescription, deleteReminder, editDescription, editLead } from "./leads.api"
+import { addDescription, addLead, addReminder, deleteDescription, deleteReminder, editDescription, editLead, editReminder } from "./leads.api"
 import { toast } from "sonner"
 import type { LeadSuccessResponse, LoginSuccessResponse } from "zs-crm-common"
 import { useNavigate } from "react-router"
@@ -53,6 +53,20 @@ export const useAddReminder = () => {
     const queryClient = useQueryClient();
     return useMutation({
         mutationFn: addReminder,
+        onSuccess: (data: LoginSuccessResponse) => {
+            toast.success(data.message),
+                queryClient.invalidateQueries({ queryKey: ['reminders'] })
+        },
+        onError: (error: any) => {
+            toast.error(error.response?.data.message)
+        },
+    })
+}
+
+export const useEditReminder = () => {
+    const queryClient = useQueryClient();
+    return useMutation({
+        mutationFn: editReminder,
         onSuccess: (data: LoginSuccessResponse) => {
             toast.success(data.message),
                 queryClient.invalidateQueries({ queryKey: ['reminders'] })
