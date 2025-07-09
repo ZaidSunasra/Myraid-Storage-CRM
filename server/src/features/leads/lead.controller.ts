@@ -1,6 +1,6 @@
 import { Request, Response } from "express";
 import { LeadErrorResponse, AddLeadSuccessResponse, LeadSuccessResponse, addReminderSchema, leadSchema } from "zs-crm-common";
-import { addDescriptionService, addLeadService, addReminderService, convertEmailIntoArray, deleteDescriptionService, deleteReminderService, editDescriptionService, editLeadService, fetchEmployeeService, findExistingCompany, findExistingEmail, findExistingGST, getDescriptionByIdService, getDescriptionsService, getLeadByDurationService, getLeadByIdService, getLeadsService, getProductsService, getReminderByDateService, getRemindersService, getSourcesService } from "./lead.service";
+import { addDescriptionService, addLeadService, addReminderService, convertEmailIntoArray, deleteDescriptionService, deleteReminderService, editDescriptionService, editLeadService, editReminderService, fetchEmployeeService, findExistingCompany, findExistingEmail, findExistingGST, getDescriptionByIdService, getDescriptionsService, getLeadByDurationService, getLeadByIdService, getLeadsService, getProductsService, getReminderByDateService, getRemindersService, getSourcesService } from "./lead.service";
 import { FetchEmployeeSuccessResponse, FetchLeadByIdSuccessResponse, FetchLeadSuccessResponse, FetchReminderSuccessResponse } from "./lead.types";
 
 export const addLeadController = async (req: Request, res: Response<LeadErrorResponse | AddLeadSuccessResponse>): Promise<any> => {
@@ -259,6 +259,30 @@ export const fetchRemindersController = async (req: Request, res: Response<Fetch
         })
     } catch (error) {
         console.log(`Error in fetching reminder`, error);
+        return res.status(500).send({
+            message: "Internal server error",
+            error: error
+        });
+    }
+}
+
+export const editReminderController = async (req: Request, res: Response<LeadSuccessResponse | LeadErrorResponse>): Promise<any> => {
+    const id = req.params.id;
+    const { title, send_at, message, lead_id, reminder_type } = req.body;
+    const validation = addReminderSchema.safeParse(req.body);
+    if (!validation.success) {
+        return res.status(400).json({
+            message: "Input validation error",
+            error: validation.error.issues
+        })
+    }
+    try {
+        await editReminderService({ title, send_at, message, lead_id, reminder_type } , id)
+        return res.status(200).json({
+            message: `Reminder edited successfully`,
+        })
+    } catch (error) {
+        console.log(`Error in editing reminder`, error);
         return res.status(500).send({
             message: "Internal server error",
             error: error

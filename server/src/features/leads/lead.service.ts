@@ -497,6 +497,21 @@ export const addReminderService = async ({ title, send_at, message, lead_id, rem
     });
 }
 
+export const editReminderService = async ({ title, send_at, message, lead_id, reminder_type }  : any, id: string) : Promise<any> => {
+    await prisma.notification.update({
+        where: {
+            id: parseInt(id)
+        },
+        data: {
+            title: title,
+            message: message,
+            send_at: send_at,
+            lead_id: lead_id,
+            type: reminder_type
+        }
+    });
+}
+
 export const getRemindersService = async (id: string): Promise<Notification[]> => {
     const reminders = await prisma.notification.findMany({
         where: {
