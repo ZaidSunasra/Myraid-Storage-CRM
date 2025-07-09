@@ -72,7 +72,7 @@ const CalendarPage = () => {
                                         <div
                                             key={meeting.lead_id}
                                             className="bg-blue-500 mb-2 p-3 rounded text-white text-sm shadow hover:bg-blue-600 transition duration-200 cursor-pointer"
-                                            onClick={() => navigate(`/lead/${meeting.lead_id}`)}
+                                            onClick={() => navigate(`/lead/${meeting.lead_id}?tab=scheduling`)}
                                             title={meeting.title}
                                         >
                                             {meeting.title.length > 20

@@ -1,4 +1,4 @@
-import { NavLink, useNavigate, useParams } from "react-router";
+import { NavLink, useNavigate, useParams, useSearchParams } from "react-router";
 import LeadDetails from "../components/LeadDetails";
 import LeadScheduling from "../components/LeadScheduling";
 import { fetchLeadById } from "@/api/leads/leads.queries";
@@ -10,6 +10,9 @@ import LeadSideBar from "../components/LeadSidebar";
 import Navbar from "@/shared/components/Navbar";
 
 const DetailedLeadPage = () => {
+
+  const [searchParams] = useSearchParams();
+  const tab = searchParams.get("tab") || "info";
 
   const { id } = useParams();
   const { data, isPending, isError } = fetchLeadById(id || "");
@@ -48,7 +51,7 @@ const DetailedLeadPage = () => {
       </div>
       <div className="grid grid-cols-1 lg:grid-cols-4 gap-6">
         <div className="lg:col-span-3">
-          <Tabs defaultValue="info" className="space-y-6">
+          <Tabs defaultValue={tab} className="space-y-6">
             <TabsList className="grid w-full grid-cols-2 bg-background">
               <TabsTrigger value="info">Lead Information</TabsTrigger>
               <TabsTrigger value="scheduling">Scheduling</TabsTrigger>
