@@ -4,7 +4,7 @@ import { DEPARTMENTS } from "zs-crm-common";
 import useDebounce from "@/hooks/useDebounce";
 import { toggleEmployee, toggleSource, setPage, setDate, setSearch, clearFilter } from "@/hooks/useLeadsSearchParams";
 import { useUser } from "@/context/UserContext";
-import { fetchLeads, fetchEmployees, fetchSources } from "@/api/leads/leads.queries";
+import { fetchLeads, fetchSalesEmployee, fetchSources } from "@/api/leads/leads.queries";
 import { Button } from "@/shared/components/ui/button";
 import { Card, CardHeader, CardContent, CardFooter } from "@/shared/components/ui/card";
 import { Table, TableHeader, TableRow, TableHead, TableBody, TableCell } from "@/shared/components/ui/table";
@@ -34,7 +34,7 @@ const LeadsTable = () => {
     const [searchInput, setSearchInput] = useState(search);
     const debouncedSearch = useDebounce(searchInput, 500);
 
-    const { data: employeeData, isError: employeeError, isPending: employeePending } = fetchEmployees();
+    const { data: employeeData, isError: employeeError, isPending: employeePending } = fetchSalesEmployee();
     const { data: leadsData, isPending: leadsPending, isError: leadsError } = fetchLeads({ page, search, employeeIDs, rows, startDate, endDate, selectedSources });
     const { data: sourceData, isError: sourceError, isPending: sourcePending } = fetchSources();
 

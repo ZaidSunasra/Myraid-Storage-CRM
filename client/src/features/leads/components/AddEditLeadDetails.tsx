@@ -1,4 +1,4 @@
-import { fetchEmployees, fetchProducts, fetchSources } from "@/api/leads/leads.queries";
+import { fetchSalesEmployee, fetchProducts, fetchSources } from "@/api/leads/leads.queries";
 import { useUser } from "@/context/UserContext";
 import { Button } from "@/shared/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/shared/components/ui/card";
@@ -11,7 +11,7 @@ import { DEPARTMENTS } from "zs-crm-common";
 
 const AddEditLeadDetails = ({ form, handleClick }: { form: any, handleClick: () => void }) => {
 
-    const { data: employeeData, isError: employeeError, isPending: employeePending } = fetchEmployees();
+    const { data: employeeData, isError: employeeError, isPending: employeePending } = fetchSalesEmployee();
     const { data: sourceData, isError: sourceError, isPending: sourcePending } = fetchSources();
     const { data: productData, isError: productError, isPending: productPending } = fetchProducts();
 
