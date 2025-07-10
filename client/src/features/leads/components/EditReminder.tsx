@@ -133,7 +133,7 @@ const EditReminder = ({ data, dialog }: { data: any, dialog: any }) => {
                         </FormItem>
                     )}
                 />
-                <Button type="submit">Schedule Meeting</Button>
+                <Button type="submit">Edit Meeting</Button>
             </form>
         </Form >
     </>

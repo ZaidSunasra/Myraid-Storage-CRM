@@ -1,13 +1,12 @@
 import { useNavigate } from "react-router";
 
 const DailyData = ({ leadsData, meetingData }: { leadsData: any, meetingData: any }) => {
-    
     const navigate = useNavigate();
 
     return <>
         {meetingData && meetingData.length > 0 && meetingData.map(
             (meeting: any) => (
-                <div className="p-2"  key={meeting.lead_id}>
+                <div className="p-2" key={meeting.lead_id}>
                     <div
                         className="bg-blue-500 p-3 rounded text-white text-sm shadow hover:bg-blue-600 transition duration-200 cursor-pointer"
                         onClick={() => navigate(`/lead/${meeting.lead_id}?tab=scheduling`)}

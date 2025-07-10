@@ -92,8 +92,7 @@ const CalendarPage = () => {
                                 (<Sheet>
                                     <SheetTrigger asChild>
                                         <div
-                                            key={formatted}
-                                            className={`border rounded p-2 min-h-24 flex flex-col justify-between
+                                            className={`border rounded p-2 min-h-24 flex flex-col justify-between h-full
                                             hover:bg-blue-300 hover:border-blue-500  
                                             ${format(day, "MM") !== format(currentMonth, "MM") ? "opacity-30" : ""} 
                                             ${isSameDay(formatted, new Date()) ? "border-blue-500" : ""}`}
@@ -117,7 +116,7 @@ const CalendarPage = () => {
                                     </SheetTrigger>
                                     <SheetContent>
                                         <SheetHeader>
-                                            <SheetTitle>Team Activity Recap</SheetTitle>
+                                            <SheetTitle>Team Activity Recap for {formatted }</SheetTitle>
                                             <SheetDescription>
                                                 Catch up on today's progress — leads added, client updates, and who did what. Everything you need to stay informed.
                                             </SheetDescription>
