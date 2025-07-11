@@ -1,17 +1,68 @@
 import { useAddDescription, useDeleteDescription } from "@/api/leads/leads.mutation";
 import { Button } from "@/shared/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/shared/components/ui/card";
-import { Textarea } from "@/shared/components/ui/textarea";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod"
 import { addDescriptionSchema, type AddDescription } from "zs-crm-common"
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/shared/components/ui/form";
 import { Notebook, Pencil, Trash2 } from "lucide-react";
 import { Label } from "@/shared/components/ui/label";
-import { fetchDescription } from "@/api/leads/leads.queries";
-import { useState } from "react";
+import { fetchAllEmployee, fetchDescription } from "@/api/leads/leads.queries";
+import { useMemo, useState } from "react";
 import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle } from "@/shared/components/ui/dialog";
 import EditDescription from "./EditDescription";
+import { Mention, MentionsInput } from "react-mentions";
+
+export const mentionStyle = {
+    control: {
+        backgroundColor: '#fff',
+        fontSize: 14,
+        fontWeight: 'normal',
+    },
+
+    '&multiLine': {
+        control: {
+            fontFamily: 'monospace',
+            minHeight: 63,
+        },
+        highlighter: {
+            padding: 9,
+            border: '1px solid transparent',
+        },
+        input: {
+            padding: 9,
+            border: '1px solid silver',
+        },
+    },
+
+    '&singleLine': {
+        display: 'inline-block',
+        width: 180,
+        highlighter: {
+            padding: 1,
+            border: '2px inset transparent',
+        },
+        input: {
+            padding: 1,
+            border: '2px inset',
+        },
+    },
+
+    suggestions: {
+        list: {
+            backgroundColor: 'white',
+            border: '1px solid rgba(0,0,0,0.15)',
+            fontSize: 14,
+        },
+        item: {
+            padding: '5px 15px',
+            borderBottom: '1px solid rgba(0,0,0,0.15)',
+            '&focused': {
+                backgroundColor: '#cee4e5',
+            },
+        },
+    }
+}
 
 const LeadDescription = ({ id }: { id: string }) => {
 
@@ -19,9 +70,20 @@ const LeadDescription = ({ id }: { id: string }) => {
     const [open, setOpen] = useState<boolean>(false);
     const [data, setData] = useState<any>(null)
 
-    const { data: descriptionData, isPending, isError } = fetchDescription(id);
+    const { data: descriptionData, isPending: descriptionPending, isError: descriptionError } = fetchDescription(id);
+    const { data: allEmployeeData, isPending: allEmployeePending, isError: allEmployeeError } = fetchAllEmployee();
     const addDescription = useAddDescription();
     const deleteDescription = useDeleteDescription();
+
+    const allEmployeeArray = useMemo(() => {
+        if (!allEmployeePending && allEmployeeData) {
+            return allEmployeeData.employees.map((emp: any) => ({
+                id: emp.id,
+                display: `${emp.first_name} ${emp.last_name}`
+            }))
+        }
+        return [];
+    }, [allEmployeeData])
 
     const form = useForm<AddDescription>({
         resolver: zodResolver(addDescriptionSchema),
@@ -42,8 +104,10 @@ const LeadDescription = ({ id }: { id: string }) => {
         setActionType(null);
     }
 
-    if (isPending) return <>Loading...</>
-    if (isError) return <>Error..</>
+    if (descriptionPending || allEmployeePending) return <>Loading...</>
+    if (descriptionError || allEmployeeError) return <>Error..</>
+
+    //console.log(allEmployeeArray)
 
     return <>
         <Form {...form}>
@@ -66,7 +130,7 @@ const LeadDescription = ({ id }: { id: string }) => {
                                                 <Notebook className="h-6 w-6 mt-1 text-primary" />
                                                 <div>
                                                     <div className="text-sm text-accent-foreground whitespace-pre-line break-words">
-                                                        {description.notes}
+                                                        {description.notes.replace(/(@\[[^\]]+\])\s\(\d+\)/g, "$1")}
                                                     </div>
                                                     <div className="text-xs text-muted-foreground mt-1">
                                                         Last Updated by {description.user.first_name} {description.user.last_name} on {" "}
@@ -109,12 +173,20 @@ const LeadDescription = ({ id }: { id: string }) => {
                                     <FormItem>
                                         <FormLabel>Description</FormLabel>
                                         <FormControl>
-                                            <Textarea
-                                                id="description"
-                                                placeholder="Add lead description..."
-                                                rows={3}
-                                                {...field}
-                                            />
+                                            <MentionsInput
+                                                value={field.value}
+                                                onChange={(e) => field.onChange(e.target.value)}
+                                                style={mentionStyle}
+                                            >
+                                                <Mention
+                                                    trigger='@'
+                                                    data={allEmployeeArray}
+                                                    displayTransform={(_id, display) => `@${display}`}
+                                                    markup='@[__display__] (__id__)'
+                                                    appendSpaceOnAdd
+                                                    style={{ backgroundColor: '#cee4e5' }}
+                                                />
+                                            </MentionsInput>
                                         </FormControl>
                                         <FormMessage />
                                     </FormItem>
@@ -136,7 +208,7 @@ const LeadDescription = ({ id }: { id: string }) => {
                             <DialogTitle> Edit Description   </DialogTitle>
                             <DialogDescription>Update the details of the  description.</DialogDescription>
                         </DialogHeader>
-                        <EditDescription data={data} setOpen={setOpen} />
+                        <EditDescription data={data} setOpen={setOpen} employee={allEmployeeArray}/>
                     </>
                 ) : actionType == 'delete' ? (
                     <>
