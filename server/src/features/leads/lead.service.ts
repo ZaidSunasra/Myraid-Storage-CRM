@@ -399,30 +399,45 @@ export const getDescriptionByIdService = async (id: string): Promise<any> => {
 
 export const addDescriptionService = async (id: string, description: string, author: string): Promise<void> => {
     const ids = [...description.matchAll(/@\[[^\]]+\]\s\((\d+)\)/g)].map(m => Number(m[1]));
-    // console.log(ids + "\n" + description);
-
     await prisma.$transaction(async (tx) => {
-        await tx.description.create({
+        const description_id = await tx.description.create({
             data: {
                 notes: description,
                 lead_id: parseInt(id),
                 updated_by: parseInt(author)
+            },
+            select: {
+                id: true
             }
         });
+        if (ids.length > 0) {
+            const notification_id = await tx.notification.create({
+                data: {
+                    title: "Mentioned you",
+                    message: `${author} mentioned you in a lead`,
+                    lead_id: parseInt(id),
+                    type: "mentioned",
+                    send_at: null,
+                    description_id: description_id.id
+                },
+                select: {
+                    id: true
+                }
+            });
+            await tx.recipient.createMany({
+                data: ids.map((id) => ({
+                    notification_id: notification_id.id,
+                    user_id: id,
+                    is_ready: true,
+                    ready_at: new Date(),
+                }))
+            });
+        }
     })
 }
 
 export const editDescriptionService = async (id: string, description: string, author: string): Promise<void> => {
-
     const ids = [...description.matchAll(/@\[[^\]]+\]\s\((\d+)\)/g)].map(m => Number(m[1]));
-    console.log(ids + "\n" + description);
-
-    if (ids.length > 0) {
-        console.log(true);
-    } else {
-        console.log(false)
-    }
-
     await prisma.$transaction(async (tx) => {
         await tx.description.update({
             where: {
@@ -433,6 +448,41 @@ export const editDescriptionService = async (id: string, description: string, au
                 updated_by: parseInt(author)
             }
         })
+        const notifications = await tx.notification.findMany({
+            where: {
+                description_id: parseInt(id)
+            },
+            select: { id: true }
+        })
+        for (const notif of notifications) {
+            await tx.notification.delete({
+                where: {
+                    id: notif.id
+                }
+            });
+        }
+        if (ids.length > 0) {
+            const notification = await tx.notification.create({
+                data: {
+                    title: "Mentioned you",
+                    message: `${author} mentioned you in a lead`,
+                    type: "mentioned",
+                    send_at: null,
+                    description_id: parseInt(id)
+                },
+                select: {
+                    id: true
+                }
+            });
+            await tx.recipient.createMany({
+                data: ids.map((id) => ({
+                    notification_id: notification.id,
+                    user_id: id,
+                    is_ready: true,
+                    ready_at: new Date(),
+                }))
+            });
+        }
     })
 }
 
