@@ -22,6 +22,7 @@ const ScheduledMeeting = () => {
 
     const onSubmit = () => {
         deleteReminder.mutate(dialog.data);
+        setDialog({open: false, data: null, action: null})
     }
 
     if (isPending) {

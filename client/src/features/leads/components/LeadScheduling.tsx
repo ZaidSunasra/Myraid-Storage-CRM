@@ -110,9 +110,6 @@ const LeadScheduling = () => {
                                                             mode="single"
                                                             selected={field.value as Date | undefined}
                                                             onSelect={field.onChange}
-                                                            disabled={(date) =>
-                                                                date < new Date()
-                                                            }
                                                             captionLayout="dropdown"
                                                         />
                                                     </PopoverContent>
