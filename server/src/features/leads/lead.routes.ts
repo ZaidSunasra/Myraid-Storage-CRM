@@ -1,5 +1,5 @@
 import express from "express";
-import { addDescriptionController, addLeadController, addReminderController, deleteDescriptionController, deleteReminderController, editDescriptionController, editLeadController, editReminderController, fetchAllLeadsController, fetchEmployeeController, fetchLeadByIdController, fetchLeadsByDurationController, fetchRemindersByMonthController, fetchRemindersController, getDescriptionByIdController, getDescriptionsController, getProductsController, getSourcesController } from "./lead.controller";
+import { addDescriptionController, addLeadController, addReminderController, deleteDescriptionController, deleteReminderController, editDescriptionController, editLeadController, editReminderController, fetchAllLeadsController, fetchSalesEmployeeController, fetchLeadByIdController, fetchLeadsByDurationController, fetchRemindersByMonthController, fetchRemindersController, getDescriptionByIdController, getDescriptionsController, getProductsController, getSourcesController, fetchAllEmployeeController } from "./lead.controller";
 import authMiddleware from "../../middlewares/auth.middleware";
 import checkDepartment from "../../middlewares/department.middleware";
 
@@ -17,7 +17,8 @@ leadRouter.post("/addDescription/:id", authMiddleware, checkDepartment(["admin",
 leadRouter.put("/editDescription/:id", authMiddleware, checkDepartment(["admin", "sales"]), editDescriptionController);
 leadRouter.delete("/delete/:id",authMiddleware, checkDepartment(["admin", "sales"]),  deleteDescriptionController)
 
-leadRouter.get("/fetchEmployee", authMiddleware, checkDepartment(["admin", "sales"]), fetchEmployeeController);
+leadRouter.get("/fetchSalesEmployee", authMiddleware, checkDepartment(["admin", "sales"]), fetchSalesEmployeeController);
+leadRouter.get("/fetchAllEmployees", authMiddleware, checkDepartment(["admin", "sales"]), fetchAllEmployeeController)
 
 leadRouter.post("/addReminder", authMiddleware, checkDepartment(["admin", "sales"]), addReminderController);
 leadRouter.get("/getReminders/:id", authMiddleware, checkDepartment(["admin", "sales"]), fetchRemindersController);

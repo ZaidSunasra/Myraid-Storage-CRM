@@ -1,6 +1,6 @@
 import { Request, Response } from "express";
 import { LeadErrorResponse, AddLeadSuccessResponse, LeadSuccessResponse, addReminderSchema, leadSchema } from "zs-crm-common";
-import { addDescriptionService, addLeadService, addReminderService, convertEmailIntoArray, deleteDescriptionService, deleteReminderService, editDescriptionService, editLeadService, editReminderService, fetchEmployeeService, findExistingCompany, findExistingEmail, findExistingGST, getDescriptionByIdService, getDescriptionsService, getLeadByDurationService, getLeadByIdService, getLeadsService, getProductsService, getReminderByDateService, getRemindersService, getSourcesService } from "./lead.service";
+import { addDescriptionService, addLeadService, addReminderService, convertEmailIntoArray, deleteDescriptionService, deleteReminderService, editDescriptionService, editLeadService, editReminderService, fetchAllEmployeeService, fetchSalesEmployeeService, findExistingCompany, findExistingEmail, findExistingGST, getDescriptionByIdService, getDescriptionsService, getLeadByDurationService, getLeadByIdService, getLeadsService, getProductsService, getReminderByDateService, getRemindersService, getSourcesService } from "./lead.service";
 import { FetchEmployeeSuccessResponse, FetchLeadByIdSuccessResponse, FetchLeadSuccessResponse, FetchReminderSuccessResponse } from "./lead.types";
 
 export const addLeadController = async (req: Request, res: Response<LeadErrorResponse | AddLeadSuccessResponse>): Promise<any> => {
@@ -99,22 +99,6 @@ export const editLeadController = async (req: Request, res: Response<LeadErrorRe
         })
     } catch (error) {
         console.log("Error in editing lead", error);
-        return res.status(500).send({
-            message: "Internal server error",
-            error: error
-        });
-    }
-}
-
-export const fetchEmployeeController = async (req: Request, res: Response<LeadErrorResponse | FetchEmployeeSuccessResponse>): Promise<any> => {
-    try {
-        const employees = await fetchEmployeeService();
-        return res.status(200).json({
-            message: "Employee fetched successfully",
-            employees
-        })
-    } catch (error) {
-        console.log("Error in fetching employee", error);
         return res.status(500).send({
             message: "Internal server error",
             error: error
@@ -277,7 +261,7 @@ export const editReminderController = async (req: Request, res: Response<LeadSuc
         })
     }
     try {
-        await editReminderService({ title, send_at, message, lead_id, reminder_type } , id)
+        await editReminderService({ title, send_at, message, lead_id, reminder_type }, id)
         return res.status(200).json({
             message: `Reminder edited successfully`,
         })
@@ -299,6 +283,38 @@ export const deleteReminderController = async (req: Request, res: Response<LeadS
         })
     } catch (error) {
         console.log(`Error in deleting reminder`, error);
+        return res.status(500).send({
+            message: "Internal server error",
+            error: error
+        });
+    }
+}
+
+export const fetchSalesEmployeeController = async (req: Request, res: Response<LeadErrorResponse | FetchEmployeeSuccessResponse>): Promise<any> => {
+    try {
+        const employees = await fetchSalesEmployeeService();
+        return res.status(200).json({
+            message: "Employee fetched successfully",
+            employees
+        })
+    } catch (error) {
+        console.log("Error in fetching employee", error);
+        return res.status(500).send({
+            message: "Internal server error",
+            error: error
+        });
+    }
+}
+
+export const fetchAllEmployeeController = async (req: Request, res: Response): Promise<any> => {
+    try {
+        const employees = await fetchAllEmployeeService();
+      return res.status(200).json({
+            message: "Employee fetched successfully",
+            employees
+        })
+    } catch (error) {
+        console.log("Error in fetching employee", error);
         return res.status(500).send({
             message: "Internal server error",
             error: error
@@ -365,7 +381,7 @@ export const fetchRemindersByMonthController = async (req: Request, res: Respons
     const month = req.params.month;
 
     try {
-        const {remindersByDay, leadsGrouped} = await getReminderByDateService(user, month);
+        const { remindersByDay, leadsGrouped } = await getReminderByDateService(user, month);
         return res.status(200).json({
             message: `Reminders by month fetched successfully`,
             remindersByDay,

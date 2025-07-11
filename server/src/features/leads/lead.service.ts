@@ -323,23 +323,6 @@ export const editLeadService = async ({ id, first_name, last_name, phones, email
     });
 }
 
-export const fetchEmployeeService = async (): Promise<FetchEmployeeOutput[]> => {
-    const employees = await prisma.user.findMany({
-        where: {
-            OR: [
-                { department: DEPARTMENTS[1] },
-                { department: DEPARTMENTS[0] }
-            ]
-        },
-        select: {
-            first_name: true,
-            last_name: true,
-            id: true
-        }
-    });
-    return employees;
-}
-
 export const getLeadByIdService = async (id: string): Promise<FetchLeadOutput | null> => {
     const lead = await prisma.lead.findUnique({
         where: {
@@ -415,25 +398,42 @@ export const getDescriptionByIdService = async (id: string): Promise<any> => {
 }
 
 export const addDescriptionService = async (id: string, description: string, author: string): Promise<void> => {
-    await prisma.description.create({
-        data: {
-            notes: description,
-            lead_id: parseInt(id),
-            updated_by: parseInt(author)
-        }
-    });
+    const ids = [...description.matchAll(/@\[[^\]]+\]\s\((\d+)\)/g)].map(m => Number(m[1]));
+    // console.log(ids + "\n" + description);
+
+    await prisma.$transaction(async (tx) => {
+        await tx.description.create({
+            data: {
+                notes: description,
+                lead_id: parseInt(id),
+                updated_by: parseInt(author)
+            }
+        });
+    })
 }
 
 export const editDescriptionService = async (id: string, description: string, author: string): Promise<void> => {
-    await prisma.description.update({
-        where: {
-            id: parseInt(id)
-        },
-        data: {
-            notes: description,
-            updated_by: parseInt(author)
-        }
-    });
+
+    const ids = [...description.matchAll(/@\[[^\]]+\]\s\((\d+)\)/g)].map(m => Number(m[1]));
+    console.log(ids + "\n" + description);
+
+    if (ids.length > 0) {
+        console.log(true);
+    } else {
+        console.log(false)
+    }
+
+    await prisma.$transaction(async (tx) => {
+        await tx.description.update({
+            where: {
+                id: parseInt(id)
+            },
+            data: {
+                notes: description,
+                updated_by: parseInt(author)
+            }
+        })
+    })
 }
 
 export const deleteDescriptionService = async (id: string): Promise<void> => {
@@ -534,7 +534,35 @@ export const deleteReminderService = async (id: string): Promise<void> => {
             }
         })
     })
+}
 
+export const fetchSalesEmployeeService = async (): Promise<FetchEmployeeOutput[]> => {
+    const employees = await prisma.user.findMany({
+        where: {
+            OR: [
+                { department: DEPARTMENTS[1] },
+                { department: DEPARTMENTS[0] }
+            ]
+        },
+        select: {
+            first_name: true,
+            last_name: true,
+            id: true
+        }
+    });
+    return employees;
+}
+
+export const fetchAllEmployeeService = async (): Promise<FetchEmployeeOutput[]> => {
+    const employees = await prisma.user.findMany({
+        where: {},
+        select: {
+            first_name: true,
+            last_name: true,
+            id: true
+        }
+    });
+    return employees;
 }
 
 export const getProductsService = async (): Promise<Product[]> => {
@@ -610,7 +638,7 @@ export const getLeadByDurationService = async (duration: "today" | "weekly" | "m
 }
 
 export const getReminderByDateService = async (user: any, month: string): Promise<any> => {
-    
+
     const now = new Date(month);
     const start = startOfMonth(now);
     const end = endOfMonth(now);
@@ -722,5 +750,5 @@ export const getReminderByDateService = async (user: any, month: string): Promis
         return acc;
     }, {});
 
-    return {remindersByDay, leadsGrouped};
+    return { remindersByDay, leadsGrouped };
 }
