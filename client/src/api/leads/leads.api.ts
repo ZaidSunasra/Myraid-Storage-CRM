@@ -6,13 +6,18 @@ export const getLeads = async ({ page = 1, search, employeeIDs, rows, startDate,
     return response.data;
 }
 
-export const getEmployeee = async (): Promise<any> => {
-    const response = await axiosInstance.get("/leads/fetchEmployee");
+export const getLeadById = async (id: string): Promise<any> => {
+    const response = await axiosInstance.get(`/leads/get/${id}`);
     return response.data;
 }
 
-export const getLeadById = async (id: string): Promise<any> => {
-    const response = await axiosInstance.get(`/leads/get/${id}`);
+export const addLead = async (data: AddLead): Promise<any> => {
+    const response = await axiosInstance.post("/leads/add", data);
+    return response.data;
+}
+
+export const editLead = async ({ data, id }: { data: AddLead, id: string | undefined }): Promise<any> => {
+    const response = await axiosInstance.put(`/leads/edit/${id}`, data);
     return response.data;
 }
 
@@ -56,18 +61,18 @@ export const editReminder = async ({ data, id }: { data: AddReminder, id: string
     return response.data;
 }
 
-export const addLead = async (data: AddLead): Promise<any> => {
-    const response = await axiosInstance.post("/leads/add", data);
-    return response.data;
-}
-
-export const editLead = async ({ data, id }: { data: AddLead, id: string | undefined }): Promise<any> => {
-    const response = await axiosInstance.put(`/leads/edit/${id}`, data);
-    return response.data;
-}
-
 export const deleteReminder = async (id: string): Promise<any> => {
     const response = await axiosInstance.delete(`/leads/deleteReminder/${id}`);
+    return response.data;
+}
+
+export const getSalesEmployee = async (): Promise<any> => {
+    const response = await axiosInstance.get("/leads/fetchSalesEmployee");
+    return response.data;
+}
+
+export const getAllEmployee = async (): Promise<any> => {
+    const response = await axiosInstance.get("/leads/fetchAllEmployees");
     return response.data;
 }
 
