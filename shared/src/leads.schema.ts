@@ -1,6 +1,6 @@
 import { z } from "zod/v4";
 
-export const NOTIFICATION_TYPE = ["color_changed", "drawing_uploaded", "drawing_approved", "drawing_rejected", "client_meeting"] as const;
+export const NOTIFICATION_TYPE = ["color_changed", "drawing_uploaded", "drawing_approved", "drawing_rejected", "client_meeting", "mentioned", "lead_assigned"] as const;
 
 export type reminder_type = typeof NOTIFICATION_TYPE[number];
 

@@ -50,14 +50,15 @@ model Lead {
 }
 
 model Description {
-  id         Int       @id @default(autoincrement())
-  lead       Lead      @relation(fields: [lead_id], references: [id])
-  lead_id    Int
-  created_at DateTime  @default(now())
-  updated_at DateTime? @updatedAt
-  notes      String
-  user       User     @relation(fields: [updated_by], references: [id])
-  updated_by     Int
+  id           Int            @id @default(autoincrement())
+  lead         Lead           @relation(fields: [lead_id], references: [id])
+  lead_id      Int
+  created_at   DateTime       @default(now())
+  updated_at   DateTime?      @updatedAt
+  notes        String
+  user         User           @relation(fields: [updated_by], references: [id])
+  updated_by   Int
+  notification Notification[]
 }
 
 model Source {
@@ -122,6 +123,8 @@ model Notification {
   lead_id        Int?
   deal           Deal?             @relation(fields: [deal_id], references: [id])
   deal_id        Int?
+  description    Description?      @relation(fields: [description_id], references: [id], onDelete: Cascade)
+  description_id  Int?
 }
 
 model Recipient {
@@ -130,7 +133,9 @@ model Recipient {
   read_at         DateTime?
   notification_id Int
   user_id         Int
-  notification    Notification @relation(fields: [notification_id], references: [id])
+  is_ready        Boolean      @default(false)
+  ready_at        DateTime?
+  notification    Notification @relation(fields: [notification_id], references: [id], onDelete: Cascade)
   user            User         @relation(fields: [user_id], references: [id])
 }
 
@@ -210,6 +215,8 @@ enum Notification_Type {
   drawing_approved
   drawing_rejected
   client_meeting
+  mentioned
+  lead_assigned
 }
 
 enum Quotation_Template {

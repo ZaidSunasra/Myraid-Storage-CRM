@@ -95,3 +95,18 @@ export const getReminderByMonth = async (month: string): Promise<any> => {
     const response = await axiosInstance.get(`/leads/getRemindersByMonth/${month}`);
     return response.data;
 }
+
+export const getUnreadNotifications = async () : Promise<any> => {
+    const response = await axiosInstance.get("/notifications/get-unread");
+    return response.data;
+}
+
+export const getReadNotifications = async () : Promise<any> => {
+    const response = await axiosInstance.get("/notifications/get-read");
+    return response.data;
+}
+
+export const markNotification = async (id: string) : Promise<any> => {
+    const response = await axiosInstance.post(`/notifications/mark-read/${id}`);
+    return response.data;
+}

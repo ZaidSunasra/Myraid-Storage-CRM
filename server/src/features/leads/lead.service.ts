@@ -91,69 +91,75 @@ export const findExistingGST = async (id: number, gst_no: string): Promise<boole
     return comapny?.gst_no ? true : false;
 }
 
-export const addLeadService = async ({ first_name, last_name, phones, emails, assigned_to, source_id, product_id, company_name, address, gst_no }: AddLead): Promise<number> => {
-    try {
-        const editedEmail = convertEmailIntoArray(emails);
-        const editedPhone = convertPhoneIntoArray(phones);
-        const editedId = covertAssignIdsIntoArray(assigned_to);
-        const result = await prisma.$transaction(async (tx) => {
-            const company = await tx.company.create({
-                data: {
-                    name: company_name,
-                    address: address,
-                    gst_no: gst_no,
-                },
-            });
-            const client = await tx.client.create({
-                data: {
-                    first_name: first_name,
-                    last_name: last_name,
-                    company_id: company.id
-                }
-            });
-            if (emails && emails.length > 0) {
-                await tx.email.createMany({
-                    data: editedEmail.map((email) => ({
-                        client_id: client.id,
-                        email: email
-                    }))
-                })
+export const addLeadService = async ({ first_name, last_name, phones, emails, assigned_to, source_id, product_id, company_name, address, gst_no }: AddLead, author: any): Promise<number> => {
+    const editedEmail = convertEmailIntoArray(emails);
+    const editedPhone = convertPhoneIntoArray(phones);
+    const editedId = covertAssignIdsIntoArray(assigned_to);
+    const assignedId = editedId.filter((id) => id !== parseInt(author.id));
+
+    const result = await prisma.$transaction(async (tx) => {
+        const company = await tx.company.create({
+            data: {
+                name: company_name,
+                address: address,
+                gst_no: gst_no,
+            },
+        });
+        const client = await tx.client.create({
+            data: {
+                first_name: first_name,
+                last_name: last_name,
+                company_id: company.id
             }
-            if (phones.length > 0) {
-                await tx.phone.createMany({
-                    data: editedPhone.map((phone) => ({
-                        client_id: client.id,
-                        phone: phone
-                    }))
-                })
-            }
-            const lead = await tx.lead.create({
-                data: {
-                    company_id: company.id,
+        });
+        if (emails && emails.length > 0) {
+            await tx.email.createMany({
+                data: editedEmail.map((email) => ({
                     client_id: client.id,
-                    source_id: source_id,
-                    product_id: product_id
-                }
-            });
-            await tx.asignee.createMany({
-                data: editedId.map((id) => ({
-                    lead_id: lead.id,
-                    user_id: id
+                    email: email
                 }))
             })
-            return lead.id;
-        })
-        return result;
-    } catch (error) {
-        if (
-            error instanceof Prisma.PrismaClientKnownRequestError &&
-            error.code === 'P2002'
-        ) {
-            const target = (error.meta?.target as string[])?.join(', ') ?? 'field';
-            throw new Error(`Unique constraint failed on the ${target}`);
         }
-        throw error;
-    }
+        if (phones.length > 0) {
+            await tx.phone.createMany({
+                data: editedPhone.map((phone) => ({
+                    client_id: client.id,
+                    phone: phone
+                }))
+            })
+        }
+        const lead = await tx.lead.create({
+            data: {
+                company_id: company.id,
+                client_id: client.id,
+                source_id: source_id,
+                product_id: product_id
+            }
+        });
+        await tx.asignee.createMany({
+            data: editedId.map((id) => ({
+                lead_id: lead.id,
+                user_id: id
+            }))
+        });
+        const notification = await tx.notification.create({
+            data: {
+                title: "Lead assigned",
+                message: "You were assigned to a lead",
+                type: "lead_assigned",
+                send_at: null,
+                lead_id: lead.id
+            }
+        })
+        await tx.recipient.createMany({
+            data: assignedId.map((id) => ({
+                notification_id: notification.id,
+                user_id: id
+            }))
+        })
+        return lead.id;
+    })
+    return result;
 }
 
 export const getLeadsService = async (user: any, page: number, search: string, employeeId: string[], rows: number, startDate: string, endDate: string, sourceId: string[]): Promise<FetchLeadSuccessResponse> => {
@@ -252,10 +258,11 @@ export const getLeadsService = async (user: any, page: number, search: string, e
     return { leads, totalLeads };
 }
 
-export const editLeadService = async ({ id, first_name, last_name, phones, emails, assigned_to, source_id, product_id, company_name, address, gst_no }: EditLead): Promise<void> => {
+export const editLeadService = async ({ id, first_name, last_name, phones, emails, assigned_to, source_id, product_id, company_name, address, gst_no }: EditLead, author: any): Promise<void> => {
     const editedEmail = convertEmailIntoArray(emails);
     const editedPhone = convertPhoneIntoArray(phones);
     const editedId = covertAssignIdsIntoArray(assigned_to);
+    const assignedId = editedId.filter((id) => id !== author.id);
     await prisma.$transaction(async (tx) => {
         const updatedLead = await tx.lead.update({
             where: {
@@ -300,6 +307,64 @@ export const editLeadService = async ({ id, first_name, last_name, phones, email
                 client_id: updatedLead.client_id
             }
         })
+        const notification = await tx.notification.findMany({
+            where: {
+                lead_id: updatedLead.id,
+                type: "client_meeting"
+            },
+            select: {
+                id: true
+            }
+        })
+        await tx.recipient.deleteMany({
+            where: {
+                notification_id: {
+                    in: notification.map((n) => n.id)
+                }
+            }
+        })
+        await tx.recipient.createMany({
+            data: notification.flatMap((n) =>
+                editedId.map((userId) => ({
+                    user_id: userId,
+                    notification_id: n.id,
+                }))
+            )
+        });
+        const assignedNotification = await tx.notification.findMany({
+            where: {
+                lead_id: updatedLead.id,
+                type: "lead_assigned"
+            },
+            select: {
+                id: true
+            }
+        });
+        await tx.notification.updateMany({
+            where: {
+                id: {
+                    in: assignedNotification.map((n) => n.id),
+                }
+            },
+            data: {
+                is_sent: false
+            }
+        })
+        await tx.recipient.deleteMany({
+            where: {
+                notification_id: {
+                    in: assignedNotification.map((n) => n.id)
+                }
+            }
+        });
+        await tx.recipient.createMany({
+            data: assignedNotification.flatMap((n) =>
+                assignedId.map((userId) => ({
+                    user_id: userId,
+                    notification_id: n.id,
+                }))
+            )
+        });
         if (emails && emails.length > 0) {
             await tx.email.createMany({
                 data: editedEmail?.filter((e) => e.trim() !== "").map((email) => ({
@@ -399,30 +464,42 @@ export const getDescriptionByIdService = async (id: string): Promise<any> => {
 
 export const addDescriptionService = async (id: string, description: string, author: string): Promise<void> => {
     const ids = [...description.matchAll(/@\[[^\]]+\]\s\((\d+)\)/g)].map(m => Number(m[1]));
-    // console.log(ids + "\n" + description);
-
     await prisma.$transaction(async (tx) => {
-        await tx.description.create({
+        const description_id = await tx.description.create({
             data: {
                 notes: description,
                 lead_id: parseInt(id),
                 updated_by: parseInt(author)
+            },
+            select: {
+                id: true
             }
         });
+        if (ids.length > 0) {
+            const notification_id = await tx.notification.create({
+                data: {
+                    title: "Mentioned you",
+                    message: `${author} mentioned you in a lead`,
+                    type: "mentioned",
+                    send_at: null,
+                    description_id: description_id.id
+                },
+                select: {
+                    id: true
+                }
+            });
+            await tx.recipient.createMany({
+                data: ids.map((id) => ({
+                    notification_id: notification_id.id,
+                    user_id: id,
+                }))
+            });
+        }
     })
 }
 
 export const editDescriptionService = async (id: string, description: string, author: string): Promise<void> => {
-
     const ids = [...description.matchAll(/@\[[^\]]+\]\s\((\d+)\)/g)].map(m => Number(m[1]));
-    console.log(ids + "\n" + description);
-
-    if (ids.length > 0) {
-        console.log(true);
-    } else {
-        console.log(false)
-    }
-
     await prisma.$transaction(async (tx) => {
         await tx.description.update({
             where: {
@@ -433,6 +510,39 @@ export const editDescriptionService = async (id: string, description: string, au
                 updated_by: parseInt(author)
             }
         })
+        const notifications = await tx.notification.findMany({
+            where: {
+                description_id: parseInt(id)
+            },
+            select: { id: true }
+        })
+        for (const notif of notifications) {
+            await tx.notification.delete({
+                where: {
+                    id: notif.id
+                }
+            });
+        }
+        if (ids.length > 0) {
+            const notification = await tx.notification.create({
+                data: {
+                    title: "Mentioned you",
+                    message: `${author} mentioned you in a lead`,
+                    type: "mentioned",
+                    send_at: null,
+                    description_id: parseInt(id)
+                },
+                select: {
+                    id: true
+                }
+            });
+            await tx.recipient.createMany({
+                data: ids.map((id) => ({
+                    notification_id: notification.id,
+                    user_id: id,
+                }))
+            });
+        }
     })
 }
 
@@ -453,7 +563,6 @@ export const addReminderService = async ({ title, send_at, message, lead_id, rem
             id: true
         }
     });
-
     const asignees = await prisma.asignee.findMany({
         where: {
             lead_id: lead_id
@@ -462,7 +571,6 @@ export const addReminderService = async ({ title, send_at, message, lead_id, rem
             user_id: true
         }
     });
-
     let recipientId = [...admins.map((admin) => admin.id)];
 
     asignees.forEach(a => {
