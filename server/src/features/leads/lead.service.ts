@@ -462,14 +462,14 @@ export const getDescriptionByIdService = async (id: string): Promise<any> => {
     return description;
 }
 
-export const addDescriptionService = async (id: string, description: string, author: string): Promise<void> => {
+export const addDescriptionService = async (id: string, description: string, author: any): Promise<void> => {
     const ids = [...description.matchAll(/@\[[^\]]+\]\s\((\d+)\)/g)].map(m => Number(m[1]));
     await prisma.$transaction(async (tx) => {
         const description_id = await tx.description.create({
             data: {
                 notes: description,
                 lead_id: parseInt(id),
-                updated_by: parseInt(author)
+                updated_by: parseInt(author.id)
             },
             select: {
                 id: true
@@ -479,10 +479,11 @@ export const addDescriptionService = async (id: string, description: string, aut
             const notification_id = await tx.notification.create({
                 data: {
                     title: "Mentioned you",
-                    message: `${author} mentioned you in a lead`,
+                    message: `${author.name} mentioned you in a lead`,
                     type: "mentioned",
                     send_at: null,
-                    description_id: description_id.id
+                    description_id: description_id.id,
+                    lead_id: parseInt(id)
                 },
                 select: {
                     id: true
@@ -498,16 +499,19 @@ export const addDescriptionService = async (id: string, description: string, aut
     })
 }
 
-export const editDescriptionService = async (id: string, description: string, author: string): Promise<void> => {
+export const editDescriptionService = async (id: string, description: string, author: any): Promise<void> => {
     const ids = [...description.matchAll(/@\[[^\]]+\]\s\((\d+)\)/g)].map(m => Number(m[1]));
     await prisma.$transaction(async (tx) => {
-        await tx.description.update({
+        const lead_id = await tx.description.update({
             where: {
                 id: parseInt(id)
             },
             data: {
                 notes: description,
-                updated_by: parseInt(author)
+                updated_by: parseInt(author.id)
+            },
+            select: {
+                lead_id: true
             }
         })
         const notifications = await tx.notification.findMany({
@@ -527,10 +531,11 @@ export const editDescriptionService = async (id: string, description: string, au
             const notification = await tx.notification.create({
                 data: {
                     title: "Mentioned you",
-                    message: `${author} mentioned you in a lead`,
+                    message: `${author.name} mentioned you in a lead`,
                     type: "mentioned",
                     send_at: null,
-                    description_id: parseInt(id)
+                    description_id: parseInt(id),
+                    lead_id: lead_id.lead_id
                 },
                 select: {
                     id: true

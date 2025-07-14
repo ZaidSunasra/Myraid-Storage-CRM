@@ -162,7 +162,7 @@ export const getDescriptionByIdController = async (req: Request, res: Response):
 export const addDescriptionController = async (req: Request, res: Response<LeadSuccessResponse | LeadErrorResponse>): Promise<any> => {
     const id = req.params.id;
     const { description } = req.body;
-    const author = res.locals.user.id;
+    const author = res.locals.user;
     try {
         await addDescriptionService(id, description, author);
         return res.status(200).json({
@@ -180,7 +180,7 @@ export const addDescriptionController = async (req: Request, res: Response<LeadS
 export const editDescriptionController = async (req: Request, res: Response): Promise<any> => {
     const id = req.params.id;
     const { description } = req.body;
-    const author = res.locals.user.id;
+    const author = res.locals.user;
     try {
         await editDescriptionService(id, description, author);
         return res.status(200).json({
