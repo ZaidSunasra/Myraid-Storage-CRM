@@ -13,7 +13,8 @@ const authMiddleware = async (req: Request, res: Response, next: NextFunction): 
         const decoded = jwt.verify(token, process.env.JWT_SECRET as string) as {
             email: string,
             department: string,
-            id: number
+            id: number,
+            name: string
         }
         if (!decoded.email || !decoded.id || !decoded.department) {
             return res.status(401).send({
@@ -23,7 +24,8 @@ const authMiddleware = async (req: Request, res: Response, next: NextFunction): 
         res.locals.user = {
             id: decoded.id,
             department: decoded.department,
-            email: decoded.email
+            email: decoded.email,
+            name: decoded.name
         };
         next();
     } catch (error) {

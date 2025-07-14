@@ -33,7 +33,8 @@ export const loginController = async (req: Request, res: Response<LoginSuccessRe
             {
                 email: email,
                 id: user.id,
-                department: user.department
+                department: user.department,
+                name: user.first_name + " " + user.last_name
             },
             process.env.JWT_SECRET as string,
             { expiresIn: "1d" }
