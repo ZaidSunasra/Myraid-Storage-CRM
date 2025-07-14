@@ -1,8 +1,13 @@
 import { Card, CardContent } from "@/shared/components/ui/card"
+import getNavigationLink from "@/utils/getNavigationLink";
+import { useNavigate } from "react-router"
 
 const ReadNotifications = ({ notification }: { notification: any }) => {
+    const navigate = useNavigate();
+    const path = getNavigationLink(notification)
+ 
     return <Card className={`transition-all duration-200 hover:shadow-md ${!notification.isRead ? "bg-blue-50/50 border-blue-200" : "bg-card"}`}>
-        <CardContent className="px-4">
+        <CardContent className="px-4" onClick={() => navigate(path)}>
             <div className="flex items-start space-x-4">
                 <div className="flex-1 space-y-1">
                     <h4 className="font-semibold text-sm">{notification.notification.title}</h4>
