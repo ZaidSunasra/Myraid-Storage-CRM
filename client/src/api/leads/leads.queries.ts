@@ -1,5 +1,6 @@
 import { useQuery, keepPreviousData } from "@tanstack/react-query"
-import { getDescription, getSalesEmployee, getLeadByDuration, getLeadById, getLeads, getProducts, getReminderByMonth, getReminders, getSources, getAllEmployee } from "./leads.api"
+import { getDescription, getSalesEmployee, getLeadByDuration, getLeadById, getLeads, getProducts, getReminderByMonth, getReminders, getSources, getAllEmployee, getUnreadNotifications, getReadNotifications } from "./leads.api"
+import { useUser } from "@/context/UserContext"
 
 export const fetchLeads = ({ page, search, employeeIDs, rows, startDate, endDate, selectedSources }: { page: number, search: string, employeeIDs: string[], rows: number, startDate: string, endDate: string, selectedSources: string[] }) => {
     return useQuery({
@@ -69,5 +70,22 @@ export const fetchReminderByMonth = (month: string) => {
     return useQuery({
         queryKey: ['reminderByMonth', month],
         queryFn: () => getReminderByMonth(month)
+    })
+}
+
+export const fetchUnreadNotifications = () => {
+    const {user} = useUser()
+    return useQuery({
+        queryKey: ['notifications-unread'],
+        queryFn: getUnreadNotifications,
+        enabled: !!user,
+        refetchInterval: 60000
+    })
+}
+
+export const fetchReadNotifications = () => {
+    return useQuery({
+        queryKey: ['notifications-read'],
+        queryFn: getReadNotifications,
     })
 }
