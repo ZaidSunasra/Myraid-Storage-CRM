@@ -5,6 +5,7 @@ import { FetchEmployeeSuccessResponse, FetchLeadByIdSuccessResponse, FetchLeadSu
 
 export const addLeadController = async (req: Request, res: Response<LeadErrorResponse | AddLeadSuccessResponse>): Promise<any> => {
     const { first_name, last_name, phones, emails, assigned_to, source_id, product_id, company_name, address, gst_no } = req.body;
+    const author = res.locals.user;
     const validation = leadSchema.safeParse(req.body);
     if (!validation.success) {
         return res.status(400).json({
@@ -26,7 +27,7 @@ export const addLeadController = async (req: Request, res: Response<LeadErrorRes
                 message: "Email already exists in lead"
             })
         }
-        const lead_id = await addLeadService({ first_name, last_name, phones, emails, assigned_to, source_id, product_id, company_name, address, gst_no });
+        const lead_id = await addLeadService({ first_name, last_name, phones, emails, assigned_to, source_id, product_id, company_name, address, gst_no }, author);
         return res.status(200).json({
             message: "Lead generated successfully",
             id: lead_id
@@ -71,6 +72,7 @@ export const fetchAllLeadsController = async (req: Request, res: Response<LeadEr
 
 export const editLeadController = async (req: Request, res: Response<LeadErrorResponse | LeadSuccessResponse>): Promise<any> => {
     const id = parseInt(req.params.id);
+    const author = res.locals.user;
     const { first_name, last_name, phones, emails, assigned_to, source_id, product_id, company_name, address, gst_no } = req.body;
     const validation = leadSchema.safeParse(req.body);
     if (!validation.success) {
@@ -93,7 +95,7 @@ export const editLeadController = async (req: Request, res: Response<LeadErrorRe
                 message: "GST number already associated with another company"
             });
         }
-        await editLeadService({ id, first_name, last_name, phones, emails, assigned_to, source_id, product_id, company_name, address, gst_no })
+        await editLeadService({ id, first_name, last_name, phones, emails, assigned_to, source_id, product_id, company_name, address, gst_no }, author)
         return res.status(200).json({
             message: "Lead edited successfully"
         })
@@ -309,7 +311,7 @@ export const fetchSalesEmployeeController = async (req: Request, res: Response<L
 export const fetchAllEmployeeController = async (req: Request, res: Response): Promise<any> => {
     try {
         const employees = await fetchAllEmployeeService();
-      return res.status(200).json({
+        return res.status(200).json({
             message: "Employee fetched successfully",
             employees
         })

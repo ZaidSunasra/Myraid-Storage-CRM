@@ -91,10 +91,12 @@ export const findExistingGST = async (id: number, gst_no: string): Promise<boole
     return comapny?.gst_no ? true : false;
 }
 
-export const addLeadService = async ({ first_name, last_name, phones, emails, assigned_to, source_id, product_id, company_name, address, gst_no }: AddLead): Promise<number> => {
+export const addLeadService = async ({ first_name, last_name, phones, emails, assigned_to, source_id, product_id, company_name, address, gst_no }: AddLead, author: any): Promise<number> => {
     const editedEmail = convertEmailIntoArray(emails);
     const editedPhone = convertPhoneIntoArray(phones);
     const editedId = covertAssignIdsIntoArray(assigned_to);
+    const assignedId = editedId.filter((id) => id !== parseInt(author.id));
+
     const result = await prisma.$transaction(async (tx) => {
         const company = await tx.company.create({
             data: {
@@ -137,6 +139,21 @@ export const addLeadService = async ({ first_name, last_name, phones, emails, as
         await tx.asignee.createMany({
             data: editedId.map((id) => ({
                 lead_id: lead.id,
+                user_id: id
+            }))
+        });
+        const notification = await tx.notification.create({
+            data: {
+                title: "Lead assigned",
+                message: "You were assigned to a lead",
+                type: "lead_assigned",
+                send_at: null,
+                lead_id: lead.id
+            }
+        })
+        await tx.recipient.createMany({
+            data: assignedId.map((id) => ({
+                notification_id: notification.id,
                 user_id: id
             }))
         })
@@ -241,10 +258,11 @@ export const getLeadsService = async (user: any, page: number, search: string, e
     return { leads, totalLeads };
 }
 
-export const editLeadService = async ({ id, first_name, last_name, phones, emails, assigned_to, source_id, product_id, company_name, address, gst_no }: EditLead): Promise<void> => {
+export const editLeadService = async ({ id, first_name, last_name, phones, emails, assigned_to, source_id, product_id, company_name, address, gst_no }: EditLead, author: any): Promise<void> => {
     const editedEmail = convertEmailIntoArray(emails);
     const editedPhone = convertPhoneIntoArray(phones);
     const editedId = covertAssignIdsIntoArray(assigned_to);
+    const assignedId = editedId.filter((id) => id !== author.id);
     await prisma.$transaction(async (tx) => {
         const updatedLead = await tx.lead.update({
             where: {
@@ -308,6 +326,30 @@ export const editLeadService = async ({ id, first_name, last_name, phones, email
         await tx.recipient.createMany({
             data: notification.flatMap((n) =>
                 editedId.map((userId) => ({
+                    user_id: userId,
+                    notification_id: n.id,
+                }))
+            )
+        });
+        const assignedNotification = await tx.notification.findMany({
+            where: {
+                lead_id: updatedLead.id,
+                type: "lead_assigned"
+            },
+            select: {
+                id: true
+            }
+        });
+        await tx.recipient.deleteMany({
+            where: {
+                notification_id: {
+                    in: assignedNotification.map((n) => n.id)
+                }
+            }
+        });
+        await tx.recipient.createMany({
+            data: assignedNotification.flatMap((n) =>
+                assignedId.map((userId) => ({
                     user_id: userId,
                     notification_id: n.id,
                 }))
