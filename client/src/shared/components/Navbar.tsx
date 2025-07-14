@@ -1,9 +1,10 @@
 import { useState } from "react";
-import { NavLink } from "react-router";
+import { NavLink, useNavigate } from "react-router";
 import { Avatar } from "@/shared/components/ui/avatar";
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuLabel, DropdownMenuSeparator, DropdownMenuTrigger } from "@/shared/components/ui/dropdown-menu";
-import { Menu, User, X } from "lucide-react";
+import { BellIcon, Menu, User, X } from "lucide-react";
 import { useLogout } from "@/api/auth/auth.mutation";
+import { useNotifications } from "@/context/NotificationContext";
 
 const Navbar = () => {
 
@@ -35,8 +36,9 @@ const Navbar = () => {
     ];
 
     const [menuOpen, setMenuOpen] = useState(false);
-
-    const logout = useLogout()
+    const logout = useLogout();
+    const { unreadCount } = useNotifications();
+    const navigate = useNavigate();
 
     const onSubmit = () => {
         logout.mutate();
@@ -67,6 +69,14 @@ const Navbar = () => {
                     </div>
                 </div>
                 <div className="flex gap-4 h-full items-center">
+                    <div className="relative" onClick={() => navigate("/notifications")}>
+                        <BellIcon className="h-6 w-6 text-gray-700" />
+                        {unreadCount > 0 && (
+                            <div className="absolute top-0 right-0 translate-x-1/2 -translate-y-1/2 bg-destructive text-white text-xs w-5 h-5 rounded-full flex items-center justify-center shadow">
+                                {unreadCount}
+                            </div>
+                        )}
+                    </div>
                     <DropdownMenu>
                         <DropdownMenuTrigger asChild>
                             <Avatar className="flex justify-center items-center cursor-pointer">
