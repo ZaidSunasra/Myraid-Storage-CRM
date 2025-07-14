@@ -22,47 +22,52 @@ export const editLead = async ({ data, id }: { data: AddLead, id: string | undef
 }
 
 export const addDescription = async ({ data, id }: { data: any, id: string }): Promise<any> => {
-    const response = await axiosInstance.post(`/leads/addDescription/${id}`, data);
+    const response = await axiosInstance.post(`/leads/description/add/${id}`, data);
     return response.data;
 }
 
 export const getDescription = async (id: string): Promise<any> => {
-    const response = await axiosInstance.get(`/leads/getDescription/${id}`);
+    const response = await axiosInstance.get(`/leads/description/get/${id}`);
     return response.data;
 }
 
 export const getDescriptionById = async (id: string): Promise<any> => {
-    const response = await axiosInstance.get(`/leads/get/${id}`);
+    const response = await axiosInstance.get(`/leads/description/get/${id}`);
     return response.data;
 }
 
 export const editDescription = async ({ data, id }: { data: any, id: string }): Promise<any> => {
-    const response = await axiosInstance.put(`/leads/editDescription/${id}`, data);
+    const response = await axiosInstance.put(`/leads/description/edit/${id}`, data);
     return response.data;
 }
 
 export const deleteDescription = async (id: string): Promise<any> => {
-    const response = await axiosInstance.delete(`/leads/delete/${id}`);
+    const response = await axiosInstance.delete(`/leads/description/delete/${id}`);
     return response.data;
 }
 
 export const addReminder = async (data: AddReminder): Promise<any> => {
-    const response = await axiosInstance.post("/leads/addReminder", data);
+    const response = await axiosInstance.post("/leads/reminder/add", data);
     return response.data;
 }
 
 export const getReminders = async (id: string): Promise<any> => {
-    const response = await axiosInstance.get(`/leads/getReminders/${id}`);
+    const response = await axiosInstance.get(`/leads/reminder/get/${id}`);
+    return response.data;
+}
+
+export const getReminderByMonth = async (month: string): Promise<any> => {
+    const response = await axiosInstance.get(`/leads/reminder/get-by-month/${month}`);
     return response.data;
 }
 
 export const editReminder = async ({ data, id }: { data: AddReminder, id: string }): Promise<any> => {
-    const response = await axiosInstance.put(`/leads/editReminder/${id}`, data);
+    const response = await axiosInstance.put(`/leads/reminder/edit/${id}`, data);
     return response.data;
 }
 
 export const deleteReminder = async (id: string): Promise<any> => {
-    const response = await axiosInstance.delete(`/leads/deleteReminder/${id}`);
+    const response = await axiosInstance.delete(`/leads/reminder/delete/${id}`);
     return response.data;
 }
 
@@ -88,11 +93,6 @@ export const getSources = async (): Promise<any> => {
 
 export const getLeadByDuration = async (duration: "today" | "weekly" | "monthly" | "yearly" | "all"): Promise<any> => {
     const response = await axiosInstance.get(`/leads/getBy/${duration}`);
-    return response.data;
-}
-
-export const getReminderByMonth = async (month: string): Promise<any> => {
-    const response = await axiosInstance.get(`/leads/getRemindersByMonth/${month}`);
     return response.data;
 }
 
