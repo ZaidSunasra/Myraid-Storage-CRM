@@ -340,6 +340,16 @@ export const editLeadService = async ({ id, first_name, last_name, phones, email
                 id: true
             }
         });
+        await tx.notification.updateMany({
+            where: {
+                id: {
+                    in: assignedNotification.map((n) => n.id),
+                }
+            },
+            data: {
+                is_sent: false
+            }
+        })
         await tx.recipient.deleteMany({
             where: {
                 notification_id: {
@@ -482,8 +492,6 @@ export const addDescriptionService = async (id: string, description: string, aut
                 data: ids.map((id) => ({
                     notification_id: notification_id.id,
                     user_id: id,
-                    is_ready: true,
-                    ready_at: new Date(),
                 }))
             });
         }
@@ -532,8 +540,6 @@ export const editDescriptionService = async (id: string, description: string, au
                 data: ids.map((id) => ({
                     notification_id: notification.id,
                     user_id: id,
-                    is_ready: true,
-                    ready_at: new Date(),
                 }))
             });
         }
