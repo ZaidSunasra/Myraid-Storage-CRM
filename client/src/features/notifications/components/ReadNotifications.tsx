@@ -6,7 +6,7 @@ const ReadNotifications = ({ notification }: { notification: any }) => {
             <div className="flex items-start space-x-4">
                 <div className="flex-1 space-y-1">
                     <h4 className="font-semibold text-sm">{notification.notification.title}</h4>
-                    {notification.message && (
+                    {notification.notification.message && (
                         <p className="text-muted-foreground text-sm">
                             {notification.notification.message}
                         </p>

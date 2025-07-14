@@ -12,12 +12,10 @@ import ReadNotifications from "../components/ReadNotifications";
 const NotificationPage = () => {
 
     const { isLoading, notifications, unreadCount } = useNotifications();
-    const { data: readNotifData, isLoading: readNotifLoading } = fetchReadNotifications();
+    const { data: readNotificationData, isLoading: readNotificationLoading } = fetchReadNotifications();
     const navigate = useNavigate();
 
-    if (isLoading || readNotifLoading) return <>Loading..</>
-
-    console.log(notifications);
+    if (isLoading || readNotificationLoading) return <>Loading..</>
 
     return (
         <div className="min-h-screen bg-accent">
@@ -59,7 +57,7 @@ const NotificationPage = () => {
                             <Clock className="h-4 w-4" />
                             <span>Past Notifications</span>
                             <Badge variant="secondary" className="ml-2">
-                                {readNotifData.length}
+                                {readNotificationData.length}
                             </Badge>
                         </TabsTrigger>
                     </TabsList>
@@ -91,13 +89,13 @@ const NotificationPage = () => {
                         )}
                     </TabsContent>
                     <TabsContent value="past" className="space-y-4">
-                        {readNotifData.notifications.length > 0 ? (
+                        {readNotificationData.notifications.length > 0 ? (
                             <>
                                 <div className="flex items-center justify-between">
-                                    <h2 className="text-lg font-semibold">Unread Notifications ({readNotifData.notifications.length})</h2>
+                                    <h2 className="text-lg font-semibold">Unread Notifications ({readNotificationData.notifications.length})</h2>
                                 </div>
                                 <div className="space-y-3">
-                                    {readNotifData.notifications.map((notification: any) => (
+                                    {readNotificationData.notifications.map((notification: any) => (
                                         <ReadNotifications key={notification.id} notification={notification} />
                                     ))}
 
