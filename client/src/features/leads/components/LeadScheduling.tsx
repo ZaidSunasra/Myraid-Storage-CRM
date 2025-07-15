@@ -35,7 +35,7 @@ const LeadScheduling = () => {
     })
 
     const onSubmit = (data: AddReminder) => {
-        let sendAt = data.send_at;
+        const sendAt = data.send_at;
         if (sendAt && time) {
             const [hours, minutes] = time.split(":").map(Number)
             sendAt.setHours(hours, minutes, 0, 0);
