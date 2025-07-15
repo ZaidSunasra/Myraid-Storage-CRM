@@ -1,11 +1,8 @@
 import { useState } from "react";
 import { startOfMonth, endOfMonth, startOfWeek, endOfWeek, addDays, addMonths, subMonths, format, isSameDay } from "date-fns";
 import DailyData from "../components/DailyData";
-import { useUser } from "@/context/UserContext";
-import { DEPARTMENTS } from "zs-crm-common";
 import { fetchReminderByMonth } from "@/api/leads/leads.queries";
 import formatDate from "@/utils/formatDate";
-import { useNavigate } from "react-router";
 import Navbar from "@/shared/components/Navbar";
 import { Button } from "@/shared/components/ui/button";
 import { ChevronLeft, ChevronRight } from "lucide-react";
@@ -17,9 +14,6 @@ const CalendarPage = () => {
 
     const [currentMonth, setCurrentMonth] = useState(new Date());
     const { data, isError, isPending } = fetchReminderByMonth(formatDate(currentMonth));
-
-    const navigate = useNavigate();
-    const { user } = useUser()
 
     const days = (() => {
         const start = startOfWeek(startOfMonth(currentMonth), { weekStartsOn: 0 });
@@ -88,67 +82,37 @@ const CalendarPage = () => {
                     const meetings = data.remindersByDay[formatted] || [];
                     return <div key={formatted}>
                         {
-                            user?.department === DEPARTMENTS[1] ?
-                                (<Sheet>
-                                    <SheetTrigger asChild>
-                                        <div
-                                            className={`border rounded p-2 min-h-24 flex flex-col justify-between h-full
-                                            hover:bg-blue-300 hover:border-blue-500  
-                                            ${format(day, "MM") !== format(currentMonth, "MM") ? "opacity-30" : ""} 
-                                            ${isSameDay(formatted, new Date()) ? "border-blue-500" : ""}`}
-                                        >
-                                            <div className="font-medium text-sm">{format(day, "d")}</div>
-                                            {meetings.length > 0 && meetings.map(
-                                                (meeting: any) => (
-                                                    <div
-                                                        key={meeting.lead_id}
-                                                        className="bg-blue-500 mb-2 p-3 rounded text-white text-sm shadow hover:bg-blue-600 transition duration-200 cursor-pointer"
-                                                        onClick={() => navigate(`/lead/${meeting.lead_id}?tab=scheduling`)}
-                                                        title={meeting.title}
-                                                    >
-                                                        {meeting.title.length > 20
-                                                            ? meeting.title.slice(0, 20) + "..."
-                                                            : meeting.title} - {meeting.client_name} from {meeting.company_name}
-                                                    </div>
-                                                )
-                                            )}
-                                        </div>
-                                    </SheetTrigger>
-                                    <SheetContent>
-                                        <SheetHeader>
-                                            <SheetTitle>Team Activity Recap for {formatted }</SheetTitle>
-                                            <SheetDescription>
-                                                Catch up on today's progress — leads added, client updates, and who did what. Everything you need to stay informed.
-                                            </SheetDescription>
-
-                                        </SheetHeader>
-                                        <DailyData leadsData={data.leadsGrouped[formatted]} meetingData={data.remindersByDay[formatted]} />
-                                    </SheetContent>
-                                </Sheet>) : (
+                            <Sheet>
+                                <SheetTrigger asChild>
                                     <div
-                                        key={formatted}
-                                        className={`border rounded p-2 min-h-24 flex flex-col justify-between
-                                       hover:bg-blue-300 hover:border-blue-500 
-                                        ${format(day, "MM") !== format(currentMonth, "MM") ? "opacity-30" : ""} 
-                                        ${isSameDay(formatted, new Date()) ? "border-blue-500" : ""}`}
+                                        className={`
+                                                 border rounded-lg p-3 min-h-28 flex flex-col justify-between transition-all duration-200 h-full
+                                                 hover:bg-blue-100 hover:border-blue-500 shadow-sm 
+                                                 ${format(day, "MM") !== format(currentMonth, "MM") ? "opacity-30" : ""} 
+                                                 ${isSameDay(formatted, new Date()) ? "border-blue-500 ring-2 ring-blue-400" : ""} 
+                                             `}
                                     >
-                                        <div className="font-medium text-sm">{format(day, "d")}</div>
-                                        {meetings.length > 0 && meetings.map(
-                                            (meeting: any) => (
-                                                <div
-                                                    key={meeting.lead_id}
-                                                    className="bg-blue-500 mb-2 p-3 rounded text-white text-sm shadow hover:bg-blue-600 transition duration-200 cursor-pointer"
-                                                    onClick={() => navigate(`/lead/${meeting.lead_id}?tab=scheduling`)}
-                                                    title={meeting.title}
-                                                >
-                                                    {meeting.title.length > 20
-                                                        ? meeting.title.slice(0, 20) + "..."
-                                                        : meeting.title} - {meeting.client_name} from {meeting.company_name}
-                                                </div>
-                                            )
+                                        <div className="text-sm font-semibold text-gray-800">{format(day, "d")}</div>
+                                        {meetings.length > 0 && (
+                                            <div className="mt-2 flex items-center justify-between text-sm text-gray-700">
+                                                <span className="font-bold">Meetings</span>
+                                                <span className="w-6 h-6 flex items-center justify-center rounded-full bg-blue-600 text-white text-xs font-bold">
+                                                    {meetings.length}
+                                                </span>
+                                            </div>
                                         )}
                                     </div>
-                                )
+                                </SheetTrigger>
+                                <SheetContent>
+                                    <SheetHeader>
+                                        <SheetTitle>Team Activity Recap for {formatted}</SheetTitle>
+                                        <SheetDescription>
+                                            Catch up on today's progress — leads added, client updates, and who did what. Everything you need to stay informed.
+                                        </SheetDescription>
+                                    </SheetHeader>
+                                    <DailyData leadsData={data.leadsGrouped[formatted]} meetingData={data.remindersByDay[formatted]} />
+                                </SheetContent>
+                            </Sheet>
                         }
                     </div>
                 })}
