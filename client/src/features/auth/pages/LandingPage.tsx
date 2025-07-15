@@ -5,7 +5,7 @@ import { Sheet, SheetContent, SheetDescription, SheetHeader, SheetTitle, SheetTr
 const LandingPage = () => {
 
     return <div className="w-screen h-screen flex flex-col items-center justify-center  bg-primary-foreground">
-        <h1 className="font-bold text-5xl text-primary"> Myraid Storage Systems</h1>
+        <h1 className="font-bold text-2xl md:text-4xl lg:text-5xl 2xl:text-7xl text-primary"> Myraid Storage Systems</h1>
         <div className="m-8">
             <Sheet>
                 <SheetTrigger asChild>

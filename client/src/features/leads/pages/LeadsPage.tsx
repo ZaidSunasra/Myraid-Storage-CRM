@@ -16,7 +16,7 @@ const LeadsPage = () => {
     return <div className="bg-accent min-h-screen">
         <Navbar />
         <div className="max-w-7xl mx-auto py-6 sm:px-6 lg:px-8">
-            <div className="flex justify-between items-center mb-6">
+            <div className="flex justify-between items-center mb-6 gap-1">
                 <div>
                     <h1 className="text-2xl font-bold text-primary">Leads</h1>
                     <p className="text-muted-foreground">Manage and track your sales leads</p>

@@ -107,8 +107,6 @@ const LeadDescription = ({ id }: { id: string }) => {
     if (descriptionPending || allEmployeePending) return <>Loading...</>
     if (descriptionError || allEmployeeError) return <>Error..</>
 
-    //console.log(allEmployeeArray)
-
     return <>
         <Form {...form}>
             <form onSubmit={form.handleSubmit(onPostSubmit)} className="w-full space-y-4">
@@ -124,9 +122,9 @@ const LeadDescription = ({ id }: { id: string }) => {
                                     {descriptionData.descriptions.map((description: any) => (
                                         <div
                                             key={description.id}
-                                            className="flex items-start justify-between bg-muted p-4 rounded-lg shadow-sm hover:bg-muted/80 transition"
+                                            className="flex flex-col sm:flex-row items-start justify-between bg-muted p-4 rounded-lg shadow-sm hover:bg-muted/80 transition"
                                         >
-                                            <div className="flex items-start gap-3">
+                                            <div className="flex items-start gap-3 mb-2 sm:mb-0">
                                                 <Notebook className="h-6 w-6 mt-1 text-primary" />
                                                 <div>
                                                     <div className="text-sm text-accent-foreground whitespace-pre-line break-words">
@@ -144,7 +142,7 @@ const LeadDescription = ({ id }: { id: string }) => {
                                                     </div>
                                                 </div>
                                             </div>
-                                            <div className="flex gap-2 items-start">
+                                            <div className="flex gap-2 justify-end w-full sm:w-0">
                                                 <Button
                                                     type="button"
                                                     onClick={() => { setData(description), setOpen(true), setActionType("edit") }}

@@ -47,14 +47,14 @@ const NotificationPage = () => {
                 <Tabs className="space-y-6" defaultValue="unread">
                     <TabsList className="grid w-full grid-cols-2 bg-background">
                         <TabsTrigger value="unread" className="flex items-center space-x-2">
-                            <Bell className="h-4 w-4" />
+                            <Bell className="h-4 w-4 hidden sm:block" />
                             <span>Unread</span>
                             {unreadCount > 0 && (
                                 <Badge className="bg-red-500 text-white ml-2">{unreadCount}</Badge>
                             )}
                         </TabsTrigger>
                         <TabsTrigger value="past" className="flex items-center space-x-2">
-                            <Clock className="h-4 w-4" />
+                            <Clock className="h-4 w-4 hidden sm:block"/>
                             <span>Past Notifications</span>
                             <Badge variant="secondary" className="ml-2">
                                 {readNotificationData.length}

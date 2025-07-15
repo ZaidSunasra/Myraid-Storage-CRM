@@ -51,7 +51,7 @@ const Navbar = () => {
                     <div className="flex-shrink-0 flex items-center">
                         <span className=" text-xl font-bold text-primary cursor-pointer"> Myraid Storage</span>
                     </div>
-                    <div className="hidden sm:flex sm:space-x-8 ">
+                    <div className="hidden lg:flex sm:space-x-8 ">
                         {navItems.map((item) => (
                             <NavLink
                                 key={item.url}
@@ -93,7 +93,7 @@ const Navbar = () => {
                             <DropdownMenuItem onClick={onSubmit}>Sign out</DropdownMenuItem>
                         </DropdownMenuContent>
                     </DropdownMenu>
-                    <div className="sm:hidden h-8 w-8 flex items-center">
+                    <div className="lg:hidden h-8 w-8 flex items-center">
                         <button onClick={() => setMenuOpen(!menuOpen)} className="text-primary focus:outline-none">
                             {menuOpen ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6" />}
                         </button>

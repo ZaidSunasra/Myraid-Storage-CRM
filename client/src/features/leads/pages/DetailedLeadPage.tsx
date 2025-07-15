@@ -28,9 +28,9 @@ const DetailedLeadPage = () => {
   return <div className="min-h-screen bg-accent">
     <Navbar />
     <div className="max-w-7xl mx-auto py-6 sm:px-6 lg:px-8">
-      <div className="px-4 py-6 sm:px-0">
+      <div className="px-0 py-6">
         <div className="flex items-center justify-between mb-6 ">
-          <div className="flex items-center space-x-4">
+          <div className="flex items-center">
             <NavLink to="/lead">
               <Button variant="ghost" size="icon">
                 <ArrowLeft className="h-4 w-4" />

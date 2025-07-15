@@ -45,8 +45,7 @@ const LeadAnalytics = () => {
                     <div className="text-xl font-bold">
                         Total Leads: <span className="text-primary">{data.totalLeads}</span>
                     </div>
-
-                    <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-4">
+                    <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-2 lg:grid-cols-4 gap-4">
                         {Object.entries(data.employeeLeadCount).map(([name, count]: any, index: number) => {
                             const colors = [
                                 "bg-chart-1/10 text-chart-1",

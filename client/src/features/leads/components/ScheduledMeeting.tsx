@@ -22,7 +22,7 @@ const ScheduledMeeting = () => {
 
     const onSubmit = () => {
         deleteReminder.mutate(dialog.data);
-        setDialog({open: false, data: null, action: null})
+        setDialog({ open: false, data: null, action: null })
     }
 
     if (isPending) {
@@ -41,7 +41,7 @@ const ScheduledMeeting = () => {
             <CardContent>
                 <div className="space-y-4">
                     {data.reminders.map((meeting: any) => (
-                        <div key={meeting.id} className="grid grid-cols-5 lg:grid-cols-9 md:grid-cols-9 items-center p-4 border rounded-lg gap-4">
+                        <div key={meeting.id} className="grid grid-cols-5 md:grid-cols-9 items-center p-4 border rounded-lg gap-4">
                             <div className="col-span-1 flex justify-center">
                                 <div className="p-2 bg-blue-100 rounded-full">
                                     <CalendarIcon className="h-4 w-4 text-blue-600" />
@@ -51,10 +51,10 @@ const ScheduledMeeting = () => {
                                 <h4 className="font-medium break-words">{meeting.title}</h4>
                                 <p className="text-sm text-gray-600 break-words">{meeting.message}</p>
                             </div>
-                            <div className=" col-span-4 md:col-span-3">
+                            <div className="col-span-3 md:col-span-3">
                                 <h4 className="font-medium">Meeting Schedule</h4>
                                 <div className="text-sm text-gray-600 flex items-center break-words">
-                                    <CalendarIcon className="h-3 w-3 mr-1" />
+                                    <CalendarIcon className="h-3 w-3 mr-1 hidden sm:block" />
                                     {new Date(meeting.send_at).toLocaleString("en-IN", {
                                         day: "2-digit",
                                         month: "2-digit",
@@ -64,7 +64,7 @@ const ScheduledMeeting = () => {
                                     })}
                                 </div>
                             </div>
-                            <div className="col-span-1 flex justify-end gap-4">
+                            <div className="col-span-2 md:col-span-1 flex justify-end gap-2 md:gap-4">
                                 <Button variant="destructive"
                                     onClick={() => { setDialog({ open: true, data: meeting.id, action: "delete" }) }}
                                 >

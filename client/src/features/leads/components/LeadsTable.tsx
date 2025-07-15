@@ -69,51 +69,50 @@ const LeadsTable = () => {
 
     return <Card className="mb-6 bg-background">
         <CardHeader>
-            <div className="flex flex-col sm:flex-row gap-4">
-                <div className="flex-1">
-                    <div className="relative">
-                        <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-accent-foreground h-4 w-4" />
-                        <Input
-                            placeholder="Search leads by name or company"
-                            value={searchInput}
-                            onChange={(e) => { setSearchInput(e.target.value) }}
-                            className="pl-10 text-accent-foreground"
-                        />
-                    </div>
+            <div className="flex flex-col md:flex-row gap-4">
+                <div className="flex-1 relative w-full md:w-[270px]">
+                    <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-accent-foreground h-4 w-4" />
+                    <Input
+                        placeholder="Search leads by name or company"
+                        value={searchInput}
+                        onChange={(e) => { setSearchInput(e.target.value) }}
+                        className="pl-10 text-accent-foreground"
+                    />
                 </div>
-                {user?.department === DEPARTMENTS[1] ? <div className="w-full sm:w-64 ">
-                    <Popover>
-                        <PopoverTrigger asChild>
-                            <Button variant="outline" className="flex justify-between w-full">
-                                Filter by employees
-                                <ChevronsUpDown></ChevronsUpDown>
-                            </Button>
-                        </PopoverTrigger>
-                        <PopoverContent className="w-64 p-0">
-                            <Command>
-                                <CommandInput placeholder="Search employees..." />
-                                <CommandList>
-                                    <CommandEmpty>No employees found.</CommandEmpty>
-                                    <CommandGroup>
-                                        {employeeData.employees.map((employee: any) => (
-                                            <CommandItem key={employee.id}>
-                                                <Checkbox
-                                                    className="mr-2"
-                                                    checked={employeeIDs.includes(String(employee.id))}
-                                                    onCheckedChange={() => toggleEmployee(String(employee.id), setSearchParams, employeeIDs, rows)}
-                                                />
-                                                {employee.first_name} {employee.last_name}
-                                            </CommandItem>
-                                        ))}
-                                    </CommandGroup>
-                                </CommandList>
-                            </Command>
-                        </PopoverContent>
-                    </Popover>
-                </div > : <></>}
+                {user?.department === DEPARTMENTS[1] ?
+                    <div>
+                        <Popover>
+                            <PopoverTrigger asChild>
+                                <Button variant="outline" className="flex justify-between w-full">
+                                    Filter by employees
+                                    <ChevronsUpDown></ChevronsUpDown>
+                                </Button>
+                            </PopoverTrigger>
+                            <PopoverContent className="w-64 p-0">
+                                <Command>
+                                    <CommandInput placeholder="Search employees..." />
+                                    <CommandList>
+                                        <CommandEmpty>No employees found.</CommandEmpty>
+                                        <CommandGroup>
+                                            {employeeData.employees.map((employee: any) => (
+                                                <CommandItem key={employee.id}>
+                                                    <Checkbox
+                                                        className="mr-2"
+                                                        checked={employeeIDs.includes(String(employee.id))}
+                                                        onCheckedChange={() => toggleEmployee(String(employee.id), setSearchParams, employeeIDs, rows)}
+                                                    />
+                                                    {employee.first_name} {employee.last_name}
+                                                </CommandItem>
+                                            ))}
+                                        </CommandGroup>
+                                    </CommandList>
+                                </Command>
+                            </PopoverContent>
+                        </Popover>
+                    </div > : <></>}
                 <div>
                     <Select onValueChange={handleRowChange} value={String(rows)}>
-                        <SelectTrigger className="w-[200px]">
+                        <SelectTrigger className="w-full md:w-18">
                             <SelectValue placeholder="Select number of rows" />
                         </SelectTrigger>
                         <SelectContent>
@@ -272,10 +271,10 @@ const LeadsTable = () => {
             </div>
         </CardContent>
         <CardFooter className="flex justify-center gap-4">
-            <div className=" flex  gap-2 mt-4 lg:ml-0">
+            <div className="flex gap-2 mt-4 lg:ml-0">
                 <Button
                     variant="outline"
-                    className="hidden h-8 w-8 p-0 lg:flex"
+                    className="h-8 w-8 p-0 lg:flex"
                     onClick={() => setPage(1, setSearchParams, rows)}
                     disabled={page == 1}
                 >
@@ -305,7 +304,7 @@ const LeadsTable = () => {
                 </Button>
                 <Button
                     variant="outline"
-                    className="hidden size-8 lg:flex"
+                    className=" size-8 lg:flex"
                     size="icon"
                     onClick={() => setPage(lastPage, setSearchParams, rows)}
                     disabled={page == lastPage}
