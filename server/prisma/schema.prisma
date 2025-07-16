@@ -92,21 +92,21 @@ model Client {
   company    Company @relation(fields: [company_id], references: [id])
   company_id Int
   lead       Lead[]
-  email      Email[]
-  phone      Phone[]
+  emails      Email[]
+  phones     Phone[]
 }
 
 model Email {
   id        Int     @id @default(autoincrement())
   email     String?
-  client    Client  @relation(fields: [client_id], references: [id])
+  client    Client  @relation(fields: [client_id], references: [id], onDelete: Cascade)
   client_id Int
 }
 
 model Phone {
   id        Int    @id @default(autoincrement())
   phone     String
-  client    Client @relation(fields: [client_id], references: [id])
+  client    Client @relation(fields: [client_id], references: [id], onDelete: Cascade)
   client_id Int
 }
 
