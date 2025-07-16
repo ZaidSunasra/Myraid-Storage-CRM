@@ -1,9 +1,8 @@
 import { Request, Response } from "express";
-import { addReminderSchema, LeadErrorResponse, LeadSuccessResponse } from "zs-crm-common";
+import { addReminderSchema, ErrorResponse, FetchReminderSuccessResponse, SuccessResponse } from "zs-crm-common";
 import { addReminderService, deleteReminderService, editReminderService, getReminderByDateService, getRemindersService } from "../services/reminder.service";
-import { FetchReminderSuccessResponse } from "../lead.types";
 
-export const fetchRemindersController = async (req: Request, res: Response<FetchReminderSuccessResponse | LeadErrorResponse>): Promise<any> => {
+export const fetchRemindersController = async (req: Request, res: Response<FetchReminderSuccessResponse | ErrorResponse>): Promise<any> => {
     const lead_id = req.params.id;
     try {
         const reminders = await getRemindersService(lead_id);
@@ -20,7 +19,7 @@ export const fetchRemindersController = async (req: Request, res: Response<Fetch
     }
 }
 
-export const addReminderController = async (req: Request, res: Response<LeadSuccessResponse | LeadErrorResponse>): Promise<any> => {
+export const addReminderController = async (req: Request, res: Response<SuccessResponse | ErrorResponse>): Promise<any> => {
     const { title, send_at, message, lead_id, reminder_type } = req.body;
     const author_id = res.locals.user.id
     const validation = addReminderSchema.safeParse(req.body);
@@ -44,7 +43,7 @@ export const addReminderController = async (req: Request, res: Response<LeadSucc
     }
 }
 
-export const editReminderController = async (req: Request, res: Response<LeadSuccessResponse | LeadErrorResponse>): Promise<any> => {
+export const editReminderController = async (req: Request, res: Response<SuccessResponse | ErrorResponse>): Promise<any> => {
     const reminder_id = req.params.id;
     const { title, send_at, message, lead_id, reminder_type } = req.body;
     const validation = addReminderSchema.safeParse(req.body);
@@ -68,7 +67,7 @@ export const editReminderController = async (req: Request, res: Response<LeadSuc
     }
 }
 
-export const deleteReminderController = async (req: Request, res: Response<LeadSuccessResponse | LeadErrorResponse>): Promise<any> => {
+export const deleteReminderController = async (req: Request, res: Response<SuccessResponse | ErrorResponse>): Promise<any> => {
     const reminder_id = req.params.id;
     try {
         await deleteReminderService(reminder_id);

@@ -1,5 +1,5 @@
 import express from "express";
-import { addLeadController, editLeadController, fetchAllLeadsController, fetchSalesEmployeeController, fetchLeadByIdController, fetchLeadsByDurationController, getProductsController, getSourcesController, fetchAllEmployeeController } from "../controllers/lead.controller";
+import { addLeadController, editLeadController, fetchAllLeadsController, fetchLeadByIdController, fetchLeadsByDurationController } from "../controllers/lead.controller";
 import authMiddleware from "../../../middlewares/auth.middleware";
 import checkDepartment from "../../../middlewares/department.middleware";
 import descriptionRouter from "./description.routes";
@@ -15,12 +15,5 @@ leadRouter.get("/getBy/:duration", authMiddleware, checkDepartment(["admin", "sa
 
 leadRouter.use("/description", descriptionRouter);
 leadRouter.use("/reminder", reminderRouter);
-
-leadRouter.get("/fetchSalesEmployee", authMiddleware, checkDepartment(["admin", "sales"]), fetchSalesEmployeeController);
-leadRouter.get("/fetchAllEmployees", authMiddleware, checkDepartment(["admin", "sales"]), fetchAllEmployeeController)
-
-leadRouter.get("/getProducts", authMiddleware, checkDepartment(["admin", "sales"]), getProductsController);
-
-leadRouter.get("/getSources", authMiddleware, checkDepartment(["admin", "sales"]), getSourcesController);
 
 export default leadRouter;

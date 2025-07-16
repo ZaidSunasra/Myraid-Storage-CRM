@@ -1,6 +1,7 @@
+import { GetDescriptionByIdOutput, GetDescriptionOutput } from "zs-crm-common";
 import { prisma } from "../../../libs/prisma";
 
-export const getDescriptionsService = async (lead_id: string): Promise<any> => {
+export const getDescriptionsService = async (lead_id: string): Promise<GetDescriptionOutput[]> => {
     const descriptions = await prisma.description.findMany({
         where: {
             lead_id: parseInt(lead_id)
@@ -17,7 +18,7 @@ export const getDescriptionsService = async (lead_id: string): Promise<any> => {
     return descriptions;
 }
 
-export const getDescriptionByIdService = async (description_id: string): Promise<any> => {
+export const getDescriptionByIdService = async (description_id: string): Promise<GetDescriptionByIdOutput | null> => {
     const description = await prisma.description.findUnique({
         where: {
             id: parseInt(description_id)

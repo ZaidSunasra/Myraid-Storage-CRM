@@ -1,9 +1,8 @@
 import { Request, Response } from "express";
-import { getDescriptionsService, getDescriptionByIdService, addDescriptionService, editDescriptionService, deleteDescriptionService} from "../services/description.service";
-import { LeadErrorResponse, LeadSuccessResponse } from "zs-crm-common";
+import { getDescriptionsService, getDescriptionByIdService, addDescriptionService, editDescriptionService, deleteDescriptionService } from "../services/description.service";
+import { ErrorResponse, SuccessResponse, GetDescriptionSuccessResponse, GetDescriptionByIdSuccessResponse } from "zs-crm-common";
 
-
-export const getDescriptionsController = async (req: Request, res: Response): Promise<any> => {
+export const getDescriptionsController = async (req: Request, res: Response<ErrorResponse | GetDescriptionSuccessResponse>): Promise<any> => {
     const lead_id = req.params.lead_id;
     try {
         const descriptions = await getDescriptionsService(lead_id);
@@ -20,7 +19,7 @@ export const getDescriptionsController = async (req: Request, res: Response): Pr
     }
 }
 
-export const getDescriptionByIdController = async (req: Request, res: Response): Promise<any> => {
+export const getDescriptionByIdController = async (req: Request, res: Response<ErrorResponse | GetDescriptionByIdSuccessResponse>): Promise<any> => {
     const description_id = req.params.id;
     try {
         const description = await getDescriptionByIdService(description_id);
@@ -37,7 +36,7 @@ export const getDescriptionByIdController = async (req: Request, res: Response):
     }
 }
 
-export const addDescriptionController = async (req: Request, res: Response<LeadSuccessResponse | LeadErrorResponse>): Promise<any> => {
+export const addDescriptionController = async (req: Request, res: Response<ErrorResponse | SuccessResponse>): Promise<any> => {
     const lead_id = req.params.id;
     const { description } = req.body;
     const author = res.locals.user;
@@ -55,7 +54,7 @@ export const addDescriptionController = async (req: Request, res: Response<LeadS
     }
 }
 
-export const editDescriptionController = async (req: Request, res: Response): Promise<any> => {
+export const editDescriptionController = async (req: Request, res: Response<ErrorResponse | SuccessResponse>): Promise<any> => {
     const description_id = req.params.id;
     const { description } = req.body;
     const author = res.locals.user;
@@ -73,7 +72,7 @@ export const editDescriptionController = async (req: Request, res: Response): Pr
     }
 }
 
-export const deleteDescriptionController = async (req: Request, res: Response): Promise<any> => {
+export const deleteDescriptionController = async (req: Request, res: Response<ErrorResponse | SuccessResponse>): Promise<any> => {
     const description_id = req.params.id;
     try {
         await deleteDescriptionService(description_id);

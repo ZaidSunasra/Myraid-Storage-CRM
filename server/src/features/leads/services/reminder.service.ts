@@ -1,6 +1,5 @@
-import { AddReminder, DEPARTMENTS, reminder_type } from "zs-crm-common";
+import { AddReminder, DEPARTMENTS, reminder_type, Reminders } from "zs-crm-common";
 import { prisma } from "../../../libs/prisma";
-import { Notification } from "@prisma/client"
 import { endOfMonth, format, startOfMonth } from "date-fns";
 
 export const addReminderService = async ({ title, send_at, message, lead_id, reminder_type }: AddReminder, author_id: number): Promise<void> => {
@@ -51,7 +50,7 @@ export const addReminderService = async ({ title, send_at, message, lead_id, rem
     });
 }
 
-export const editReminderService = async ({ title, send_at, message, lead_id, reminder_type }: any, reminder_id: string): Promise<any> => {
+export const editReminderService = async ({ title, send_at, message, lead_id, reminder_type }: any, reminder_id: string): Promise<void> => {
     await prisma.notification.update({
         where: {
             id: parseInt(reminder_id)
@@ -66,7 +65,7 @@ export const editReminderService = async ({ title, send_at, message, lead_id, re
     });
 }
 
-export const getRemindersService = async (lead_id: string): Promise<Notification[]> => {
+export const getRemindersService = async (lead_id: string): Promise<Reminders[]> => {
     const reminders = await prisma.notification.findMany({
         where: {
             lead_id: parseInt(lead_id),
@@ -142,7 +141,7 @@ export const getReminderByDateService = async (user: any, month: string): Promis
                     },
                 }),
         },
-        include: {        
+        include: {
             company: true,
             client_detail: true,
             assigned_to: {
@@ -161,7 +160,6 @@ export const getReminderByDateService = async (user: any, month: string): Promis
             created_at: 'asc',
         }
     });
-
     const remindersByDay: Record<string, any[]> = {};
     for (const reminder of reminders) {
         const day = format(reminder.send_at as Date, "yyyy-MM-dd");
@@ -175,7 +173,6 @@ export const getReminderByDateService = async (user: any, month: string): Promis
             client_name: `${reminder.lead?.client_detail.first_name} ${reminder.lead?.client_detail.last_name}`
         });
     }
-
     const leadsGrouped = leads.reduce((acc: any, lead) => {
         const date = format(lead.created_at, "yyyy-MM-dd");
         if (!acc[date]) acc[date] = {};
@@ -186,6 +183,5 @@ export const getReminderByDateService = async (user: any, month: string): Promis
         });
         return acc;
     }, {});
-
     return { remindersByDay, leadsGrouped };
 }

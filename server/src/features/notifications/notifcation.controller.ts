@@ -1,7 +1,8 @@
 import { Response, Request } from "express";
 import { getReadNotificationsService, getUnreadNotificationsService, markNotificationService } from "./notification.service";
+import { ErrorResponse, GetReadNotificationSuccessResponse, GetUnreadNotificationSuccessResponse, SuccessResponse } from "zs-crm-common";
 
-export const getUnreadNotificationsController = async (req: Request, res: Response): Promise<any> => {
+export const getUnreadNotificationsController = async (req: Request, res: Response<ErrorResponse | GetUnreadNotificationSuccessResponse>): Promise<any> => {
     const user_id = res.locals.user.id;
     try {
         const notifications = await getUnreadNotificationsService(user_id);
@@ -18,7 +19,7 @@ export const getUnreadNotificationsController = async (req: Request, res: Respon
     }
 }
 
-export const getReadNotificationsController = async (req: Request, res: Response): Promise<any> => {
+export const getReadNotificationsController = async (req: Request, res: Response<ErrorResponse | GetReadNotificationSuccessResponse>): Promise<any> => {
     const user_id = res.locals.user.id;
     try {
         const notifications = await getReadNotificationsService(user_id);
@@ -35,7 +36,7 @@ export const getReadNotificationsController = async (req: Request, res: Response
     }
 }
 
-export const markNotificationController = async (req: Request, res: Response): Promise<any> => {
+export const markNotificationController = async (req: Request, res: Response<ErrorResponse | SuccessResponse>): Promise<any> => {
     const recipient_id = req.params.id as string;
     try {
         await markNotificationService(recipient_id)
