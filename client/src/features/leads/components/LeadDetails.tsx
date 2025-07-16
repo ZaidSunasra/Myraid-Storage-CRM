@@ -32,7 +32,7 @@ const LeadDetails = ({ data }: { data: any }) => {
                     <div className="space-y-2">
                         <Label>Email</Label>
                         <div className="flex flex-col space-y-2">
-                            {data.client_detail.email.length == 0 ? "No email provided" : data.client_detail.email.map((e: { email: string }) => (
+                            {data.client_detail.emails.length == 0 ? "No email provided" : data.client_detail.emails.map((e: { email: string }) => (
                                 <div key={e.email} className="flex items-center gap-x-2">
                                     <Mail className="h-4 w-4 text-gray-400" />
                                     <span>{e.email}</span>
@@ -43,7 +43,7 @@ const LeadDetails = ({ data }: { data: any }) => {
                     <div className="space-y-2">
                         <Label>Phone</Label>
                         <div className="flex flex-col space-y-2">
-                            {data.client_detail.phone.length == 0 ? "No phone provided" : data.client_detail.phone.map((p: { phone: string }) => (
+                            {data.client_detail.phones.length == 0 ? "No phone provided" : data.client_detail.phones.map((p: { phone: string }) => (
                                 <div key={p.phone} className="flex items-center gap-x-2">
                                     <Phone className="h-4 w-4 text-gray-400" />
                                     <span>{p.phone}</span>
