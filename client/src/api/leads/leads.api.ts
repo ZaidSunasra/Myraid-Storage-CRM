@@ -72,22 +72,22 @@ export const deleteReminder = async (id: string): Promise<any> => {
 }
 
 export const getSalesEmployee = async (): Promise<any> => {
-    const response = await axiosInstance.get("/leads/fetchSalesEmployee");
+    const response = await axiosInstance.get("/employees/get-sales");
     return response.data;
 }
 
 export const getAllEmployee = async (): Promise<any> => {
-    const response = await axiosInstance.get("/leads/fetchAllEmployees");
+    const response = await axiosInstance.get("/employees/get-all");
     return response.data;
 }
 
 export const getProducts = async (): Promise<any> => {
-    const response = await axiosInstance.get("/leads/getProducts");
+    const response = await axiosInstance.get("/products/get");
     return response.data;
 }
 
 export const getSources = async (): Promise<any> => {
-    const response = await axiosInstance.get("/leads/getSources");
+    const response = await axiosInstance.get("/sources/get");
     return response.data;
 }
 
