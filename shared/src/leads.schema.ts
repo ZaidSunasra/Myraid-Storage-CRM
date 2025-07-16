@@ -27,26 +27,116 @@ export const addReminderSchema = z.object({
     send_at: z.coerce.date("Date and time are required"),
     reminder_type: z.enum(NOTIFICATION_TYPE),
     lead_id: z.coerce.number().optional(),
-    deal_id: z.coerce.number().optional()
+    deal_id: z.coerce.number().optional(),
+    description_id: z.coerce.number().optional()
 })
 
-export type LeadSuccessResponse = {
-    message: string,
+export type SuccessResponse = {
+    message: string;
 };
 
-export type LeadErrorResponse = {
-    message: string,
-    error?: any,
-}
-
-export type AddLeadSuccessResponse = LeadSuccessResponse & {
-    id: number
+export type ErrorResponse = {
+    message: string;
+    error?: any;
 }
 
 export type AddLead = z.infer<typeof leadSchema>;
 
 export type EditLead = AddLead & { id: number };
 
-export type AddDescription = z.infer<typeof addDescriptionSchema>
+export type AddLeadSuccessResponse = SuccessResponse & {
+    id: number;
+}
+
+export type FetchLeadOutput = {
+    id: number;
+    created_at: Date;
+    company_id: number;
+    client_id: number;
+    source_id: number;
+    product_id: number;
+    company: {
+        name: string;
+        id: number;
+        address: string;
+        gst_no: string | null;
+        created_at: Date;
+    };
+    assigned_to: {
+        user: {
+            first_name: string;
+            last_name: string;
+            id: number;
+        }
+    }[];
+    client_detail: {
+        first_name: string;
+        last_name: string;
+        emails: { email: string | null }[];
+        phones: { phone: string }[];
+    }
+}
+
+export type FetchLeadSuccessResponse = {
+    message?: string;
+    leads: FetchLeadOutput[];
+    totalLeads: number;
+}
+
+export type FetchLeadByIdSuccessResponse = {
+    messafe: string;
+    lead: FetchLeadOutput | null;
+}
+
+export type GetLeadByDuration = {
+    totalLeads: number;
+    employeeLeadCount: Record<string, number>;
+}
+
+export type GetLeadByDurationSuccessResponse = SuccessResponse & GetLeadByDuration;
+
+export type Reminders = {
+    id: number;
+    message: string | null;
+    title: string;
+    created_at: Date;
+    send_at: Date | null;
+    is_sent: boolean;
+    type: reminder_type;
+    lead_id: number | null;
+    deal_id: number | null;
+    description_id: number | null;
+}
 
 export type AddReminder = z.infer<typeof addReminderSchema>;
+
+export type FetchReminderSuccessResponse = {
+    message: string;
+    reminders: Reminders[];
+}
+
+export type AddDescription = z.infer<typeof addDescriptionSchema>
+
+export type GetDescriptionByIdOutput = {
+    id: number;
+    lead_id: number;
+    created_at: Date;
+    updated_at: Date | null;
+    notes: string;
+    updated_by: number;
+};
+
+export type GetDescriptionByIdSuccessResponse = SuccessResponse & {
+  description: GetDescriptionByIdOutput | null;
+};
+
+export type GetDescriptionOutput = GetDescriptionByIdOutput & {
+    user: {
+        first_name: string;
+        last_name: string;
+    }
+}
+
+export type GetDescriptionSuccessResponse = SuccessResponse & {
+    descriptions: GetDescriptionOutput[];
+}

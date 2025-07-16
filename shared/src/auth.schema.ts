@@ -19,19 +19,19 @@ export const signupSchema = z.object({
 });
 
 export type LoginSuccessResponse = {
-    message: string,
+    message: string;
     userData: {
-        email: string,
-        code: string | null,
-        name: string,
-        department: department,
-        id: number
+        email: string;
+        code: string | null;
+        name: string;
+        department: department;
+        id: number;
     }
 };
 
 export type SignupResponse = {
-    message: string,
-    error?: any
+    message: string;
+    error?: any;
 };;
 
 export type AddUser = z.infer<typeof signupSchema>;
