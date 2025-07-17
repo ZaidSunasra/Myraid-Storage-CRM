@@ -1,4 +1,4 @@
-import { AddReminder, DEPARTMENTS, reminder_type, Reminders } from "zs-crm-common";
+import { AddReminder, DEPARTMENTS, GetDataByMonth, reminder_type, Reminders } from "zs-crm-common";
 import { prisma } from "../../../libs/prisma";
 import { endOfMonth, format, startOfMonth } from "date-fns";
 
@@ -69,6 +69,7 @@ export const getRemindersService = async (lead_id: string): Promise<Reminders[]>
     const reminders = await prisma.notification.findMany({
         where: {
             lead_id: parseInt(lead_id),
+            type: "client_meeting"
         }
     });
     return reminders;
@@ -82,7 +83,7 @@ export const deleteReminderService = async (reminder_id: string): Promise<void> 
     })
 }
 
-export const getReminderByDateService = async (user: any, month: string): Promise<any> => {
+export const getReminderByDateService = async (user: any, month: string): Promise<GetDataByMonth> => {
     const now = new Date(month);
     const start = startOfMonth(now);
     const end = endOfMonth(now);
