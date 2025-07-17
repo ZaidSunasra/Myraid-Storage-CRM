@@ -1,4 +1,6 @@
-import { fetchSalesEmployee, fetchProducts, fetchSources } from "@/api/leads/leads.queries";
+import { FetchSalesEmployee } from "@/api/employees/employee.queries";
+import { FetchProducts } from "@/api/products/product.queries";
+import { FetchSources } from "@/api/sources/source.queries";
 import { useUser } from "@/context/UserContext";
 import { Button } from "@/shared/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/shared/components/ui/card";
@@ -6,14 +8,14 @@ import { FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/shar
 import { Input } from "@/shared/components/ui/input";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/shared/components/ui/select";
 import { ArrowLeft, Plus, Trash, User } from "lucide-react";
-import { useFieldArray } from "react-hook-form";
-import { DEPARTMENTS } from "zs-crm-common";
+import { useFieldArray, type UseFormReturn } from "react-hook-form";
+import { DEPARTMENTS, type AddLead, type GetEmployeeOutput, type GetProductOutput, type GetSourceOutput } from "zs-crm-common";
 
-const AddEditLeadDetails = ({ form, handleClick }: { form: any, handleClick: () => void }) => {
+const AddEditLeadDetails = ({ form, handleClick }: { form: UseFormReturn<AddLead>, handleClick: () => void }) => {
 
-    const { data: employeeData, isError: employeeError, isPending: employeePending } = fetchSalesEmployee();
-    const { data: sourceData, isError: sourceError, isPending: sourcePending } = fetchSources();
-    const { data: productData, isError: productError, isPending: productPending } = fetchProducts();
+    const { data: employeeData, isError: employeeError, isPending: employeePending } = FetchSalesEmployee();
+    const { data: sourceData, isError: sourceError, isPending: sourcePending } = FetchSources();
+    const { data: productData, isError: productError, isPending: productPending } = FetchProducts();
 
     const { user } = useUser();
 
@@ -138,16 +140,16 @@ const AddEditLeadDetails = ({ form, handleClick }: { form: any, handleClick: () 
                         render={({ field }) => (
                             <FormItem>
                                 <FormLabel>Source*</FormLabel>
-                                <Select onValueChange={field.onChange} defaultValue={field.value}>
+                                <Select onValueChange={(val) => field.onChange(Number(val))} defaultValue={String(field.value)}>
                                     <FormControl>
                                         <SelectTrigger className="w-full">
                                             <SelectValue placeholder="Select lead source" />
                                         </SelectTrigger>
                                     </FormControl>
                                     <SelectContent>
-                                        {sourceData.sources.map((source: any) => (
+                                        {sourceData.sources.map((source: GetSourceOutput) => (
                                             <SelectItem key={source.id} value={String(source.id)}>
-                                                {source.name.replace(/\b\w/g, (c: any) => c.toUpperCase())}
+                                                {source.name.replace(/\b\w/g, (c: string) => c.toUpperCase())}
                                             </SelectItem>
                                         ))}
                                     </SelectContent>
@@ -164,16 +166,16 @@ const AddEditLeadDetails = ({ form, handleClick }: { form: any, handleClick: () 
                         render={({ field }) => (
                             <FormItem>
                                 <FormLabel>Product*</FormLabel>
-                                <Select onValueChange={field.onChange} defaultValue={field.value}>
+                                <Select onValueChange={(val) => field.onChange(Number(val))} defaultValue={String(field.value)}>
                                     <FormControl>
                                         <SelectTrigger className="w-full">
                                             <SelectValue placeholder="Select Product" />
                                         </SelectTrigger>
                                     </FormControl>
                                     <SelectContent>
-                                        {productData.products.map((product: any) => (
+                                        {productData.products.map((product: GetProductOutput) => (
                                             <SelectItem key={product.id} value={String(product.id)}>
-                                                {product.name.replace(/\b\w/g, (c: any) => c.toUpperCase())}
+                                                {product.name.replace(/\b\w/g, (c: string) => c.toUpperCase())}
                                             </SelectItem>
                                         ))}
                                     </SelectContent>
@@ -194,12 +196,12 @@ const AddEditLeadDetails = ({ form, handleClick }: { form: any, handleClick: () 
                                 render={({ field }) => (
                                     <FormItem className="flex items-center gap-2 mb-2">
                                         <FormControl>
-                                            <Select onValueChange={field.onChange} defaultValue={field.value}>
+                                            <Select onValueChange={(val) => field.onChange(Number(val))} defaultValue={String(field.value)}>
                                                 <SelectTrigger className="w-full">
                                                     <SelectValue placeholder="Select user to assign" />
                                                 </SelectTrigger>
                                                 <SelectContent>
-                                                    {employeeData.employees.map((employee: any) => (
+                                                    {employeeData.employees.map((employee: GetEmployeeOutput) => (
                                                         <SelectItem key={employee.id} value={String(employee.id)}>
                                                             {employee.first_name} {employee.last_name}
                                                         </SelectItem>
@@ -215,7 +217,7 @@ const AddEditLeadDetails = ({ form, handleClick }: { form: any, handleClick: () 
                                 )}
                             />
                         ))}
-                        <Button type="button" onClick={() => assignAppend({ id: "" })} variant="outline" >
+                        <Button type="button" onClick={() => assignAppend({ id: 0 })} variant="outline" >
                             <Plus /> Add User
                         </Button>
                     </div>

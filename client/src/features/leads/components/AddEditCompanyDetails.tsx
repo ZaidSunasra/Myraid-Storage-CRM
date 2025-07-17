@@ -4,8 +4,10 @@ import { FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/shar
 import { Input } from "@/shared/components/ui/input";
 import { Textarea } from "@/shared/components/ui/textarea";
 import { Building2, ChevronRight } from "lucide-react";
+import type { UseFormReturn } from "react-hook-form";
+import type { AddLead } from "zs-crm-common";
 
-const AddEditCompanyDetails = ({ form, handleClick }: { form: any, handleClick: () => void }) => {
+const AddEditCompanyDetails = ({ form, handleClick }: { form: UseFormReturn<AddLead>, handleClick: () => void }) => {
 
     return <>
         <Card>

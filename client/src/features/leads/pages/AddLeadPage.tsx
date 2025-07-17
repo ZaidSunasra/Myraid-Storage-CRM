@@ -19,19 +19,19 @@ const AddLeadPage = () => {
     const { user } = useUser();
     const addLead = useAddLead();
 
-    const form = useForm({
+    const form = useForm<AddLead>({
         resolver: zodResolver(leadSchema),
         defaultValues: ({
             first_name: "",
             last_name: "",
             emails: [{ email: "" }],
             phones: [{ number: "" }],
-            source_id: "",
-            product_id: "",
+            source_id: 0,
+            product_id: 0,
             company_name: "",
             address: "",
             gst_no: "",
-            assigned_to: [{ id: String(user?.id) }]
+            assigned_to: [{ id: user?.id }]
         }),
     });
 
@@ -46,6 +46,7 @@ const AddLeadPage = () => {
     }
 
     const onSubmit = (data: AddLead) => {
+        console.log(typeof data.product_id);
         addLead.mutate(data);
     }
 

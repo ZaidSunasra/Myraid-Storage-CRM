@@ -6,7 +6,7 @@ import { NavLink, useParams } from "react-router";
 import { leadSchema, type AddLead } from "zs-crm-common";
 import Navbar from "@/shared/components/Navbar";
 import { Button } from "@/shared/components/ui/button";
-import { fetchLeadById } from "@/api/leads/leads.queries";
+import { FetchLeadById } from "@/api/leads/leads.queries";
 import { Form } from "@/shared/components/ui/form";
 import AddEditCompanyDetails from "../components/AddEditCompanyDetails";
 import AddEditLeadDetails from "../components/AddEditLeadDetails";
@@ -16,23 +16,23 @@ import { useEditLead } from "@/api/leads/leads.mutation";
 const EditLeadPage = () => {
 
     const { id } = useParams();
-    const { data, isPending } = fetchLeadById(id || "");
+    const { data, isPending } = FetchLeadById(id || "");
     const [currentStep, setCurrentStep] = useState<number>(1);
     const editLead = useEditLead(id || "");
 
-    const form = useForm({
+    const form = useForm<AddLead>({
         resolver: zodResolver(leadSchema),
         defaultValues: {
-            company_name: data?.lead.company.name,
-            gst_no: data?.lead.company.gst_no,
-            address: data?.lead.company.address,
-            first_name: data?.lead.client_detail.first_name,
-            last_name: data?.lead.client_detail.last_name,
-            emails: data?.lead.client_detail.emails?.map((e: any) => ({ email: e.email })) || [],
-            phones: data?.lead.client_detail.phones?.map((p: any) => ({ number: p.phone })) || [],
-            source_id: String(data?.lead.source.id),
-            product_id: String(data?.lead.product.id),
-            assigned_to: data?.lead.assigned_to.map((i: any) => ({ id: String(i.user.id) })) || [],
+            company_name: data?.lead?.company.name,
+            gst_no: data?.lead?.company.gst_no || "",
+            address: data?.lead?.company.address,
+            first_name: data?.lead?.client_detail.first_name,
+            last_name: data?.lead?.client_detail.last_name,
+            emails: data?.lead?.client_detail.emails?.filter((e): e is { email: string } => e.email !== null).map((e) => ({ email: e.email })) || [],
+            phones: data?.lead?.client_detail.phones?.map((p: { phone: string }) => ({ number: p.phone })) || [],
+            source_id: data?.lead?.source_id,
+            product_id: data?.lead?.product_id,
+            assigned_to: data?.lead?.assigned_to.map((i: { user: { id: number, first_name: string, last_name: string } }) => ({ id: i.user.id })) || [],
         },
     })
 
