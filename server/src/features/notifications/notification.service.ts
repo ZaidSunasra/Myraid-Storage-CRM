@@ -1,7 +1,7 @@
 import { prisma } from "../../libs/prisma";
-import { GetReadNotificationOutput, GetUnreadNotificationOutput } from "zs-crm-common";
+import { GetNotificationOutput } from "zs-crm-common";
 
-export const getUnreadNotificationsService = async (id: string): Promise<GetUnreadNotificationOutput[]> => {
+export const getUnreadNotificationsService = async (id: string): Promise<GetNotificationOutput[]> => {
     const notifications = await prisma.recipient.findMany({
         where: {
             user_id: parseInt(id),
@@ -15,7 +15,7 @@ export const getUnreadNotificationsService = async (id: string): Promise<GetUnre
     return notifications
 }
 
-export const getReadNotificationsService = async (id: string): Promise<GetReadNotificationOutput[]> => {
+export const getReadNotificationsService = async (id: string): Promise<GetNotificationOutput[]> => {
     const notifications = await prisma.recipient.findMany({
         where: {
             user_id: parseInt(id),
