@@ -1,5 +1,5 @@
 import { prisma } from "../../../libs/prisma";
-import { AddLead, EditLead, DEPARTMENTS, FetchLeadOutput, FetchLeadSuccessResponse, GetLeadByDuration } from "zs-crm-common"
+import { AddLead, EditLead, DEPARTMENTS, GetLeadOutput, GetLeadSuccessResponse, GetLeadByDuration } from "zs-crm-common"
 
 export const convertEmailIntoArray = (emails?: { email?: string }[]): string[] => {
     const emailStrings = emails?.map((e: any) => e.email?.trim()).filter((e: any): e is string => !!e) ?? [];
@@ -158,7 +158,7 @@ export const addLeadService = async ({ first_name, last_name, phones, emails, as
     })
 }
 
-export const getLeadsService = async (user: any, page: number, search: string, employeeId: string[], rows: number, startDate: string, endDate: string, sourceId: string[]): Promise<FetchLeadSuccessResponse> => {
+export const getLeadsService = async (user: any, page: number, search: string, employeeId: string[], rows: number, startDate: string, endDate: string, sourceId: string[]): Promise<GetLeadSuccessResponse> => {
     const isAdmin = user.department === DEPARTMENTS[1];
     const leads = await prisma.lead.findMany({
         take: rows,
@@ -383,7 +383,7 @@ export const editLeadService = async ({ id, first_name, last_name, phones, email
     });
 }
 
-export const getLeadByIdService = async (lead_id: string): Promise<FetchLeadOutput | null> => {
+export const getLeadByIdService = async (lead_id: string): Promise<GetLeadOutput | null> => {
     const lead = await prisma.lead.findUnique({
         where: {
             id: parseInt(lead_id)

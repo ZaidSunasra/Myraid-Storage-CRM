@@ -1,11 +1,10 @@
 import { Request, Response } from "express";
 import jwt from "jsonwebtoken";
-import { loginSchema, signupSchema,  LoginSuccessResponse, SignupResponse } from "zs-crm-common";
-import { addUser, comparePassword, findExistingUser, hashPassword } from "./auth.service";
+import { loginSchema, signupSchema, LoginSuccessResponse, SignupResponse, ErrorResponse, SuccessResponse } from "zs-crm-common";
+import { addUser, comparePassword, findExistingUser } from "./auth.service";
 import { cookieOptions } from "../../utils/constant";
-import { LoginFailureResponse } from "./auth.types";
 
-export const loginController = async (req: Request, res: Response<LoginSuccessResponse | LoginFailureResponse>): Promise<any> => {
+export const loginController = async (req: Request, res: Response<LoginSuccessResponse | ErrorResponse>): Promise<any> => {
 
     const { email, password } = req.body;
 
@@ -89,7 +88,7 @@ export const signupController = async (req: Request, res: Response<SignupRespons
     }
 }
 
-export const logoutController = async (req: Request, res: Response): Promise<any> => {
+export const logoutController =  (req: Request, res: Response<SuccessResponse>) : any => {
     try {
         res.clearCookie("Token");
         return res.status(200).send({

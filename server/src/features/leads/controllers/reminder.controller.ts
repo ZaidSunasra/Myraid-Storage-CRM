@@ -1,8 +1,8 @@
 import { Request, Response } from "express";
-import { addReminderSchema, ErrorResponse, FetchReminderSuccessResponse, SuccessResponse } from "zs-crm-common";
+import { addReminderSchema, ErrorResponse, GetDataByMonth, GetReminderSuccessResponse, SuccessResponse } from "zs-crm-common";
 import { addReminderService, deleteReminderService, editReminderService, getReminderByDateService, getRemindersService } from "../services/reminder.service";
 
-export const fetchRemindersController = async (req: Request, res: Response<FetchReminderSuccessResponse | ErrorResponse>): Promise<any> => {
+export const fetchRemindersController = async (req: Request, res: Response<GetReminderSuccessResponse | ErrorResponse>): Promise<any> => {
     const lead_id = req.params.id;
     try {
         const reminders = await getRemindersService(lead_id);
@@ -84,7 +84,7 @@ export const deleteReminderController = async (req: Request, res: Response<Succe
 }
 
 
-export const fetchRemindersByMonthController = async (req: Request, res: Response): Promise<any> => {
+export const fetchRemindersByMonthController = async (req: Request, res: Response< ErrorResponse | GetDataByMonth>): Promise<any> => {
     const user = res.locals.user;
     const month = req.params.month;
     try {

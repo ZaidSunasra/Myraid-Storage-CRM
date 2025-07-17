@@ -1,8 +1,8 @@
 import { Request, Response } from "express";
-import { ErrorResponse, AddLeadSuccessResponse, SuccessResponse, leadSchema,  FetchLeadByIdSuccessResponse, FetchLeadSuccessResponse, GetLeadByDurationSuccessResponse } from "zs-crm-common";
+import { ErrorResponse, SuccessResponse, leadSchema,  GetLeadByIdSuccessResponse, GetLeadSuccessResponse, GetLeadByDurationSuccessResponse } from "zs-crm-common";
 import { addLeadService, convertEmailIntoArray, editLeadService, findExistingCompany, findExistingEmail, findExistingGST, getLeadByDurationService, getLeadByIdService, getLeadsService } from "../services/lead.service";
 
-export const addLeadController = async (req: Request, res: Response<ErrorResponse | AddLeadSuccessResponse>): Promise<any> => {
+export const addLeadController = async (req: Request, res: Response<ErrorResponse | SuccessResponse>): Promise<any> => {
     const { first_name, last_name, phones, emails, assigned_to, source_id, product_id, company_name, address, gst_no } = req.body;
     const author = res.locals.user;
     const validation = leadSchema.safeParse(req.body);
@@ -39,7 +39,7 @@ export const addLeadController = async (req: Request, res: Response<ErrorRespons
     }
 }
 
-export const fetchAllLeadsController = async (req: Request, res: Response<ErrorResponse | FetchLeadSuccessResponse>): Promise<any> => {
+export const fetchAllLeadsController = async (req: Request, res: Response<ErrorResponse | GetLeadSuccessResponse>): Promise<any> => {
     const user = res.locals.user;
     const page = parseInt(req.query.page as string, 10) || 1;
     const rows = parseInt(req.query.rows as string, 10) || 10;
@@ -104,7 +104,7 @@ export const editLeadController = async (req: Request, res: Response<ErrorRespon
     }
 }
 
-export const fetchLeadByIdController = async (req: Request, res: Response<ErrorResponse | FetchLeadByIdSuccessResponse>): Promise<any> => {
+export const fetchLeadByIdController = async (req: Request, res: Response<ErrorResponse | GetLeadByIdSuccessResponse>): Promise<any> => {
     const lead_id = req.params.id;
     try {
         const lead = await getLeadByIdService(lead_id);
