@@ -1,6 +1,6 @@
 import { useEffect, useMemo, useState } from "react";
 import { useNavigate, useSearchParams } from "react-router";
-import { DEPARTMENTS, type GetEmployeeOutput, type GetLeadOutput, type GetSourceOutput } from "zs-crm-common";
+import { DEPARTMENTS, type Assignee, type GetEmployeeOutput, type GetLeadOutput, type GetSourceOutput } from "zs-crm-common";
 import useDebounce from "@/hooks/useDebounce";
 import { toggleEmployee, toggleSource, setPage, setDate, setSearch, clearFilter } from "@/hooks/useLeadsSearchParams";
 import { useUser } from "@/context/UserContext";
@@ -246,7 +246,7 @@ const LeadsTable = () => {
                                 <TableCell>{lead.source.name.replace("_", " ").replace(/\b\w/g, (char: string) => char.toUpperCase())}</TableCell>
                                 <TableCell>
                                     <div className="flex flex-col gap-1">
-                                        {lead.assigned_to.map((assignee: { user: {first_name: string, last_name: string, id: number}}) => (
+                                        {lead.assigned_to.map((assignee: Assignee) => (
                                             <div className="flex items-center" key={assignee.user.id}>
                                                 <User className="h-4 w-4 mr-2" />
                                                 {assignee.user.first_name} {assignee.user.last_name}

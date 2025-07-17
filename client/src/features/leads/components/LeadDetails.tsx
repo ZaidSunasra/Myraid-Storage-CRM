@@ -1,7 +1,7 @@
 import { Card, CardContent, CardHeader, CardTitle } from "@/shared/components/ui/card";
 import { Label } from "@/shared/components/ui/label";
 import { Building2, Mail, MapPin, Phone, User } from "lucide-react";
-import type { GetLeadOutput } from "zs-crm-common";
+import type { Assignee, GetLeadOutput } from "zs-crm-common";
 
 const LeadDetails = ({ data }: { data: GetLeadOutput }) => {
 
@@ -81,7 +81,7 @@ const LeadDetails = ({ data }: { data: GetLeadOutput }) => {
                     <div className="space-y-2">
                         <Label>Assigned To</Label>
                         <div className="space-y-1">
-                            {data.assigned_to.map((assignee: { user: { first_name: string, last_name: string, id: number } }, idx: number) => (
+                            {data.assigned_to.map((assignee: Assignee, idx: number) => (
                                 <div key={assignee.user.id ?? idx} className="flex items-center">
                                     <User className="h-4 w-4 text-gray-400 mr-2" />
                                     <span>{assignee.user.first_name} {assignee.user.last_name}</span>

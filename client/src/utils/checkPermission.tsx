@@ -2,7 +2,7 @@ import { FetchLeadById } from "@/api/leads/leads.queries";
 import { useUser } from "@/context/UserContext";
 import { Navigate, Outlet, useLocation, useParams } from "react-router";
 import { toast } from "sonner";
-import type { department } from "zs-crm-common";
+import type { Assignee, department } from "zs-crm-common";
 
 
 const ProtectedRoute = ({ allowedDepartment, checkOwnership = false }: { allowedDepartment: department[], checkOwnership?: boolean }) => {
@@ -25,7 +25,7 @@ const ProtectedRoute = ({ allowedDepartment, checkOwnership = false }: { allowed
 
     if (shouldFetch) {
         if (isPending) return <div>Loading...</div>;
-        const assignedIds = data?.lead?.assigned_to?.map((a: {user: {first_name: string, last_name: string, id: number}}) => a.user.id) || [];
+        const assignedIds = data?.lead?.assigned_to?.map((a: Assignee) => a.user.id) || [];
         if (isError || !assignedIds.includes(user?.id)) {
             return <Navigate to="/" replace />;
         }
