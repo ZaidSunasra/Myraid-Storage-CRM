@@ -1,6 +1,6 @@
 import { reminder_type, SuccessResponse } from "./leads.schema";
 
-export type GetUnreadNotificationOutput = {
+export type Receipient = {
     id: number;
     is_read: boolean;
     read_at: Date | null;
@@ -10,7 +10,7 @@ export type GetUnreadNotificationOutput = {
     ready_at: Date | null;
 }
 
-export type GetReadNotificationOutput = GetUnreadNotificationOutput & {
+export type GetNotificationOutput = Receipient & {
     notification: {
         id: number;
         lead_id: number | null;
@@ -25,10 +25,6 @@ export type GetReadNotificationOutput = GetUnreadNotificationOutput & {
     }
 }
 
-export type GetUnreadNotificationSuccessResponse = SuccessResponse & {
-    notifications: GetUnreadNotificationOutput[];
-}
-
-export type GetReadNotificationSuccessResponse = SuccessResponse & {
-    notifications: GetReadNotificationOutput[];
+export type GetNotificationSuccessResponse = SuccessResponse & {
+    notifications: GetNotificationOutput[];
 }

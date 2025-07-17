@@ -32,7 +32,7 @@ export type LoginSuccessResponse = {
 export type SignupResponse = {
     message: string;
     error?: any;
-};;
+};
 
 export type AddUser = z.infer<typeof signupSchema>;
 export type LoginUser = z.infer<typeof loginSchema>;

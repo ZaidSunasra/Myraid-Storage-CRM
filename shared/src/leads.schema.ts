@@ -7,11 +7,11 @@ export type reminder_type = typeof NOTIFICATION_TYPE[number];
 export const leadSchema = z.object({
     first_name: z.string().min(1, "First name required"),
     last_name: z.string().min(1, "Last name required"),
-    phones: z.array(z.object({number: z.string().min(5, "Phone number too short").max(15, "Phone number too long")})).min(1, "Atleast 1 phone number required"),
-    emails: z.array(z.object({ email: z.email("Enter valid email address").optional()})).optional(),
-    assigned_to: z.array(z.object({id: z.coerce.number().min(1, "Enter valid Id")})).min(1, "Atleast 1 Id required"),
-    source_id: z.coerce.number().min(1, "Source is required"),
-    product_id: z.coerce.number().min(1, "Product is required"),
+    phones: z.array(z.object({ number: z.string().min(5, "Phone number too short").max(15, "Phone number too long") })).min(1, "Atleast 1 phone number required"),
+    emails: z.array(z.object({ email: z.email("Enter valid email address").optional() })).optional(),
+    assigned_to: z.array(z.object({ id: z.number().min(1, "Enter valid Id") })).min(1, "Atleast 1 Id required"),
+    source_id: z.number().min(1, "Source is required"),
+    product_id: z.number().min(1, "Product is required"),
     company_name: z.string().min(1, "Company name required"),
     address: z.string().min(1, "Address required"),
     gst_no: z.string().optional(),
@@ -44,48 +44,56 @@ export type AddLead = z.infer<typeof leadSchema>;
 
 export type EditLead = AddLead & { id: number };
 
-export type AddLeadSuccessResponse = SuccessResponse & {
-    id: number;
+export type Assignee = {
+    user: {
+        first_name: string;
+        last_name: string;
+        id: number;
+    }
 }
 
-export type FetchLeadOutput = {
+export type Company = {
+    name: string;
+    id: number;
+    address: string;
+    gst_no: string | null;
+    created_at: Date;
+}
+
+export type GetLeadOutput = {
     id: number;
     created_at: Date;
     company_id: number;
     client_id: number;
     source_id: number;
     product_id: number;
-    company: {
-        name: string;
-        id: number;
-        address: string;
-        gst_no: string | null;
-        created_at: Date;
-    };
-    assigned_to: {
-        user: {
-            first_name: string;
-            last_name: string;
-            id: number;
-        }
-    }[];
+    company: Company;
+    assigned_to: Assignee[];
     client_detail: {
         first_name: string;
         last_name: string;
         emails: { email: string | null }[];
         phones: { phone: string }[];
+    };
+    product: {
+        id: number;
+        name: string;
+    };
+    source: {
+        id: number;
+        name: string;
     }
 }
 
-export type FetchLeadSuccessResponse = {
+export type GetLeadSuccessResponse = {
     message?: string;
-    leads: FetchLeadOutput[];
+    leads: GetLeadOutput[];
     totalLeads: number;
 }
 
-export type FetchLeadByIdSuccessResponse = {
-    messafe: string;
-    lead: FetchLeadOutput | null;
+export type GetLeadByIdSuccessResponse = {
+    message: string;
+    lead: GetLeadOutput | null;
 }
 
 export type GetLeadByDuration = {
@@ -110,7 +118,7 @@ export type Reminders = {
 
 export type AddReminder = z.infer<typeof addReminderSchema>;
 
-export type FetchReminderSuccessResponse = {
+export type GetReminderSuccessResponse = {
     message: string;
     reminders: Reminders[];
 }
@@ -127,7 +135,7 @@ export type GetDescriptionByIdOutput = {
 };
 
 export type GetDescriptionByIdSuccessResponse = SuccessResponse & {
-  description: GetDescriptionByIdOutput | null;
+    description: GetDescriptionByIdOutput | null;
 };
 
 export type GetDescriptionOutput = GetDescriptionByIdOutput & {
@@ -139,4 +147,33 @@ export type GetDescriptionOutput = GetDescriptionByIdOutput & {
 
 export type GetDescriptionSuccessResponse = SuccessResponse & {
     descriptions: GetDescriptionOutput[];
+}
+
+export type GetDataByMonth = {
+    remindersByDay: Record<string, ReminderMonth[]>;
+    leadsGrouped: Record<string, Record<string, LeadByDay[]>>;
+}
+
+export type ReminderMonth = {
+    client_name: string;
+    company_name: string;
+    title: string;
+    lead_id: number;
+}
+
+export type LeadByDay = {
+    client_id: number;
+    company_id: number;
+    created_at: Date;
+    id: number;
+    product_id: number;
+    source_id: number;
+    client_detail: {
+        company_id: number;
+        id: number;
+        first_name: string;
+        last_name: string;
+    },
+    assigned_to: Assignee[];
+    company: Company;
 }
