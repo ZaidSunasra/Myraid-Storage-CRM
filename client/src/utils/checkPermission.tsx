@@ -1,4 +1,4 @@
-import { fetchLeadById } from "@/api/leads/leads.queries";
+import { FetchLeadById } from "@/api/leads/leads.queries";
 import { useUser } from "@/context/UserContext";
 import { Navigate, Outlet, useLocation, useParams } from "react-router";
 import { toast } from "sonner";
@@ -12,7 +12,7 @@ const ProtectedRoute = ({ allowedDepartment, checkOwnership = false }: { allowed
 
     const shouldFetch = checkOwnership && user?.department === "sales" && Boolean(id);
 
-    const { data, isPending, isError } = fetchLeadById(id || "");
+    const { data, isPending, isError } = FetchLeadById(id || "");
 
     if (!user) {
         return <Navigate to="/" state={{ from: location }} replace />;
@@ -25,7 +25,7 @@ const ProtectedRoute = ({ allowedDepartment, checkOwnership = false }: { allowed
 
     if (shouldFetch) {
         if (isPending) return <div>Loading...</div>;
-        const assignedIds = data?.lead.assigned_to?.map((a: any) => a.user.id) || [];
+        const assignedIds = data?.lead?.assigned_to?.map((a: {user: {first_name: string, last_name: string, id: number}}) => a.user.id) || [];
         if (isError || !assignedIds.includes(user?.id)) {
             return <Navigate to="/" replace />;
         }

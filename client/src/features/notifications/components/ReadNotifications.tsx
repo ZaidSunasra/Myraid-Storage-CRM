@@ -1,12 +1,13 @@
 import { Card, CardContent } from "@/shared/components/ui/card"
 import getNavigationLink from "@/utils/getNavigationLink";
 import { useNavigate } from "react-router"
+import type { GetNotificationOutput } from "zs-crm-common";
 
-const ReadNotifications = ({ notification }: { notification: any }) => {
+const ReadNotifications = ({ notification }: { notification: GetNotificationOutput }) => {
     const navigate = useNavigate();
     const path = getNavigationLink(notification)
  
-    return <Card className={`transition-all duration-200 hover:shadow-md ${!notification.isRead ? "bg-blue-50/50 border-blue-200" : "bg-card"}`}>
+    return <Card className={`transition-all duration-200 hover:shadow-md ${!notification.is_read ? "bg-blue-50/50 border-blue-200" : "bg-card"}`}>
         <CardContent className="px-4" onClick={() => navigate(path)}>
             <div className="flex items-start space-x-4">
                 <div className="flex-1 space-y-1">

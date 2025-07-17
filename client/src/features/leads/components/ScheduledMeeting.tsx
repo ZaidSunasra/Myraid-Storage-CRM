@@ -1,5 +1,5 @@
 import { useParams } from "react-router"
-import { fetchReminders } from "@/api/leads/leads.queries"
+import { FetchReminders } from "@/api/leads/leads.queries"
 import { Card, CardContent, CardHeader, CardTitle } from "@/shared/components/ui/card"
 import { CalendarIcon, Pencil, Trash } from "lucide-react"
 import { Button } from "@/shared/components/ui/button"
@@ -7,21 +7,22 @@ import { Dialog, DialogClose, DialogContent, DialogDescription, DialogFooter, Di
 import { useDeleteReminder } from "@/api/leads/leads.mutation"
 import { useState } from "react"
 import EditReminder from "./EditReminder"
+import { type Reminders } from "zs-crm-common"
 
 const ScheduledMeeting = () => {
 
     const { id } = useParams();
-    const { data, isPending, isError } = fetchReminders(id || "");
+    const { data, isPending, isError } = FetchReminders(id || "");
     const deleteReminder = useDeleteReminder();
 
-    const [dialog, setDialog] = useState<{ open: boolean, data: any, action: "edit" | "delete" | null }>({
+    const [dialog, setDialog] = useState<{ open: boolean, data: string | null | Reminders | number, action: "edit" | "delete" | null }>({
         open: false,
         data: null,
         action: null
     });
 
     const onSubmit = () => {
-        deleteReminder.mutate(dialog.data);
+        deleteReminder.mutate(String(dialog.data));
         setDialog({ open: false, data: null, action: null })
     }
 
@@ -40,7 +41,7 @@ const ScheduledMeeting = () => {
             </CardHeader>
             <CardContent>
                 <div className="space-y-4">
-                    {data.reminders.map((meeting: any) => (
+                    {data.reminders.map((meeting: Reminders) => (
                         <div key={meeting.id} className="grid grid-cols-5 md:grid-cols-9 items-center p-4 border rounded-lg gap-4">
                             <div className="col-span-1 flex justify-center">
                                 <div className="p-2 bg-blue-100 rounded-full">
@@ -55,7 +56,7 @@ const ScheduledMeeting = () => {
                                 <h4 className="font-medium">Meeting Schedule</h4>
                                 <div className="text-sm text-gray-600 flex items-center break-words">
                                     <CalendarIcon className="h-3 w-3 mr-1 hidden sm:block" />
-                                    {new Date(meeting.send_at).toLocaleString("en-IN", {
+                                    {new Date(meeting.send_at as Date).toLocaleString("en-IN", {
                                         day: "2-digit",
                                         month: "2-digit",
                                         year: "numeric",
@@ -115,7 +116,7 @@ const ScheduledMeeting = () => {
                                 Update the details of the reminder.
                             </DialogDescription>
                         </DialogHeader>
-                        <EditReminder data={dialog.data} dialog={setDialog} />
+                        <EditReminder data={dialog.data as Reminders} dialog={setDialog} />
                     </>
                 ) : (<></>)
                 }

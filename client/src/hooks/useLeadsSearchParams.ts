@@ -1,13 +1,13 @@
 import formatDate from "@/utils/formatDate";
 
-export const toggleEmployee = (id: string, setSearchParams: any, employeeIDs: string[], rows: number) => {
+export const toggleEmployee = (id: string, setSearchParams: (params: (prev: URLSearchParams) => URLSearchParams) => void, employeeIDs: string[], rows: number) => {
     const current = new Set(employeeIDs);
     if (current.has(id)) {
         current.delete(id);
     } else {
         current.add(id);
     }
-    setSearchParams((params: any) => {
+    setSearchParams((params: URLSearchParams) => {
         const updated = Array.from(current);
         if (updated.length > 0) {
             params.set("employeeID", updated.join(","));
@@ -20,7 +20,7 @@ export const toggleEmployee = (id: string, setSearchParams: any, employeeIDs: st
     });
 };
 
-export const toggleSource = (id: string, setSearchParams: any, selectedSources: string[], rows: number) => {
+export const toggleSource = (id: string, setSearchParams: (params: (prev: URLSearchParams) => URLSearchParams) => void, selectedSources: string[], rows: number) => {
     const current = new Set(selectedSources);
     if (current.has(id)) {
         current.delete(id);
@@ -28,7 +28,7 @@ export const toggleSource = (id: string, setSearchParams: any, selectedSources: 
         current.add(id);
     }
 
-    setSearchParams((params: any) => {
+    setSearchParams((params: URLSearchParams) => {
         const updated = Array.from(current);
         if (updated.length > 0) {
             params.set("sources", updated.join(","));
@@ -41,17 +41,17 @@ export const toggleSource = (id: string, setSearchParams: any, selectedSources: 
     });
 };
 
-export const setPage = (newPage: number, setSearchParams: any, rows: number) => {
-    setSearchParams((params: any) => {
+export const setPage = (newPage: number, setSearchParams: (params: (prev: URLSearchParams) => URLSearchParams) => void, rows: number) => {
+    setSearchParams((params: URLSearchParams) => {
         params.set("page", String(newPage));
         params.set("rows", String(rows));
         return params;
     })
 }
 
-export const setDate = (date: Date | undefined, type: "start" | "end" | "clear", setSearchParams: any, rows: number) => {
+export const setDate = (date: Date | undefined, type: "start" | "end" | "clear", setSearchParams: (params: (prev: URLSearchParams) => URLSearchParams) => void, rows: number) => {
     const val = date ? formatDate(date) : "";
-    setSearchParams((params: any) => {
+    setSearchParams((params: URLSearchParams) => {
         if (type === "start") {
             if (val) params.set("startDate", val);
             else params.delete("startDate");
@@ -68,9 +68,9 @@ export const setDate = (date: Date | undefined, type: "start" | "end" | "clear",
     });
 }
 
-export const setSearch = (debouncedSearch: string, search: string, setSearchParams: any, rows: number) => {
+export const setSearch = (debouncedSearch: string, search: string, setSearchParams: (params: (prev: URLSearchParams) => URLSearchParams) => void, rows: number) => {
     if (debouncedSearch !== search) {
-        setSearchParams((params: any) => {
+        setSearchParams((params: URLSearchParams) => {
             if (debouncedSearch) {
                 params.set("search", debouncedSearch);
             } else {
@@ -83,8 +83,8 @@ export const setSearch = (debouncedSearch: string, search: string, setSearchPara
     }
 }
 
-export const clearFilter = (setSearchParams: any) => {
-    setSearchParams((params: any) => {
+export const clearFilter = (setSearchParams: (params: (prev: URLSearchParams) => URLSearchParams) => void) => {
+    setSearchParams((params: URLSearchParams) => {
         params.delete("search");
         params.delete("employeeID");
         params.delete("sources");

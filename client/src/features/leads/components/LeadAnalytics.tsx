@@ -1,4 +1,4 @@
-import { fetchLeadByDuration } from "@/api/leads/leads.queries";
+import { FetchLeadByDuration } from "@/api/leads/leads.queries";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/shared/components/ui/card";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/shared/components/ui/select";
 import { TargetIcon } from "lucide-react";
@@ -8,7 +8,7 @@ const LeadAnalytics = () => {
 
     const [period, setPeriod] = useState<"today" | "weekly" | "monthly" | "yearly" | "all">("today");
 
-    const { data, isPending } = fetchLeadByDuration(period);
+    const { data, isPending } = FetchLeadByDuration(period);
 
     if (isPending) return <>Loading..</>
 
@@ -43,10 +43,10 @@ const LeadAnalytics = () => {
                 </div>
                 <CardContent className="space-y-4">
                     <div className="text-xl font-bold">
-                        Total Leads: <span className="text-primary">{data.totalLeads}</span>
+                        Total Leads: <span className="text-primary">{data?.totalLeads}</span>
                     </div>
                     <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-2 lg:grid-cols-4 gap-4">
-                        {Object.entries(data.employeeLeadCount).map(([name, count]: any, index: number) => {
+                        {Object.entries(data?.employeeLeadCount || 0).map(([name, count]: [string, number], index: number) => {
                             const colors = [
                                 "bg-chart-1/10 text-chart-1",
                                 "bg-chart-2/10 text-chart-2",
@@ -55,7 +55,8 @@ const LeadAnalytics = () => {
                                 "bg-chart-5/10 text-chart-5"
                             ];
                             const color = colors[index % colors.length];
-                            const percent = ((count / data.totalLeads) * 100).toFixed(0);
+                            const total = data?.totalLeads ?? 0;
+                            const percent = ((count / total) * 100).toFixed(0);
                             return (
                                 <div
                                     key={name}

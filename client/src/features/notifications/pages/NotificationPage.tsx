@@ -6,13 +6,14 @@ import { ArrowLeft, Bell, CheckCheck, Clock } from "lucide-react";
 import { Badge } from "@/shared/components/ui/badge";
 import { Card, CardContent } from "@/shared/components/ui/card";
 import NotificationCard from "../components/NotificationCard";
-import { fetchReadNotifications } from "@/api/leads/leads.queries";
 import ReadNotifications from "../components/ReadNotifications";
+import { FetchReadNotifications } from "@/api/notifications/notification.queries";
+import type { GetNotificationOutput } from "zs-crm-common";
 
 const NotificationPage = () => {
 
     const { isLoading, notifications, unreadCount } = useNotifications();
-    const { data: readNotificationData, isLoading: readNotificationLoading } = fetchReadNotifications();
+    const { data: readNotificationData, isLoading: readNotificationLoading } = FetchReadNotifications();
     const navigate = useNavigate();
 
     if (isLoading || readNotificationLoading) return <>Loading..</>
@@ -57,7 +58,7 @@ const NotificationPage = () => {
                             <Clock className="h-4 w-4 hidden sm:block"/>
                             <span>Past Notifications</span>
                             <Badge variant="secondary" className="ml-2">
-                                {readNotificationData.length}
+                                {readNotificationData?.notifications.length}
                             </Badge>
                         </TabsTrigger>
                     </TabsList>
@@ -71,7 +72,6 @@ const NotificationPage = () => {
                                     {notifications.map((notification) => (
                                         <NotificationCard key={notification.id} notification={notification} />
                                     ))}
-
                                 </div>
                             </>
                         ) : (
@@ -89,13 +89,13 @@ const NotificationPage = () => {
                         )}
                     </TabsContent>
                     <TabsContent value="past" className="space-y-4">
-                        {readNotificationData.notifications.length > 0 ? (
+                        {readNotificationData?.notifications && readNotificationData?.notifications.length > 0 ? (
                             <>
                                 <div className="flex items-center justify-between">
-                                    <h2 className="text-lg font-semibold">Unread Notifications ({readNotificationData.notifications.length})</h2>
+                                    <h2 className="text-lg font-semibold">Unread Notifications ({readNotificationData?.notifications.length})</h2>
                                 </div>
                                 <div className="space-y-3">
-                                    {readNotificationData.notifications.map((notification: any) => (
+                                    {readNotificationData?.notifications.map((notification: GetNotificationOutput) => (
                                         <ReadNotifications key={notification.id} notification={notification} />
                                     ))}
 

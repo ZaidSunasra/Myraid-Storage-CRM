@@ -48,13 +48,9 @@ const LeadScheduling = () => {
         });
     }
 
-    const onError = (error: any) => {
-        console.log(error);
-    }
-
     return <>
         <Form {...form}>
-            <form onSubmit={form.handleSubmit(onSubmit, onError)} className="space-y-8">
+            <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
                 <Card>
                     <CardHeader>
                         <div className="flex items-center justify-between">

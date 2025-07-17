@@ -4,10 +4,10 @@ import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import { Mention, MentionsInput } from "react-mentions";
-import { addDescriptionSchema, type AddDescription } from "zs-crm-common";
-import { mentionStyle } from "./LeadDescription";
+import { addDescriptionSchema, type AddDescription, type GetDescriptionOutput } from "zs-crm-common";
+import { mentionStyle } from "@/utils/mentionStyle";
 
-const EditDescription = ({ data, setOpen, employee }: { data: any, setOpen: any, employee: any }) => {
+const EditDescription = ({ data, setOpen, employee }: { data: GetDescriptionOutput, setOpen: React.Dispatch<React.SetStateAction<boolean>>, employee: {id: number, display: string}[] }) => {
 
     const editDescription = useEditDescription();
 
@@ -21,7 +21,7 @@ const EditDescription = ({ data, setOpen, employee }: { data: any, setOpen: any,
     const id = data.id;
 
     const onSubmit = (data: AddDescription) => {
-        editDescription.mutate({ data: { description: data.description }, id: id });
+        editDescription.mutate({ data: { description: data.description }, id: String(id) });
         setOpen(false);
     }
 

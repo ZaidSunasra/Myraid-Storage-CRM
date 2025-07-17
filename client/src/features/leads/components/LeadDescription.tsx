@@ -3,87 +3,89 @@ import { Button } from "@/shared/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/shared/components/ui/card";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod"
-import { addDescriptionSchema, type AddDescription } from "zs-crm-common"
+import { addDescriptionSchema, type AddDescription, type GetDescriptionOutput, type GetEmployeeOutput } from "zs-crm-common"
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/shared/components/ui/form";
 import { Notebook, Pencil, Trash2 } from "lucide-react";
 import { Label } from "@/shared/components/ui/label";
-import { fetchAllEmployee, fetchDescription } from "@/api/leads/leads.queries";
+import {  FetchDescription } from "@/api/leads/leads.queries";
 import { useMemo, useState } from "react";
 import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle } from "@/shared/components/ui/dialog";
 import EditDescription from "./EditDescription";
 import { Mention, MentionsInput } from "react-mentions";
+import { FetchAllEmployee } from "@/api/employees/employee.queries";
+import { mentionStyle } from "@/utils/mentionStyle";
 
-export const mentionStyle = {
-    control: {
-        backgroundColor: '#fff',
-        fontSize: 14,
-        fontWeight: 'normal',
-    },
+// export const mentionStyle = {
+//     control: {
+//         backgroundColor: '#fff',
+//         fontSize: 14,
+//         fontWeight: 'normal',
+//     },
 
-    '&multiLine': {
-        control: {
-            fontFamily: 'monospace',
-            minHeight: 63,
-        },
-        highlighter: {
-            padding: 9,
-            border: '1px solid transparent',
-        },
-        input: {
-            padding: 9,
-            border: '1px solid silver',
-        },
-    },
+//     '&multiLine': {
+//         control: {
+//             fontFamily: 'monospace',
+//             minHeight: 63,
+//         },
+//         highlighter: {
+//             padding: 9,
+//             border: '1px solid transparent',
+//         },
+//         input: {
+//             padding: 9,
+//             border: '1px solid silver',
+//         },
+//     },
 
-    '&singleLine': {
-        display: 'inline-block',
-        width: 180,
-        highlighter: {
-            padding: 1,
-            border: '2px inset transparent',
-        },
-        input: {
-            padding: 1,
-            border: '2px inset',
-        },
-    },
+//     '&singleLine': {
+//         display: 'inline-block',
+//         width: 180,
+//         highlighter: {
+//             padding: 1,
+//             border: '2px inset transparent',
+//         },
+//         input: {
+//             padding: 1,
+//             border: '2px inset',
+//         },
+//     },
 
-    suggestions: {
-        list: {
-            backgroundColor: 'white',
-            border: '1px solid rgba(0,0,0,0.15)',
-            fontSize: 14,
-        },
-        item: {
-            padding: '5px 15px',
-            borderBottom: '1px solid rgba(0,0,0,0.15)',
-            '&focused': {
-                backgroundColor: '#cee4e5',
-            },
-        },
-    }
-}
+//     suggestions: {
+//         list: {
+//             backgroundColor: 'white',
+//             border: '1px solid rgba(0,0,0,0.15)',
+//             fontSize: 14,
+//         },
+//         item: {
+//             padding: '5px 15px',
+//             borderBottom: '1px solid rgba(0,0,0,0.15)',
+//             '&focused': {
+//                 backgroundColor: '#cee4e5',
+//             },
+//         },
+//     }
+// }
 
 const LeadDescription = ({ id }: { id: string }) => {
 
     const [actionType, setActionType] = useState<"edit" | "delete" | null>(null);
     const [open, setOpen] = useState<boolean>(false);
-    const [data, setData] = useState<any>(null)
+    const [data, setData] = useState<null | number | GetDescriptionOutput>(null)
 
-    const { data: descriptionData, isPending: descriptionPending, isError: descriptionError } = fetchDescription(id);
-    const { data: allEmployeeData, isPending: allEmployeePending, isError: allEmployeeError } = fetchAllEmployee();
+    const { data: descriptionData, isPending: descriptionPending, isError: descriptionError } = FetchDescription(id);
+    const { data: allEmployeeData, isPending: allEmployeePending, isError: allEmployeeError } = FetchAllEmployee();
     const addDescription = useAddDescription();
     const deleteDescription = useDeleteDescription();
 
     const allEmployeeArray = useMemo(() => {
         if (!allEmployeePending && allEmployeeData) {
-            return allEmployeeData.employees.map((emp: any) => ({
+            return allEmployeeData.employees.map((emp: GetEmployeeOutput) => ({
                 id: emp.id,
                 display: `${emp.first_name} ${emp.last_name}`
             }))
         }
         return [];
-    }, [allEmployeeData])
+    }, [allEmployeeData, allEmployeePending])
 
     const form = useForm<AddDescription>({
         resolver: zodResolver(addDescriptionSchema),
@@ -98,7 +100,7 @@ const LeadDescription = ({ id }: { id: string }) => {
     }
 
     const onDeleteSubmit = () => {
-        deleteDescription.mutate(data);
+        deleteDescription.mutate(String(data));
         setData(null);
         setOpen(false);
         setActionType(null);
@@ -119,7 +121,7 @@ const LeadDescription = ({ id }: { id: string }) => {
                             <Label> Previous Description </Label>
                             <div className="flex items-center space-x-2">
                                 <div className="flex flex-col space-y-1 w-full">
-                                    {descriptionData.descriptions.map((description: any) => (
+                                    {descriptionData.descriptions.map((description: GetDescriptionOutput) => (
                                         <div
                                             key={description.id}
                                             className="flex flex-col sm:flex-row items-start justify-between bg-muted p-4 rounded-lg shadow-sm hover:bg-muted/80 transition"
@@ -132,7 +134,7 @@ const LeadDescription = ({ id }: { id: string }) => {
                                                     </div>
                                                     <div className="text-xs text-muted-foreground mt-1">
                                                         Last Updated by {description.user.first_name} {description.user.last_name} on {" "}
-                                                        {new Date(description.updated_at).toLocaleString("en-IN", {
+                                                        {new Date(description.updated_at as Date).toLocaleString("en-IN", {
                                                             day: "2-digit",
                                                             month: "2-digit",
                                                             year: "numeric",
@@ -206,7 +208,7 @@ const LeadDescription = ({ id }: { id: string }) => {
                             <DialogTitle> Edit Description   </DialogTitle>
                             <DialogDescription>Update the details of the  description.</DialogDescription>
                         </DialogHeader>
-                        <EditDescription data={data} setOpen={setOpen} employee={allEmployeeArray}/>
+                        <EditDescription data={data as GetDescriptionOutput} setOpen={setOpen} employee={allEmployeeArray}/>
                     </>
                 ) : actionType == 'delete' ? (
                     <>

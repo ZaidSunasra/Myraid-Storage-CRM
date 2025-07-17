@@ -1,13 +1,14 @@
 import { NavLink, useNavigate, useParams, useSearchParams } from "react-router";
 import LeadDetails from "../components/LeadDetails";
 import LeadScheduling from "../components/LeadScheduling";
-import { fetchLeadById } from "@/api/leads/leads.queries";
+import { FetchLeadById } from "@/api/leads/leads.queries";
 import { Button } from "@/shared/components/ui/button";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/shared/components/ui/tabs";
 import { ArrowLeft, Edit } from "lucide-react";
 import LeadDescription from "../components/LeadDescription";
 import LeadSideBar from "../components/LeadSidebar";
 import Navbar from "@/shared/components/Navbar";
+import type { GetLeadOutput } from "zs-crm-common";
 
 const DetailedLeadPage = () => {
 
@@ -15,7 +16,7 @@ const DetailedLeadPage = () => {
   const tab = searchParams.get("tab") || "info";
 
   const { id } = useParams();
-  const { data, isPending, isError } = fetchLeadById(id || "");
+  const { data, isPending, isError } = FetchLeadById(id || "");
   const navigate = useNavigate();
 
   if (isPending) {
@@ -24,7 +25,7 @@ const DetailedLeadPage = () => {
   if (isError) {
     return <div>Error</div>
   }
-
+  
   return <div className="min-h-screen bg-accent">
     <Navbar />
     <div className="max-w-7xl mx-auto py-6 sm:px-6 lg:px-8">
@@ -37,9 +38,9 @@ const DetailedLeadPage = () => {
               </Button>
             </NavLink>
             <div>
-              <h1 className="text-2xl font-bold ">{data.lead.first_name} {data.lead.last_name}</h1>
+              <h1 className="text-2xl font-bold ">{data.lead?.client_detail.first_name} {data.lead?.client_detail.last_name}</h1>
               <p className="text-gray-600">
-                {data.lead.company.name}
+                {data.lead?.company.name}
               </p>
             </div>
           </div>
@@ -57,8 +58,8 @@ const DetailedLeadPage = () => {
               <TabsTrigger value="scheduling">Scheduling</TabsTrigger>
             </TabsList>
             <TabsContent value="info" className="space-y-6">
-              <LeadDetails data={data.lead} />
-              <LeadDescription id={data.lead.id} />
+              <LeadDetails data={data.lead as GetLeadOutput} />
+              <LeadDescription id={String(data.lead?.id)} />
             </TabsContent>
             <TabsContent value="scheduling" className="space-y-6">
               <LeadScheduling />

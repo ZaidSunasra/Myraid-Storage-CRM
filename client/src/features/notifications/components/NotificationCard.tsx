@@ -1,21 +1,22 @@
-import { useMarkNotification } from "@/api/leads/leads.mutation";
+import { useMarkNotification } from "@/api/notifications/notification.mutation";
 import { Button } from "@/shared/components/ui/button";
 import { Card, CardContent } from "@/shared/components/ui/card";
 import getNavigationLink from "@/utils/getNavigationLink";
 import { Check } from "lucide-react";
 import { useNavigate } from "react-router";
+import type { GetNotificationOutput } from "zs-crm-common";
 
-const NotificationCard = ({ notification }: { notification: any }) => {
+const NotificationCard = ({ notification }: { notification: GetNotificationOutput }) => {
 
     const markNotification = useMarkNotification();
     const navigate = useNavigate();
     const path = getNavigationLink(notification);
 
-    return <Card className={`transition-all duration-200 hover:shadow-md ${!notification.isRead ? "bg-blue-50/50 border-blue-200" : "bg-card"}`}>
+    return <Card className={`transition-all duration-200 hover:shadow-md ${!notification.is_read ? "bg-blue-50/50 border-blue-200" : "bg-card"}`}>
         <CardContent>
             <div className="flex-1 space-y-2" onClick={() => (navigate(path))}>
                 <div className="flex items-center space-x-2">
-                    {!notification.isRead && <div className="w-2 h-2 bg-blue-500 rounded-full"></div>}
+                    {!notification.is_read && <div className="w-2 h-2 bg-blue-500 rounded-full"></div>}
                     <h4 className="font-semibold text-sm">{notification.notification.title}</h4>
                 </div>
                 {notification.notification.message && (
@@ -30,7 +31,7 @@ const NotificationCard = ({ notification }: { notification: any }) => {
                     <Button
                         variant="outline"
                         size="sm"
-                        onClick={() => { markNotification.mutate(notification.id), console.log(notification.id) }}
+                        onClick={() => { markNotification.mutate(String(notification.id)), console.log(notification.id) }}
                         className="h-7 text-xs bg-transparent"
                     >
                         <Check className="h-3 w-3 mr-1" />

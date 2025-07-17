@@ -1,5 +1,5 @@
 import { useForm } from "react-hook-form"
-import { addReminderSchema, type AddReminder } from "zs-crm-common"
+import { addReminderSchema, type AddReminder, type Reminders } from "zs-crm-common"
 import { cn } from "@/shared/lib/utils"
 import { zodResolver } from "@hookform/resolvers/zod"
 import { format } from "date-fns"
@@ -14,10 +14,10 @@ import { useState } from "react"
 import { useEditReminder } from "@/api/leads/leads.mutation"
 
 
-const EditReminder = ({ data, dialog }: { data: any, dialog: any }) => {
+const EditReminder = ({ data, dialog }: { data: Reminders, dialog: React.Dispatch<React.SetStateAction<{open: boolean, data: Reminders | null | number | string, action: "edit" | "delete" | null}>> }) => {
 
     const getTime = () => {
-        const sendAt = new Date(data.send_at);
+        const sendAt = new Date(data.send_at as Date);
         const hours = String(sendAt.getHours()).padStart(2, "0");
         const minutes = String(sendAt.getMinutes()).padStart(2, "0");
         return `${hours}:${minutes}`;
@@ -32,8 +32,8 @@ const EditReminder = ({ data, dialog }: { data: any, dialog: any }) => {
         defaultValues: ({
             title: data.title,
             send_at: data.send_at as Date,
-            message: data.message,
-            lead_id: parseInt(data.lead_id),
+            message: data.message || "",
+            lead_id: data.lead_id,
             reminder_type: data.type
         })
     })
@@ -45,7 +45,7 @@ const EditReminder = ({ data, dialog }: { data: any, dialog: any }) => {
             sendAt.setHours(hours, minutes, 0, 0);
             data.send_at = sendAt
         }
-        editReminder.mutate({ data, id: reminderId });
+        editReminder.mutate({ data, id: String(reminderId) });
         dialog({ open: false, data: null, action: null })
     }
 

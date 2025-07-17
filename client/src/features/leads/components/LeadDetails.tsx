@@ -1,9 +1,10 @@
 import { Card, CardContent, CardHeader, CardTitle } from "@/shared/components/ui/card";
 import { Label } from "@/shared/components/ui/label";
 import { Building2, Mail, MapPin, Phone, User } from "lucide-react";
+import type { GetLeadOutput } from "zs-crm-common";
 
-const LeadDetails = ({ data }: { data: any }) => {
-    
+const LeadDetails = ({ data }: { data: GetLeadOutput }) => {
+
     return <>
         <Card className="bg-background">
             <CardHeader>
@@ -32,12 +33,18 @@ const LeadDetails = ({ data }: { data: any }) => {
                     <div className="space-y-2">
                         <Label>Email</Label>
                         <div className="flex flex-col space-y-2">
-                            {data.client_detail.emails.length == 0 ? "No email provided" : data.client_detail.emails.map((e: { email: string }) => (
-                                <div key={e.email} className="flex items-center gap-x-2">
-                                    <Mail className="h-4 w-4 text-gray-400" />
-                                    <span>{e.email}</span>
-                                </div>
-                            ))}
+                            {data.client_detail.emails.length === 0 ? (
+                                "No email provided"
+                            ) : (
+                                data.client_detail.emails.map((e) =>
+                                    e.email ? (
+                                        <div key={e.email} className="flex items-center gap-x-2">
+                                            <Mail className="h-4 w-4 text-gray-400" />
+                                            <span>{e.email}</span>
+                                        </div>
+                                    ) : null
+                                )
+                            )}
                         </div>
                     </div>
                     <div className="space-y-2">
@@ -74,8 +81,8 @@ const LeadDetails = ({ data }: { data: any }) => {
                     <div className="space-y-2">
                         <Label>Assigned To</Label>
                         <div className="space-y-1">
-                            {data.assigned_to.map((assignee: any, idx:number) => (
-                                <div  key={assignee.user.id ?? idx} className="flex items-center">
+                            {data.assigned_to.map((assignee: { user: { first_name: string, last_name: string, id: number } }, idx: number) => (
+                                <div key={assignee.user.id ?? idx} className="flex items-center">
                                     <User className="h-4 w-4 text-gray-400 mr-2" />
                                     <span>{assignee.user.first_name} {assignee.user.last_name}</span>
                                 </div>

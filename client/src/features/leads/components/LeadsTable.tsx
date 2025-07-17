@@ -1,10 +1,10 @@
 import { useEffect, useMemo, useState } from "react";
 import { useNavigate, useSearchParams } from "react-router";
-import { DEPARTMENTS } from "zs-crm-common";
+import { DEPARTMENTS, type GetEmployeeOutput, type GetLeadOutput, type GetSourceOutput } from "zs-crm-common";
 import useDebounce from "@/hooks/useDebounce";
 import { toggleEmployee, toggleSource, setPage, setDate, setSearch, clearFilter } from "@/hooks/useLeadsSearchParams";
 import { useUser } from "@/context/UserContext";
-import { fetchLeads, fetchSalesEmployee, fetchSources } from "@/api/leads/leads.queries";
+import { FetchLeads } from "@/api/leads/leads.queries";
 import { Button } from "@/shared/components/ui/button";
 import { Card, CardHeader, CardContent, CardFooter } from "@/shared/components/ui/card";
 import { Table, TableHeader, TableRow, TableHead, TableBody, TableCell } from "@/shared/components/ui/table";
@@ -15,6 +15,8 @@ import { Command, CommandEmpty, CommandGroup, CommandInput, CommandItem, Command
 import { Select, SelectContent, SelectGroup, SelectItem, SelectLabel, SelectTrigger, SelectValue } from "@/shared/components/ui/select";
 import { Calendar } from "@/shared/components/ui/calendar";
 import { Building2, Mail, Phone, User, ChevronLeft, ChevronsLeftIcon, ChevronsRightIcon, ChevronRight, Search, ChevronsUpDown, CalendarIcon, X } from "lucide-react";
+import { FetchSalesEmployee } from "@/api/employees/employee.queries";
+import { FetchSources } from "@/api/sources/source.queries";
 
 const LeadsTable = () => {
 
@@ -34,11 +36,11 @@ const LeadsTable = () => {
     const [searchInput, setSearchInput] = useState(search);
     const debouncedSearch = useDebounce(searchInput, 500);
 
-    const { data: employeeData, isError: employeeError, isPending: employeePending } = fetchSalesEmployee();
-    const { data: leadsData, isPending: leadsPending, isError: leadsError } = fetchLeads({ page, search, employeeIDs, rows, startDate, endDate, selectedSources });
-    const { data: sourceData, isError: sourceError, isPending: sourcePending } = fetchSources();
+    const { data: employeeData, isError: employeeError, isPending: employeePending } = FetchSalesEmployee();
+    const { data: leadsData, isPending: leadsPending, isError: leadsError } = FetchLeads({ page, search, employeeIDs, rows, startDate, endDate, selectedSources });
+    const { data: sourceData, isError: sourceError, isPending: sourcePending } = FetchSources();
 
-    const lastPage = Math.ceil(leadsData?.totalLeads / rows) == 0 ? 1 : Math.ceil(leadsData?.totalLeads / rows);
+    const lastPage = Math.ceil(leadsData?.totalLeads || 0 / rows) == 0 ? 1 : Math.ceil(leadsData?.totalLeads || 0/ rows);
 
     const navigate = useNavigate();
     const { user } = useUser();
@@ -94,7 +96,7 @@ const LeadsTable = () => {
                                     <CommandList>
                                         <CommandEmpty>No employees found.</CommandEmpty>
                                         <CommandGroup>
-                                            {employeeData.employees.map((employee: any) => (
+                                            {employeeData.employees.map((employee: GetEmployeeOutput) => (
                                                 <CommandItem key={employee.id}>
                                                     <Checkbox
                                                         className="mr-2"
@@ -159,14 +161,14 @@ const LeadsTable = () => {
                                             <CommandList>
                                                 <CommandEmpty>No source found.</CommandEmpty>
                                                 <CommandGroup>
-                                                    {sourceData.sources.map((source: any) => (
+                                                    {sourceData.sources.map((source: GetSourceOutput) => (
                                                         <CommandItem key={source.id}>
                                                             <Checkbox
                                                                 className="mr-2"
                                                                 checked={selectedSources.includes(String(source.id))}
                                                                 onCheckedChange={() => toggleSource(String(source.id), setSearchParams, selectedSources, rows)}
                                                             />
-                                                            {source.name.replace(/\b\w/g, (c: any) => c.toUpperCase())}
+                                                            {source.name.replace(/\b\w/g, (c: string) => c.toUpperCase())}
                                                         </CommandItem>
                                                     ))}
                                                 </CommandGroup>
@@ -218,7 +220,7 @@ const LeadsTable = () => {
                         </TableRow>
                     </TableHeader>
                     <TableBody>
-                        {leadsData.leads.map((lead: any) => (
+                        {leadsData.leads.map((lead: GetLeadOutput) => (
                             <TableRow key={lead.id} className="text-accent-foreground" onClick={() => navigate(`/lead/${lead.id}`)}>
                                 <TableCell>
                                     <div className="font-medium">{lead.client_detail.first_name}  {lead.client_detail.last_name}</div>
@@ -244,7 +246,7 @@ const LeadsTable = () => {
                                 <TableCell>{lead.source.name.replace("_", " ").replace(/\b\w/g, (char: string) => char.toUpperCase())}</TableCell>
                                 <TableCell>
                                     <div className="flex flex-col gap-1">
-                                        {lead.assigned_to.map((assignee: any) => (
+                                        {lead.assigned_to.map((assignee: { user: {first_name: string, last_name: string, id: number}}) => (
                                             <div className="flex items-center" key={assignee.user.id}>
                                                 <User className="h-4 w-4 mr-2" />
                                                 {assignee.user.first_name} {assignee.user.last_name}

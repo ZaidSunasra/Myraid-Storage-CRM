@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { startOfMonth, endOfMonth, startOfWeek, endOfWeek, addDays, addMonths, subMonths, format, isSameDay } from "date-fns";
 import DailyData from "../components/DailyData";
-import { fetchReminderByMonth } from "@/api/leads/leads.queries";
+import { FetchReminderByMonth } from "@/api/leads/leads.queries";
 import formatDate from "@/utils/formatDate";
 import Navbar from "@/shared/components/Navbar";
 import { Button } from "@/shared/components/ui/button";
@@ -13,7 +13,7 @@ import { Input } from "@/shared/components/ui/input";
 const CalendarPage = () => {
 
     const [currentMonth, setCurrentMonth] = useState(new Date());
-    const { data, isError, isPending } = fetchReminderByMonth(formatDate(currentMonth));
+    const { data, isError, isPending } = FetchReminderByMonth(formatDate(currentMonth));
 
     const days = (() => {
         const start = startOfWeek(startOfMonth(currentMonth), { weekStartsOn: 0 });
@@ -35,6 +35,8 @@ const CalendarPage = () => {
 
     if (isPending) return <>Loading..</>
     if (isError) return <>Error...</>
+
+    console.log(data);
 
     return <div className="bg-accent min-h-screen">
         <Navbar />
