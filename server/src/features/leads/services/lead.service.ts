@@ -142,7 +142,7 @@ export const addLeadService = async ({ first_name, last_name, phones, emails, as
             const notification = await tx.notification.create({
                 data: {
                     title: "Lead assigned",
-                    message: "You were assigned to a lead",
+                    message: `You were assigned to a lead by ${author.name}`,
                     type: "lead_assigned",
                     send_at: null,
                     lead_id: lead.id
@@ -372,14 +372,25 @@ export const editLeadService = async ({ id, first_name, last_name, phones, email
                 }
             }
         });
-        await tx.recipient.createMany({
-            data: assignedNotification.flatMap((n) =>
-                assignedId.map((userId) => ({
-                    user_id: userId,
-                    notification_id: n.id,
-                }))
-            )
-        });
+        if (assignedId.length > 0) {
+            await tx.recipient.createMany({
+                data: assignedNotification.flatMap((n) =>
+                    assignedId.map((userId) => ({
+                        user_id: userId,
+                        notification_id: n.id,
+                    }))
+                )
+            });
+        }
+        else {
+            await tx.notification.deleteMany({
+                where: {
+                    id: {
+                        in: assignedNotification.map((n) => n.id)
+                    }
+                }
+            })
+        }
     });
 }
 
