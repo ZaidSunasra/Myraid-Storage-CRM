@@ -102,7 +102,7 @@ const Navbar = () => {
             </div>
 
             {menuOpen && (
-                <div className="sm:hidden flex flex-col space-y-2 pb-4">
+                <div className="lg:hidden flex flex-col space-y-2 pb-4">
                     {navItems.map((item) => (
                         <NavLink
                             key={item.url}
