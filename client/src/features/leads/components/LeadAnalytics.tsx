@@ -3,6 +3,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/sha
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/shared/components/ui/select";
 import { TargetIcon } from "lucide-react";
 import { useState } from "react";
+import { Skeleton } from "@/shared/components/ui/skeleton";
 
 const LeadAnalytics = () => {
 
@@ -10,7 +11,7 @@ const LeadAnalytics = () => {
 
     const { data, isPending } = FetchLeadByDuration(period);
 
-    if (isPending) return <>Loading..</>
+    if (isPending) return <Skeleton className="w-full h-48 bg-background mb-5" />
 
     return <Card className="mb-4 bg-background">
         <CardHeader>

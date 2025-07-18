@@ -17,6 +17,7 @@ import { Calendar } from "@/shared/components/ui/calendar";
 import { Building2, Mail, Phone, User, ChevronLeft, ChevronsLeftIcon, ChevronsRightIcon, ChevronRight, Search, ChevronsUpDown, CalendarIcon, X } from "lucide-react";
 import { FetchSalesEmployee } from "@/api/employees/employee.queries";
 import { FetchSources } from "@/api/sources/source.queries";
+import LeadTableLoader from "./loaders/LeadTableLoader";
 
 const LeadsTable = () => {
 
@@ -40,7 +41,7 @@ const LeadsTable = () => {
     const { data: leadsData, isPending: leadsPending, isError: leadsError } = FetchLeads({ page, search, employeeIDs, rows, startDate, endDate, selectedSources });
     const { data: sourceData, isError: sourceError, isPending: sourcePending } = FetchSources();
 
-    const lastPage = Math.ceil(leadsData?.totalLeads || 0 / rows) == 0 ? 1 : Math.ceil(leadsData?.totalLeads || 0/ rows);
+    const lastPage = Math.ceil((leadsData?.totalLeads || 0) / rows) == 0 ? 1 : Math.ceil((leadsData?.totalLeads || 0) / rows);
 
     const navigate = useNavigate();
     const { user } = useUser();
@@ -57,11 +58,7 @@ const LeadsTable = () => {
         });
     }
 
-    if (leadsPending || employeePending || sourcePending) {
-        return <>
-            Loading....
-        </>
-    }
+    if (leadsPending || employeePending || sourcePending) return <LeadTableLoader />
 
     if (leadsError || employeeError || sourceError) {
         return <>

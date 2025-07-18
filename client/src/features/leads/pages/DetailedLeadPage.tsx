@@ -9,6 +9,7 @@ import LeadDescription from "../components/LeadDescription";
 import LeadSideBar from "../components/LeadSidebar";
 import Navbar from "@/shared/components/Navbar";
 import type { GetLeadOutput } from "zs-crm-common";
+import DetailedLeadPageLoader from "../components/loaders/DetailedLeadPageLoader";
 
 const DetailedLeadPage = () => {
 
@@ -19,9 +20,8 @@ const DetailedLeadPage = () => {
   const { data, isPending, isError } = FetchLeadById(id || "");
   const navigate = useNavigate();
 
-  if (isPending) {
-    return <div>Loading</div>
-  }
+  if (isPending) return <DetailedLeadPageLoader />
+
   if (isError) {
     return <div>Error</div>
   }

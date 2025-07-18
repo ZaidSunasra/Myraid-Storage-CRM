@@ -9,6 +9,7 @@ import { ChevronLeft, ChevronRight } from "lucide-react";
 import { Sheet, SheetContent, SheetDescription, SheetHeader, SheetTitle, SheetTrigger } from "@/shared/components/ui/sheet";
 import { Popover, PopoverContent, PopoverTrigger } from "@/shared/components/ui/popover";
 import { Input } from "@/shared/components/ui/input";
+import CalenderPageLoader from "../components/CalenderPageLoader";
 
 const CalendarPage = () => {
 
@@ -33,10 +34,8 @@ const CalendarPage = () => {
     const nextMonth = () => setCurrentMonth((prev) => addMonths(prev, 1));
     const prevMonth = () => setCurrentMonth((prev) => subMonths(prev, 1));
 
-    if (isPending) return <>Loading..</>
+    if (isPending) return <CalenderPageLoader />
     if (isError) return <>Error...</>
-
-    console.log(data);
 
     return <div className="bg-accent min-h-screen">
         <Navbar />

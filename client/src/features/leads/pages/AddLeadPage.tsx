@@ -46,7 +46,6 @@ const AddLeadPage = () => {
     }
 
     const onSubmit = (data: AddLead) => {
-        console.log(typeof data.product_id);
         addLead.mutate(data);
     }
 
@@ -76,7 +75,7 @@ const AddLeadPage = () => {
                                     <AddEditCompanyDetails form={form} handleClick={handleNext} />
                                 )}
                                 {currentStep === 2 && (
-                                    <AddEditLeadDetails form={form} handleClick={handlePrev} />
+                                    <AddEditLeadDetails form={form} handleClick={handlePrev} isLoading={addLead.isPending}/>
                                 )}
                             </form>
                         </Form>
