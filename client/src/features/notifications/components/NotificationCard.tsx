@@ -31,7 +31,7 @@ const NotificationCard = ({ notification }: { notification: GetNotificationOutpu
                     <Button
                         variant="outline"
                         size="sm"
-                        onClick={() => { markNotification.mutate(String(notification.id)), console.log(notification.id) }}
+                        onClick={() => { markNotification.mutate(String(notification.id)) }}
                         className="h-7 text-xs bg-transparent"
                     >
                         <Check className="h-3 w-3 mr-1" />
