@@ -1,0 +1,12 @@
+{
+	"singleQuote": false,
+	"semi": true,
+	"tabWidth": 1,
+	"useTabs": true,
+	"bracketSpacing": true,
+	"trailingComma": "none",
+	"printWidth": 250,
+	"objectWrap": "collapse",
+	"arrowParens": "always",
+	"overrides": [{ "files": ["*.ts", "*.tsx", "*.js", "*.jsx"], "options": { "singleQuote": false } }]
+}

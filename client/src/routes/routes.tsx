@@ -6,27 +6,29 @@ import EditLeadPage from "@/features/leads/pages/EditLeadPage";
 import LeadsPage from "@/features/leads/pages/LeadsPage";
 import NotificationPage from "@/features/notifications/pages/NotificationPage";
 import ProtectedRoute from "@/utils/checkPermission";
-import { BrowserRouter, Route, Routes } from "react-router"
+import { BrowserRouter, Route, Routes } from "react-router";
 import { DEPARTMENTS } from "zs-crm-common";
 
 const Router = () => {
-    return <>
-        <BrowserRouter>
-            <Routes>
-                <Route path="/" element={<LandingPage />} />
-                <Route path="/notifications" element={<NotificationPage />} />
-                <Route element={<ProtectedRoute allowedDepartment={[DEPARTMENTS[0], DEPARTMENTS[1]]} />} >
-                    <Route path="/lead" element={<LeadsPage />} />
-                    <Route path="/lead/add" element={<AddLeadPage />} />
-                    <Route path="/calender" element={<CalenderPage />} />
-                </Route>
-                <Route element={<ProtectedRoute allowedDepartment={[DEPARTMENTS[0], DEPARTMENTS[1]]}  checkOwnership />} >
-                    <Route path="/lead/:id" element={<DetailedLeadPage />} />
-                    <Route path="/lead/edit/:id" element={<EditLeadPage />} />
-                </Route>
-            </Routes>
-        </BrowserRouter>
-    </>
-}
+	return (
+		<>
+			<BrowserRouter>
+				<Routes>
+					<Route path="/" element={<LandingPage />} />
+					<Route path="/notifications" element={<NotificationPage />} />
+					<Route element={<ProtectedRoute allowedDepartment={[DEPARTMENTS[0], DEPARTMENTS[1]]} />}>
+						<Route path="/lead" element={<LeadsPage />} />
+						<Route path="/lead/add" element={<AddLeadPage />} />
+						<Route path="/calender" element={<CalenderPage />} />
+					</Route>
+					<Route element={<ProtectedRoute allowedDepartment={[DEPARTMENTS[0], DEPARTMENTS[1]]} checkOwnership />}>
+						<Route path="/lead/:id" element={<DetailedLeadPage />} />
+						<Route path="/lead/edit/:id" element={<EditLeadPage />} />
+					</Route>
+				</Routes>
+			</BrowserRouter>
+		</>
+	);
+};
 
 export default Router;
