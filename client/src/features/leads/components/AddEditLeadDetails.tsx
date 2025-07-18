@@ -10,8 +10,9 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { ArrowLeft, Plus, Trash, User } from "lucide-react";
 import { useFieldArray, type UseFormReturn } from "react-hook-form";
 import { DEPARTMENTS, type AddLead, type GetEmployeeOutput, type GetProductOutput, type GetSourceOutput } from "zs-crm-common";
+import EditLeadPageLoader from "./loaders/EditLeadPageLoader";
 
-const AddEditLeadDetails = ({ form, handleClick }: { form: UseFormReturn<AddLead>, handleClick: () => void }) => {
+const AddEditLeadDetails = ({ form, handleClick, isLoading}: { form: UseFormReturn<AddLead>, handleClick: () => void, isLoading?:boolean }) => {
 
     const { data: employeeData, isError: employeeError, isPending: employeePending } = FetchSalesEmployee();
     const { data: sourceData, isError: sourceError, isPending: sourcePending } = FetchSources();
@@ -34,8 +35,8 @@ const AddEditLeadDetails = ({ form, handleClick }: { form: UseFormReturn<AddLead
         name: "assigned_to",
     });
 
-    if (employeePending || sourcePending || productPending) return <>Loading...</>
-    if (employeeError || sourceError || productError) return <>Erroor..</>
+    if (employeePending || sourcePending || productPending) return <EditLeadPageLoader />
+    if (employeeError || sourceError || productError) return <>Error..</>
 
     return <Card>
         <CardHeader>
@@ -229,8 +230,8 @@ const AddEditLeadDetails = ({ form, handleClick }: { form: UseFormReturn<AddLead
                     <ArrowLeft className="h-4 w-4 mr-2" />
                     Back
                 </Button>
-                <Button type="submit" >
-                    Save Lead
+                <Button type="submit" disabled={isLoading}>
+                    {isLoading ? "Saving details.." : "Save Lead"}
                 </Button>
             </div>
         </CardContent>

@@ -51,8 +51,8 @@ const LoginForm = () => {
                         </FormItem>
                     )}
                 />
-                <Button type="submit" className="w-full mt-2" disabled={form.formState.isSubmitting}>
-                    {form.formState.isSubmitting ? "Logging in..." : "Login"}
+                <Button type="submit" className="w-full mt-2" disabled={login.isPending}>
+                    {login.isPending ? "Logging in..." : "Login"}
                 </Button>
             </form>
         </Form>
