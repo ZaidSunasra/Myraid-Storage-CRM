@@ -10,6 +10,7 @@ import LeadSideBar from "../components/LeadSidebar";
 import Navbar from "@/shared/components/Navbar";
 import type { GetLeadOutput } from "zs-crm-common";
 import DetailedLeadPageLoader from "../components/loaders/DetailedLeadPageLoader";
+import { capitalize, toTitleCase } from "@/utils/formatData";
 
 const DetailedLeadPage = () => {
 	const [searchParams] = useSearchParams();
@@ -39,9 +40,9 @@ const DetailedLeadPage = () => {
 							</NavLink>
 							<div>
 								<h1 className="text-2xl font-bold ">
-									{data.lead?.client_detail.first_name} {data.lead?.client_detail.last_name}
+									{capitalize(data.lead?.client_detail.first_name as string)} {capitalize(data.lead?.client_detail.last_name as string)}
 								</h1>
-								<p className="text-gray-600">{data.lead?.company.name}</p>
+								<p className="text-gray-600">{toTitleCase(data.lead?.company.name as string)}</p>
 							</div>
 						</div>
 						<Button onClick={() => navigate(`/lead/edit/${id}`)}>

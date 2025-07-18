@@ -8,6 +8,7 @@ import { useDeleteReminder } from "@/api/leads/leads.mutation";
 import { useState } from "react";
 import EditReminder from "./EditReminder";
 import { type Reminders } from "zs-crm-common";
+import { capitalize, toTitleCase } from "@/utils/formatData";
 
 const ScheduledMeeting = () => {
 	const { id } = useParams();
@@ -45,8 +46,8 @@ const ScheduledMeeting = () => {
 									</div>
 								</div>
 								<div className="col-span-4 space-y-1">
-									<h4 className="font-medium break-words">{meeting.title}</h4>
-									<p className="text-sm text-gray-600 break-words">{meeting.message}</p>
+									<h4 className="font-medium break-words">{toTitleCase(meeting.title)}</h4>
+									<p className="text-sm text-gray-600 break-words">{meeting.message ? capitalize(meeting.message) : ""}</p>
 								</div>
 								<div className="col-span-3 md:col-span-3">
 									<h4 className="font-medium">Meeting Schedule</h4>

@@ -18,6 +18,7 @@ import { Building2, Mail, Phone, User, ChevronLeft, ChevronsLeftIcon, ChevronsRi
 import { FetchSalesEmployee } from "@/api/employees/employee.queries";
 import { FetchSources } from "@/api/sources/source.queries";
 import LeadTableLoader from "./loaders/LeadTableLoader";
+import { capitalize, toTitleCase } from "@/utils/formatData";
 
 const LeadsTable = () => {
 	const [searchParams, setSearchParams] = useSearchParams();
@@ -209,13 +210,13 @@ const LeadsTable = () => {
 								<TableRow key={lead.id} className="text-accent-foreground" onClick={() => navigate(`/lead/${lead.id}`)}>
 									<TableCell>
 										<div className="font-medium">
-											{lead.client_detail.first_name} {lead.client_detail.last_name}
+											{capitalize(lead.client_detail.first_name)} {capitalize(lead.client_detail.last_name)}
 										</div>
 									</TableCell>
 									<TableCell>
 										<div className="flex items-center">
 											<Building2 className="h-4 w-4 mr-2 " />
-											{lead.company.name}
+											{toTitleCase(lead.company.name)}
 										</div>
 									</TableCell>
 									<TableCell>

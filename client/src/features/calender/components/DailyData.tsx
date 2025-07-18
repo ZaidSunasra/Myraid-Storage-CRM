@@ -1,4 +1,5 @@
 import { useUser } from "@/context/UserContext";
+import { capitalize, toTitleCase } from "@/utils/formatData";
 import { useNavigate } from "react-router";
 import { DEPARTMENTS, type LeadByDay, type ReminderMonth } from "zs-crm-common";
 
@@ -28,9 +29,9 @@ const DailyData = ({ leadsData, meetingData }: { leadsData: Record<string, LeadB
 							{leads.map((lead: LeadByDay) => (
 								<div key={lead.id} className="p-2 rounded-lg bg-muted shadow-sm hover:bg-muted/80 transition cursor-pointer" onClick={() => navigate(`/lead/${lead.id}`)}>
 									<div className="font-medium text-accent-foreground">
-										{lead.client_detail.first_name} {lead.client_detail.last_name}
+										{capitalize(lead.client_detail.first_name)} {capitalize(lead.client_detail.last_name)}
 									</div>
-									<div className="text-sm text-muted-foreground">Company: {lead.company.name}</div>
+									<div className="text-sm text-muted-foreground">Company: {toTitleCase(lead.company.name)}</div>
 								</div>
 							))}
 						</div>

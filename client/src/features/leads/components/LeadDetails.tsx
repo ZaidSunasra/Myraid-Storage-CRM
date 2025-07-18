@@ -1,5 +1,6 @@
 import { Card, CardContent, CardHeader, CardTitle } from "@/shared/components/ui/card";
 import { Label } from "@/shared/components/ui/label";
+import { capitalize, toTitleCase } from "@/utils/formatData";
 import { Building2, Mail, MapPin, Phone, User } from "lucide-react";
 import type { Assignee, GetLeadOutput } from "zs-crm-common";
 
@@ -18,19 +19,19 @@ const LeadDetails = ({ data }: { data: GetLeadOutput }) => {
 								<User className="h-4 w-4 text-gray-400" />
 								<span>
 									{" "}
-									{data.client_detail.first_name} {data.client_detail.last_name}
+									{capitalize(data.client_detail.first_name)} {capitalize(data.client_detail.last_name)}
 								</span>
 							</div>
 						</div>
 						<div className="space-y-2">
 							<Label>GST No.</Label>
-							<span>{data.company.gst_no == "" ? "No GST provided" : data.company.gst_no} </span>
+							<span>{data.company.gst_no == "" ? "No GST provided" : data.company.gst_no?.toUpperCase()} </span>
 						</div>
 						<div className="space-y-2">
 							<Label>Company</Label>
 							<div className="flex items-center space-x-2">
 								<Building2 className="h-4 w-4 text-gray-400" />
-								<span>{data.company.name}</span>
+								<span>{toTitleCase(data.company.name)}</span>
 							</div>
 						</div>
 						<div className="space-y-2">
@@ -39,13 +40,13 @@ const LeadDetails = ({ data }: { data: GetLeadOutput }) => {
 								{data.client_detail.emails.length === 0
 									? "No email provided"
 									: data.client_detail.emails.map((e) =>
-											e.email ? (
-												<div key={e.email} className="flex items-center gap-x-2">
-													<Mail className="h-4 w-4 text-gray-400" />
-													<span>{e.email}</span>
-												</div>
-											) : null
-										)}
+										e.email ? (
+											<div key={e.email} className="flex items-center gap-x-2">
+												<Mail className="h-4 w-4 text-gray-400" />
+												<span>{e.email}</span>
+											</div>
+										) : null
+									)}
 							</div>
 						</div>
 						<div className="space-y-2">
@@ -54,18 +55,18 @@ const LeadDetails = ({ data }: { data: GetLeadOutput }) => {
 								{data.client_detail.phones.length == 0
 									? "No phone provided"
 									: data.client_detail.phones.map((p: { phone: string }) => (
-											<div key={p.phone} className="flex items-center gap-x-2">
-												<Phone className="h-4 w-4 text-gray-400" />
-												<span>{p.phone}</span>
-											</div>
-										))}
+										<div key={p.phone} className="flex items-center gap-x-2">
+											<Phone className="h-4 w-4 text-gray-400" />
+											<span>{p.phone}</span>
+										</div>
+									))}
 							</div>
 						</div>
 						<div className="space-y-2">
 							<Label>Address</Label>
 							<div className="flex items-center space-x-2">
 								<MapPin className="h-4 w-4 text-gray-400" />
-								<span>{data.company.address}</span>
+								<span>{toTitleCase(data.company.address)}</span>
 							</div>
 						</div>
 					</div>
