@@ -96,15 +96,15 @@ export const addLeadService = async ({ first_name, last_name, phones, emails, as
     await prisma.$transaction(async (tx) => {
         const company = await tx.company.create({
             data: {
-                name: company_name,
-                address: address,
-                gst_no: gst_no,
+                name: company_name.toLowerCase(),
+                address: address.toLowerCase(),
+                gst_no: gst_no?.toLowerCase(),
             },
         });
         const client = await tx.client.create({
             data: {
-                first_name: first_name,
-                last_name: last_name,
+                first_name: first_name.toLowerCase(),
+                last_name: last_name.toLowerCase(),
                 company_id: company.id
             }
         });
@@ -112,7 +112,7 @@ export const addLeadService = async ({ first_name, last_name, phones, emails, as
             await tx.email.createMany({
                 data: editedEmail.map((email) => ({
                     client_id: client.id,
-                    email: email
+                    email: email.toLowerCase(),
                 }))
             })
         }
@@ -273,9 +273,9 @@ export const editLeadService = async ({ id, first_name, last_name, phones, email
                 id: updatedLead.company_id
             },
             data: {
-                address: address,
-                gst_no: gst_no,
-                name: company_name
+                address: address.toLowerCase(),
+                gst_no: gst_no?.toLowerCase(),
+                name: company_name.toLowerCase(),
             }
         });
         await tx.client.update({
@@ -283,8 +283,8 @@ export const editLeadService = async ({ id, first_name, last_name, phones, email
                 id: updatedLead.client_id
             },
             data: {
-                first_name: first_name,
-                last_name: last_name
+                first_name: first_name.toLowerCase(),
+                last_name: last_name.toLowerCase(),
             }
         });
         await tx.asignee.deleteMany({
@@ -307,7 +307,7 @@ export const editLeadService = async ({ id, first_name, last_name, phones, email
             await tx.email.createMany({
                 data: editedEmail.map((email) => ({
                     client_id: updatedLead.client_id,
-                    email
+                    email: email.toLowerCase(),
                 }))
             })
         }

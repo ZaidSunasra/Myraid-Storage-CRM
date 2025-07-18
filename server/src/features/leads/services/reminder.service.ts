@@ -31,8 +31,8 @@ export const addReminderService = async ({ title, send_at, message, lead_id, rem
     await prisma.$transaction(async (tx) => {
         const notification = await tx.notification.create({
             data: {
-                message: message,
-                title: title,
+                message: message?.toLowerCase(),
+                title: title.toLowerCase(),
                 send_at: new Date(send_at),
                 lead_id: lead_id,
                 type: reminder_type
@@ -56,8 +56,8 @@ export const editReminderService = async ({ title, send_at, message, lead_id, re
             id: parseInt(reminder_id)
         },
         data: {
-            title: title,
-            message: message,
+            title: title.toLowerCase(),
+            message: message.toLowerCase(),
             send_at: send_at,
             lead_id: lead_id,
             type: reminder_type

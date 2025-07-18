@@ -32,7 +32,7 @@ export const addDescriptionService = async (lead_id: string, description: string
     await prisma.$transaction(async (tx) => {
         const description_id = await tx.description.create({
             data: {
-                notes: description,
+                notes: description.toLowerCase(),
                 lead_id: parseInt(lead_id),
                 updated_by: parseInt(author.id)
             },
@@ -72,7 +72,7 @@ export const editDescriptionService = async (description_id: string, description
                 id: parseInt(description_id)
             },
             data: {
-                notes: description,
+                notes: description.toLowerCase(),
                 updated_by: parseInt(author.id)
             },
             select: {
