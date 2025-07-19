@@ -168,6 +168,7 @@ export const getLeadsService = async (user: any, page: number, search: string, e
                 sourceId.length > 0 ? {
                     source_id: { in: sourceId.map(Number) }
                 } : {},
+                {is_converted: false},
                 startDate && endDate ? {
                     created_at: {
                         gte: new Date(startDate),
