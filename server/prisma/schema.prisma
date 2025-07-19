@@ -19,6 +19,7 @@ model User {
   recipient_list Recipient[]
   asignee        Asignee[]
   description    Description[]
+  Deal           Deal[]
 }
 
 model Company {
@@ -41,8 +42,10 @@ model Lead {
   client_id     Int
   source_id     Int
   product_id    Int
+  is_converted  Boolean        @default(false)
   assigned_to   Asignee[]
   notification  Notification[]
+  deal          Deal[]
   company       Company        @relation(fields: [company_id], references: [id])
   client_detail Client         @relation(fields: [client_id], references: [id])
   source        Source         @relation(fields: [source_id], references: [id])
@@ -51,26 +54,30 @@ model Lead {
 
 model Description {
   id           Int            @id @default(autoincrement())
-  lead         Lead           @relation(fields: [lead_id], references: [id])
-  lead_id      Int
+  lead         Lead?          @relation(fields: [lead_id], references: [id])
+  lead_id      Int?
   created_at   DateTime       @default(now())
   updated_at   DateTime?      @updatedAt
   notes        String
   user         User           @relation(fields: [updated_by], references: [id])
   updated_by   Int
   notification Notification[]
+  deal         Deal?          @relation(fields: [deal_id], references: [id])
+  deal_id      Int?
 }
 
 model Source {
   id   Int    @id @default(autoincrement())
   name String
   lead Lead[]
+  deal Deal[]
 }
 
 model Product {
   id   Int    @id @default(autoincrement())
   name String
   lead Lead[]
+  deal Deal[]
 }
 
 model Asignee {
@@ -81,8 +88,6 @@ model Asignee {
   user_id Int
   deal    Deal? @relation(fields: [deal_id], references: [id])
   deal_id Int?
-
-  @@unique([lead_id, user_id])
 }
 
 model Client {
@@ -92,8 +97,9 @@ model Client {
   company    Company @relation(fields: [company_id], references: [id])
   company_id Int
   lead       Lead[]
-  emails      Email[]
+  emails     Email[]
   phones     Phone[]
+  deal       Deal[]
 }
 
 model Email {
@@ -124,7 +130,7 @@ model Notification {
   deal           Deal?             @relation(fields: [deal_id], references: [id])
   deal_id        Int?
   description    Description?      @relation(fields: [description_id], references: [id], onDelete: Cascade)
-  description_id  Int?
+  description_id Int?
 }
 
 model Recipient {
@@ -140,16 +146,27 @@ model Recipient {
 }
 
 model Deal {
-  id           Int            @id @default(autoincrement())
-  deal_status  Deal_Status
-  created_at   DateTime       @default(now())
-  last_updated DateTime       @updatedAt
-  assigned_to  Asignee[]
-  company_id   Int
-  notification Notification[]
-  company      Company        @relation(fields: [company_id], references: [id])
-  drawing      Drawing[]
-  quotation    Quotation[]
+  id            Int            @id @default(autoincrement())
+  deal_status   Deal_Status
+  created_at    DateTime       @default(now())
+  last_updated  DateTime       @updatedAt
+  assigned_to   Asignee[]
+  company_id    Int
+  notification  Notification[]
+  company       Company        @relation(fields: [company_id], references: [id])
+  drawing       Drawing[]
+  quotation     Quotation[]
+  description   Description[]
+  client_detail Client         @relation(fields: [client_id], references: [id])
+  client_id     Int
+  source        Source         @relation(fields: [source_id], references: [id])
+  source_id     Int
+  product       Product        @relation(fields: [product_id], references: [id])
+  product_id    Int
+  lead          Lead           @relation(fields: [lead_id], references: [id])
+  lead_id       Int
+  user          User           @relation(fields: [updated_by], references: [id])
+  updated_by        Int
 }
 
 model Drawing {
