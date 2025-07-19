@@ -4,21 +4,23 @@ import LeadScheduling from "../components/LeadScheduling";
 import { FetchLeadById } from "@/api/leads/leads.queries";
 import { Button } from "@/shared/components/ui/button";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/shared/components/ui/tabs";
-import { ArrowLeft, Edit } from "lucide-react";
+import { ArrowLeft, ArrowRightLeft, Edit } from "lucide-react";
 import LeadDescription from "../components/LeadDescription";
 import LeadSideBar from "../components/LeadSidebar";
 import Navbar from "@/shared/components/Navbar";
 import type { GetLeadOutput } from "zs-crm-common";
 import DetailedLeadPageLoader from "../components/loaders/DetailedLeadPageLoader";
 import { capitalize, toTitleCase } from "@/utils/formatData";
+import { Dialog, DialogClose, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle, DialogTrigger } from "@/shared/components/ui/dialog";
+import { useConvertToDeal } from "@/api/deals/deal.mutation";
 
 const DetailedLeadPage = () => {
 	const [searchParams] = useSearchParams();
 	const tab = searchParams.get("tab") || "info";
-
+	const navigate = useNavigate();
 	const { id } = useParams();
 	const { data, isPending, isError } = FetchLeadById(id || "");
-	const navigate = useNavigate();
+	const convertLead = useConvertToDeal();
 
 	if (isPending) return <DetailedLeadPageLoader />;
 
@@ -68,6 +70,30 @@ const DetailedLeadPage = () => {
 						</Tabs>
 					</div>
 					<div className="lg:col-span-1">
+						<div className="w-full mb-8">
+							<Dialog>
+								<DialogTrigger asChild>
+									<Button className=" text-white flex gap-2 px-6 py-2 rounded-xl shadow-md transition w-full bg-emerald-600 hover:bg-emerald-700">
+										<ArrowRightLeft className="w-4 h-4" />
+										Convert to Deal
+									</Button>
+								</DialogTrigger>
+								<DialogContent>
+									<DialogHeader>
+										<DialogTitle>Convert the lead to deal</DialogTitle>
+										<DialogDescription>Are you sure you want to convert the lead? This cannot be undone.</DialogDescription>
+									</DialogHeader>
+									<DialogFooter>
+										<DialogClose asChild>
+											<Button variant="outline">Cancel</Button>
+										</DialogClose>
+										<Button type="submit" onClick={() => convertLead.mutate(id as string)}>
+											Convert
+										</Button>
+									</DialogFooter>
+								</DialogContent>
+							</Dialog>
+						</div>
 						<LeadSideBar />
 					</div>
 				</div>
