@@ -127,7 +127,8 @@ export type AddDescription = z.infer<typeof addDescriptionSchema>
 
 export type GetDescriptionByIdOutput = {
     id: number;
-    lead_id: number;
+    lead_id: number | null;
+    deal_id: number | null;
     created_at: Date;
     updated_at: Date | null;
     notes: string;
