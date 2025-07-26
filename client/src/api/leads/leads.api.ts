@@ -20,7 +20,7 @@ export const getLeads = async ({
 	rows,
 	startDate,
 	endDate,
-	selectedSources
+	sources
 }: {
 	page: number;
 	search: string;
@@ -28,9 +28,9 @@ export const getLeads = async ({
 	rows: number;
 	startDate: string;
 	endDate: string;
-	selectedSources: string[];
+	sources: string[];
 }): Promise<GetLeadSuccessResponse> => {
-	const response = await axiosInstance.get(`/leads/get?page=${page}&rows=${rows}&search=${search}&employeeID=${employeeIDs}&startDate=${startDate}&endDate=${endDate}&sources=${selectedSources}`);
+	const response = await axiosInstance.get(`/leads/get?page=${page}&rows=${rows}&search=${search}&employeeID=${employeeIDs}&startDate=${startDate}&endDate=${endDate}&sources=${sources}`);
 	return response.data;
 };
 
