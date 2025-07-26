@@ -168,7 +168,7 @@ export const getLeadsService = async (user: any, page: number, search: string, e
                 sourceId.length > 0 ? {
                     source_id: { in: sourceId.map(Number) }
                 } : {},
-                {is_converted: false},
+                { is_converted: false },
                 startDate && endDate ? {
                     created_at: {
                         gte: new Date(startDate),
@@ -249,7 +249,11 @@ export const getLeadsService = async (user: any, page: number, search: string, e
         }
     });
     const totalLeads = await prisma.lead.count({
-        where: user.department === DEPARTMENTS[1] ? {} : { assigned_to: { some: { user_id: user.id } } }
+        where: {
+            is_converted: false,
+            ...(user.department === DEPARTMENTS[1] ? {} : { assigned_to: { some: { user_id: user.id } } })
+        }
+
     });
     return { leads, totalLeads };
 }
