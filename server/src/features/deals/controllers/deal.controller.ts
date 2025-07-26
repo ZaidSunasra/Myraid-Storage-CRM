@@ -3,10 +3,18 @@ import { convertLeadToDealService, editDealStatusService, getDealByCompanyServic
 import { ErrorResponse, SuccessResponse } from "zs-crm-common";
 
 export const getDealController = async (req: Request, res: Response): Promise<any> => {
+    const user = res.locals.user;
     const rows = parseInt(req.query.rows as string);
     const page = parseInt(req.query.page as string);
+    const search = req.query.search as string;
+    const startDate = req.query.startDate as string;
+    const endDate = req.query.endDate as string;
+    const employees = req.query.employeeID as string | undefined;
+    const sources = req.query.sources as string | undefined;
+    const employeeId = employees ? employees.split(",").filter(Boolean) : [];
+    const sourceId = sources ? sources.split(",").filter(Boolean) : []
     try {
-        const { deals, totalDeals } = await getDealService(rows, page);
+        const { deals, totalDeals } = await getDealService(user, rows, page, search, startDate, endDate, employeeId, sourceId);
         return res.status(200).json({
             message: "Deals fetched successfully",
             deals,
