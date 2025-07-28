@@ -1,6 +1,7 @@
 import LandingPage from "@/features/auth/pages/LandingPage";
 import CalenderPage from "@/features/calender/pages/CalenderPage";
 import DealsPage from "@/features/deals/pages/DealsPage";
+import DetailedDealPage from "@/features/deals/pages/DetailedDealPage";
 import AddLeadPage from "@/features/leads/pages/AddLeadPage";
 import DetailedLeadPage from "@/features/leads/pages/DetailedLeadPage";
 import EditLeadPage from "@/features/leads/pages/EditLeadPage";
@@ -22,6 +23,7 @@ const Router = () => {
 						<Route path="/lead/add" element={<AddLeadPage />} />
 						<Route path="/calender" element={<CalenderPage />} />
 						<Route path="/deal" element={<DealsPage />} />
+						<Route path="/deal/:id" element={<DetailedDealPage />} />
 					</Route>
 					<Route element={<ProtectedRoute allowedDepartment={[DEPARTMENTS[0], DEPARTMENTS[1]]} checkOwnership />}>
 						<Route path="/lead/:id" element={<DetailedLeadPage />} />

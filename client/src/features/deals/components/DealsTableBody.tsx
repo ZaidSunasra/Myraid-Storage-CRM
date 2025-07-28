@@ -11,14 +11,16 @@ import { capitalize, toTitleCase } from "@/utils/formatData";
 import { format } from "date-fns";
 import { Building2, CalendarIcon, ChevronsUpDown, Mail, Phone, User, X } from "lucide-react";
 import { useState } from "react";
-import type { Assignee, GetSourceOutput } from "zs-crm-common";
+import { useNavigate } from "react-router";
+import type { Assignee, GetAllDealSuccessResponse, GetDealOutput, GetSourceOutput } from "zs-crm-common";
 
-const DealsTableBody = ({ data }: { data: any }) => {
+const DealsTableBody = ({ data }: { data: GetAllDealSuccessResponse }) => {
 
     const { startDate, endDate, setDate, toggleSource, sources, rows } = useQueryParams();
     const [datePopoverOpen, setDatePopoverOpen] = useState<boolean>(false);
     const { data: sourceData, isError: sourceError, isPending: sourcePending } = FetchSources();
     const lastPage = Math.ceil((data?.totalDeals || 0) / rows) == 0 ? 1 : Math.ceil((data?.totalDeals || 0) / rows);
+    const navigate = useNavigate();
 
     if (sourcePending) return <>Loading..</>
     if (sourceError) return <>Error</>
@@ -93,8 +95,8 @@ const DealsTableBody = ({ data }: { data: any }) => {
                 </TableRow>
             </TableHeader>
             <TableBody>
-                {data.deals.map((deal: any) => (
-                    <TableRow key={deal.id}>
+                {data.deals.map((deal: GetDealOutput) => (
+                    <TableRow key={deal.id} onClick={() => navigate(`/deal/${deal.id}`)}>
                         <TableCell className="font-medium">
                             {capitalize(deal.client_detail.first_name)} {capitalize(deal.client_detail.last_name)}
                         </TableCell>

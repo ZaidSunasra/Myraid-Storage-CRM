@@ -1,26 +1,35 @@
+import { useEditStatus } from "@/api/deals/deal.mutation";
 import { Badge } from "@/shared/components/ui/badge";
 import { Button } from "@/shared/components/ui/button";
 import { Card, CardContent } from "@/shared/components/ui/card";
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "@/shared/components/ui/dropdown-menu";
 import { ScrollArea } from "@/shared/components/ui/scroll-area";
 import { capitalize, toTitleCase } from "@/utils/formatData";
-import { Building2, CheckCircle, Clock, FileText, Globe, Handshake, Mail, MoreHorizontal, Package, Pencil, Phone, Target, User, UserRound, X } from "lucide-react";
-import type { Assignee } from "zs-crm-common";
+import { format } from "date-fns";
+import { Building2, CheckCircle, Clock, FileText, Globe, Handshake, Mail, MoreHorizontal, Package, Pencil, Phone, Target, User, UserRound, X, type LucideIcon } from "lucide-react";
+import { useNavigate } from "react-router";
+import { DEAL_STATUS, type Assignee, type deal_status, type GetAllDealSuccessResponse, type GetDealOutput } from "zs-crm-common";
 
-export const DEAL_STATUS_META = {
-    pending: { icon: Clock, bg: "bg-gradient-to-r from-gray-500 to-gray-600" },
-    drawing: { icon: Pencil, bg: "bg-gradient-to-r from-blue-500 to-blue-600" },
-    quotation: { icon: FileText, bg: "bg-gradient-to-r from-amber-500 to-amber-600" },
-    high_order_value: { icon: Target, bg: "bg-gradient-to-r from-purple-500 to-purple-600" },
-    negotiation: { icon: Handshake, bg: "bg-gradient-to-r from-orange-500 to-orange-600" },
-    order_lost: { icon: X, bg: "bg-gradient-to-r from-red-500 to-red-600" },
-    order_confirmed: { icon: CheckCircle, bg: "bg-gradient-to-r from-green-500 to-green-600" }
-};
+const KanbanBoard = ({ data }: { data: GetAllDealSuccessResponse }) => {
 
-const KanbanBoard = ({ data }: { data: any }) => {
-    const DEAL_STATUSES = ["pending", "drawing", "quotation", "high_order_value", "negotiation", "order_lost", "order_confirmed"];
+    const editStatus = useEditStatus();
+    const navigate = useNavigate();
 
-    const groupByStatus = data.deals.reduce((acc: Record<string, any[]>, deal: any) => {
+    const handleStatus = ({id, status} : {id: number, status: deal_status}) => {
+        editStatus.mutate({ id, status })
+    }
+
+    const DEAL_STATUS_META: Record<deal_status, { icon: LucideIcon, bg: string }> = {
+        pending: { icon: Clock, bg: "bg-gradient-to-r from-gray-500 to-gray-600" },
+        drawing: { icon: Pencil, bg: "bg-gradient-to-r from-blue-500 to-blue-600" },
+        quotation: { icon: FileText, bg: "bg-gradient-to-r from-amber-500 to-amber-600" },
+        high_order_value: { icon: Target, bg: "bg-gradient-to-r from-purple-500 to-purple-600" },
+        negotiation: { icon: Handshake, bg: "bg-gradient-to-r from-orange-500 to-orange-600" },
+        order_lost: { icon: X, bg: "bg-gradient-to-r from-red-500 to-red-600" },
+        order_confirmed: { icon: CheckCircle, bg: "bg-gradient-to-r from-green-500 to-green-600" }
+    };
+
+    const groupByStatus = data.deals.reduce((acc: Record<string, GetDealOutput[]>, deal: GetDealOutput) => {
         const status = deal.deal_status;
         if (!acc[status]) {
             acc[status] = [];
@@ -29,11 +38,9 @@ const KanbanBoard = ({ data }: { data: any }) => {
         return acc;
     }, {});
 
-    console.log(groupByStatus);
-
     return (
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6 rounded-lg">
-            {DEAL_STATUSES.map((status) => {
+            {DEAL_STATUS.map((status: deal_status) => {
                 const items = groupByStatus[status] || [];
                 const { icon: StatusIcon, bg } = DEAL_STATUS_META[status];
                 return (
@@ -52,8 +59,8 @@ const KanbanBoard = ({ data }: { data: any }) => {
                         <ScrollArea className="flex-1 max-h-96">
                             <div className="p-3 space-y-3">
                                 {items.length > 0 ? (
-                                    items.map((deal: any) => (
-                                        <Card key={deal.id} className="group cursor-pointer hover:shadow-md transition-all duration-200 border border-border/50 hover:border-primary/30 p-0">
+                                    items.map((deal: GetDealOutput) => (
+                                        <Card key={deal.id} onClick={() => navigate(`/deal/${deal.id}`)} className="group cursor-pointer hover:shadow-md transition-all duration-200 border border-border/50 hover:border-primary/30 p-0">
                                             <CardContent className="p-4">
                                                 <div className="space-y-2">
                                                     <div className="flex items-center justify-between">
@@ -67,9 +74,9 @@ const KanbanBoard = ({ data }: { data: any }) => {
                                                                     <MoreHorizontal className="h-3 w-3" />
                                                                 </Button>
                                                             </DropdownMenuTrigger>
-                                                            <DropdownMenuContent align="end" className="w-40">
-                                                                {DEAL_STATUSES.filter((s) => s !== deal.deal_status).map((status) => (
-                                                                    <DropdownMenuItem key={status}>Move to {status}</DropdownMenuItem>
+                                                            <DropdownMenuContent align="end">
+                                                                {DEAL_STATUS.filter((s) => s !== deal.deal_status).map((status) => (
+                                                                    <DropdownMenuItem key={status} onClick={() => handleStatus({ id: deal.id, status })}>Move to {toTitleCase(status)}</DropdownMenuItem>
                                                                 ))}
                                                             </DropdownMenuContent>
                                                         </DropdownMenu>
@@ -82,11 +89,11 @@ const KanbanBoard = ({ data }: { data: any }) => {
                                                     </div>
                                                     <div className="flex items-center space-x-2">
                                                         <Package className="h-3 w-3 text-muted-foreground" />
-                                                        <span className="text-xs text-muted-foreground">{deal.product.name}</span>
+                                                        <span className="text-xs text-muted-foreground">{toTitleCase(deal.product.name)}</span>
                                                     </div>
                                                     <div className="flex items-center space-x-2">
                                                         <Globe className="h-3 w-3 text-muted-foreground" />
-                                                        <span className="text-xs text-muted-foreground">{deal.source.name}</span>
+                                                        <span className="text-xs text-muted-foreground">{toTitleCase(deal.source.name)}</span>
                                                     </div>
                                                     <div className="flex items-center space-x-2">
                                                         <Mail className="h-3 w-3 text-muted-foreground" />
@@ -97,17 +104,14 @@ const KanbanBoard = ({ data }: { data: any }) => {
                                                         <span className="text-xs text-muted-foreground">{deal.client_detail.phones[0].phone}</span>
                                                     </div>
                                                     <div className="flex items-center space-x-2">
+                                                        <UserRound className="h-3 w-3 text-muted-foreground" />
                                                         {deal.assigned_to.map((assignee: Assignee) =>
-                                                            <>
-                                                                <UserRound className="h-3 w-3 text-muted-foreground" />
-                                                                <span className="text-xs text-muted-foreground">{assignee.user.first_name} {assignee.user.last_name}</span>
-                                                            </>
+                                                            <span key={assignee.user.id} className="text-xs text-muted-foreground">{assignee.user.first_name} {assignee.user.last_name}</span>
                                                         )}
                                                     </div>
-
                                                     <div className="flex items-center space-x-2">
                                                         <Clock className="h-3 w-3 text-muted-foreground" />
-                                                        <span className="text-xs text-muted-foreground">{new Date(deal.last_updated).toLocaleDateString("en-IN", { day: "numeric", month: "short", year: "2-digit" })}</span>
+                                                        <span className="text-xs text-muted-foreground">{format(deal.created_at, "dd/mm/yyyy hh:mm a")}</span>
                                                     </div>
                                                 </div>
                                             </CardContent>
