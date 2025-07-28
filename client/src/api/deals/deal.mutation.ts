@@ -1,5 +1,5 @@
-import { useMutation } from "@tanstack/react-query"
-import { convertLeadToDeal } from "./deal.api"
+import { useMutation, useQueryClient } from "@tanstack/react-query"
+import { convertLeadToDeal, editStatus } from "./deal.api"
 import type { ErrorResponse, SuccessResponse } from "zs-crm-common"
 import { toast } from "sonner"
 import type { AxiosError } from "axios"
@@ -12,6 +12,20 @@ export const useConvertToDeal = () => {
         onSuccess: (data: SuccessResponse) => {
             (toast.success(data.message));
             navigate("/lead");
+        },
+        onError: (error: AxiosError<ErrorResponse>) => {
+            toast.error(error.response?.data.message);
+        }
+    })
+}
+
+export const useEditStatus = () => {
+    const queryClient = useQueryClient();
+    return useMutation({
+        mutationFn: editStatus,
+        onSuccess: (data: SuccessResponse) => {
+            (toast.success(data.message));
+            queryClient.invalidateQueries({ queryKey: ['deals'] })
         },
         onError: (error: AxiosError<ErrorResponse>) => {
             toast.error(error.response?.data.message);
