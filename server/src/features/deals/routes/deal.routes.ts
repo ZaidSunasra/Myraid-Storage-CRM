@@ -11,7 +11,7 @@ dealRouter.get("/get/by-company", authMiddleware, checkDepartment(["admin", "sal
 dealRouter.post("/convert/:lead_id", authMiddleware, checkDepartment(["admin", "sales", "drawing"]), convertLeadToDealController);
 //dealRouter.post("/add");
 //dealRouter.put("/edit/:id");
-dealRouter.put("/edit/status", authMiddleware, checkDepartment(["admin", "sales", "drawing"]), editDealStatusController);
+dealRouter.put("/edit/status/:id", authMiddleware, checkDepartment(["admin", "sales", "drawing"]), editDealStatusController);
 //drawing upload
 //drawing accepted
 

@@ -1,8 +1,9 @@
 import { Request, Response } from "express";
 import { convertLeadToDealService, editDealStatusService, getDealByCompanyService, getDealByIdService, getDealService } from "../services/deal.service";
-import { ErrorResponse, SuccessResponse } from "zs-crm-common";
+import { GetAllDealSuccessResponse, GetDealByIdSuccessResponse, GetDealByompanySuccessResponse, ErrorResponse, SuccessResponse, deal_status, DEAL_STATUS, editStatusSchema } from "zs-crm-common";
+import z from "zod/v4";
 
-export const getDealController = async (req: Request, res: Response): Promise<any> => {
+export const getDealController = async (req: Request, res: Response<ErrorResponse | GetAllDealSuccessResponse>): Promise<any> => {
     const user = res.locals.user;
     const rows = parseInt(req.query.rows as string);
     const page = parseInt(req.query.page as string);
@@ -29,7 +30,7 @@ export const getDealController = async (req: Request, res: Response): Promise<an
     }
 }
 
-export const getDealByCompanyController = async (req: Request, res: Response): Promise<any> => {
+export const getDealByCompanyController = async (req: Request, res: Response<ErrorResponse | GetDealByompanySuccessResponse>): Promise<any> => {
     const { company_id } = req.body;
     try {
         const deals = await getDealByCompanyService(company_id);
@@ -46,7 +47,7 @@ export const getDealByCompanyController = async (req: Request, res: Response): P
     }
 }
 
-export const getDealByIdController = async (req: Request, res: Response): Promise<any> => {
+export const getDealByIdController = async (req: Request, res: Response<ErrorResponse | GetDealByIdSuccessResponse>): Promise<any> => {
     const id = req.params.id;
     try {
         const deal = await getDealByIdService(id);
@@ -80,12 +81,20 @@ export const convertLeadToDealController = async (req: Request, res: Response<Er
     }
 }
 
-export const editDealStatusController = async (req: Request, res: Response): Promise<any> => {
-    const { id, status } = req.body();
+export const editDealStatusController = async (req: Request, res: Response<SuccessResponse | ErrorResponse>): Promise<any> => {
+    const { status } = req.body;
+    const deal_id = req.params.id;
+    const validation = editStatusSchema.safeParse(req.body);
+    if (!validation.success) {
+        return res.status(400).json({
+            message: "Input validation error",
+            error: validation.error.issues
+        })
+    }
     try {
-        await editDealStatusService(id, status);
+        await editDealStatusService(deal_id, status);
         return res.status(200).json({
-            message: `Updated deal status succesfully`,
+            message: `Deal status updated succesfully`,
         });
     } catch (error) {
         console.log(`Error in updating deal status`, error);

@@ -1,8 +1,9 @@
 import { Deal_Status, Notification_Type } from "@prisma/client";
 import { prisma } from "../../../libs/prisma"
-import { DEPARTMENTS } from "zs-crm-common";
+import { DEPARTMENTS, Deal, GetAllDealOutput, GetDealOutput } from "zs-crm-common";
+import { Include } from "../constants";
 
-export const getDealService = async (user: any, rows: number, page: number, search: string, startDate: string, endDate: string, employeeId: string[], sourceId: string[]): Promise<any> => {
+export const getDealService = async (user: any, rows: number, page: number, search: string, startDate: string, endDate: string, employeeId: string[], sourceId: string[]): Promise<GetAllDealOutput> => {
     const isAdmin = user.department === DEPARTMENTS[1];
     const deals = await prisma.deal.findMany({
         where: {
@@ -54,43 +55,13 @@ export const getDealService = async (user: any, rows: number, page: number, sear
         },
         take: rows,
         skip: (page - 1) * rows,
-        include: {
-            company: true,
-            client_detail: {
-                select: {
-                    first_name: true,
-                    last_name: true,
-                    emails: {
-                        select: {
-                            email: true
-                        }
-                    },
-                    phones: {
-                        select: {
-                            phone: true
-                        }
-                    }
-                }
-            },
-            source: true,
-            product: true,
-            assigned_to: {
-                select: {
-                    user: {
-                        select: {
-                            first_name: true,
-                            last_name: true
-                        }
-                    }
-                }
-            }
-        }
+        include: Include
     });
     const totalDeals = await prisma.deal.count();
     return { deals, totalDeals };
 };
 
-export const getDealByCompanyService = async (company_id: string): Promise<any> => {
+export const getDealByCompanyService = async (company_id: string): Promise<Deal[]> => {
     const deals = await prisma.deal.findMany({
         where: {
             company_id: parseInt(company_id)
@@ -99,11 +70,12 @@ export const getDealByCompanyService = async (company_id: string): Promise<any> 
     return deals;
 };
 
-export const getDealByIdService = async (id: string): Promise<any> => {
+export const getDealByIdService = async (id: string): Promise<GetDealOutput | null> => {
     const deal = await prisma.deal.findUnique({
         where: {
             id: parseInt(id)
-        }
+        },
+        include: Include
     });
     return deal;
 }
@@ -170,10 +142,10 @@ export const convertLeadToDealService = async (lead_id: string, author: { id: nu
     })
 }
 
-export const editDealStatusService = async (id: string, status: Deal_Status): Promise<any> => {
+export const editDealStatusService = async (deal_id: string, status: Deal_Status): Promise<void> => {
     await prisma.deal.update({
         where: {
-            id: parseInt(id)
+            id: parseInt(deal_id)
         },
         data: {
             deal_status: status
