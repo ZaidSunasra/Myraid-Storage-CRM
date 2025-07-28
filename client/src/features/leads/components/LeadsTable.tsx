@@ -31,7 +31,7 @@ const LeadsTable = () => {
 
 	useEffect(() => {
 		setSearch(debouncedSearch, search);
-	}, [debouncedSearch, search, setSearchParams]);
+	}, [debouncedSearch, search, setSearchParams, setSearch]);
 
 	if (leadsPending || sourcePending) return <LeadTableLoader />;
 
