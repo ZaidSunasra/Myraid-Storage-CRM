@@ -1,4 +1,5 @@
 import { z } from "zod/v4";
+import { Assignee, Client_Details, Company, Product, Source, SuccessResponse } from "./common.schema";
 
 export const NOTIFICATION_TYPE = ["color_changed", "drawing_uploaded", "drawing_approved", "drawing_rejected", "client_meeting", "mentioned", "lead_assigned"] as const;
 
@@ -31,34 +32,9 @@ export const addReminderSchema = z.object({
     description_id: z.coerce.number().optional()
 })
 
-export type SuccessResponse = {
-    message: string;
-};
-
-export type ErrorResponse = {
-    message: string;
-    error?: any;
-}
-
 export type AddLead = z.infer<typeof leadSchema>;
 
 export type EditLead = AddLead & { id: number };
-
-export type Assignee = {
-    user: {
-        first_name: string;
-        last_name: string;
-        id: number;
-    }
-}
-
-export type Company = {
-    name: string;
-    id: number;
-    address: string;
-    gst_no: string | null;
-    created_at: Date;
-}
 
 export type GetLeadOutput = {
     id: number;
@@ -69,20 +45,9 @@ export type GetLeadOutput = {
     product_id: number;
     company: Company;
     assigned_to: Assignee[];
-    client_detail: {
-        first_name: string;
-        last_name: string;
-        emails: { email: string | null }[];
-        phones: { phone: string }[];
-    };
-    product: {
-        id: number;
-        name: string;
-    };
-    source: {
-        id: number;
-        name: string;
-    }
+    client_detail: Client_Details;
+    product: Product;
+    source: Source;
 }
 
 export type GetLeadSuccessResponse = {

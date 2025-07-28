@@ -1,4 +1,4 @@
-import { SuccessResponse } from "./leads.schema"
+import { SuccessResponse } from "./common.schema"
 
 export type GetEmployeeOutput = {
     first_name: string;
