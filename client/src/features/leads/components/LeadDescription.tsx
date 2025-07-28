@@ -13,8 +13,9 @@ import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, D
 import EditDescription from "./EditDescription";
 import { Mention, MentionsInput } from "react-mentions";
 import { FetchAllEmployee } from "@/api/employees/employee.queries";
-import { mentionStyle } from "@/utils/mentionStyle";
+import { mentionStyle } from "@/utils/customStyle";
 import { Skeleton } from "@/shared/components/ui/skeleton";
+import { format } from "date-fns";
 
 const LeadDescription = ({ id }: { id: string }) => {
 	const [actionType, setActionType] = useState<"edit" | "delete" | null>(null);
@@ -70,7 +71,7 @@ const LeadDescription = ({ id }: { id: string }) => {
 													<div>
 														<div className="text-sm text-accent-foreground whitespace-pre-line break-words">{description.notes.replace(/(@\[[^\]]+\])\s\(\d+\)/g, "$1")}</div>
 														<div className="text-xs text-muted-foreground mt-1">
-															Last Updated by {description.user.first_name} {description.user.last_name} on {new Date(description.updated_at as Date).toLocaleString("en-IN", { day: "2-digit", month: "2-digit", year: "numeric", hour: "2-digit", minute: "2-digit" })}
+															Last Updated by {description.user.first_name} {description.user.last_name} on {format(description.updated_at as Date, "dd/mm/yyyy hh:mm a")}
 														</div>
 													</div>
 												</div>

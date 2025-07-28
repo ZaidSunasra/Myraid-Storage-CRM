@@ -9,6 +9,7 @@ import { useState } from "react";
 import EditReminder from "./EditReminder";
 import { type Reminders } from "zs-crm-common";
 import { capitalize, toTitleCase } from "@/utils/formatData";
+import { format } from "date-fns";
 
 const ScheduledMeeting = () => {
 	const { id } = useParams();
@@ -53,7 +54,7 @@ const ScheduledMeeting = () => {
 									<h4 className="font-medium">Meeting Schedule</h4>
 									<div className="text-sm text-gray-600 flex items-center break-words">
 										<CalendarIcon className="h-3 w-3 mr-1 hidden sm:block" />
-										{new Date(meeting.send_at as Date).toLocaleString("en-IN", { day: "2-digit", month: "2-digit", year: "numeric", hour: "2-digit", minute: "2-digit" })}
+										{format(meeting.send_at as Date, "dd/mm/yyyy hh:mm a")}
 									</div>
 								</div>
 								<div className="col-span-2 md:col-span-1 flex justify-end gap-2 md:gap-4">

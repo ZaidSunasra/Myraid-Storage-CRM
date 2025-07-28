@@ -5,7 +5,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import { Mention, MentionsInput } from "react-mentions";
 import { addDescriptionSchema, type AddDescription, type GetDescriptionOutput } from "zs-crm-common";
-import { mentionStyle } from "@/utils/mentionStyle";
+import { mentionStyle } from "@/utils/customStyle";
 
 const EditDescription = ({ data, setOpen, employee }: { data: GetDescriptionOutput; setOpen: React.Dispatch<React.SetStateAction<boolean>>; employee: { id: number; display: string }[] }) => {
 	const editDescription = useEditDescription();

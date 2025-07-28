@@ -1,6 +1,7 @@
 import { Card, CardContent, CardHeader, CardTitle } from "@/shared/components/ui/card";
 import { Label } from "@/shared/components/ui/label";
 import { capitalize, toTitleCase } from "@/utils/formatData";
+import { format } from "date-fns";
 import { Building2, Mail, MapPin, Phone, User } from "lucide-react";
 import type { Assignee, GetLeadOutput } from "zs-crm-common";
 
@@ -97,7 +98,7 @@ const LeadDetails = ({ data }: { data: GetLeadOutput }) => {
 						</div>
 						<div className="space-y-2">
 							<Label>Created Date</Label>
-							<span>{new Date(data.created_at).toLocaleString("en-IN", { day: "2-digit", month: "2-digit", year: "numeric", hour: "2-digit", minute: "2-digit" })}</span>
+							<span>{format(data.created_at, "dd/mm/yyyy hh:mm a")}</span>
 						</div>
 						<div className="space-y-2">
 							<Label>Product</Label>
