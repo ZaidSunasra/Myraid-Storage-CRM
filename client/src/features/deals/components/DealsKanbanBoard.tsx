@@ -15,7 +15,7 @@ const KanbanBoard = ({ data }: { data: GetAllDealSuccessResponse }) => {
     const editStatus = useEditStatus();
     const navigate = useNavigate();
 
-    const handleStatus = ({id, status} : {id: number, status: deal_status}) => {
+    const handleStatus = ({ id, status }: { id: string, status: deal_status }) => {
         editStatus.mutate({ id, status })
     }
 
@@ -76,7 +76,7 @@ const KanbanBoard = ({ data }: { data: GetAllDealSuccessResponse }) => {
                                                             </DropdownMenuTrigger>
                                                             <DropdownMenuContent align="end">
                                                                 {DEAL_STATUS.filter((s) => s !== deal.deal_status).map((status) => (
-                                                                    <DropdownMenuItem key={status} onClick={() => handleStatus({ id: deal.id, status })}>Move to {toTitleCase(status)}</DropdownMenuItem>
+                                                                    <DropdownMenuItem key={status} onClick={() => handleStatus({ id: deal.id, status })} disabled={editStatus.isPending}>Move to {toTitleCase(status)}</DropdownMenuItem>
                                                                 ))}
                                                             </DropdownMenuContent>
                                                         </DropdownMenu>
@@ -97,7 +97,9 @@ const KanbanBoard = ({ data }: { data: GetAllDealSuccessResponse }) => {
                                                     </div>
                                                     <div className="flex items-center space-x-2">
                                                         <Mail className="h-3 w-3 text-muted-foreground" />
-                                                        <span className="text-xs text-muted-foreground truncate">{deal.client_detail.emails[0].email}</span>
+                                                        <span className="text-xs text-muted-foreground">
+                                                            {deal.client_detail?.emails[0]?.email == "" ? "No email provided" : deal.client_detail?.emails[0]?.email}
+                                                        </span>
                                                     </div>
                                                     <div className="flex items-center space-x-2">
                                                         <Phone className="h-3 w-3 text-muted-foreground" />

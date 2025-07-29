@@ -11,7 +11,7 @@ export const useConvertToDeal = () => {
         mutationFn: convertLeadToDeal,
         onSuccess: (data: SuccessResponse) => {
             (toast.success(data.message));
-            navigate("/lead");
+            navigate("/deal");
         },
         onError: (error: AxiosError<ErrorResponse>) => {
             toast.error(error.response?.data.message);
