@@ -10,3 +10,8 @@ export const getAllEmployee = async (): Promise<GetEmployeeSuccessResponse> => {
 	const response = await axiosInstance.get("/employees/get-all");
 	return response.data;
 };
+
+export const getAssignedEmployee = async(id: string) : Promise<GetEmployeeSuccessResponse> => {
+	const response = await axiosInstance.get(`/employees/get-assigned/${id}`);
+	return response.data;
+}
