@@ -1,5 +1,5 @@
 import z from "zod/v4";
-import { Assignee, Client_Details, Company, SuccessResponse } from "./common.schema"
+import { Assignee, Client_Details, Company, Product, Source, SuccessResponse } from "./common.schema"
 
 export const DEAL_STATUS = ["pending", "drawing", "quotation", "negotiation", "high_order_value", "order_lost", "order_confirmed"] as const;
 export type deal_status = typeof DEAL_STATUS[number];
@@ -12,7 +12,7 @@ export type Deal = {
     company_id: number;
     source_id: number;
     product_id: number;
-    id: number;
+    id: string;
     deal_status: deal_status;
     created_at: Date;
     last_updated: Date;
@@ -24,14 +24,8 @@ export type Deal = {
 export type GetDealOutput = Deal & {
     company: Company;
     assigned_to: Assignee[];
-    product: {
-        name: string;
-        id: number;
-    };
-    source: {
-        name: string;
-        id: number;
-    };
+    product: Product;
+    source: Source;
     client_detail: Client_Details
 }
 

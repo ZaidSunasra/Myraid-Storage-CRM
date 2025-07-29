@@ -28,7 +28,7 @@ export const addReminderSchema = z.object({
     send_at: z.coerce.date("Date and time are required"),
     reminder_type: z.enum(NOTIFICATION_TYPE),
     lead_id: z.coerce.number().optional(),
-    deal_id: z.coerce.number().optional(),
+    deal_id: z.string().optional(),
     description_id: z.coerce.number().optional()
 })
 
@@ -77,7 +77,7 @@ export type Reminders = {
     is_sent: boolean;
     type: reminder_type;
     lead_id: number | null;
-    deal_id: number | null;
+    deal_id: string | null;
     description_id: number | null;
 }
 
@@ -93,7 +93,7 @@ export type AddDescription = z.infer<typeof addDescriptionSchema>
 export type GetDescriptionByIdOutput = {
     id: number;
     lead_id: number | null;
-    deal_id: number | null;
+    deal_id: string | null;
     created_at: Date;
     updated_at: Date | null;
     notes: string;

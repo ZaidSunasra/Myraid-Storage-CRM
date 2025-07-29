@@ -15,7 +15,7 @@ export type GetNotificationOutput = Receipient & {
     notification: {
         id: number;
         lead_id: number | null;
-        deal_id: number | null;
+        deal_id: string | null;
         created_at: Date;
         message: string | null;
         title: string;
