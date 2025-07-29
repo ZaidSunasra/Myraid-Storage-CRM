@@ -12,7 +12,7 @@ import { useMemo, useState } from "react";
 import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle } from "@/shared/components/ui/dialog";
 import EditDescription from "./EditDescription";
 import { Mention, MentionsInput } from "react-mentions";
-import { FetchAllEmployee } from "@/api/employees/employee.queries";
+import { FetchAssignedEmployee } from "@/api/employees/employee.queries";
 import { mentionStyle } from "@/utils/customStyle";
 import { Skeleton } from "@/shared/components/ui/skeleton";
 import { format } from "date-fns";
@@ -23,16 +23,16 @@ const LeadDescription = ({ id }: { id: string }) => {
 	const [data, setData] = useState<null | number | GetDescriptionOutput>(null);
 
 	const { data: descriptionData, isPending: descriptionPending, isError: descriptionError } = FetchDescription(id);
-	const { data: allEmployeeData, isPending: allEmployeePending, isError: allEmployeeError } = FetchAllEmployee();
+	const { data: assignedEmployeeData, isPending: assignedEmployeePending, isError: assignedEmployeeError } = FetchAssignedEmployee(id);
 	const addDescription = useAddDescription();
 	const deleteDescription = useDeleteDescription();
 
 	const allEmployeeArray = useMemo(() => {
-		if (!allEmployeePending && allEmployeeData) {
-			return allEmployeeData.employees.map((emp: GetEmployeeOutput) => ({ id: emp.id, display: `${emp.first_name} ${emp.last_name}` }));
+		if (!assignedEmployeePending && assignedEmployeeData) {
+			return assignedEmployeeData.employees.map((emp: GetEmployeeOutput) => ({ id: emp.id, display: `${emp.first_name} ${emp.last_name}` }));
 		}
 		return [];
-	}, [allEmployeeData, allEmployeePending]);
+	}, [assignedEmployeeData, assignedEmployeePending]);
 
 	const form = useForm<AddDescription>({ resolver: zodResolver(addDescriptionSchema), defaultValues: { description: "" } });
 
@@ -48,8 +48,8 @@ const LeadDescription = ({ id }: { id: string }) => {
 		setActionType(null);
 	};
 
-	if (descriptionPending || allEmployeePending) return <Skeleton className="bg-background w-full h-66" />;
-	if (descriptionError || allEmployeeError) return <>Error..</>;
+	if (descriptionPending || assignedEmployeePending) return <Skeleton className="bg-background w-full h-66" />;
+	if (descriptionError || assignedEmployeeError) return <>Error..</>;
 
 	return (
 		<>
