@@ -63,7 +63,7 @@ model Description {
   updated_by   Int
   notification Notification[]
   deal         Deal?          @relation(fields: [deal_id], references: [id])
-  deal_id      Int?
+  deal_id      String?
 }
 
 model Source {
@@ -81,13 +81,13 @@ model Product {
 }
 
 model Asignee {
-  id      Int   @id @default(autoincrement())
-  lead    Lead? @relation(fields: [lead_id], references: [id])
+  id      Int     @id @default(autoincrement())
+  lead    Lead?   @relation(fields: [lead_id], references: [id])
   lead_id Int?
-  user    User  @relation(fields: [user_id], references: [id])
+  user    User    @relation(fields: [user_id], references: [id])
   user_id Int
-  deal    Deal? @relation(fields: [deal_id], references: [id])
-  deal_id Int?
+  deal    Deal?   @relation(fields: [deal_id], references: [id])
+  deal_id String?
 }
 
 model Client {
@@ -128,7 +128,7 @@ model Notification {
   lead           Lead?             @relation(fields: [lead_id], references: [id])
   lead_id        Int?
   deal           Deal?             @relation(fields: [deal_id], references: [id])
-  deal_id        Int?
+  deal_id        String?
   description    Description?      @relation(fields: [description_id], references: [id], onDelete: Cascade)
   description_id Int?
 }
@@ -146,7 +146,7 @@ model Recipient {
 }
 
 model Deal {
-  id            Int            @id @default(autoincrement())
+  id            String         @id
   deal_status   Deal_Status
   created_at    DateTime       @default(now())
   last_updated  DateTime       @updatedAt
@@ -166,7 +166,7 @@ model Deal {
   lead          Lead           @relation(fields: [lead_id], references: [id])
   lead_id       Int
   user          User           @relation(fields: [updated_by], references: [id])
-  updated_by        Int
+  updated_by    Int
 }
 
 model Drawing {
@@ -178,7 +178,7 @@ model Drawing {
   uploaded_at DateTime
   approved_at DateTime?
   locked      Boolean   @default(false)
-  deal_id     Int
+  deal_id     String
   deal        Deal      @relation(fields: [deal_id], references: [id])
 }
 
@@ -186,7 +186,7 @@ model Quotation {
   id                 Int                @id @default(autoincrement())
   created_at         DateTime           @default(now())
   company_id         Int
-  deal_id            Int
+  deal_id            String
   quotation_template Quotation_Template
   deal               Deal               @relation(fields: [deal_id], references: [id])
   company            Company            @relation(fields: [company_id], references: [id])
