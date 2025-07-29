@@ -8,23 +8,35 @@ import { ArrowLeft, ArrowRightLeft, Edit } from "lucide-react";
 import LeadDescription from "../components/LeadDescription";
 import LeadSideBar from "../components/LeadSidebar";
 import Navbar from "@/shared/components/Navbar";
-import type { GetLeadOutput } from "zs-crm-common";
+import type { GetEmployeeOutput, GetLeadOutput } from "zs-crm-common";
 import DetailedLeadPageLoader from "../components/loaders/DetailedLeadPageLoader";
 import { capitalize, toTitleCase } from "@/utils/formatData";
 import { Dialog, DialogClose, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle, DialogTrigger } from "@/shared/components/ui/dialog";
 import { useConvertToDeal } from "@/api/deals/deal.mutation";
+import { FetchAssignedEmployee } from "@/api/employees/employee.queries";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/shared/components/ui/select";
+import { useRef } from "react";
 
 const DetailedLeadPage = () => {
+
 	const [searchParams] = useSearchParams();
 	const tab = searchParams.get("tab") || "info";
 	const navigate = useNavigate();
 	const { id } = useParams();
 	const { data, isPending, isError } = FetchLeadById(id || "");
+	const { data: assignedEmployeeData, isPending: assignedEmployeePending, isError: assignedEmployeeError } = FetchAssignedEmployee(id as string);
+
+	const quotationCode = useRef<string | null>(null);
+
 	const convertLead = useConvertToDeal();
+	const handleLeadConversion = () => {
+		if (!quotationCode.current) return;
+		convertLead.mutate({ id: id as string, quotation_code: quotationCode.current, })
+	}
 
-	if (isPending) return <DetailedLeadPageLoader />;
+	if (isPending || assignedEmployeePending) return <DetailedLeadPageLoader />;
 
-	if (isError) {
+	if (isError || assignedEmployeeError) {
 		return <div>Error</div>;
 	}
 
@@ -83,11 +95,23 @@ const DetailedLeadPage = () => {
 										<DialogTitle>Convert the lead to deal</DialogTitle>
 										<DialogDescription>Are you sure you want to convert the lead? This cannot be undone.</DialogDescription>
 									</DialogHeader>
+									<Select onValueChange={(value) => (quotationCode.current = value)}>
+										<SelectTrigger >
+											<SelectValue placeholder="Select quotation code" />
+										</SelectTrigger>
+										<SelectContent>
+											{assignedEmployeeData.employees.map((employee: GetEmployeeOutput) => (
+												<SelectItem value={employee.quotation_code as string}>
+													{employee.first_name} {employee.last_name} ({employee.quotation_code})
+												</SelectItem>
+											))}
+										</SelectContent>
+									</Select>
 									<DialogFooter>
 										<DialogClose asChild>
 											<Button variant="outline">Cancel</Button>
 										</DialogClose>
-										<Button type="submit" onClick={() => convertLead.mutate(id as string)}>
+										<Button type="submit" onClick={handleLeadConversion}>
 											Convert
 										</Button>
 									</DialogFooter>
