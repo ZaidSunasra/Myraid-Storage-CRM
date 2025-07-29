@@ -3,6 +3,32 @@ import { prisma } from "../../../libs/prisma"
 import { DEPARTMENTS, Deal, GetAllDealOutput, GetDealOutput } from "zs-crm-common";
 import { Include } from "../constants";
 
+export const generateDealId = async (quotation_code: string): Promise<string> => {
+    const today = new Date();
+    const year = today.getFullYear();
+    const month = today.getMonth();
+    const fyStart = month < 3 ? year - 1 : year;
+    const fyEnd = fyStart + 1;
+
+    const lastDealNumber = await prisma.deal.findFirst({
+        where: {
+            id: {
+                startsWith: `MSS-LP/${String(fyStart).slice(2)}-${String(fyEnd).slice(2)}/${quotation_code.slice(0, 2)}`
+            }
+        },
+        orderBy: {
+            created_at: "desc"
+        },
+        select: {
+            id: true
+        }
+    });
+
+    const latestDealNumber = lastDealNumber ? parseInt(lastDealNumber?.id.slice(-4)) + 1 : quotation_code;
+
+    return `MSS_LP-${String(fyStart).slice(2)}_${String(fyEnd).slice(2)}-${latestDealNumber}`;
+}
+
 export const getDealService = async (user: any, rows: number, page: number, search: string, startDate: string, endDate: string, employeeId: string[], sourceId: string[]): Promise<GetAllDealOutput> => {
     const isAdmin = user.department === DEPARTMENTS[1];
     const deals = await prisma.deal.findMany({
@@ -55,7 +81,10 @@ export const getDealService = async (user: any, rows: number, page: number, sear
         },
         take: rows,
         skip: (page - 1) * rows,
-        include: Include
+        include: Include,
+        orderBy: {
+            created_at: "desc"
+        }
     });
     const totalDeals = await prisma.deal.count();
     return { deals, totalDeals };
@@ -73,14 +102,16 @@ export const getDealByCompanyService = async (company_id: string): Promise<Deal[
 export const getDealByIdService = async (id: string): Promise<GetDealOutput | null> => {
     const deal = await prisma.deal.findUnique({
         where: {
-            id: parseInt(id)
+            id: id
         },
         include: Include
     });
     return deal;
 }
 
-export const convertLeadToDealService = async (lead_id: string, author: { id: number, name: string, }): Promise<void> => {
+export const convertLeadToDealService = async (lead_id: string, author: { id: number, name: string, }, quotation_code: string): Promise<void> => {
+    const deal_id = await generateDealId(quotation_code);
+
     await prisma.$transaction(async (tx) => {
         const lead = await tx.lead.findUnique({
             where: {
@@ -90,6 +121,7 @@ export const convertLeadToDealService = async (lead_id: string, author: { id: nu
         if (lead) {
             const deal = await tx.deal.create({
                 data: {
+                    id: deal_id,
                     deal_status: Deal_Status.pending,
                     company_id: lead.company_id,
                     client_id: lead.client_id,
@@ -145,7 +177,7 @@ export const convertLeadToDealService = async (lead_id: string, author: { id: nu
 export const editDealStatusService = async (deal_id: string, status: Deal_Status): Promise<void> => {
     await prisma.deal.update({
         where: {
-            id: parseInt(deal_id)
+            id: deal_id
         },
         data: {
             deal_status: status

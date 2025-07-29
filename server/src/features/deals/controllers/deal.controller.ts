@@ -66,9 +66,10 @@ export const getDealByIdController = async (req: Request, res: Response<ErrorRes
 
 export const convertLeadToDealController = async (req: Request, res: Response<ErrorResponse | SuccessResponse>): Promise<any> => {
     const lead_id = req.params.lead_id;
+    const {quotation_code} = req.body;
     const author = res.locals.user;
     try {
-        await convertLeadToDealService(lead_id, author);
+        await convertLeadToDealService(lead_id, author, quotation_code);
         return res.status(200).json({
             message: "Lead converted to deal successfully",
         });
