@@ -1,4 +1,4 @@
-import { useEditDescription } from "@/api/leads/leads.mutation";
+import { useEditDescription } from "@/api/descriptions/description.mutation";
 import { Button } from "@/shared/components/ui/button";
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/shared/components/ui/form";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -15,7 +15,7 @@ const EditDescription = ({ data, setOpen, employee }: { data: GetDescriptionOutp
 	const id = data.id;
 
 	const onSubmit = (data: AddDescription) => {
-		editDescription.mutate({ data: { description: data.description }, id: String(id) });
+		editDescription.mutate({ data: { description: data.description, type: "lead"}, id: String(id) });
 		setOpen(false);
 	};
 

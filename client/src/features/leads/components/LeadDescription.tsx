@@ -1,4 +1,4 @@
-import { useAddDescription, useDeleteDescription } from "@/api/leads/leads.mutation";
+import { useAddDescription, useDeleteDescription } from "@/api/descriptions/description.mutation";
 import { Button } from "@/shared/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/shared/components/ui/card";
 import { useForm } from "react-hook-form";
@@ -7,7 +7,7 @@ import { addDescriptionSchema, type AddDescription, type GetDescriptionOutput, t
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/shared/components/ui/form";
 import { Notebook, Pencil, Trash2 } from "lucide-react";
 import { Label } from "@/shared/components/ui/label";
-import { FetchDescription } from "@/api/leads/leads.queries";
+import { FetchDescription } from "@/api/descriptions/description.queries";
 import { useMemo, useState } from "react";
 import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle } from "@/shared/components/ui/dialog";
 import EditDescription from "./EditDescription";
@@ -22,21 +22,22 @@ const LeadDescription = ({ id }: { id: string }) => {
 	const [open, setOpen] = useState<boolean>(false);
 	const [data, setData] = useState<null | number | GetDescriptionOutput>(null);
 
-	const { data: descriptionData, isPending: descriptionPending, isError: descriptionError } = FetchDescription(id);
+	const { data: descriptionData, isPending: descriptionPending, isError: descriptionError } = FetchDescription(id, "lead");
 	const { data: assignedEmployeeData, isPending: assignedEmployeePending, isError: assignedEmployeeError } = FetchAssignedEmployee(id);
 	const addDescription = useAddDescription();
 	const deleteDescription = useDeleteDescription();
 
-	const allEmployeeArray = useMemo(() => {
+	const assignedEmployeeArray = useMemo(() => {
 		if (!assignedEmployeePending && assignedEmployeeData) {
 			return assignedEmployeeData.employees.map((emp: GetEmployeeOutput) => ({ id: emp.id, display: `${emp.first_name} ${emp.last_name}` }));
 		}
 		return [];
 	}, [assignedEmployeeData, assignedEmployeePending]);
 
-	const form = useForm<AddDescription>({ resolver: zodResolver(addDescriptionSchema), defaultValues: { description: "" } });
+	const form = useForm<AddDescription>({ resolver: zodResolver(addDescriptionSchema), defaultValues: { description: ""} });
 
 	const onPostSubmit = (formData: AddDescription) => {
+		formData.type="lead";
 		addDescription.mutate({ data: formData, id });
 		form.reset();
 	};
@@ -109,7 +110,7 @@ const LeadDescription = ({ id }: { id: string }) => {
 											<FormLabel>Description</FormLabel>
 											<FormControl>
 												<MentionsInput value={field.value} onChange={(e) => field.onChange(e.target.value)} style={mentionStyle}>
-													<Mention trigger="@" data={allEmployeeArray} displayTransform={(_id, display) => `@${display}`} markup="@[__display__] (__id__)" appendSpaceOnAdd style={{ backgroundColor: "#cee4e5" }} />
+													<Mention trigger="@" data={assignedEmployeeArray} displayTransform={(_id, display) => `@${display}`} markup="@[__display__] (__id__)" appendSpaceOnAdd style={{ backgroundColor: "#cee4e5" }} />
 												</MentionsInput>
 											</FormControl>
 											<FormMessage />
@@ -130,7 +131,7 @@ const LeadDescription = ({ id }: { id: string }) => {
 								<DialogTitle> Edit Description </DialogTitle>
 								<DialogDescription>Update the details of the description.</DialogDescription>
 							</DialogHeader>
-							<EditDescription data={data as GetDescriptionOutput} setOpen={setOpen} employee={allEmployeeArray} />
+							<EditDescription data={data as GetDescriptionOutput} setOpen={setOpen} employee={assignedEmployeeArray} />
 						</>
 					) : actionType == "delete" ? (
 						<>
