@@ -1,17 +1,14 @@
+import { FetchDealById } from "@/api/deals/deal.queries";
 import { FetchLeadById } from "@/api/leads/leads.queries";
 import { useUser } from "@/context/UserContext";
 import { Navigate, Outlet, useLocation, useParams } from "react-router";
 import { toast } from "sonner";
-import type { Assignee, department } from "zs-crm-common";
+import { DEPARTMENTS, type Assignee, type department} from "zs-crm-common";
 
-const ProtectedRoute = ({ allowedDepartment, checkOwnership = false }: { allowedDepartment: department[]; checkOwnership?: boolean }) => {
+const ProtectedRoute = ({ allowedDepartment, checkOwnership = false, type }: { allowedDepartment: department[]; checkOwnership?: boolean; type?: "deal" | "lead" }) => {
 	const location = useLocation();
 	const { user } = useUser();
 	const { id } = useParams();
-
-	const shouldFetch = checkOwnership && user?.department === "sales" && Boolean(id);
-
-	const { data, isPending, isError } = FetchLeadById(id || "");
 
 	if (!user) {
 		return <Navigate to="/" state={{ from: location }} replace />;
@@ -22,11 +19,17 @@ const ProtectedRoute = ({ allowedDepartment, checkOwnership = false }: { allowed
 		return <Navigate to="/" replace />;
 	}
 
-	if (shouldFetch) {
-		if (isPending) return <div>Loading...</div>;
-		const assignedIds = data?.lead?.assigned_to?.map((a: Assignee) => a.user.id) || [];
-		if (isError || !assignedIds.includes(user?.id)) {
-			return <Navigate to="/" replace />;
+	if (checkOwnership && user?.department === DEPARTMENTS[0] && Boolean(id)) {
+		if (type === "lead") {
+			const { data, isPending, isError } = FetchLeadById(id as string);
+			if (isPending) return <div>Loading...</div>;
+			const assignedIds = data?.lead?.assigned_to?.map((a: Assignee) => a.user.id) || [];
+			if (isError || !assignedIds.includes(user?.id)) return <Navigate to="/" replace />;
+		} else {
+			const { data, isPending, isError } = FetchDealById(id as string);
+			if (isPending) return <div>Loading...</div>;
+			const assignedIds = data?.deal?.assigned_to?.map((a: Assignee) => a.user.id) || [];
+			if (isError || !assignedIds.includes(user?.id)) return <Navigate to="/" replace />;
 		}
 	}
 

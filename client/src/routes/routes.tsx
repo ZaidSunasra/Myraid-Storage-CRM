@@ -22,12 +22,16 @@ const Router = () => {
 						<Route path="/lead" element={<LeadsPage />} />
 						<Route path="/lead/add" element={<AddLeadPage />} />
 						<Route path="/calender" element={<CalenderPage />} />
-						<Route path="/deal" element={<DealsPage />} />
-						<Route path="/deal/:id" element={<DetailedDealPage />} />
 					</Route>
-					<Route element={<ProtectedRoute allowedDepartment={[DEPARTMENTS[0], DEPARTMENTS[1]]} checkOwnership />}>
+					<Route element={<ProtectedRoute allowedDepartment={[DEPARTMENTS[0], DEPARTMENTS[1]]} checkOwnership type="lead" />}>
 						<Route path="/lead/:id" element={<DetailedLeadPage />} />
 						<Route path="/lead/edit/:id" element={<EditLeadPage />} />
+					</Route>
+					<Route element={<ProtectedRoute allowedDepartment={[DEPARTMENTS[0], DEPARTMENTS[1], DEPARTMENTS[3]]} />}>
+						<Route path="/deal" element={<DealsPage />} />
+					</Route>
+					<Route element={<ProtectedRoute allowedDepartment={[DEPARTMENTS[0], DEPARTMENTS[1], DEPARTMENTS[3]]} checkOwnership type="deal" />}>
+						<Route path="/deal/:id" element={<DetailedDealPage />} />
 					</Route>
 				</Routes>
 			</BrowserRouter>
