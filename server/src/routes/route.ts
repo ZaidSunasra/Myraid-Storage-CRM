@@ -6,6 +6,7 @@ import notificationRouter from "../features/notifications/notification.routes";
 import employeeRouter from "../features/employees/employee.routes";
 import productRouter from "../features/products/product.routes";
 import sourceRouter from "../features/sources/source.routes";
+import descriptionRouter from "../features/descriptions/description.routes";
 
 export const mainRouter = express.Router();
 
@@ -16,3 +17,4 @@ mainRouter.use("/notifications", notificationRouter);
 mainRouter.use("/employees", employeeRouter);
 mainRouter.use("/products", productRouter);
 mainRouter.use("/sources", sourceRouter);
+mainRouter.use("/descriptions", descriptionRouter);
