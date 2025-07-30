@@ -6,6 +6,10 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/shared/components/ui
 import { capitalize, toTitleCase } from "@/utils/formatData";
 import { ArrowLeft, Edit } from "lucide-react";
 import { NavLink, useParams } from "react-router";
+import DealDetails from "../components/DealDetails";
+import type { deal_status, GetDealOutput } from "zs-crm-common";
+import { Badge } from "@/shared/components/ui/badge";
+import { DEAL_STATUS_META } from "@/utils/customStyle";
 
 const DetailedDealPage = () => {
 
@@ -13,6 +17,7 @@ const DetailedDealPage = () => {
     const { data: dealData, isPending: dealPending } = FetchDealById(id as string);
 
     if (dealPending) return <>Loading...</>
+    const { bg, icon: StatusIcon } = DEAL_STATUS_META[dealData?.deal?.deal_status as deal_status]
 
     console.log(dealData);
 
@@ -33,6 +38,12 @@ const DetailedDealPage = () => {
                             </h1>
                             <p className="text-gray-600">{toTitleCase(dealData?.deal?.company.name as string)}</p>
                         </div>
+                        <div className="ml-4">
+                            <Badge className={bg}>
+                                <StatusIcon />
+                                {capitalize(dealData?.deal?.deal_status as string)}
+                            </Badge>
+                        </div>
                     </div>
                     <Button>
                         <Edit className="h-4 w-4 mr-2" />
@@ -49,6 +60,7 @@ const DetailedDealPage = () => {
                             <TabsTrigger value="drawing">Drawings</TabsTrigger>
                         </TabsList>
                         <TabsContent value="info" className="space-y-6">
+                            <DealDetails data={dealData?.deal as GetDealOutput} />
                         </TabsContent>
                         <TabsContent value="scheduling" className="space-y-6">
                         </TabsContent>
