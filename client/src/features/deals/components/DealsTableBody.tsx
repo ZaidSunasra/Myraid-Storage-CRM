@@ -1,15 +1,17 @@
 import { FetchSources } from "@/api/sources/source.queries";
 import useQueryParams from "@/hooks/useQueryParams";
 import PaginationControls from "@/shared/components/PaginationControl";
+import { Badge } from "@/shared/components/ui/badge";
 import { Button } from "@/shared/components/ui/button";
 import { Calendar } from "@/shared/components/ui/calendar";
 import { Checkbox } from "@/shared/components/ui/checkbox";
 import { Command, CommandEmpty, CommandGroup, CommandInput, CommandItem, CommandList } from "@/shared/components/ui/command";
 import { Popover, PopoverContent, PopoverTrigger } from "@/shared/components/ui/popover";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/shared/components/ui/table"
-import { capitalize, toTitleCase } from "@/utils/formatData";
+import { DEAL_STATUS_META } from "@/utils/customStyle";
+import { toTitleCase } from "@/utils/formatData";
 import { format } from "date-fns";
-import { Building2, CalendarIcon, ChevronsUpDown, Mail, Phone, User, X } from "lucide-react";
+import { Building2, CalendarIcon, ChevronsUpDown, User, X } from "lucide-react";
 import { useState } from "react";
 import { useNavigate } from "react-router";
 import type { Assignee, GetAllDealSuccessResponse, GetDealOutput, GetSourceOutput } from "zs-crm-common";
@@ -29,11 +31,10 @@ const DealsTableBody = ({ data }: { data: GetAllDealSuccessResponse }) => {
         <Table>
             <TableHeader >
                 <TableRow>
-                    <TableHead>Name</TableHead>
+                    <TableHead>Deal Name</TableHead>
                     <TableHead>Company</TableHead>
-                    <TableHead>Contact</TableHead>
+                    <TableHead>Subject</TableHead>
                     <TableHead>Status</TableHead>
-                    <TableHead>Assigned To</TableHead>
                     <TableHead >
                         <div className="flex justify-between items-center">
                             Source
@@ -92,13 +93,15 @@ const DealsTableBody = ({ data }: { data: GetAllDealSuccessResponse }) => {
                             </Popover>
                         </div>
                     </TableHead>
+                    <TableHead>Assigned To</TableHead>
                 </TableRow>
             </TableHeader>
             <TableBody>
-                {data.deals.map((deal: GetDealOutput) => (
-                    <TableRow key={deal.id} onClick={() => navigate(`/deal/${deal.id}`)}>
+                {data.deals.map((deal: GetDealOutput) => {
+                    const { bg, icon: StatusIcon } = DEAL_STATUS_META[deal.deal_status]
+                    return (<TableRow key={deal.id} onClick={() => navigate(`/deal/${deal.id}`)}>
                         <TableCell className="font-medium">
-                            {capitalize(deal.client_detail.first_name)} {capitalize(deal.client_detail.last_name)}
+                            {deal.id.replace(/-/g, "/").replace(/_/g, "-")}
                         </TableCell>
                         <TableCell>
                             <div className="flex items-center">
@@ -107,20 +110,16 @@ const DealsTableBody = ({ data }: { data: GetAllDealSuccessResponse }) => {
                             </div>
                         </TableCell>
                         <TableCell>
-                            <div className="space-y-1">
-                                <div className="flex items-center text-sm">
-                                    <Mail className="h-3 w-3 mr-1" />
-                                    {deal.client_detail?.emails[0]?.email == "" ? "No email provided" : deal.client_detail?.emails[0]?.email}
-                                </div>
-                                <div className="flex items-center text-sm">
-                                    <Phone className="h-3 w-3 mr-1" />
-                                    {deal.client_detail?.phones[0]?.phone || "No phone provided"}
-                                </div>
-                            </div>
+                            Bay 2 Compartment 7
                         </TableCell>
                         <TableCell>
-                            {toTitleCase(deal.deal_status)}
+                            <Badge className={`${bg} w-4/5`}>
+                                <StatusIcon />
+                                {toTitleCase(deal.deal_status)}
+                            </Badge>
                         </TableCell>
+                        <TableCell>{toTitleCase(deal.source.name)}</TableCell>
+                        <TableCell>{format(deal.created_at, "dd/mm/yyyy hh:mm a")}</TableCell>
                         <TableCell>
                             <div className="flex flex-col gap-1">
                                 {deal.assigned_to.map((assignee: Assignee, idx: number) => (
@@ -131,10 +130,9 @@ const DealsTableBody = ({ data }: { data: GetAllDealSuccessResponse }) => {
                                 ))}
                             </div>
                         </TableCell>
-                        <TableCell>{toTitleCase(deal.source.name)}</TableCell>
-                        <TableCell>{format(deal.created_at, "dd/mm/yyyy hh:mm a")}</TableCell>
                     </TableRow>
-                ))}
+                    )
+                })}
             </TableBody>
         </Table>
         <PaginationControls lastPage={lastPage} />
