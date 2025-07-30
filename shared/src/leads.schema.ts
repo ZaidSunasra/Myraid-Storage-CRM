@@ -18,10 +18,6 @@ export const leadSchema = z.object({
     gst_no: z.string().optional(),
 });
 
-export const addDescriptionSchema = z.object({
-    description: z.string().min(1, "Description required"),
-})
-
 export const addReminderSchema = z.object({
     title: z.string().min(1, "Title is required"),
     message: z.string().optional(),
@@ -86,33 +82,6 @@ export type AddReminder = z.infer<typeof addReminderSchema>;
 export type GetReminderSuccessResponse = {
     message: string;
     reminders: Reminders[];
-}
-
-export type AddDescription = z.infer<typeof addDescriptionSchema>
-
-export type GetDescriptionByIdOutput = {
-    id: number;
-    lead_id: number | null;
-    deal_id: string | null;
-    created_at: Date;
-    updated_at: Date | null;
-    notes: string;
-    updated_by: number;
-};
-
-export type GetDescriptionByIdSuccessResponse = SuccessResponse & {
-    description: GetDescriptionByIdOutput | null;
-};
-
-export type GetDescriptionOutput = GetDescriptionByIdOutput & {
-    user: {
-        first_name: string;
-        last_name: string;
-    }
-}
-
-export type GetDescriptionSuccessResponse = SuccessResponse & {
-    descriptions: GetDescriptionOutput[];
 }
 
 export type GetDataByMonth = {

@@ -6,3 +6,4 @@ export * from "./sources.schema";
 export * from "./notification.schema";
 export * from "./deal.schema";
 export * from "./common.schema";
+export * from "./description.schema";
