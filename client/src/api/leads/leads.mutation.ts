@@ -1,5 +1,5 @@
 import { useQueryClient, useMutation } from "@tanstack/react-query";
-import { addDescription, addLead, addReminder, deleteDescription, deleteReminder, editDescription, editLead, editReminder } from "./leads.api";
+import {  addLead, addReminder, deleteReminder, editLead, editReminder } from "./leads.api";
 import { toast } from "sonner";
 import type { ErrorResponse, SuccessResponse } from "zs-crm-common";
 import { useNavigate } from "react-router";
@@ -27,45 +27,6 @@ export const useEditLead = (id: string) => {
 		mutationFn: editLead,
 		onSuccess: (data: SuccessResponse) => {
 			(toast.success(data.message), queryClient.invalidateQueries({ queryKey: ["leadById"] }), navigate(`/lead/${id}`));
-		},
-		onError: (error: AxiosError<ErrorResponse>) => {
-			toast.error(error.response?.data.message);
-		}
-	});
-};
-
-export const useAddDescription = () => {
-	const queryClient = useQueryClient();
-	return useMutation({
-		mutationFn: addDescription,
-		onSuccess: (data: SuccessResponse) => {
-			(toast.success(data.message), queryClient.invalidateQueries({ queryKey: ["leadById"] }), queryClient.invalidateQueries({ queryKey: ["description"] }));
-		},
-		onError: (error: AxiosError<ErrorResponse>) => {
-			toast.error(error.response?.data.message);
-		}
-	});
-};
-
-export const useEditDescription = () => {
-	const queryClient = useQueryClient();
-	return useMutation({
-		mutationFn: editDescription,
-		onSuccess: (data: SuccessResponse) => {
-			(toast.success(data.message), queryClient.invalidateQueries({ queryKey: ["leadById"] }), queryClient.invalidateQueries({ queryKey: ["description"] }));
-		},
-		onError: (error: AxiosError<ErrorResponse>) => {
-			toast.error(error.response?.data.message);
-		}
-	});
-};
-
-export const useDeleteDescription = () => {
-	const queryClient = useQueryClient();
-	return useMutation({
-		mutationFn: deleteDescription,
-		onSuccess: (data: SuccessResponse) => {
-			(toast.success(data.message), queryClient.invalidateQueries({ queryKey: ["leadById"] }), queryClient.invalidateQueries({ queryKey: ["description"] }));
 		},
 		onError: (error: AxiosError<ErrorResponse>) => {
 			toast.error(error.response?.data.message);

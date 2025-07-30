@@ -4,11 +4,8 @@ import type {
 	GetLeadByIdSuccessResponse,
 	GetLeadSuccessResponse,
 	GetReminderSuccessResponse,
-	GetDescriptionByIdSuccessResponse,
-	GetDescriptionSuccessResponse,
 	GetLeadByDurationSuccessResponse,
 	SuccessResponse,
-	AddDescription,
 	GetDataByMonth
 } from "zs-crm-common";
 import axiosInstance from "../axiosInstance";
@@ -51,31 +48,6 @@ export const addLead = async (data: AddLead): Promise<SuccessResponse> => {
 
 export const editLead = async ({ data, id }: { data: AddLead; id: string | undefined }): Promise<SuccessResponse> => {
 	const response = await axiosInstance.put(`/leads/edit/${id}`, data);
-	return response.data;
-};
-
-export const getDescription = async (id: string): Promise<GetDescriptionSuccessResponse> => {
-	const response = await axiosInstance.get(`/leads/description/get/${id}`);
-	return response.data;
-};
-
-export const getDescriptionById = async (id: string): Promise<GetDescriptionByIdSuccessResponse> => {
-	const response = await axiosInstance.get(`/leads/description/get/${id}`);
-	return response.data;
-};
-
-export const addDescription = async ({ data, id }: { data: AddDescription; id: string }): Promise<SuccessResponse> => {
-	const response = await axiosInstance.post(`/leads/description/add/${id}`, data);
-	return response.data;
-};
-
-export const editDescription = async ({ data, id }: { data: AddDescription; id: string }): Promise<SuccessResponse> => {
-	const response = await axiosInstance.put(`/leads/description/edit/${id}`, data);
-	return response.data;
-};
-
-export const deleteDescription = async (id: string): Promise<SuccessResponse> => {
-	const response = await axiosInstance.delete(`/leads/description/delete/${id}`);
 	return response.data;
 };
 
