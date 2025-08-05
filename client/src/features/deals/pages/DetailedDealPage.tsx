@@ -10,6 +10,10 @@ import DealDetails from "../components/DealDetails";
 import type { deal_status, GetDealOutput } from "zs-crm-common";
 import { Badge } from "@/shared/components/ui/badge";
 import { DEAL_STATUS_META } from "@/utils/customStyle";
+import Description from "@/shared/components/Description";
+import MeetScheduling from "@/shared/components/MeetScheduling";
+import ScheduledMeeting from "@/shared/components/ScheduledMeeting";
+import DrawingUploads from "../components/DrawingUploads";
 
 const DetailedDealPage = () => {
 
@@ -18,8 +22,6 @@ const DetailedDealPage = () => {
 
     if (dealPending) return <>Loading...</>
     const { bg, icon: StatusIcon } = DEAL_STATUS_META[dealData?.deal?.deal_status as deal_status]
-
-    console.log(dealData);
 
     return <div className="min-h-screen bg-accent">
         <Navbar />
@@ -61,10 +63,14 @@ const DetailedDealPage = () => {
                         </TabsList>
                         <TabsContent value="info" className="space-y-6">
                             <DealDetails data={dealData?.deal as GetDealOutput} />
+                            <Description id={dealData?.deal?.id as string} type="deal" />
                         </TabsContent>
                         <TabsContent value="scheduling" className="space-y-6">
+                            <MeetScheduling type="deal" id={id as string}/>
+                            <ScheduledMeeting type="deal" id = {id as string}/>
                         </TabsContent>
                         <TabsContent value="drawing" className="space-y-6">
+                            <DrawingUploads />
                         </TabsContent>
                     </Tabs>
                 </div>
