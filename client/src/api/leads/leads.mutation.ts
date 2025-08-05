@@ -1,5 +1,5 @@
 import { useQueryClient, useMutation } from "@tanstack/react-query";
-import {  addLead, addReminder, deleteReminder, editLead, editReminder } from "./leads.api";
+import {  addLead, editLead } from "./leads.api";
 import { toast } from "sonner";
 import type { ErrorResponse, SuccessResponse } from "zs-crm-common";
 import { useNavigate } from "react-router";
@@ -27,45 +27,6 @@ export const useEditLead = (id: string) => {
 		mutationFn: editLead,
 		onSuccess: (data: SuccessResponse) => {
 			(toast.success(data.message), queryClient.invalidateQueries({ queryKey: ["leadById"] }), navigate(`/lead/${id}`));
-		},
-		onError: (error: AxiosError<ErrorResponse>) => {
-			toast.error(error.response?.data.message);
-		}
-	});
-};
-
-export const useAddReminder = () => {
-	const queryClient = useQueryClient();
-	return useMutation({
-		mutationFn: addReminder,
-		onSuccess: (data: SuccessResponse) => {
-			(toast.success(data.message), queryClient.invalidateQueries({ queryKey: ["reminders"] }));
-		},
-		onError: (error: AxiosError<ErrorResponse>) => {
-			toast.error(error.response?.data.message);
-		}
-	});
-};
-
-export const useEditReminder = () => {
-	const queryClient = useQueryClient();
-	return useMutation({
-		mutationFn: editReminder,
-		onSuccess: (data: SuccessResponse) => {
-			(toast.success(data.message), queryClient.invalidateQueries({ queryKey: ["reminders"] }));
-		},
-		onError: (error: AxiosError<ErrorResponse>) => {
-			toast.error(error.response?.data.message);
-		}
-	});
-};
-
-export const useDeleteReminder = () => {
-	const queryClient = useQueryClient();
-	return useMutation({
-		mutationFn: deleteReminder,
-		onSuccess: (data: SuccessResponse) => {
-			(toast.success(data.message), queryClient.invalidateQueries({ queryKey: ["reminders"] }));
 		},
 		onError: (error: AxiosError<ErrorResponse>) => {
 			toast.error(error.response?.data.message);
