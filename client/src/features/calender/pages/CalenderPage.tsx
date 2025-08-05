@@ -1,8 +1,8 @@
 import { useState } from "react";
 import { startOfMonth, endOfMonth, startOfWeek, endOfWeek, addDays, addMonths, subMonths, format, isSameDay } from "date-fns";
 import DailyData from "../components/DailyData";
-import { FetchReminderByMonth } from "@/api/leads/leads.queries";
-import formatDate from "@/utils/formatDate";
+import { FetchReminderByMonth } from "@/api/reminders/reminder.queries";
+import {formatDate} from "@/utils/formatDate";
 import Navbar from "@/shared/components/Navbar";
 import { Button } from "@/shared/components/ui/button";
 import { ChevronLeft, ChevronRight } from "lucide-react";

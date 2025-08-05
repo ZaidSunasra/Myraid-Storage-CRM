@@ -1,5 +1,5 @@
 import { useSearchParams } from "react-router";
-import formatDate from "@/utils/formatDate";
+import {formatDate} from "@/utils/formatDate";
 
 const useQueryParams = () => {
   const [params, setSearchParams] = useSearchParams();
