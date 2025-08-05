@@ -1,11 +1,12 @@
 import { Request, Response } from "express";
 import { addReminderSchema, ErrorResponse, GetDataByMonth, GetReminderSuccessResponse, SuccessResponse } from "zs-crm-common";
-import { addReminderService, deleteReminderService, editReminderService, getReminderByDateService, getRemindersService } from "../services/reminder.service";
+import { addReminderService, deleteReminderService, editReminderService, getReminderByDateService, getRemindersService } from "./reminder.service";
 
 export const fetchRemindersController = async (req: Request, res: Response<GetReminderSuccessResponse | ErrorResponse>): Promise<any> => {
-    const lead_id = req.params.id;
+    const ref_id = req.params.id;
+    const type = req.query.type;
     try {
-        const reminders = await getRemindersService(lead_id);
+        const reminders = await getRemindersService(ref_id, type as "deal" | "lead");
         return res.status(200).json({
             message: `Reminder fetched successfully`,
             reminders
@@ -20,8 +21,9 @@ export const fetchRemindersController = async (req: Request, res: Response<GetRe
 }
 
 export const addReminderController = async (req: Request, res: Response<SuccessResponse | ErrorResponse>): Promise<any> => {
-    const { title, send_at, message, lead_id, reminder_type } = req.body;
-    const author_id = res.locals.user.id
+    const { title, send_at, message, reminder_type, type } = req.body;
+    const id = req.params.id;
+    const author_id = res.locals.user.id;
     const validation = addReminderSchema.safeParse(req.body);
     if (!validation.success) {
         return res.status(400).json({
@@ -30,7 +32,7 @@ export const addReminderController = async (req: Request, res: Response<SuccessR
         })
     }
     try {
-        await addReminderService({ title, send_at, message, lead_id, reminder_type }, author_id)
+        await addReminderService({ title, send_at, message, reminder_type, type }, author_id, id)
         return res.status(200).json({
             message: `Reminder added successfully`,
         })
@@ -45,7 +47,8 @@ export const addReminderController = async (req: Request, res: Response<SuccessR
 
 export const editReminderController = async (req: Request, res: Response<SuccessResponse | ErrorResponse>): Promise<any> => {
     const reminder_id = req.params.id;
-    const { title, send_at, message, lead_id, reminder_type } = req.body;
+    const { title, send_at, message, reminder_type } = req.body;
+    console.log(req.body);
     const validation = addReminderSchema.safeParse(req.body);
     if (!validation.success) {
         return res.status(400).json({
@@ -54,7 +57,7 @@ export const editReminderController = async (req: Request, res: Response<Success
         })
     }
     try {
-        await editReminderService({ title, send_at, message, lead_id, reminder_type }, reminder_id)
+        await editReminderService({ title, send_at, message, reminder_type }, reminder_id)
         return res.status(200).json({
             message: `Reminder edited successfully`,
         })
@@ -84,7 +87,7 @@ export const deleteReminderController = async (req: Request, res: Response<Succe
 }
 
 
-export const fetchRemindersByMonthController = async (req: Request, res: Response< ErrorResponse | GetDataByMonth>): Promise<any> => {
+export const fetchRemindersByMonthController = async (req: Request, res: Response<ErrorResponse | GetDataByMonth>): Promise<any> => {
     const user = res.locals.user;
     const month = req.params.month;
     try {

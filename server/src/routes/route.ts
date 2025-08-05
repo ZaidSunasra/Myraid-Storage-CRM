@@ -7,6 +7,7 @@ import employeeRouter from "../features/employees/employee.routes";
 import productRouter from "../features/products/product.routes";
 import sourceRouter from "../features/sources/source.routes";
 import descriptionRouter from "../features/descriptions/description.routes";
+import reminderRouter from "../features/reminders/reminder.routes";
 
 export const mainRouter = express.Router();
 
@@ -18,3 +19,4 @@ mainRouter.use("/employees", employeeRouter);
 mainRouter.use("/products", productRouter);
 mainRouter.use("/sources", sourceRouter);
 mainRouter.use("/descriptions", descriptionRouter);
+mainRouter.use("/reminders", reminderRouter);

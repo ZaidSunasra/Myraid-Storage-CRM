@@ -1,8 +1,8 @@
 import { AddReminder, DEPARTMENTS, GetDataByMonth, reminder_type, Reminders } from "zs-crm-common";
-import { prisma } from "../../../libs/prisma";
+import { prisma } from "../../libs/prisma";
 import { endOfMonth, format, startOfMonth } from "date-fns";
 
-export const addReminderService = async ({ title, send_at, message, lead_id, reminder_type }: AddReminder, author_id: number): Promise<void> => {
+export const addReminderService = async ({ title, send_at, message, reminder_type, type }: AddReminder, author_id: number, id: string): Promise<void> => {
     const admins = await prisma.user.findMany({
         where: {
             department: DEPARTMENTS[1]
@@ -13,28 +13,25 @@ export const addReminderService = async ({ title, send_at, message, lead_id, rem
     });
     const asignees = await prisma.asignee.findMany({
         where: {
-            lead_id: lead_id
+            lead_id: type === "lead" ? parseInt(id) : null,
+            deal_id: type === "deal" ? id : null
         },
         select: {
             user_id: true
         }
     });
-    let recipientId = [...admins.map((admin) => admin.id)];
-    asignees.forEach(assignee => {
-        if (!recipientId.includes(assignee.user_id)) {
-            recipientId.push(assignee.user_id);
-        }
-    })
-    if (!recipientId.includes(author_id)) {
-        recipientId.push(author_id);
-    }
+    const recipientIds = new Set<number>();
+    admins.forEach(a => recipientIds.add(a.id));
+    asignees.forEach(a => recipientIds.add(a.user_id));
+    recipientIds.add(author_id);
     await prisma.$transaction(async (tx) => {
         const notification = await tx.notification.create({
             data: {
                 message: message?.toLowerCase(),
                 title: title.toLowerCase(),
                 send_at: new Date(send_at),
-                lead_id: lead_id,
+                lead_id: type === "lead" ? parseInt(id) : null,
+                deal_id: type === "deal" ? id : null,
                 type: reminder_type
             },
             select: {
@@ -42,7 +39,7 @@ export const addReminderService = async ({ title, send_at, message, lead_id, rem
             }
         });
         await tx.recipient.createMany({
-            data: recipientId.map(id => ({
+            data: Array.from(recipientIds).map(id => ({
                 notification_id: notification.id,
                 user_id: id
             }))
@@ -50,25 +47,25 @@ export const addReminderService = async ({ title, send_at, message, lead_id, rem
     });
 }
 
-export const editReminderService = async ({ title, send_at, message, lead_id, reminder_type }: any, reminder_id: string): Promise<void> => {
+export const editReminderService = async ({ title, send_at, message, reminder_type }: AddReminder, reminder_id: string): Promise<void> => {
     await prisma.notification.update({
         where: {
             id: parseInt(reminder_id)
         },
         data: {
             title: title.toLowerCase(),
-            message: message.toLowerCase(),
+            message: String(message).toLowerCase(),
             send_at: send_at,
-            lead_id: lead_id,
             type: reminder_type
         }
     });
 }
 
-export const getRemindersService = async (lead_id: string): Promise<Reminders[]> => {
+export const getRemindersService = async (id: string, type: "deal" | "lead"): Promise<Reminders[]> => {
     const reminders = await prisma.notification.findMany({
         where: {
-            lead_id: parseInt(lead_id),
+            lead_id: type === "lead" ? parseInt(id) : null,
+            deal_id: type === "deal" ? id : null,
             type: "client_meeting"
         }
     });
