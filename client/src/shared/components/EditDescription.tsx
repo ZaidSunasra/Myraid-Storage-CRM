@@ -7,15 +7,15 @@ import { Mention, MentionsInput } from "react-mentions";
 import { addDescriptionSchema, type AddDescription, type GetDescriptionOutput } from "zs-crm-common";
 import { mentionStyle } from "@/utils/customStyle";
 
-const EditDescription = ({ data, setOpen, employee }: { data: GetDescriptionOutput; setOpen: React.Dispatch<React.SetStateAction<boolean>>; employee: { id: number; display: string }[] }) => {
+const EditDescription = ({ data, setOpen, employee, type }: { data: GetDescriptionOutput; setOpen: React.Dispatch<React.SetStateAction<boolean>>; employee: { id: number; display: string }[]; type: "deal" | "lead" }) => {
 	const editDescription = useEditDescription();
 
-	const form = useForm<AddDescription>({ resolver: zodResolver(addDescriptionSchema), defaultValues: { description: data.notes } });
+	const form = useForm<AddDescription>({ resolver: zodResolver(addDescriptionSchema), defaultValues: { description: data.notes, type } });
 
 	const id = data.id;
 
 	const onSubmit = (data: AddDescription) => {
-		editDescription.mutate({ data: { description: data.description, type: "lead"}, id: String(id) });
+		editDescription.mutate({ data: { description: data.description, type }, id: String(id) });
 		setOpen(false);
 	};
 
@@ -37,7 +37,7 @@ const EditDescription = ({ data, setOpen, employee }: { data: GetDescriptionOutp
 						</FormItem>
 					)}
 				/>
-				<Button type="submit">Add Description</Button>
+				<Button type="submit">Save Changes</Button>
 			</form>
 		</Form>
 	);

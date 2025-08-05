@@ -17,13 +17,13 @@ import { mentionStyle } from "@/utils/customStyle";
 import { Skeleton } from "@/shared/components/ui/skeleton";
 import { format } from "date-fns";
 
-const LeadDescription = ({ id }: { id: string }) => {
+const Description = ({ id, type }: { id: string, type: "deal" | "lead" }) => {
 	const [actionType, setActionType] = useState<"edit" | "delete" | null>(null);
 	const [open, setOpen] = useState<boolean>(false);
 	const [data, setData] = useState<null | number | GetDescriptionOutput>(null);
 
-	const { data: descriptionData, isPending: descriptionPending, isError: descriptionError } = FetchDescription(id, "lead");
-	const { data: assignedEmployeeData, isPending: assignedEmployeePending, isError: assignedEmployeeError } = FetchAssignedEmployee(id);
+	const { data: descriptionData, isPending: descriptionPending, isError: descriptionError } = FetchDescription(id, type);
+	const { data: assignedEmployeeData, isPending: assignedEmployeePending, isError: assignedEmployeeError } = FetchAssignedEmployee(id, type);
 	const addDescription = useAddDescription();
 	const deleteDescription = useDeleteDescription();
 
@@ -34,10 +34,10 @@ const LeadDescription = ({ id }: { id: string }) => {
 		return [];
 	}, [assignedEmployeeData, assignedEmployeePending]);
 
-	const form = useForm<AddDescription>({ resolver: zodResolver(addDescriptionSchema), defaultValues: { description: ""} });
+	const form = useForm<AddDescription>({ resolver: zodResolver(addDescriptionSchema), defaultValues: { description: "", type} });
 
 	const onPostSubmit = (formData: AddDescription) => {
-		formData.type="lead";
+		formData.type = type;
 		addDescription.mutate({ data: formData, id });
 		form.reset();
 	};
@@ -131,7 +131,7 @@ const LeadDescription = ({ id }: { id: string }) => {
 								<DialogTitle> Edit Description </DialogTitle>
 								<DialogDescription>Update the details of the description.</DialogDescription>
 							</DialogHeader>
-							<EditDescription data={data as GetDescriptionOutput} setOpen={setOpen} employee={assignedEmployeeArray} />
+							<EditDescription data={data as GetDescriptionOutput} setOpen={setOpen} employee={assignedEmployeeArray} type={type} />
 						</>
 					) : actionType == "delete" ? (
 						<>
@@ -162,4 +162,4 @@ const LeadDescription = ({ id }: { id: string }) => {
 	);
 };
 
-export default LeadDescription;
+export default Description;
