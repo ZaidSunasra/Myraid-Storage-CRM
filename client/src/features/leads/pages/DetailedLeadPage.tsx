@@ -1,11 +1,11 @@
 import { NavLink, useNavigate, useParams, useSearchParams } from "react-router";
 import LeadDetails from "../components/LeadDetails";
-import LeadScheduling from "../components/LeadScheduling";
+import LeadScheduling from "@/shared/components/MeetScheduling";
 import { FetchLeadById } from "@/api/leads/leads.queries";
 import { Button } from "@/shared/components/ui/button";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/shared/components/ui/tabs";
 import { ArrowLeft, ArrowRightLeft, Edit } from "lucide-react";
-import LeadDescription from "../components/LeadDescription";
+import Description from "@/shared/components/Description";
 import LeadSideBar from "../components/LeadSidebar";
 import Navbar from "@/shared/components/Navbar";
 import type { GetEmployeeOutput, GetLeadOutput } from "zs-crm-common";
@@ -16,6 +16,7 @@ import { useConvertToDeal } from "@/api/deals/deal.mutation";
 import { FetchAssignedEmployee } from "@/api/employees/employee.queries";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/shared/components/ui/select";
 import { useRef } from "react";
+import ScheduledMeeting from "@/shared/components/ScheduledMeeting";
 
 const DetailedLeadPage = () => {
 
@@ -23,8 +24,8 @@ const DetailedLeadPage = () => {
 	const tab = searchParams.get("tab") || "info";
 	const navigate = useNavigate();
 	const { id } = useParams();
-	const { data, isPending, isError } = FetchLeadById(id || "");
-	const { data: assignedEmployeeData, isPending: assignedEmployeePending, isError: assignedEmployeeError } = FetchAssignedEmployee(id as string);
+	const { data, isPending, isError } = FetchLeadById(id as string);
+	const { data: assignedEmployeeData, isPending: assignedEmployeePending, isError: assignedEmployeeError } = FetchAssignedEmployee(id as string, "lead");
 
 	const quotationCode = useRef<string | null>(null);
 
@@ -74,10 +75,11 @@ const DetailedLeadPage = () => {
 							</TabsList>
 							<TabsContent value="info" className="space-y-6">
 								<LeadDetails data={data.lead as GetLeadOutput} />
-								<LeadDescription id={String(data.lead?.id)} />
+								<Description id={String(data.lead?.id)} type="lead" />
 							</TabsContent>
 							<TabsContent value="scheduling" className="space-y-6">
-								<LeadScheduling />
+								<LeadScheduling type="lead" id={id as string}/>
+								<ScheduledMeeting id={id as string} type="lead"/>
 							</TabsContent>
 						</Tabs>
 					</div>
