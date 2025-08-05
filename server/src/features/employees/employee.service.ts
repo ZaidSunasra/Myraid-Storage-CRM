@@ -30,14 +30,15 @@ export const getAllEmployeeService = async (): Promise<GetEmployeeOutput[]> => {
     return employees;
 }
 
-export const getAssignedEmployeeService = async (lead_id: string): Promise<GetEmployeeOutput[]> => {
+export const getAssignedEmployeeService = async (id: string, type: "deal" | "lead"): Promise<GetEmployeeOutput[]> => {
     const employees = await prisma.user.findMany({
         where: {
             OR: [
                 {
                     asignee: {
                         some: {
-                            lead_id: parseInt(lead_id)
+                            lead_id: type === "lead" ? parseInt(id) : null,
+                            deal_id: type === "deal" ? id : null
                         }
                     }
                 },

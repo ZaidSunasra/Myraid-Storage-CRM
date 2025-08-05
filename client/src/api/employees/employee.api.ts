@@ -11,7 +11,7 @@ export const getAllEmployee = async (): Promise<GetEmployeeSuccessResponse> => {
 	return response.data;
 };
 
-export const getAssignedEmployee = async(id: string) : Promise<GetEmployeeSuccessResponse> => {
-	const response = await axiosInstance.get(`/employees/get-assigned/${id}`);
+export const getAssignedEmployee = async(id: string, type: "deal" | "lead") : Promise<GetEmployeeSuccessResponse> => {
+	const response = await axiosInstance.get(`/employees/get-assigned/${id}?type=${type}`);
 	return response.data;
 }

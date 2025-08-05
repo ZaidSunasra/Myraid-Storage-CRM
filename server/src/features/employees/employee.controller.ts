@@ -35,9 +35,10 @@ export const getAllEmployeeController = async (req: Request, res: Response<Error
 }
 
 export const getAssignedEmployeeController = async (req: Request, res: Response<ErrorResponse | GetEmployeeSuccessResponse>): Promise<any> => {
-    const lead_id = req.params.id;
+    const ref_id = req.params.id;
+    const type = req.query.type;
     try {
-        const employees = await getAssignedEmployeeService(lead_id);
+        const employees = await getAssignedEmployeeService(ref_id, type as "deal" | "lead");
         return res.status(200).json({
             message: "Employee fetched successfully",
             employees

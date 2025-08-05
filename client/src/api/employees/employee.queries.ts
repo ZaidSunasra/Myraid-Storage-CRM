@@ -9,6 +9,6 @@ export const FetchAllEmployee = () => {
 	return useQuery({ queryKey: ["all-employee"], queryFn: getAllEmployee });
 };
 
-export const FetchAssignedEmployee = (id: string) => {
-	return useQuery({ queryKey: ["assigned-employee", id], queryFn: () => getAssignedEmployee(id) });
+export const FetchAssignedEmployee = (id: string, type: "lead" | "deal") => {
+	return useQuery({ queryKey: ["assigned-employee", id], queryFn: () => getAssignedEmployee(id, type) });
 };
