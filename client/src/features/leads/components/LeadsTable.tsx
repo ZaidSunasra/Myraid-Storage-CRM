@@ -143,7 +143,7 @@ const LeadsTable = () => {
 									</div>
 								</TableCell>
 								<TableCell>{toTitleCase(lead.product.name)}</TableCell>
-								<TableCell>{format(lead.created_at, "dd/mm/yyyy hh:mm a")}</TableCell>
+								<TableCell>{format(lead.created_at, "dd/MM/yyyy hh:mm a")}</TableCell>
 							</TableRow>
 						))}
 					</TableBody>

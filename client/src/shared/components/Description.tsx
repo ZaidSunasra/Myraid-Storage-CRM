@@ -72,7 +72,7 @@ const Description = ({ id, type }: { id: string, type: "deal" | "lead" }) => {
 													<div>
 														<div className="text-sm text-accent-foreground whitespace-pre-line break-words">{description.notes.replace(/(@\[[^\]]+\])\s\(\d+\)/g, "$1")}</div>
 														<div className="text-xs text-muted-foreground mt-1">
-															Last Updated by {description.user.first_name} {description.user.last_name} on {format(description.updated_at as Date, "dd/mm/yyyy hh:mm a")}
+															Last Updated by {description.user.first_name} {description.user.last_name} on {format(description.updated_at as Date, "dd/MM/yyyy hh:mm a")}
 														</div>
 													</div>
 												</div>

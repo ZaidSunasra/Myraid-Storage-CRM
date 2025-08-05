@@ -98,7 +98,7 @@ const LeadDetails = ({ data }: { data: GetLeadOutput }) => {
 						</div>
 						<div className="space-y-2">
 							<Label>Created Date</Label>
-							<span>{format(data.created_at, "dd/mm/yyyy hh:mm a")}</span>
+							<span>{format(data.created_at, "dd/MM/yyyy hh:mm a")}</span>
 						</div>
 						<div className="space-y-2">
 							<Label>Product</Label>

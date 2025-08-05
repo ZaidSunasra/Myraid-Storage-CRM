@@ -119,7 +119,7 @@ const DealsTableBody = ({ data }: { data: GetAllDealSuccessResponse }) => {
                             </Badge>
                         </TableCell>
                         <TableCell>{toTitleCase(deal.source.name)}</TableCell>
-                        <TableCell>{format(deal.created_at, "dd/mm/yyyy hh:mm a")}</TableCell>
+                        <TableCell>{format(deal.created_at, "dd/MM/yyyy hh:mm a")}</TableCell>
                         <TableCell>
                             <div className="flex flex-col gap-1">
                                 {deal.assigned_to.map((assignee: Assignee, idx: number) => (
