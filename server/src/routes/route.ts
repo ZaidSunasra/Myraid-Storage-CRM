@@ -1,5 +1,5 @@
 import express from "express";
-import leadRouter from "../features/leads/routes/lead.routes";
+import leadRouter from "../features/leads/lead.routes";
 import authRouter from "../features/auth/auth.routes";
 import dealRouter from "../features/deals/routes/deal.routes";
 import notificationRouter from "../features/notifications/notification.routes";

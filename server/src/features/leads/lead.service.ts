@@ -1,4 +1,4 @@
-import { prisma } from "../../../libs/prisma";
+import { prisma } from "../../libs/prisma";
 import { AddLead, EditLead, DEPARTMENTS, GetLeadOutput, GetLeadSuccessResponse, GetLeadByDuration } from "zs-crm-common"
 
 export const convertEmailIntoArray = (emails?: { email?: string }[]): string[] => {

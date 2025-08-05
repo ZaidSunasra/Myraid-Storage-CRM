@@ -1,7 +1,7 @@
 import express from "express";
-import { addLeadController, editLeadController, fetchAllLeadsController, fetchLeadByIdController, fetchLeadsByDurationController } from "../controllers/lead.controller";
-import authMiddleware from "../../../middlewares/auth.middleware";
-import checkDepartment from "../../../middlewares/department.middleware";
+import { addLeadController, editLeadController, fetchAllLeadsController, fetchLeadByIdController, fetchLeadsByDurationController } from "./lead.controller";
+import authMiddleware from "../../middlewares/auth.middleware";
+import checkDepartment from "../../middlewares/department.middleware";
 
 const leadRouter = express.Router();
 
