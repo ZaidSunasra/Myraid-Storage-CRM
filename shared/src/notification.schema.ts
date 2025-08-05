@@ -1,5 +1,5 @@
 import { SuccessResponse } from "./common.schema";
-import { reminder_type } from "./leads.schema";
+import { reminder_type } from "./reminder.schema";
 
 export type Receipient = {
     id: number;
