@@ -1,19 +1,18 @@
-import { useParams } from "react-router";
-import { FetchReminders } from "@/api/leads/leads.queries";
+import { FetchReminders } from "@/api/reminders/reminder.queries";
 import { Card, CardContent, CardHeader, CardTitle } from "@/shared/components/ui/card";
 import { CalendarIcon, Pencil, Trash } from "lucide-react";
 import { Button } from "@/shared/components/ui/button";
 import { Dialog, DialogClose, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle, DialogTrigger } from "@/shared/components/ui/dialog";
-import { useDeleteReminder } from "@/api/leads/leads.mutation";
+import { useDeleteReminder } from "@/api/reminders/reminder.mutation";
 import { useState } from "react";
-import EditReminder from "./EditReminder";
+import EditReminder from "./EditMeeting";
 import { type Reminders } from "zs-crm-common";
 import { capitalize, toTitleCase } from "@/utils/formatData";
 import { format } from "date-fns";
 
-const ScheduledMeeting = () => {
-	const { id } = useParams();
-	const { data, isPending, isError } = FetchReminders(id || "");
+const ScheduledMeeting = ({id, type} : {id: string, type: "lead" | "deal"}) => {
+
+	const { data, isPending, isError } = FetchReminders(id as string, type);
 	const deleteReminder = useDeleteReminder();
 
 	const [dialog, setDialog] = useState<{ open: boolean; data: string | null | Reminders | number; action: "edit" | "delete" | null }>({ open: false, data: null, action: null });
@@ -54,7 +53,7 @@ const ScheduledMeeting = () => {
 									<h4 className="font-medium">Meeting Schedule</h4>
 									<div className="text-sm text-gray-600 flex items-center break-words">
 										<CalendarIcon className="h-3 w-3 mr-1 hidden sm:block" />
-										{format(meeting.send_at as Date, "dd/mm/yyyy hh:mm a")}
+										{format(meeting.send_at as Date, "dd/MM/yyyy hh:mm a")}
 									</div>
 								</div>
 								<div className="col-span-2 md:col-span-1 flex justify-end gap-2 md:gap-4">
@@ -104,7 +103,7 @@ const ScheduledMeeting = () => {
 								<DialogTitle>Edit Reminder</DialogTitle>
 								<DialogDescription>Update the details of the reminder.</DialogDescription>
 							</DialogHeader>
-							<EditReminder data={dialog.data as Reminders} dialog={setDialog} />
+							<EditReminder data={dialog.data as Reminders} dialog={setDialog} type={type}/>
 						</>
 					) : (
 						<></>

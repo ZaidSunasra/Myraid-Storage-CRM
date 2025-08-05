@@ -1,48 +1,49 @@
 import { useForm } from "react-hook-form";
-import { addReminderSchema, type AddReminder, type Reminders } from "zs-crm-common";
+import { addReminderSchema, type AddReminder } from "zs-crm-common";
 import { cn } from "@/shared/lib/utils";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { format } from "date-fns";
+import { useAddReminder } from "@/api/reminders/reminder.mutation";
 import { Button } from "@/shared/components/ui/button";
 import { Calendar } from "@/shared/components/ui/calendar";
+import { Card, CardContent, CardHeader, CardTitle } from "@/shared/components/ui/card";
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/shared/components/ui/form";
 import { Input } from "@/shared/components/ui/input";
 import { Popover, PopoverContent, PopoverTrigger } from "@/shared/components/ui/popover";
 import { Textarea } from "@/shared/components/ui/textarea";
 import { CalendarIcon } from "lucide-react";
 import { useState } from "react";
-import { useEditReminder } from "@/api/leads/leads.mutation";
+import { setHoursAndMinutes } from "@/utils/formatDate";
 
-const EditReminder = ({ data, dialog }: { data: Reminders; dialog: React.Dispatch<React.SetStateAction<{ open: boolean; data: Reminders | null | number | string; action: "edit" | "delete" | null }>> }) => {
-	const getTime = () => {
-		const sendAt = new Date(data.send_at as Date);
-		const hours = String(sendAt.getHours()).padStart(2, "0");
-		const minutes = String(sendAt.getMinutes()).padStart(2, "0");
-		return `${hours}:${minutes}`;
-	};
+const MeetScheduling = ({ type, id }: { type: "deal" | "lead", id: string }) => {
 
-	const [time, setTime] = useState<string>(getTime());
-	const editReminder = useEditReminder();
-	const reminderId = data.id;
-
-	const form = useForm({ resolver: zodResolver(addReminderSchema), defaultValues: { title: data.title, send_at: data.send_at as Date, message: data.message || "", lead_id: data.lead_id, reminder_type: data.type } });
+	const [time, setTime] = useState<string>("09:00");
+	const saveReminder = useAddReminder();
+	const form = useForm({ resolver: zodResolver(addReminderSchema), defaultValues: { title: "", send_at: undefined, message: "", reminder_type: "client_meeting"} });
 
 	const onSubmit = (data: AddReminder) => {
 		const sendAt = data.send_at;
+		data.type = type;
 		if (sendAt && time) {
-			const [hours, minutes] = time.split(":").map(Number);
-			sendAt.setHours(hours, minutes, 0, 0);
-			data.send_at = sendAt;
+			data.send_at = setHoursAndMinutes(time, sendAt);
 		}
-		editReminder.mutate({ data, id: String(reminderId) });
-		dialog({ open: false, data: null, action: null });
+		saveReminder.mutate({ data, id: id as string }, {
+			onSuccess: () => {
+				form.reset();
+			}
+		});
 	};
 
-	return (
-		<>
-			<Form {...form}>
-				<form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
-					<div className="flex flex-col space-y-4">
+	return <Form {...form}>
+		<form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
+			<Card>
+				<CardHeader>
+					<div className="flex items-center justify-between">
+						<CardTitle>Schedule Meeting</CardTitle>
+					</div>
+				</CardHeader>
+				<CardContent className="space-y-4">
+					<div className="grid grid-cols-1 md:grid-cols-2 gap-4">
 						<FormField
 							control={form.control}
 							name="title"
@@ -102,11 +103,11 @@ const EditReminder = ({ data, dialog }: { data: Reminders; dialog: React.Dispatc
 							</FormItem>
 						)}
 					/>
-					<Button type="submit">Edit Meeting</Button>
-				</form>
-			</Form>
-		</>
-	);
+					<Button type="submit">Schedule Meeting</Button>
+				</CardContent>
+			</Card>
+		</form>
+	</Form>
 };
 
-export default EditReminder;
+export default MeetScheduling;
