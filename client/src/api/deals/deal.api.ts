@@ -20,3 +20,13 @@ export const getDealById = async (id: string): Promise<GetDealByIdSuccessRespons
     const response = await axiosInstance.get(`/deals/get/${id}`);
     return response.data;
 }
+
+export const getUploadUrl = async ({fileName, fileType} : {fileName: string, fileType: string}) : Promise<any> => {
+    const response = await axiosInstance.post(`/deals/drawing/get-uploadUrl`, {fileName, fileType});
+    return response.data; 
+}
+
+export const uploadDrawing = async (data: any) : Promise<SuccessResponse> => {
+    const response = await axiosInstance.post("deals/drawing/upload", data);
+    return response.data;
+} 

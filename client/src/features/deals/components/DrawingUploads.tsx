@@ -1,15 +1,57 @@
+import { useUploadDrawing, useUploadUrl } from "@/api/deals/deal.mutation";
 import { Button } from "@/shared/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/shared/components/ui/card";
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/shared/components/ui/form"
 import { Input } from "@/shared/components/ui/input";
 import { Label } from "@/shared/components/ui/label";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/shared/components/ui/select";
+import { zodResolver } from "@hookform/resolvers/zod";
+import axios from "axios";
 import { Upload } from "lucide-react";
 import { useForm } from "react-hook-form"
+import { useParams } from "react-router";
+import z from "zod/v4";
 
 const DrawingUploads = () => {
 
-    const form = useForm();
+    const uploadURL = useUploadUrl();
+    const uploadDrawing = useUploadDrawing();
+    const {id} = useParams();
+
+    const schema = z.object({
+        title: z.string().min(1, "Title is required"),
+        version: z.enum(["A", "B", "C", "D", "E", "F", "G", "H", "I", "J", "K", "L", "M", "N", "O", "P", "Q", "R", "S", "t", "U", "V", "W", "X", "Y", "Z"]),
+        file: z.instanceof(File, { message: "File is required" }).nullable().refine(f => f !== null, {message: "File is required",  }),
+    });
+
+    const form = useForm({
+        resolver: zodResolver(schema),
+        defaultValues: ({
+            title: "",
+            version: "A",
+            file: null
+        })
+    });
+
+    const handleUploadDrawing = async (data: z.infer<typeof schema>) => {
+        const  uploadUrlResponse = await uploadURL.mutateAsync({
+            fileName: data.file?.name as string,
+            fileType: data.file?.type as string
+        })
+
+        await axios.put(uploadUrlResponse.uploadUrl, data.file, {
+            headers: {
+                "Content-Type": data.file?.type
+            }
+        });
+
+        await uploadDrawing.mutateAsync({
+            drawing_url: uploadUrlResponse.fileKey,
+            title: data.title,
+            version: data.version,
+            deal_id: id
+        })
+    }
 
     return <Form {...form}>
         <Card className=" backdrop-blur-sm border-0 shadow-lg bg-background">
@@ -20,7 +62,7 @@ const DrawingUploads = () => {
                 </CardTitle>
             </CardHeader>
             <CardContent>
-                <form className="space-y-6">
+                <form className="space-y-6" onSubmit={form.handleSubmit(handleUploadDrawing)}>
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                         <div className="space-y-2">
                             <FormField
@@ -54,7 +96,7 @@ const DrawingUploads = () => {
                                             </FormControl>
                                             <SelectContent>
                                                 {["A", "B", "C", "D", "E", "F", "G", "H", "I", "J", "K", "L", "M", "N", "O", "P", "Q", "R", "S", "t", "U", "V", "W", "X", "Y", "Z"].map((val) => (
-                                                    <SelectItem value={val}>{val}</SelectItem>
+                                                    <SelectItem key={val} value={val}>{val}</SelectItem>
                                                 ))}
                                             </SelectContent>
                                         </Select>
@@ -81,7 +123,23 @@ const DrawingUploads = () => {
                                         Supports PDF, DWG, DXF, PNG, JPG files up to 50MB
                                     </p>
                                 </div>
-                                <Input type="file" />
+                                <FormField
+                                    control={form.control}
+                                    name="file"
+                                    render={({ field }) => (
+                                        <FormItem>
+                                            <div className="space-y-2">
+                                                <FormControl>
+                                                    <Input
+                                                        type="file"
+                                                        onChange={(e) => field.onChange(e.target.files?.[0] ?? null)}
+                                                    />
+                                                </FormControl>
+                                                <FormMessage />
+                                            </div>
+                                        </FormItem>
+                                    )}
+                                />
                             </div>
                         </div>
                     </div>
@@ -93,6 +151,7 @@ const DrawingUploads = () => {
                             <Button
                                 type="submit"
                                 className="bg-gradient-to-r from-blue-600 to-blue-700 hover:from-blue-700 hover:to-blue-800"
+                                disabled={uploadDrawing.isPending}
                             >
                                 <Upload className="h-4 w-4 mr-2" />
                                 Upload Drawing
