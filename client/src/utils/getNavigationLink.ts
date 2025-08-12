@@ -1,6 +1,6 @@
 import type { GetNotificationOutput, reminder_type } from "zs-crm-common";
 
-const getNavigationLink = (notification: GetNotificationOutput) => {
+export const getNavigationLink = (notification: GetNotificationOutput) => {
 	const navLink: Record<reminder_type, string> = {
 		client_meeting: `/lead/${notification.notification.lead_id}?tab=scheduling`,
 		mentioned: `/lead/${notification.notification.lead_id}`,
@@ -13,4 +13,27 @@ const getNavigationLink = (notification: GetNotificationOutput) => {
 	return navLink[notification.notification.type as reminder_type];
 };
 
-export default getNavigationLink;
+export const navItems = {
+	admin: [
+		{ title: "Leads", url: "/lead" },
+		{ title: "Deals", url: "/deal" },
+		{ title: "Quotation", url: "/quotation" },
+		{ title: "Orders", url: "/order" },
+		{ title: "Settings", url: "/setting" },
+		{ title: "Calendar", url: "/calendar" }
+	],
+	sales: [
+		{ title: "Leads", url: "/lead" },
+		{ title: "Deals", url: "/deal" },
+		{ title: "Quotation", url: "/quotation" },
+		{ title: "Orders", url: "/order" },
+		{ title: "Calendar", url: "/calendar" }
+	],
+	drawing: [
+		{ title: "Deals", url: "/deal" }
+	],
+	factory: [
+		{ title: "Orders", url: "/order" }
+	]
+} as const;
+

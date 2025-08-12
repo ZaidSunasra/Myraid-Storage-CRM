@@ -5,6 +5,7 @@ import { useUser } from "@/context/UserContext";
 import { toast } from "sonner";
 import { useNavigate } from "react-router";
 import { type AxiosError } from "axios";
+import { navItems } from "@/utils/getNavigationLink";
 
 export const useLogin = () => {
 	const { setUser } = useUser();
@@ -12,9 +13,9 @@ export const useLogin = () => {
 	return useMutation({
 		mutationFn: login,
 		onSuccess: (data: LoginSuccessResponse) => {
-			setUser({ name: data.userData.name, email: data.userData.email, department: data.userData.department, code: data.userData.code || "", id: data.userData.id });
+			setUser({ name: data.userData.name, email: data.userData.email, department: data.userData.department, code: data.userData.code as string, id: data.userData.id });
 			toast.success(data.message);
-			navigate("/lead");
+			navigate(navItems[data.userData.department][0].url);
 		},
 		onError: (error: AxiosError<ErrorResponse>) => {
 			toast.error(error.response?.data.message);

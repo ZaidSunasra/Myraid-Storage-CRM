@@ -5,16 +5,13 @@ import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuLabel,
 import { BellIcon, Menu, User, X } from "lucide-react";
 import { useLogout } from "@/api/auth/auth.mutation";
 import { useNotifications } from "@/context/NotificationContext";
+import { useUser } from "@/context/UserContext";
+import { navItems } from "@/utils/getNavigationLink";
 
 const Navbar = () => {
-	const navItems = [
-		{ title: "Leads", url: "/lead" },
-		{ title: "Deals", url: "/deal" },
-		{ title: "Quotation", url: "/quotation" },
-		{ title: "Orders", url: "/order" },
-		{ title: "Settings", url: "/setting" },
-		{ title: "Calender", url: "/calender" }
-	];
+
+	const {user} = useUser();
+	const department = user?.department;
 
 	const [menuOpen, setMenuOpen] = useState(false);
 	const logout = useLogout();
@@ -34,7 +31,7 @@ const Navbar = () => {
 							<span className=" text-xl font-bold text-primary cursor-pointer"> Myraid Storage</span>
 						</div>
 						<div className="hidden lg:flex sm:space-x-8 ">
-							{navItems.map((item) => (
+							{navItems[department!].map((item) => (
 								<NavLink
 									key={item.url}
 									to={item.url}
@@ -78,7 +75,7 @@ const Navbar = () => {
 
 				{menuOpen && (
 					<div className="lg:hidden flex flex-col space-y-2 pb-4">
-						{navItems.map((item) => (
+						{navItems[department!].map((item) => (
 							<NavLink
 								key={item.url}
 								to={item.url}
