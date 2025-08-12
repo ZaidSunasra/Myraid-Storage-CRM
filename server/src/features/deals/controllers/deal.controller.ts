@@ -1,7 +1,6 @@
 import { Request, Response } from "express";
-import { convertLeadToDealService, editDealStatusService, getDealByCompanyService, getDealByIdService, getDealService } from "../services/deal.service";
-import { GetAllDealSuccessResponse, GetDealByIdSuccessResponse, GetDealByompanySuccessResponse, ErrorResponse, SuccessResponse, deal_status, DEAL_STATUS, editStatusSchema } from "zs-crm-common";
-import z from "zod/v4";
+import { convertLeadToDealService, editDealStatusService, getDealByCompanyService, getDealByIdService, getDealService, getUploadURLService, uploadDrawingService } from "../services/deal.service";
+import { GetAllDealSuccessResponse, GetDealByIdSuccessResponse, GetDealByompanySuccessResponse, ErrorResponse, SuccessResponse, editStatusSchema } from "zs-crm-common";
 
 export const getDealController = async (req: Request, res: Response<ErrorResponse | GetAllDealSuccessResponse>): Promise<any> => {
     const user = res.locals.user;
@@ -66,7 +65,7 @@ export const getDealByIdController = async (req: Request, res: Response<ErrorRes
 
 export const convertLeadToDealController = async (req: Request, res: Response<ErrorResponse | SuccessResponse>): Promise<any> => {
     const lead_id = req.params.lead_id;
-    const {quotation_code} = req.body;
+    const { quotation_code } = req.body;
     const author = res.locals.user;
     try {
         await convertLeadToDealService(lead_id, author, quotation_code);
@@ -113,3 +112,39 @@ export const addDealController = async (req: Request, res: Response): Promise<an
 
     }
 };
+
+export const getUploadURLController = async (req: Request, res: Response): Promise<any> => {
+    const {fileName, fileType} = req.body;
+    const fileKey = `${Date.now()}-${fileName}`;
+    try {
+        const uploadUrl = await getUploadURLService(fileKey, fileType);
+        return res.status(200).json({
+            uploadUrl,
+            fileKey
+        });
+    } catch (error) {
+        console.log(`Error in fetching upload URL`, error);
+        return res.status(500).send({
+            message: "Internal server error",
+            error: error
+        });
+    }
+}
+
+export const uploadDrawingController = async (req: Request, res: Response<SuccessResponse | ErrorResponse>): Promise<any> => {
+    const { drawing_url, title, version, deal_id } = req.body;
+    const author = res.locals.user;
+    console.log(req.body);
+    try {
+        await uploadDrawingService(drawing_url, title, version, deal_id, author);
+        return res.status(200).json({
+           message: "Drawing uploaded successfully"
+        });
+    } catch (error) {
+        console.log(`Error in uploading drawing`, error);
+        return res.status(500).send({
+            message: "Internal server error",
+            error: error
+        });
+    }
+}

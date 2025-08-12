@@ -2,6 +2,9 @@ import { Deal_Status, Notification_Type } from "@prisma/client";
 import { prisma } from "../../../libs/prisma"
 import { DEPARTMENTS, Deal, GetAllDealOutput, GetDealOutput } from "zs-crm-common";
 import { Include } from "../constants";
+import { PutObjectCommand } from "@aws-sdk/client-s3";
+import { getSignedUrl } from "@aws-sdk/s3-request-presigner";
+import s3Client from "../../../libs/awsS3Client";
 
 export const generateDealId = async (quotation_code: string): Promise<string> => {
     const today = new Date();
@@ -30,7 +33,7 @@ export const generateDealId = async (quotation_code: string): Promise<string> =>
 }
 
 export const getDealService = async (user: any, rows: number, page: number, search: string, startDate: string, endDate: string, employeeId: string[], sourceId: string[]): Promise<GetAllDealOutput> => {
-    const isAdmin = user.department === DEPARTMENTS[1];
+    const isAdmin = user.department === DEPARTMENTS[1] || user.department === DEPARTMENTS[3];
     const deals = await prisma.deal.findMany({
         where: {
             AND: [
@@ -183,4 +186,51 @@ export const editDealStatusService = async (deal_id: string, status: Deal_Status
             deal_status: status
         }
     });
+}
+
+export const getUploadURLService = async (fileKey: string, fileType: string): Promise<any> => {
+    const command = new PutObjectCommand({
+        Bucket: process.env.S3_BUCKET_NAME,
+        Key: fileKey,
+        ContentType: fileType
+    });
+    const uploadUrl = await getSignedUrl(s3Client, command, { expiresIn: 60 });
+    return uploadUrl;
+}
+
+export const uploadDrawingService = async (drawing_url: string, title: string, version: string, deal_id: string, author: any): Promise<void> => {
+    await prisma.$transaction(async (tx) => {
+        const admins = await tx.user.findMany({
+            where: {
+                department: DEPARTMENTS[1],
+            }
+        });
+        await tx.drawing.create({
+            data: {
+                drawing_url: drawing_url,
+                title: title,
+                version: version,
+                deal_id: deal_id,
+                uploaded_at: new Date(),
+            }
+        });
+        const notification = await tx.notification.create({
+            data: {
+                message: `Drawing uploaded by ${author.name}. Kindly review and approve when you have a moment.`,
+                title: "Drawing uploaded",
+                type: "drawing_uploaded",
+                deal_id: deal_id,
+                send_at: null
+            },
+            select: {
+                id: true
+            }
+        });
+        await tx.recipient.createMany({
+            data: admins.map((admin) => ({
+                notification_id: notification.id,
+                user_id: admin.id
+            }))
+        })
+    })
 }
