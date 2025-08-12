@@ -5,8 +5,8 @@ import { getReadNotificationsController, getUnreadNotificationsController, markN
 
 const notificationRouter = express.Router();
 
-notificationRouter.get("/get-unread", authMiddleware, checkDepartment(["admin", "sales"]), getUnreadNotificationsController);
-notificationRouter.get("/get-read", authMiddleware, checkDepartment(["admin", "sales"]), getReadNotificationsController);
-notificationRouter.post("/mark-read/:id",  authMiddleware, checkDepartment(["admin", "sales"]), markNotificationController);
+notificationRouter.get("/get-unread", authMiddleware, checkDepartment(["admin", "sales", "drawing"]), getUnreadNotificationsController);
+notificationRouter.get("/get-read", authMiddleware, checkDepartment(["admin", "sales", "drawing"]), getReadNotificationsController);
+notificationRouter.post("/mark-read/:id",  authMiddleware, checkDepartment(["admin", "sales", "drawing"]), markNotificationController);
 
 export default notificationRouter;
