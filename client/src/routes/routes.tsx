@@ -7,7 +7,7 @@ import DetailedLeadPage from "@/features/leads/pages/DetailedLeadPage";
 import EditLeadPage from "@/features/leads/pages/EditLeadPage";
 import LeadsPage from "@/features/leads/pages/LeadsPage";
 import NotificationPage from "@/features/notifications/pages/NotificationPage";
-import ProtectedRoute from "@/utils/checkPermission";
+import ProtectedRoute from "@/utils/routePermission";
 import { BrowserRouter, Route, Routes } from "react-router";
 import { DEPARTMENTS } from "zs-crm-common";
 

@@ -1,7 +1,7 @@
 import { useMarkNotification } from "@/api/notifications/notification.mutation";
 import { Button } from "@/shared/components/ui/button";
 import { Card, CardContent } from "@/shared/components/ui/card";
-import getNavigationLink from "@/utils/getNavigationLink";
+import {getNavigationLink} from "@/utils/getNavigationLink";
 import { Check } from "lucide-react";
 import { useNavigate } from "react-router";
 import type { GetNotificationOutput } from "zs-crm-common";

@@ -1,5 +1,5 @@
 import { Card, CardContent } from "@/shared/components/ui/card";
-import getNavigationLink from "@/utils/getNavigationLink";
+import {getNavigationLink} from "@/utils/getNavigationLink";
 import { useNavigate } from "react-router";
 import type { GetNotificationOutput } from "zs-crm-common";
 
