@@ -7,18 +7,21 @@ import { capitalize, toTitleCase } from "@/utils/formatData";
 import { ArrowLeft, Edit } from "lucide-react";
 import { NavLink, useParams } from "react-router";
 import DealDetails from "../components/DealDetails";
-import type { deal_status, GetDealOutput } from "zs-crm-common";
+import { type deal_status, type GetDealOutput } from "zs-crm-common";
 import { Badge } from "@/shared/components/ui/badge";
 import { DEAL_STATUS_META } from "@/utils/customStyle";
 import Description from "@/shared/components/Description";
 import MeetScheduling from "@/shared/components/MeetScheduling";
 import ScheduledMeeting from "@/shared/components/ScheduledMeeting";
 import DrawingUploads from "../components/DrawingUploads";
+import { useUser } from "@/context/UserContext";
+import { canView } from "@/utils/viewPermission";
 
 const DetailedDealPage = () => {
 
     const { id } = useParams()
     const { data: dealData, isPending: dealPending } = FetchDealById(id as string);
+    const { user } = useUser();
 
     if (dealPending) return <>Loading...</>
     const { bg, icon: StatusIcon } = DEAL_STATUS_META[dealData?.deal?.deal_status as deal_status]
@@ -58,19 +61,23 @@ const DetailedDealPage = () => {
                     <Tabs defaultValue="info" className="space-y-6">
                         <TabsList className="grid w-full grid-cols-3 bg-background">
                             <TabsTrigger value="info"> Deal Information</TabsTrigger>
-                            <TabsTrigger value="scheduling">Scheduling</TabsTrigger>
+                            {canView(user?.department!, "sales_admin") &&
+                                <TabsTrigger value="scheduling">Scheduling</TabsTrigger>
+                            }
                             <TabsTrigger value="drawing">Drawings</TabsTrigger>
                         </TabsList>
                         <TabsContent value="info" className="space-y-6">
                             <DealDetails data={dealData?.deal as GetDealOutput} />
-                            <Description id={dealData?.deal?.id as string} type="deal" />
+                            {canView(user?.department!, "sales_admin") && <Description id={dealData?.deal?.id as string} type="deal" />}
                         </TabsContent>
-                        <TabsContent value="scheduling" className="space-y-6">
-                            <MeetScheduling type="deal" id={id as string}/>
-                            <ScheduledMeeting type="deal" id = {id as string}/>
-                        </TabsContent>
+                        { canView(user?.department!, "sales_admin") &&
+                            <TabsContent value="scheduling" className="space-y-6">
+                                <MeetScheduling type="deal" id={id as string} />
+                                <ScheduledMeeting type="deal" id={id as string} />
+                            </TabsContent>
+                        }
                         <TabsContent value="drawing" className="space-y-6">
-                            <DrawingUploads />
+                            {canView(user?.department!, "drawing") && <DrawingUploads />}
                         </TabsContent>
                     </Tabs>
                 </div>
