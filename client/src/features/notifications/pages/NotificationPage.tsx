@@ -9,8 +9,11 @@ import NotificationCard from "../components/NotificationCard";
 import ReadNotifications from "../components/ReadNotifications";
 import { FetchReadNotifications } from "@/api/notifications/notification.queries";
 import type { GetNotificationOutput } from "zs-crm-common";
+import { navItems } from "@/utils/getNavigationLink";
+import { useUser } from "@/context/UserContext";
 
 const NotificationPage = () => {
+	const {user} = useUser();
 	const { isLoading, notifications, unreadCount } = useNotifications();
 	const { data: readNotificationData, isLoading: readNotificationLoading } = FetchReadNotifications();
 	const navigate = useNavigate();
@@ -23,7 +26,7 @@ const NotificationPage = () => {
 				<div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
 					<div className="flex items-center justify-between">
 						<div className="flex items-center space-x-4">
-							<Button variant="ghost" size="icon" onClick={() => navigate("/lead")}>
+							<Button variant="ghost" size="icon" onClick={() => navigate(navItems[user?.department!][0].url)}>
 								<ArrowLeft className="h-4 w-4" />
 							</Button>
 							<div>
