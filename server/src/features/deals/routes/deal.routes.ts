@@ -13,6 +13,6 @@ dealRouter.post("/convert/:lead_id", authMiddleware, checkDepartment(["admin", "
 //dealRouter.post("/add");
 //dealRouter.put("/edit/:id");
 dealRouter.put("/edit/status/:id", authMiddleware, checkDepartment(["admin", "sales"]), editDealStatusController);
-dealRouter.use("drawing", drawingRouter);
+dealRouter.use("/drawing", drawingRouter);
 
 export default dealRouter;
