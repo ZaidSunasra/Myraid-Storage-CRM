@@ -11,15 +11,17 @@ export const uploadDrawingFormSchema = z.object({
 });
 
 export const getUploadUrlSchema = z.object({
-    fileName: z.string(),
-    fileKey: z.string()
+    fileName: z.string().min(1, "File Name is required"),
+    fileType: z.string().min(1, "Type is required")
 });
 
 export const uploadDrawingSchema = z.object({
-    drawing_url: z.string(),
-    title: z.string(),
+    drawing_url: z.string().min(1, "URL is required"),
+    title: z.string().min(1, "Title is required"),
     version: z.enum(DRAWING_VERSION),
-    deal_id: z.string()
+    deal_id: z.string().min(1, "Deal Id is required"),
+    file_size: z.coerce.number(),
+    file_type: z.string().min(1, "File type is required")
 });
 
 export type UploadDrawingForm = z.infer<typeof uploadDrawingFormSchema>;
