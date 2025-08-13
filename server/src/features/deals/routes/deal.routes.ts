@@ -1,7 +1,8 @@
 import express from "express"
 import authMiddleware from "../../../middlewares/auth.middleware";
 import checkDepartment from "../../../middlewares/department.middleware";
-import { convertLeadToDealController, editDealStatusController, getDealByCompanyController, getDealByIdController, getDealController, getUploadURLController, uploadDrawingController, } from "../controllers/deal.controller";
+import { convertLeadToDealController, editDealStatusController, getDealByCompanyController, getDealByIdController, getDealController} from "../controllers/deal.controller";
+import drawingRouter from "./drawing.routes";
 
 const dealRouter = express.Router();
 
@@ -12,6 +13,6 @@ dealRouter.post("/convert/:lead_id", authMiddleware, checkDepartment(["admin", "
 //dealRouter.post("/add");
 //dealRouter.put("/edit/:id");
 dealRouter.put("/edit/status/:id", authMiddleware, checkDepartment(["admin", "sales"]), editDealStatusController);
-dealRouter.post("/drawing/get-uploadUrl", authMiddleware, checkDepartment(["drawing"]), getUploadURLController);
-dealRouter.post("/drawing/upload", authMiddleware, checkDepartment(["drawing"]), uploadDrawingController)
+dealRouter.use("drawing", drawingRouter);
+
 export default dealRouter;
