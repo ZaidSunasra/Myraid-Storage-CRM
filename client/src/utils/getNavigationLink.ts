@@ -5,9 +5,9 @@ export const getNavigationLink = (notification: GetNotificationOutput) => {
 		client_meeting: `/lead/${notification.notification.lead_id}?tab=scheduling`,
 		mentioned: `/lead/${notification.notification.lead_id}`,
 		lead_assigned: `/lead/${notification.notification.lead_id}`,
-		drawing_uploaded: `/lead/${notification.notification.deal_id}`,
-		drawing_approved: `/lead/${notification.notification.deal_id}`,
-		drawing_rejected: `/lead/${notification.notification.deal_id}`,
+		drawing_uploaded: `/deal/${notification.notification.deal_id}`,
+		drawing_approved: `/deal/${notification.notification.deal_id}`,
+		drawing_rejected: `/deal/${notification.notification.deal_id}`,
 		color_changed: `/lead/${notification.notification.lead_id}`
 	};
 	return navLink[notification.notification.type as reminder_type];
