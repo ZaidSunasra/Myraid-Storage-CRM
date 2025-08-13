@@ -10,7 +10,7 @@ import axios from "axios";
 import { Upload } from "lucide-react";
 import { useForm } from "react-hook-form"
 import { useParams } from "react-router";
-import z from "zod/v4";
+import { uploadDrawingFormSchema, type UploadDrawingForm } from "zs-crm-common";
 
 const DrawingUploads = () => {
 
@@ -18,14 +18,8 @@ const DrawingUploads = () => {
     const uploadDrawing = useUploadDrawing();
     const {id} = useParams();
 
-    const schema = z.object({
-        title: z.string().min(1, "Title is required"),
-        version: z.enum(["A", "B", "C", "D", "E", "F", "G", "H", "I", "J", "K", "L", "M", "N", "O", "P", "Q", "R", "S", "t", "U", "V", "W", "X", "Y", "Z"]),
-        file: z.instanceof(File, { message: "File is required" }).nullable().refine(f => f !== null, {message: "File is required",  }),
-    });
-
     const form = useForm({
-        resolver: zodResolver(schema),
+        resolver: zodResolver(uploadDrawingFormSchema),
         defaultValues: ({
             title: "",
             version: "A",
@@ -33,7 +27,7 @@ const DrawingUploads = () => {
         })
     });
 
-    const handleUploadDrawing = async (data: z.infer<typeof schema>) => {
+    const handleUploadDrawing = async (data: UploadDrawingForm) => {
         const  uploadUrlResponse = await uploadURL.mutateAsync({
             fileName: data.file?.name as string,
             fileType: data.file?.type as string
@@ -49,7 +43,7 @@ const DrawingUploads = () => {
             drawing_url: uploadUrlResponse.fileKey,
             title: data.title,
             version: data.version,
-            deal_id: id
+            deal_id: id as string
         })
     }
 
@@ -162,7 +156,6 @@ const DrawingUploads = () => {
             </CardContent>
         </Card>
     </Form>
-
 }
 
 export default DrawingUploads
