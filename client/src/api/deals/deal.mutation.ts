@@ -43,10 +43,12 @@ export const useUploadUrl = () => {
 };
 
 export const useUploadDrawing = () => {
+    const queryClient = useQueryClient();
     return useMutation({
         mutationFn: uploadDrawing,
         onSuccess: (data: SuccessResponse) => {
             (toast.success(data.message));
+             queryClient.invalidateQueries({ queryKey: ['drawings'] })
         },
         onError: (error: AxiosError<ErrorResponse>) => {
             toast.error(error.response?.data.message);

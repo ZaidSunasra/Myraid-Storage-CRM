@@ -1,4 +1,4 @@
-import type { deal_status, GetAllDealSuccessResponse, GetDealByIdSuccessResponse, GetUploadUrlSuccessResponse, SuccessResponse, UploadDrawing } from "zs-crm-common";
+import type { deal_status, GetAllDealSuccessResponse, GetDealByIdSuccessResponse, GetUploadUrl, GetUploadUrlSuccessResponse, SuccessResponse, UploadDrawing } from "zs-crm-common";
 import axiosInstance from "../axiosInstance"
 
 export const convertLeadToDeal = async ({id, quotation_code}: {id: string, quotation_code: string}): Promise<SuccessResponse> => {
@@ -21,8 +21,8 @@ export const getDealById = async (id: string): Promise<GetDealByIdSuccessRespons
     return response.data;
 }
 
-export const getUploadUrl = async ({fileName, fileType} : {fileName: string, fileType: string}) : Promise<GetUploadUrlSuccessResponse> => {
-    const response = await axiosInstance.post(`/deals/drawing/get-uploadUrl`, {fileName, fileType});
+export const getUploadUrl = async (data: GetUploadUrl) : Promise<GetUploadUrlSuccessResponse> => {
+    const response = await axiosInstance.post(`/deals/drawing/get-uploadUrl`, data);
     return response.data; 
 }
 
@@ -30,3 +30,8 @@ export const uploadDrawing = async (data: UploadDrawing) : Promise<SuccessRespon
     const response = await axiosInstance.post("deals/drawing/upload", data);
     return response.data;
 } 
+
+export const getDrawings = async (id: string) : Promise<any> => {
+    const resposne = await axiosInstance.get(`deals/drawing/get/${id}`);
+    return resposne.data;
+}
