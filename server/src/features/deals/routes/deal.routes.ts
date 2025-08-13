@@ -8,10 +8,10 @@ const dealRouter = express.Router();
 dealRouter.get("/get", authMiddleware, checkDepartment(["admin", "sales", "drawing"]), getDealController);
 dealRouter.get("/get/:id", authMiddleware, checkDepartment(["admin", "sales", "drawing"]), getDealByIdController);
 dealRouter.get("/get/by-company", authMiddleware, checkDepartment(["admin", "sales", "drawing"]), getDealByCompanyController);
-dealRouter.post("/convert/:lead_id", authMiddleware, checkDepartment(["admin", "sales", "drawing"]), convertLeadToDealController);
+dealRouter.post("/convert/:lead_id", authMiddleware, checkDepartment(["admin", "sales"]), convertLeadToDealController);
 //dealRouter.post("/add");
 //dealRouter.put("/edit/:id");
-dealRouter.put("/edit/status/:id", authMiddleware, checkDepartment(["admin", "sales", "drawing"]), editDealStatusController);
-dealRouter.post("/drawing/get-uploadUrl", authMiddleware, checkDepartment(["drawing", "admin"]), getUploadURLController);
+dealRouter.put("/edit/status/:id", authMiddleware, checkDepartment(["admin", "sales"]), editDealStatusController);
+dealRouter.post("/drawing/get-uploadUrl", authMiddleware, checkDepartment(["drawing"]), getUploadURLController);
 dealRouter.post("/drawing/upload", authMiddleware, checkDepartment(["drawing"]), uploadDrawingController)
 export default dealRouter;

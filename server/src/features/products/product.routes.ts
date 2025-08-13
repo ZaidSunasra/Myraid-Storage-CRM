@@ -5,6 +5,6 @@ import { getProductsController } from "./product.controller";
 
 const productRouter = express.Router();
 
-productRouter.get("/get", authMiddleware, checkDepartment(["admin", "sales"]), getProductsController);
+productRouter.get("/get", authMiddleware, checkDepartment(["admin", "sales", "drawing"]), getProductsController);
 
 export default productRouter;
