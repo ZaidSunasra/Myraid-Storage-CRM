@@ -16,9 +16,9 @@ const DrawingUploads = () => {
 
     const uploadURL = useUploadUrl();
     const uploadDrawing = useUploadDrawing();
-    const {id} = useParams();
+    const { id } = useParams();
 
-    const form = useForm({
+    const form = useForm<UploadDrawingForm>({
         resolver: zodResolver(uploadDrawingFormSchema),
         defaultValues: ({
             title: "",
@@ -28,7 +28,7 @@ const DrawingUploads = () => {
     });
 
     const handleUploadDrawing = async (data: UploadDrawingForm) => {
-        const  uploadUrlResponse = await uploadURL.mutateAsync({
+        const uploadUrlResponse = await uploadURL.mutateAsync({
             fileName: data.file?.name as string,
             fileType: data.file?.type as string
         })
@@ -43,7 +43,9 @@ const DrawingUploads = () => {
             drawing_url: uploadUrlResponse.fileKey,
             title: data.title,
             version: data.version,
-            deal_id: id as string
+            deal_id: id as string,
+            file_size: data.file?.size as number,
+            file_type: data.file?.type as string
         })
     }
 
@@ -114,7 +116,7 @@ const DrawingUploads = () => {
                                         Drop your files here or click to browse
                                     </p>
                                     <p className="text-sm text-muted-foreground">
-                                        Supports PDF, DWG, DXF, PNG, JPG files up to 50MB
+                                        Supports PDF, DWG files up to 50MB
                                     </p>
                                 </div>
                                 <FormField

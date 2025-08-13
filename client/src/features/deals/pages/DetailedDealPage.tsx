@@ -16,6 +16,7 @@ import ScheduledMeeting from "@/shared/components/ScheduledMeeting";
 import DrawingUploads from "../components/DrawingUploads";
 import { useUser } from "@/context/UserContext";
 import { canView } from "@/utils/viewPermission";
+import DrawingList from "../components/DrawingList";
 
 const DetailedDealPage = () => {
 
@@ -78,6 +79,7 @@ const DetailedDealPage = () => {
                         }
                         <TabsContent value="drawing" className="space-y-6">
                             {canView(user?.department!, "drawing") && <DrawingUploads />}
+                            <DrawingList id={id as string}/>
                         </TabsContent>
                     </Tabs>
                 </div>
