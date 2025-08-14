@@ -62,23 +62,23 @@ const DetailedDealPage = () => {
                     <Tabs defaultValue="info" className="space-y-6">
                         <TabsList className="grid w-full grid-cols-3 bg-background">
                             <TabsTrigger value="info"> Deal Information</TabsTrigger>
-                            {canView(user?.department!, "sales_admin") &&
+                            {user?.department && canView(user?.department, "sales_admin") &&
                                 <TabsTrigger value="scheduling">Scheduling</TabsTrigger>
                             }
                             <TabsTrigger value="drawing">Drawings</TabsTrigger>
                         </TabsList>
                         <TabsContent value="info" className="space-y-6">
                             <DealDetails data={dealData?.deal as GetDealOutput} />
-                            {canView(user?.department!, "sales_admin") && <Description id={dealData?.deal?.id as string} type="deal" />}
+                            {user?.department && canView(user?.department, "sales_admin") && <Description id={dealData?.deal?.id as string} type="deal" />}
                         </TabsContent>
-                        { canView(user?.department!, "sales_admin") &&
+                        { user?.department && canView(user?.department, "sales_admin") &&
                             <TabsContent value="scheduling" className="space-y-6">
                                 <MeetScheduling type="deal" id={id as string} />
                                 <ScheduledMeeting type="deal" id={id as string} />
                             </TabsContent>
                         }
                         <TabsContent value="drawing" className="space-y-6">
-                            {canView(user?.department!, "drawing") && <DrawingUploads />}
+                            {user?.department && canView(user?.department, "drawing") && <DrawingUploads />}
                             <DrawingList id={id as string}/>
                         </TabsContent>
                     </Tabs>
