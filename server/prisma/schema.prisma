@@ -177,10 +177,10 @@ model Drawing {
   version     String
   file_type  String
   file_size  Int
-  approved    Boolean   @default(false)
+  status Drawing_Status @default(pending)
   uploaded_at DateTime  @default(now())
   approved_at DateTime?
-  locked      Boolean   @default(false)
+  note String? 
   deal_id     String
   deal        Deal      @relation(fields: [deal_id], references: [id])
   user        User    @relation(fields: [uploaded_by], references: [id])
@@ -256,6 +256,12 @@ enum Deal_Status {
   negotiation
   order_lost
   order_confirmed
+}
+
+enum Drawing_Status { 
+  pending
+  approved
+  rejected
 }
 
 enum Department {
