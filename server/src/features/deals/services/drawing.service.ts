@@ -1,9 +1,8 @@
-import { DEPARTMENTS, UploadDrawing } from "zs-crm-common";
+import { Assignee, DEPARTMENTS, GetDrawingOutput, SuccessResponse, UploadDrawing } from "zs-crm-common";
 import { prisma } from "../../../libs/prisma";;
 import { DeleteObjectCommand, GetObjectCommand, PutObjectCommand } from "@aws-sdk/client-s3";
 import { getSignedUrl } from "@aws-sdk/s3-request-presigner";
 import s3Client from "../../../libs/awsS3Client";
-import { no } from "zod/dist/types/v4/locales";
 
 export const getUploadUrlService = async (fileKey: string, fileType: string): Promise<string> => {
     const command = new PutObjectCommand({
@@ -54,7 +53,7 @@ export const uploadDrawingService = async ({ drawing_url, title, version, deal_i
     })
 }
 
-export const getDrawingsService = async (deal_id: string, author: any): Promise<any> => {
+export const getDrawingsService = async (deal_id: string, author: any): Promise<GetDrawingOutput> => {
     const drawings = await prisma.drawing.findMany({
         where: {
             deal_id: deal_id,
@@ -63,7 +62,13 @@ export const getDrawingsService = async (deal_id: string, author: any): Promise<
             ...(author.department === DEPARTMENTS[3] && { OR: [{ status: "rejected" }, { status: "pending" }] })
         },
         include: {
-            user: true
+            user: {
+                select: {
+                    first_name: true,
+                    last_name: true,
+                    id: true
+                }
+            }
         },
     });
     const grouped = {
@@ -72,7 +77,7 @@ export const getDrawingsService = async (deal_id: string, author: any): Promise<
         approved: drawings.filter(d => d.status === "approved"),
     };
     const totalDrawing = drawings.length;
-    return { grouped, totalDrawing };
+    return { drawings: grouped, totalDrawing };
 }
 
 export const getDrawingByIdService = async (id: string): Promise<string | null> => {
@@ -196,5 +201,4 @@ export const rejectDrawingService = async (id: string, author: any, note?: strin
             }
         })
     })
-
 }

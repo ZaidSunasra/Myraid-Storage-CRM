@@ -1,5 +1,5 @@
 import { Request, Response } from "express";
-import { ErrorResponse, getUploadUrlSchema, GetUploadUrlSuccessResponse, SuccessResponse, uploadDrawingSchema } from "zs-crm-common";
+import { ErrorResponse, GetDrawingByIdSuccessResponse, GetDrawingSuccessResponse, getUploadUrlSchema, GetUploadUrlSuccessResponse, SuccessResponse, uploadDrawingSchema } from "zs-crm-common";
 import { approveDrawingService, deleteDrawingService, getDrawingByIdService, getDrawingsService, getUploadUrlService, rejectDrawingService, uploadDrawingService } from "../services/drawing.service";
 
 export const getUploadUrlController = async (req: Request, res: Response<ErrorResponse | GetUploadUrlSuccessResponse>): Promise<any> => {
@@ -52,14 +52,14 @@ export const uploadDrawingController = async (req: Request, res: Response<Succes
     }
 }
 
-export const getDrawingsController = async (req: Request, res: Response): Promise<any> => {
+export const getDrawingsController = async (req: Request, res: Response<ErrorResponse | GetDrawingSuccessResponse>): Promise<any> => {
     const deal_id = req.params.deal_id;
     const author = res.locals.user;
     try {
-        const { grouped, totalDrawing } = await getDrawingsService(deal_id, author);
+        const { drawings, totalDrawing } = await getDrawingsService(deal_id, author);
         return res.status(200).json({
             message: "Drawing fetched successfully",
-            drawings: grouped,
+            drawings,
             totalDrawing
         });
     } catch (error) {
@@ -71,7 +71,7 @@ export const getDrawingsController = async (req: Request, res: Response): Promis
     }
 }
 
-export const getDrawingByIdController = async (req: Request, res: Response): Promise<any> => {
+export const getDrawingByIdController = async (req: Request, res: Response<ErrorResponse | GetDrawingByIdSuccessResponse>): Promise<any> => {
     const id = req.params.id;
     try {
         const viewUrl = await getDrawingByIdService(id)
@@ -104,7 +104,7 @@ export const deleteDrawingController = async (req: Request, res: Response<Succes
     }
 }
 
-export const approveDrawingController = async (req: Request, res: Response): Promise<any> => {
+export const approveDrawingController = async (req: Request, res: Response<SuccessResponse | ErrorResponse>): Promise<any> => {
     const id = req.params.id;
     const author = res.locals.user;
     try {
@@ -122,7 +122,7 @@ export const approveDrawingController = async (req: Request, res: Response): Pro
 }
 
 
-export const rejectDrawingController = async (req: Request, res: Response): Promise<any> => {
+export const rejectDrawingController = async (req: Request, res: Response<SuccessResponse | ErrorResponse>): Promise<any> => {
     const id = req.params.id;
     const author = res.locals.user;
     const { note } = req.body;

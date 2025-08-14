@@ -6,14 +6,14 @@ import { Button } from "@/shared/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/shared/components/ui/card";
 import { Dialog, DialogClose, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle, DialogTrigger } from "@/shared/components/ui/dialog";
 import { format } from "date-fns";
-import { AlertCircle, Calendar, CheckCircle, Download, Eye, FileText, Trash, User } from "lucide-react";
+import { AlertCircle, Calendar, CheckCircle, Download, Eye, FileText, Notebook, Trash, User } from "lucide-react";
 import { useState } from "react";
-import { DEPARTMENTS } from "zs-crm-common";
+import { DEPARTMENTS, type Assignee, type Drawing, type drawing_status } from "zs-crm-common";
 import RejectDrawingDialog from "./RejectDrawingDialog";
 
 const DrawingList = ({ id }: { id: string }) => {
 
-    const [dialog, setDialog] = useState<{ open: boolean; data: any; action: "approve" | "disapprove" | null }>({ open: false, data: null, action: null });
+    const [dialog, setDialog] = useState<{ open: boolean; data: number | null; action: "approve" | "disapprove" | null }>({ open: false, data: null, action: null });
     const { data, isPending } = FetchDrawings(id);
     const { user } = useUser();
     const viewDrawing = useViewDrawing();
@@ -34,8 +34,8 @@ const DrawingList = ({ id }: { id: string }) => {
     }
 
     const handleApprove = () => {
-        approveDrawing.mutate(dialog.data);
-        setDialog({open: false, data: null, action: null})
+        approveDrawing.mutate(String(dialog.data));
+        setDialog({ open: false, data: null, action: null })
     }
 
     if (isPending) return <>Loading</>
@@ -47,17 +47,17 @@ const DrawingList = ({ id }: { id: string }) => {
                     <FileText className="h-5 w-5 text-green-600" />
                     <span>Uploaded Drawings</span>
                     <Badge variant="secondary">
-                        {data.totalDrawing} files
+                        {data?.totalDrawing} files
                     </Badge>
                 </CardTitle>
             </CardHeader>
             <CardContent>
-                {Object.entries(data.drawings).map(([status, drawings]: any) =>
+                {(Object.entries(data?.drawings ?? {}) as [drawing_status, (Assignee & Drawing)[]][]).map(([status, drawings]) =>
                     drawings.length > 0 ? (
                         <div key={status} className="space-y-1">
                             <h2 className="text-sm font-bold capitalize">{status}</h2>
                             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-4">
-                                {drawings.map((drawing: any) => (
+                                {drawings.map((drawing: (Drawing & Assignee)) => (
                                     <Card
                                         key={drawing.id}
                                         className="hover:shadow-lg transition-all duration-200 bg-background border hover:bg-accent p-0"
@@ -78,6 +78,14 @@ const DrawingList = ({ id }: { id: string }) => {
                                                     </div>
                                                 </div>
                                             </div>
+                                            {drawing.status === "rejected" && (
+                                                <div className="flex items-center space-x-2 bg-red-50 border border-red-200 rounded-lg p-2">
+                                                    <Notebook className="h-4 w-4 text-red-600" />
+                                                    <span className="text-sm text-red-700 font-medium">
+                                                        {drawing.note}
+                                                    </span>
+                                                </div>
+                                            )}
                                             <div className="grid grid-cols-2 gap-3 text-xs text-primary rounded-lg p-2">
                                                 <div className="flex items-center space-x-1">
                                                     <FileText className="h-3 w-3" />
@@ -105,7 +113,7 @@ const DrawingList = ({ id }: { id: string }) => {
                                                     variant="outline"
                                                     size="sm"
                                                     className="h-8 px-3 text-xs bg-white/50 hover:bg-white/70 flex-1"
-                                                    onClick={() => handleView(drawing.id)}
+                                                    onClick={() => handleView(String(drawing.id))}
                                                 >
                                                     <Eye className="h-3 w-3 mr-1" /> Preview
                                                 </Button>
@@ -124,7 +132,7 @@ const DrawingList = ({ id }: { id: string }) => {
                                                             variant="outline"
                                                             size="sm"
                                                             className="h-8 px-3 text-xs bg-red-50 hover:bg-red-100 border-red-200 text-red-700 flex-1"
-                                                            onClick={() => setDialog({data: drawing.id, action: "disapprove", open: true})}
+                                                            onClick={() => setDialog({ data: drawing.id, action: "disapprove", open: true })}
                                                         >
                                                             <AlertCircle className="h-3 w-3 mr-1" />
                                                             Disapprove
@@ -135,7 +143,7 @@ const DrawingList = ({ id }: { id: string }) => {
                                                     variant="outline"
                                                     size="sm"
                                                     className="h-8 px-3 text-xs bg-red-50 hover:bg-red-100 border-red-200 text-red-700 flex-1"
-                                                    onClick={() => handleDelete(drawing.id)}
+                                                    onClick={() => handleDelete(String(drawing.id))}
                                                 >
                                                     <Trash className="h-3 w-3 mr-1" />
                                                     Delete
@@ -149,7 +157,7 @@ const DrawingList = ({ id }: { id: string }) => {
                         </div>
                     ) : null
                 )}
-                {data.drawings.length === 0 && (
+                {data?.totalDrawing === 0 && (
                     <div className="text-center py-12">
                         <div className="p-4 bg-gray-100 rounded-full w-16 h-16 mx-auto mb-4 flex items-center justify-center">
                             <FileText className="h-8 w-8 text-gray-400" />
@@ -183,7 +191,7 @@ const DrawingList = ({ id }: { id: string }) => {
                             <DialogTitle>Reject Drawing</DialogTitle>
                             <DialogDescription>Are you sure you want to reject drawing</DialogDescription>
                         </DialogHeader>
-                        <RejectDrawingDialog dialog={setDialog} id={dialog.data}/>
+                        <RejectDrawingDialog dialog={setDialog} id={String(dialog.data)} />
                     </>
                 ) : (
                     <></>

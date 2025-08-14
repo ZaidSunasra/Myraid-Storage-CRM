@@ -4,25 +4,22 @@ import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "
 import { Textarea } from "@/shared/components/ui/textarea";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
-import { z } from "zod/v4";
+import { rejectDrawingSchema, type RejectDrawingForm } from "zs-crm-common";
 
-const RejectDrawingDialog = ({ dialog, id}: { id: string, dialog: React.Dispatch<React.SetStateAction<{ open: boolean; data: any; action: "disapprove" | "approve" | null }>> }) => {
+const RejectDrawingDialog = ({ dialog, id }: { id: string, dialog: React.Dispatch<React.SetStateAction<{ open: boolean; data: number | null; action: "disapprove" | "approve" | null }>> }) => {
 
   const rejectDrawing = useRejectDrawing()
-  const schema = z.object({
-    note: z.string().optional()
-  })
 
   const form = useForm({
-    resolver: zodResolver(schema),
+    resolver: zodResolver(rejectDrawingSchema),
     defaultValues: {
       note: ""
     }
   });
 
-  const onSubmit = (data: z.infer<typeof schema>) => {
-    rejectDrawing.mutate({note: data.note, id});
-    dialog({open: false, data: null, action: null})
+  const onSubmit = (data: RejectDrawingForm) => {
+    rejectDrawing.mutate({ note: data.note, id });
+    dialog({ open: false, data: null, action: null })
   }
 
   return <Form {...form}>
