@@ -8,6 +8,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { zodResolver } from "@hookform/resolvers/zod";
 import axios from "axios";
 import { Upload } from "lucide-react";
+import { useRef } from "react";
 import { useForm } from "react-hook-form"
 import { useParams } from "react-router";
 import { uploadDrawingFormSchema, type UploadDrawingForm } from "zs-crm-common";
@@ -17,6 +18,7 @@ const DrawingUploads = () => {
     const uploadURL = useUploadUrl();
     const uploadDrawing = useUploadDrawing();
     const { id } = useParams();
+    const fileRef = useRef<HTMLInputElement>(null);
 
     const form = useForm<UploadDrawingForm>({
         resolver: zodResolver(uploadDrawingFormSchema),
@@ -26,6 +28,13 @@ const DrawingUploads = () => {
             file: null
         })
     });
+
+    const handleReset = () => {
+        form.reset();
+        if (fileRef.current) {
+            fileRef.current.value = "";
+        }
+    };
 
     const handleUploadDrawing = async (data: UploadDrawingForm) => {
         const uploadUrlResponse = await uploadURL.mutateAsync({
@@ -46,7 +55,9 @@ const DrawingUploads = () => {
             deal_id: id as string,
             file_size: data.file?.size as number,
             file_type: data.file?.type as string
-        })
+        });
+
+        handleReset();
     }
 
     return <Form {...form}>
@@ -127,6 +138,7 @@ const DrawingUploads = () => {
                                             <div className="space-y-2">
                                                 <FormControl>
                                                     <Input
+                                                        ref={fileRef}
                                                         type="file"
                                                         onChange={(e) => field.onChange(e.target.files?.[0] ?? null)}
                                                     />
@@ -141,7 +153,7 @@ const DrawingUploads = () => {
                     </div>
                     <div className="flex items-center justify-between pt-4 border-t border-border/20">
                         <div className="flex items-center space-x-3">
-                            <Button type="button" variant="outline" className="bg-white/50">
+                            <Button type="button" variant="outline" className="bg-white/50" onClick={() => handleReset()}>
                                 Cancel
                             </Button>
                             <Button

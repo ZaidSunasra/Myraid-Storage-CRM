@@ -1,103 +1,196 @@
+import { useApproveDrawing, useDeleteDrawing, useViewDrawing } from "@/api/deals/deal.mutation";
 import { FetchDrawings } from "@/api/deals/deal.queries"
+import { useUser } from "@/context/UserContext";
 import { Badge } from "@/shared/components/ui/badge";
 import { Button } from "@/shared/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/shared/components/ui/card";
+import { Dialog, DialogClose, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle, DialogTrigger } from "@/shared/components/ui/dialog";
 import { format } from "date-fns";
-import { Calendar, Download,  Eye, FileText, User } from "lucide-react";
+import { AlertCircle, Calendar, CheckCircle, Download, Eye, FileText, Trash, User } from "lucide-react";
+import { useState } from "react";
+import { DEPARTMENTS } from "zs-crm-common";
+import RejectDrawingDialog from "./RejectDrawingDialog";
 
 const DrawingList = ({ id }: { id: string }) => {
 
+    const [dialog, setDialog] = useState<{ open: boolean; data: any; action: "approve" | "disapprove" | null }>({ open: false, data: null, action: null });
     const { data, isPending } = FetchDrawings(id);
+    const { user } = useUser();
+    const viewDrawing = useViewDrawing();
+    const deleteDrawing = useDeleteDrawing();
+    const approveDrawing = useApproveDrawing();
+
+    const handleView = async (id: string): Promise<void> => {
+        const { viewUrl } = await viewDrawing.mutateAsync(id);
+        if (viewUrl) {
+            window.open(viewUrl, "_blank");
+        } else {
+            console.error("View URL not found");
+        };
+    }
+
+    const handleDelete = (id: string) => {
+        deleteDrawing.mutate(id);
+    }
+
+    const handleApprove = () => {
+        approveDrawing.mutate(dialog.data);
+        setDialog({open: false, data: null, action: null})
+    }
 
     if (isPending) return <>Loading</>
 
-    console.log(data);
-
-    return <Card className="shadow-lg bg-background">
-        <CardHeader>
+    return <>
+        <Card className="shadow-lg bg-background">
+            <CardHeader>
                 <CardTitle className="flex items-center space-x-2">
                     <FileText className="h-5 w-5 text-green-600" />
                     <span>Uploaded Drawings</span>
                     <Badge variant="secondary">
-                        {data.drawings.length} files
+                        {data.totalDrawing} files
                     </Badge>
                 </CardTitle>
-        </CardHeader>
-        <CardContent>
-            <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
-                {data.drawings.map((drawing: any) => (
-                    <Card
-                        key={drawing.id}
-                        className="hover:shadow-lg transition-all duration-200 bg-background  border hover:bg-accent p-0"
-                    >
-                        <CardContent className="p-4">
-                                    <div className="flex items-start space-x-3">
-                                        <div className="p-2 rounded-lg">
-                                            <FileText className="h-5 w-5 text-green-600" />
-                                        </div>
-                                        <div className="flex-1 min-w-0">
-                                            <h4 className="font-semibold text-sm mb-1 line-clamp-2 text-foreground">
-                                                {drawing.title}
-                                            </h4>
-                                            <div className="flex items-center space-x-2 mb-2">
-                                             
-                                                <Badge variant="outline" className="text-xs bg-white/50">
-                                                   Version: {}
-                                                    {drawing.version}
-                                                </Badge>
+            </CardHeader>
+            <CardContent>
+                {Object.entries(data.drawings).map(([status, drawings]: any) =>
+                    drawings.length > 0 ? (
+                        <div key={status} className="space-y-1">
+                            <h2 className="text-sm font-bold capitalize">{status}</h2>
+                            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-4">
+                                {drawings.map((drawing: any) => (
+                                    <Card
+                                        key={drawing.id}
+                                        className="hover:shadow-lg transition-all duration-200 bg-background border hover:bg-accent p-0"
+                                    >
+                                        <CardContent className="p-4">
+                                            <div className="flex items-start space-x-3">
+                                                <div className="p-2 rounded-lg">
+                                                    <FileText className="h-5 w-5 text-green-600" />
+                                                </div>
+                                                <div className="flex-1 min-w-0">
+                                                    <h4 className="font-semibold text-sm mb-1 line-clamp-2 text-foreground">
+                                                        {drawing.title}
+                                                    </h4>
+                                                    <div className="flex items-center space-x-2 mb-2">
+                                                        <Badge variant="outline" className="text-xs bg-white/50">
+                                                            Version: {drawing.version}
+                                                        </Badge>
+                                                    </div>
+                                                </div>
                                             </div>
-                                        </div>
-                                </div>
-                                <div className="grid grid-cols-2 gap-3 text-xs text-primary rounded-lg p-2">
-                                    <div className="flex items-center space-x-1">
-                                        <FileText className="h-3 w-3" />
-                                        <span>{drawing.file_type}</span>
-                                    </div>
-                                    <div className="flex items-center space-x-1">
-                                            <Download className="h-3 w-3" /> 
-                                        <span>{Math.ceil(drawing.file_size / 1024)} KB</span>
-                                    </div>
-                                    <div className="flex items-center space-x-1">
-                                        <Calendar className="h-3 w-3" />
-                                        <span>{format(drawing.uploaded_at, "dd/MM/yyyy a")}</span>
-                                    </div>
-                                    <div className="flex items-center space-x-1">
-                                        <User className="h-3 w-3" />
-                                        <span>{drawing.user.first_name} {drawing.user.last_name}</span>
-                                    </div>
-                                </div>
-                                <div className="flex items-center space-x-2">
-                                    <Button
-                                        variant="outline"
-                                        size="sm"
-                                        className="h-8 px-3 text-xs bg-white/50 hover:bg-white/70 flex-1"
-                                    >
-                                        <Eye className="h-3 w-3 mr-1" />
-                                        Preview
-                                    </Button>
-                                    <Button
-                                        variant="outline"
-                                        size="sm"
-                                        className="h-8 px-3 text-xs bg-white/50 hover:bg-white/70 flex-1"
-                                    >
-                                        <Download className="h-3 w-3 mr-1" />
-                                        Download
-                                    </Button>
-                                </div>
-                        </CardContent>
-                    </Card>
-                ))}
-            </div>
-            {data.drawings.length === 0 && (
-                <div className="text-center py-12">
-                    <div className="p-4 bg-gray-100 rounded-full w-16 h-16 mx-auto mb-4 flex items-center justify-center">
-                        <FileText className="h-8 w-8 text-gray-400" />
+                                            <div className="grid grid-cols-2 gap-3 text-xs text-primary rounded-lg p-2">
+                                                <div className="flex items-center space-x-1">
+                                                    <FileText className="h-3 w-3" />
+                                                    <span>{drawing.file_type}</span>
+                                                </div>
+                                                <div className="flex items-center space-x-1">
+                                                    <Download className="h-3 w-3" />
+                                                    <span>{Math.ceil(drawing.file_size / 1024)} KB</span>
+                                                </div>
+                                                <div className="flex items-center space-x-1">
+                                                    <Calendar className="h-3 w-3" />
+                                                    <span>
+                                                        {format(new Date(drawing.uploaded_at), "dd/MM/yyyy a")}
+                                                    </span>
+                                                </div>
+                                                <div className="flex items-center space-x-1">
+                                                    <User className="h-3 w-3" />
+                                                    <span>
+                                                        {drawing.user.first_name} {drawing.user.last_name}
+                                                    </span>
+                                                </div>
+                                            </div>
+                                            <div className="flex items-center space-x-2">
+                                                <Button
+                                                    variant="outline"
+                                                    size="sm"
+                                                    className="h-8 px-3 text-xs bg-white/50 hover:bg-white/70 flex-1"
+                                                    onClick={() => handleView(drawing.id)}
+                                                >
+                                                    <Eye className="h-3 w-3 mr-1" /> Preview
+                                                </Button>
+                                                {drawing.status === "pending" && user?.department === DEPARTMENTS[1] && (
+                                                    <>
+                                                        <Button
+                                                            variant="outline"
+                                                            size="sm"
+                                                            className="h-8 px-3 text-xs bg-green-50 hover:bg-green-100 border-green-200 text-green-700 flex-1"
+                                                            onClick={() => setDialog({ open: true, action: "approve", data: drawing.id })}
+                                                        >
+                                                            <CheckCircle className="h-3 w-3 mr-1" />
+                                                            Approve
+                                                        </Button>
+                                                        <Button
+                                                            variant="outline"
+                                                            size="sm"
+                                                            className="h-8 px-3 text-xs bg-red-50 hover:bg-red-100 border-red-200 text-red-700 flex-1"
+                                                            onClick={() => setDialog({data: drawing.id, action: "disapprove", open: true})}
+                                                        >
+                                                            <AlertCircle className="h-3 w-3 mr-1" />
+                                                            Disapprove
+                                                        </Button>
+                                                    </>
+                                                )}
+                                                {drawing.status === "rejected" && <Button
+                                                    variant="outline"
+                                                    size="sm"
+                                                    className="h-8 px-3 text-xs bg-red-50 hover:bg-red-100 border-red-200 text-red-700 flex-1"
+                                                    onClick={() => handleDelete(drawing.id)}
+                                                >
+                                                    <Trash className="h-3 w-3 mr-1" />
+                                                    Delete
+                                                </Button>
+                                                }
+                                            </div>
+                                        </CardContent>
+                                    </Card>
+                                ))}
+                            </div>
+                        </div>
+                    ) : null
+                )}
+                {data.drawings.length === 0 && (
+                    <div className="text-center py-12">
+                        <div className="p-4 bg-gray-100 rounded-full w-16 h-16 mx-auto mb-4 flex items-center justify-center">
+                            <FileText className="h-8 w-8 text-gray-400" />
+                        </div>
+                        <h3 className="text-lg font-medium text-foreground mb-2">No drawings uploaded yet</h3>
                     </div>
-                    <h3 className="text-lg font-medium text-foreground mb-2">No drawings uploaded yet</h3>
-                </div>
-            )}
-        </CardContent>
-    </Card>
+                )}
+            </CardContent>
+        </Card>
+        <Dialog open={dialog.open} onOpenChange={(open) => setDialog((prev) => ({ ...prev, open, ...(open ? {} : { data: null, action: null }) }))}>
+            <DialogTrigger asChild></DialogTrigger>
+            <DialogContent className="sm:max-w-[425px]">
+                {dialog.action == "approve" ? (
+                    <>
+                        <DialogHeader>
+                            <DialogTitle>Approve Drawing</DialogTitle>
+                            <DialogDescription>Are you sure you want to approve? This cannot be undone.</DialogDescription>
+                        </DialogHeader>
+                        <DialogFooter>
+                            <DialogClose asChild>
+                                <Button variant="outline">Cancel</Button>
+                            </DialogClose>
+                            <Button type="submit" onClick={() => handleApprove()}>
+                                Approve
+                            </Button>
+                        </DialogFooter>
+                    </>
+                ) : dialog.action === "disapprove" ? (
+                    <>
+                        <DialogHeader>
+                            <DialogTitle>Reject Drawing</DialogTitle>
+                            <DialogDescription>Are you sure you want to reject drawing</DialogDescription>
+                        </DialogHeader>
+                        <RejectDrawingDialog dialog={setDialog} id={dialog.data}/>
+                    </>
+                ) : (
+                    <></>
+                )}
+            </DialogContent>
+        </Dialog>
+    </>
 }
 
 export default DrawingList
