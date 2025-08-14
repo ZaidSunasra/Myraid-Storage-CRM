@@ -35,3 +35,23 @@ export const getDrawings = async (id: string) : Promise<any> => {
     const resposne = await axiosInstance.get(`deals/drawing/get/${id}`);
     return resposne.data;
 }
+
+export const getDrawingById = async (id: string) : Promise<any> => {
+    const response =await axiosInstance.post(`deals/drawing/get/${id}`);
+    return response.data;
+}
+
+export const deleteDrawing = async (id: string) : Promise<SuccessResponse> => {
+    const response = await axiosInstance.post(`deals/drawing/delete/${id}`);
+    return response.data;
+}
+
+export const approveDrawing = async (id: string) : Promise<SuccessResponse> => {
+    const response = await axiosInstance.post(`deals/drawing/approve/${id}`);
+    return response.data;
+}
+
+export const rejectDrawing = async ({note, id} : {note?: string, id: string}) : Promise<SuccessResponse> => {
+   const response = await axiosInstance.post(`deals/drawing/reject/${id}`, {note});
+    return response.data;
+}
