@@ -8,6 +8,17 @@ export const editStatusSchema = z.object({
     status: z.enum(DEAL_STATUS)
 })
 
+export const dealSchema = z.object({
+    company_id: z.string().min(1, "Company is required"),
+    employee_id: z.string().min(1, "Employee is required"),
+    source_id: z.number().min(1, "Source is required"),
+    product_id: z.number().min(1, "Product is required"),
+    deal_status: z.enum(DEAL_STATUS),
+    assigned_to: z.array(z.object({ id: z.number().min(1, "Enter valid Id") })).min(1, "Atleast 1 Id required"),
+});
+
+export type AddDeal = z.infer<typeof dealSchema>;
+
 export type Deal = {
     company_id: number;
     source_id: number;
@@ -17,7 +28,7 @@ export type Deal = {
     created_at: Date;
     last_updated: Date;
     client_id: number;
-    lead_id: number;
+    lead_id: number | null;
     updated_by: number;
 }
 
@@ -35,5 +46,5 @@ export type GetAllDealOutput = {
 }
 
 export type GetAllDealSuccessResponse = SuccessResponse & GetAllDealOutput;
-export type GetDealByIdSuccessResponse = SuccessResponse & {deal: GetDealOutput | null};
-export type GetDealByompanySuccessResponse = SuccessResponse & {deals: Deal[]};
+export type GetDealByIdSuccessResponse = SuccessResponse & { deal: GetDealOutput | null };
+export type GetDealByompanySuccessResponse = SuccessResponse & { deals: Deal[] };

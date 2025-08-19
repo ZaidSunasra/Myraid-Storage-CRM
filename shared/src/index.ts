@@ -9,3 +9,4 @@ export * from "./common.schema";
 export * from "./description.schema";
 export * from "./reminder.schema";
 export * from "./drawing.schema";
+export * from "./company.schema";

@@ -34,6 +34,8 @@ export type Source = {
 }
 
 export type Client_Details = {
+    id?: number,
+    company_id?: number,
     first_name: string;
     last_name: string;
     emails: { email: string | null; }[];
