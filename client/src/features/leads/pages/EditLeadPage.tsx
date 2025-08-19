@@ -1,6 +1,6 @@
 import { zodResolver } from "@hookform/resolvers/zod";
 import { ArrowLeft } from "lucide-react";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import { NavLink, useParams } from "react-router";
 import { leadSchema, type AddLead, type Assignee } from "zs-crm-common";
@@ -16,25 +16,47 @@ import EditLeadPageLoader from "../components/loaders/EditLeadPageLoader";
 
 const EditLeadPage = () => {
 	const { id } = useParams();
-	const { data, isPending } = FetchLeadById(id || "");
+	const { data, isPending } = FetchLeadById(id as string);
 	const [currentStep, setCurrentStep] = useState<number>(1);
-	const editLead = useEditLead(id || "");
+	const editLead = useEditLead(id as string);
 
 	const form = useForm<AddLead>({
 		resolver: zodResolver(leadSchema),
 		defaultValues: {
-			company_name: data?.lead?.company.name,
-			gst_no: data?.lead?.company.gst_no || "",
-			address: data?.lead?.company.address,
-			first_name: data?.lead?.client_detail.first_name,
-			last_name: data?.lead?.client_detail.last_name,
-			emails: data?.lead?.client_detail.emails?.filter((e): e is { email: string } => e.email !== null).map((e) => ({ email: e.email })) || [],
-			phones: data?.lead?.client_detail.phones?.map((p: { phone: string }) => ({ number: p.phone })) || [],
-			source_id: data?.lead?.source_id,
-			product_id: data?.lead?.product_id,
-			assigned_to: data?.lead?.assigned_to.map((i: Assignee) => ({ id: i.user.id })) || []
+			company_name: "",
+			gst_no: "",
+			address: "",
+			first_name: "",
+			last_name: "",
+			emails: [],
+			phones: [],
+			source_id: 0,
+			product_id: 0,
+			assigned_to: []
 		}
 	});
+
+	useEffect(() => {
+		if (data?.lead) {
+			form.reset({
+				company_name: data.lead.company.name,
+				gst_no: data.lead.company.gst_no || "",
+				address: data.lead.company.address,
+				first_name: data.lead.client_detail.first_name,
+				last_name: data.lead.client_detail.last_name,
+				emails: data.lead.client_detail.emails
+					?.filter((e): e is { email: string } => e.email !== null)
+					.map((e) => ({ email: e.email })) || [],
+				phones: data.lead.client_detail.phones
+					?.map((p: { phone: string }) => ({ number: p.phone })) || [],
+				source_id: data.lead.source_id,
+				product_id: data.lead.product_id,
+				assigned_to: data.lead.assigned_to
+					.map((i: Assignee) => ({ id: i.user.id }))
+			});
+		}
+	}, [data, form]);
+
 
 	const onSubmit = async (data: AddLead) => {
 		editLead.mutate({ data, id });
@@ -70,7 +92,7 @@ const EditLeadPage = () => {
 					</div>
 					<div className="grid grid-cols-1 lg:grid-cols-4 gap-6 mt-4">
 						<div className="lg:col-span-1">
-							<FormSideBar currentStep={currentStep} type="lead"/>
+							<FormSideBar currentStep={currentStep} type="lead" />
 						</div>
 						<div className="lg:col-span-3">
 							<Form {...form}>

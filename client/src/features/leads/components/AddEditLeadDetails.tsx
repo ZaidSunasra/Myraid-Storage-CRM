@@ -11,6 +11,7 @@ import { ArrowLeft, Plus, Trash, User } from "lucide-react";
 import { useFieldArray, type UseFormReturn } from "react-hook-form";
 import { DEPARTMENTS, type AddLead, type GetEmployeeOutput, type GetProductOutput, type GetSourceOutput } from "zs-crm-common";
 import EditLeadPageLoader from "./loaders/EditLeadPageLoader";
+import { capitalize, toTitleCase } from "@/utils/formatData";
 
 const AddEditLeadDetails = ({ form, handleClick, isLoading }: { form: UseFormReturn<AddLead>; handleClick: () => void; isLoading?: boolean }) => {
 	const { data: employeeData, isError: employeeError, isPending: employeePending } = FetchSalesEmployee();
@@ -133,7 +134,7 @@ const AddEditLeadDetails = ({ form, handleClick, isLoading }: { form: UseFormRet
 							render={({ field }) => (
 								<FormItem>
 									<FormLabel>Source*</FormLabel>
-									<Select onValueChange={(val) => field.onChange(Number(val))} defaultValue={String(field.value)}>
+									<Select onValueChange={(val) => field.onChange(Number(val))} value={String(field.value)}>
 										<FormControl>
 											<SelectTrigger className="w-full">
 												<SelectValue placeholder="Select lead source" />
@@ -142,7 +143,7 @@ const AddEditLeadDetails = ({ form, handleClick, isLoading }: { form: UseFormRet
 										<SelectContent>
 											{sourceData.sources.map((source: GetSourceOutput) => (
 												<SelectItem key={source.id} value={String(source.id)}>
-													{source.name.replace(/\b\w/g, (c: string) => c.toUpperCase())}
+													{toTitleCase(source.name)}
 												</SelectItem>
 											))}
 										</SelectContent>
@@ -159,7 +160,7 @@ const AddEditLeadDetails = ({ form, handleClick, isLoading }: { form: UseFormRet
 							render={({ field }) => (
 								<FormItem>
 									<FormLabel>Product*</FormLabel>
-									<Select onValueChange={(val) => field.onChange(Number(val))} defaultValue={String(field.value)}>
+									<Select onValueChange={(val) => field.onChange(Number(val))} value={String(field.value)}>
 										<FormControl>
 											<SelectTrigger className="w-full">
 												<SelectValue placeholder="Select Product" />
@@ -168,7 +169,7 @@ const AddEditLeadDetails = ({ form, handleClick, isLoading }: { form: UseFormRet
 										<SelectContent>
 											{productData.products.map((product: GetProductOutput) => (
 												<SelectItem key={product.id} value={String(product.id)}>
-													{product.name.replace(/\b\w/g, (c: string) => c.toUpperCase())}
+													{capitalize(product.name)}
 												</SelectItem>
 											))}
 										</SelectContent>
@@ -189,7 +190,7 @@ const AddEditLeadDetails = ({ form, handleClick, isLoading }: { form: UseFormRet
 									render={({ field }) => (
 										<FormItem className="flex items-center gap-2 mb-2">
 											<FormControl>
-												<Select onValueChange={(val) => field.onChange(Number(val))} defaultValue={String(field.value)}>
+												<Select onValueChange={(val) => field.onChange(Number(val))} value={String(field.value)}>
 													<SelectTrigger className="w-full">
 														<SelectValue placeholder="Select user to assign" />
 													</SelectTrigger>

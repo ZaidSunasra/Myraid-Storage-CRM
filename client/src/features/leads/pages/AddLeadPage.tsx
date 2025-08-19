@@ -1,4 +1,3 @@
-import { useUser } from "@/context/UserContext";
 import Navbar from "@/shared/components/Navbar";
 import { Button } from "@/shared/components/ui/button";
 import { Form } from "@/shared/components/ui/form";
@@ -15,7 +14,6 @@ import { leadSchema, type AddLead } from "zs-crm-common";
 
 const AddLeadPage = () => {
 	const [currentStep, setCurrentStep] = useState<1 | 2>(1);
-	const { user } = useUser();
 	const addLead = useAddLead();
 
     const form = useForm<AddLead>({
@@ -30,7 +28,7 @@ const AddLeadPage = () => {
             company_name: "",
             address: "",
             gst_no: "",
-            assigned_to: [{ id: user?.id }]
+            assigned_to: [{ id: 0 }]
         }),
     });
 
