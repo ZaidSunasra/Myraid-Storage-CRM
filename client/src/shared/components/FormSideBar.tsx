@@ -1,12 +1,13 @@
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/shared/components/ui/card";
+import { capitalize } from "@/utils/formatData";
 import { Check } from "lucide-react";
 
-const FormSideBar = ({ currentStep }: { currentStep: number }) => {
+const FormSideBar = ({ currentStep, type }: { currentStep: number, type : "lead" | "deal"}) => {
 	return (
 		<Card>
 			<CardHeader>
 				<CardTitle className="text-sm">Progress</CardTitle>
-				<CardDescription className="text-xs">Complete all steps to update the lead</CardDescription>
+				<CardDescription className="text-xs">Complete all steps to update the {type}</CardDescription>
 			</CardHeader>
 			<CardContent className="space-y-4">
 				<div className="space-y-3">
@@ -25,7 +26,7 @@ const FormSideBar = ({ currentStep }: { currentStep: number }) => {
 							{currentStep > 2 ? <Check className="h-4 w-4" /> : "2"}
 						</div>
 						<div className="flex-1">
-							<div className={`font-medium text-sm ${currentStep >= 2 ? "text-foreground" : "text-muted-foreground"}`}>Lead Details</div>
+							<div className={`font-medium text-sm ${currentStep >= 2 ? "text-foreground" : "text-muted-foreground"}`}>{capitalize(type)} Details</div>
 							<div className="text-xs text-muted-foreground">Contact and product information</div>
 						</div>
 					</div>
