@@ -134,7 +134,7 @@ const AddEditLeadDetails = ({ form, handleClick, isLoading }: { form: UseFormRet
 							render={({ field }) => (
 								<FormItem>
 									<FormLabel>Source*</FormLabel>
-									<Select onValueChange={(val) => field.onChange(Number(val))} value={String(field.value)}>
+									<Select onValueChange={(val) => field.onChange(Number(val))}  value={field.value ? String(field.value) : ""}>
 										<FormControl>
 											<SelectTrigger className="w-full">
 												<SelectValue placeholder="Select lead source" />
@@ -160,7 +160,7 @@ const AddEditLeadDetails = ({ form, handleClick, isLoading }: { form: UseFormRet
 							render={({ field }) => (
 								<FormItem>
 									<FormLabel>Product*</FormLabel>
-									<Select onValueChange={(val) => field.onChange(Number(val))} value={String(field.value)}>
+									<Select onValueChange={(val) => field.onChange(Number(val))} value={field.value ? String(field.value) : ""}>
 										<FormControl>
 											<SelectTrigger className="w-full">
 												<SelectValue placeholder="Select Product" />
@@ -190,7 +190,7 @@ const AddEditLeadDetails = ({ form, handleClick, isLoading }: { form: UseFormRet
 									render={({ field }) => (
 										<FormItem className="flex items-center gap-2 mb-2">
 											<FormControl>
-												<Select onValueChange={(val) => field.onChange(Number(val))} value={String(field.value)}>
+												<Select onValueChange={(val) => field.onChange(Number(val))} value={field.value ? String(field.value) : ""}>
 													<SelectTrigger className="w-full">
 														<SelectValue placeholder="Select user to assign" />
 													</SelectTrigger>
