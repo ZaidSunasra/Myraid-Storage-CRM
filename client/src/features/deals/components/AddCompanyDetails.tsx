@@ -12,7 +12,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Label } from "@/shared/components/ui/label"
 import { Input } from "@/shared/components/ui/input"
 
-const AddEditCompanyDetails = ({ form, handleNext}: { form: UseFormReturn<AddDeal>, handleNext : () => void}) => {
+const AddCompanyDetails = ({ form, handleNext}: { form: UseFormReturn<AddDeal>, handleNext : () => void}) => {
 
     const [selectedEmployee, setSelectedEmployee] = useState<any>(null);
     const [selectedCompany, setSelectedCompany] = useState<Company | null>(null);
@@ -70,6 +70,7 @@ const AddEditCompanyDetails = ({ form, handleNext}: { form: UseFormReturn<AddDea
                                                                 field.onChange(String(company.id), form.resetField("employee_id"))
                                                                 setSelectedCompany(company)
                                                             }}
+                                                            defaultValue={field.value}
                                                             className="flex items-center gap-2 p-3"
                                                         >
                                                             <Check
@@ -110,6 +111,7 @@ const AddEditCompanyDetails = ({ form, handleNext}: { form: UseFormReturn<AddDea
                                         setSelectedEmployee(employee);
                                     }}
                                     value={field.value}
+                                    defaultValue={field.value}
                                     disabled={employeePending}
                                 >
                                     <SelectTrigger className="h-12 bg-white w-full">
@@ -219,4 +221,4 @@ const AddEditCompanyDetails = ({ form, handleNext}: { form: UseFormReturn<AddDea
     </Card >
 }
 
-export default AddEditCompanyDetails
+export default AddCompanyDetails

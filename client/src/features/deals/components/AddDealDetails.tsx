@@ -11,7 +11,7 @@ import { FetchProducts } from "@/api/products/product.queries"
 import { capitalize } from "@/utils/formatData"
 import { FetchSalesEmployee } from "@/api/employees/employee.queries"
 
-const AddEditDealDetails = ({ form, handlePrev, isLoading}: { form: UseFormReturn<AddDeal>, handlePrev : () => void, isLoading:boolean}) => {
+const AddDealDetails = ({ form, handlePrev, isLoading}: { form: UseFormReturn<AddDeal>, handlePrev : () => void, isLoading:boolean}) => {
 
     const { data: sourceData, isPending: sourcePending } = FetchSources();
     const { data: productData, isPending: productPending } = FetchProducts();
@@ -160,4 +160,4 @@ const AddEditDealDetails = ({ form, handlePrev, isLoading}: { form: UseFormRetur
     </Card >
 }
 
-export default AddEditDealDetails;
+export default AddDealDetails;
