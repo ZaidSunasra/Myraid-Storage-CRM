@@ -164,8 +164,8 @@ model Deal {
   source_id     Int
   product       Product        @relation(fields: [product_id], references: [id])
   product_id    Int
-  lead          Lead           @relation(fields: [lead_id], references: [id])
-  lead_id       Int
+  lead          Lead?          @relation(fields: [lead_id], references: [id])
+  lead_id       Int?
   user          User           @relation(fields: [updated_by], references: [id])
   updated_by    Int
 }
