@@ -7,14 +7,14 @@ import { ArrowLeft } from "lucide-react";
 import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { NavLink } from "react-router";
-import { leadSchema, type AddLead } from "zs-crm-common";
-import FormSideBar from "../components/FormSideBar";
+import FormSideBar from "../../../shared/components/FormSideBar";
 import AddEditCompanyDetails from "../components/AddEditCompanyDetails";
 import AddEditLeadDetails from "../components/AddEditLeadDetails";
 import { useAddLead } from "@/api/leads/leads.mutation";
+import { leadSchema, type AddLead } from "zs-crm-common";
 
 const AddLeadPage = () => {
-	const [currentStep, setCurrentStep] = useState<number>(1);
+	const [currentStep, setCurrentStep] = useState<1 | 2>(1);
 	const { user } = useUser();
 	const addLead = useAddLead();
 
@@ -35,9 +35,7 @@ const AddLeadPage = () => {
     });
 
 	const handleNext = () => {
-		if (currentStep < 2) {
-			setCurrentStep(currentStep + 1);
-		}
+		setCurrentStep(2);
 	};
 
 	const handlePrev = () => {
@@ -66,11 +64,11 @@ const AddLeadPage = () => {
 					</div>
 					<div className="grid grid-cols-1 lg:grid-cols-4 gap-6">
 						<div className="lg:col-span-1">
-							<FormSideBar currentStep={currentStep} />
+							<FormSideBar currentStep={currentStep} type="lead" />
 						</div>
 						<div className="lg:col-span-3">
 							<Form {...form}>
-								<form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
+								<form onSubmit={form.handleSubmit(onSubmit)}>
 									{currentStep === 1 && <AddEditCompanyDetails form={form} handleClick={handleNext} />}
 									{currentStep === 2 && <AddEditLeadDetails form={form} handleClick={handlePrev} isLoading={addLead.isPending} />}
 								</form>

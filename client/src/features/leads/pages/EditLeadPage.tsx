@@ -10,7 +10,7 @@ import { FetchLeadById } from "@/api/leads/leads.queries";
 import { Form } from "@/shared/components/ui/form";
 import AddEditCompanyDetails from "../components/AddEditCompanyDetails";
 import AddEditLeadDetails from "../components/AddEditLeadDetails";
-import FormSideBar from "../components/FormSideBar";
+import FormSideBar from "../../../shared/components/FormSideBar";
 import { useEditLead } from "@/api/leads/leads.mutation";
 import EditLeadPageLoader from "../components/loaders/EditLeadPageLoader";
 
@@ -70,7 +70,7 @@ const EditLeadPage = () => {
 					</div>
 					<div className="grid grid-cols-1 lg:grid-cols-4 gap-6 mt-4">
 						<div className="lg:col-span-1">
-							<FormSideBar currentStep={currentStep} />
+							<FormSideBar currentStep={currentStep} type="lead"/>
 						</div>
 						<div className="lg:col-span-3">
 							<Form {...form}>
