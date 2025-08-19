@@ -2,6 +2,7 @@ import { Deal_Status, Notification_Type } from "@prisma/client";
 import { prisma } from "../../../libs/prisma"
 import { DEPARTMENTS, Deal, GetAllDealOutput, GetDealOutput } from "zs-crm-common";
 import { Include } from "../constants";
+import { DealFormValues } from "../controllers/deal.controller";
 
 export const generateDealId = async (quotation_code: string): Promise<string> => {
     const today = new Date();
@@ -13,7 +14,7 @@ export const generateDealId = async (quotation_code: string): Promise<string> =>
     const lastDealNumber = await prisma.deal.findFirst({
         where: {
             id: {
-                startsWith: `MSS-LP/${String(fyStart).slice(2)}-${String(fyEnd).slice(2)}/${quotation_code.slice(0, 2)}`
+                startsWith: `MSS_LP-${String(fyStart).slice(2)}_${String(fyEnd).slice(2)}-${quotation_code.slice(0, 2)}`
             }
         },
         orderBy: {
@@ -183,4 +184,37 @@ export const editDealStatusService = async (deal_id: string, status: Deal_Status
             deal_status: status
         }
     });
+}
+
+export const addDealService = async ({ company_id, employee_id, source_id, product_id, assigned_to, deal_status }: DealFormValues, author: any): Promise<void> => {
+
+    await prisma.$transaction(async (tx) => {
+        const quotation_code = await tx.user.findUnique({
+            where: {
+                id: assigned_to[0].id
+            },
+            select: {
+                quotation_code: true
+            }
+        });
+        const deal_id = await generateDealId(String(quotation_code?.quotation_code));
+        await tx.deal.create({
+            data: {
+                company_id: parseInt(company_id),
+                client_id: parseInt(employee_id),
+                source_id: source_id,
+                product_id: product_id,
+                deal_status: deal_status,
+                id: deal_id,
+                lead_id: null,
+                updated_by: author.id,
+            }
+        });
+        await tx.asignee.createMany({
+            data: assigned_to.map((id) => ({
+                user_id: id.id,
+                deal_id: deal_id
+            }))
+        })
+    })
 }

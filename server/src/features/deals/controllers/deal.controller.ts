@@ -1,6 +1,7 @@
 import { Request, Response } from "express";
-import { convertLeadToDealService, editDealStatusService, getDealByCompanyService, getDealByIdService, getDealService } from "../services/deal.service";
-import { GetAllDealSuccessResponse, GetDealByIdSuccessResponse, GetDealByompanySuccessResponse, ErrorResponse, SuccessResponse, editStatusSchema } from "zs-crm-common";
+import { addDealService, convertLeadToDealService, editDealStatusService, getDealByCompanyService, getDealByIdService, getDealService } from "../services/deal.service";
+import { GetAllDealSuccessResponse, GetDealByIdSuccessResponse, GetDealByompanySuccessResponse, ErrorResponse, SuccessResponse, editStatusSchema, DEAL_STATUS } from "zs-crm-common";
+import { z } from "zod/v4";
 
 export const getDealController = async (req: Request, res: Response<ErrorResponse | GetAllDealSuccessResponse>): Promise<any> => {
     const user = res.locals.user;
@@ -105,10 +106,36 @@ export const editDealStatusController = async (req: Request, res: Response<Succe
     }
 }
 
-export const addDealController = async (req: Request, res: Response): Promise<any> => {
-    const { } = req.body;
-    try {
-    } catch (error) {
+export const dealFormSchema = z.object({
+    company_id: z.string().min(1, "Company is required"),
+    employee_id: z.string().min(1, "Employee is required"),
+    source_id: z.number().min(1, "Source is required"),
+    product_id: z.number().min(1, "Product is required"),
+    deal_status: z.enum(DEAL_STATUS),
+    assigned_to: z.array(z.object({ id: z.number().min(1, "Enter valid Id") })).min(1, "Atleast 1 Id required"),
+});
+export type DealFormValues = z.infer<typeof dealFormSchema>;
 
+export const addDealController = async (req: Request, res: Response<SuccessResponse | ErrorResponse>): Promise<any> => {
+    const { company_id, employee_id, source_id, product_id, assigned_to, deal_status } = req.body;
+    const author = res.locals.user;
+    const validation = dealFormSchema.safeParse(req.body);
+    if (!validation.success) {
+        return res.status(400).json({
+            message: "Input validation error",
+            error: validation.error.issues
+        })
+    }
+    try {
+        await addDealService({ company_id, employee_id, source_id, product_id, assigned_to, deal_status }, author)
+        return res.status(200).json({
+            message: `Deal added succesfully`,
+        });
+    } catch (error) {
+        console.log(`Error in adding deal`, error);
+        return res.status(500).send({
+            message: "Internal server error",
+            error: error
+        });
     }
 };
