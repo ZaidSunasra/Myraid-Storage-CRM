@@ -2,14 +2,14 @@ import Navbar from "@/shared/components/Navbar"
 import { Button } from "@/shared/components/ui/button"
 import { ArrowLeft } from "lucide-react"
 import { NavLink } from "react-router"
-import AddEditCompanyDetails from "../components/AddEditCompanyDetails"
+import AddCompanyDetails from "../components/AddCompanyDetails"
 import { Form } from "@/shared/components/ui/form"
 import { useForm } from "react-hook-form"
 import { zodResolver } from "@hookform/resolvers/zod"
 import { dealSchema, type AddDeal } from "zs-crm-common"
 import FormSideBar from "@/shared/components/FormSideBar"
 import { useState } from "react"
-import AddEditDealDetails from "../components/AddEditDealDeatails"
+import AddDealDetails from "../components/AddDealDetails"
 import { useAddDeal } from "@/api/deals/deal.mutation"
 
 const AddDealPage = () => {
@@ -63,8 +63,8 @@ const AddDealPage = () => {
                     <div className="lg:col-span-3">
                         <Form {...form}>
                             <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
-                                {currentStep == 1 && <AddEditCompanyDetails form={form} handleNext={handleNext}/>}
-                                {currentStep == 2 && <AddEditDealDetails form={form} handlePrev = {handlePrev} isLoading={addDeal.isPending}/>}
+                                {currentStep == 1 && <AddCompanyDetails form={form} handleNext={handleNext}/>}
+                                {currentStep == 2 && <AddDealDetails form={form} handlePrev = {handlePrev} isLoading={addDeal.isPending}/>}
                             </form>
                         </Form>
                     </div>
