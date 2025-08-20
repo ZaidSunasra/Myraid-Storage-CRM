@@ -25,7 +25,8 @@ const NotificationCard = ({ notification }: { notification: GetNotificationOutpu
 						<Button
 							variant="outline"
 							size="sm"
-							onClick={() => {
+							onClick={(e) => {
+								e.stopPropagation();
 								markNotification.mutate(String(notification.id));
 							}}
 							className="h-7 text-xs bg-transparent"
