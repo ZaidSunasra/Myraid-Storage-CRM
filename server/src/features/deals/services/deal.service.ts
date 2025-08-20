@@ -1,8 +1,7 @@
 import { Deal_Status, Notification_Type } from "@prisma/client";
 import { prisma } from "../../../libs/prisma"
-import { DEPARTMENTS, Deal, GetAllDealOutput, GetDealOutput } from "zs-crm-common";
+import { AddDeal, DEPARTMENTS, Deal, GetAllDealOutput, GetDealOutput } from "zs-crm-common";
 import { Include } from "../constants";
-import { DealFormValues } from "../controllers/deal.controller";
 
 export const generateDealId = async (quotation_code: string): Promise<string> => {
     const today = new Date();
@@ -10,7 +9,6 @@ export const generateDealId = async (quotation_code: string): Promise<string> =>
     const month = today.getMonth();
     const fyStart = month < 3 ? year - 1 : year;
     const fyEnd = fyStart + 1;
-
     const lastDealNumber = await prisma.deal.findFirst({
         where: {
             id: {
@@ -24,9 +22,7 @@ export const generateDealId = async (quotation_code: string): Promise<string> =>
             id: true
         }
     });
-
     const latestDealNumber = lastDealNumber ? parseInt(lastDealNumber?.id.slice(-4)) + 1 : quotation_code;
-
     return `MSS_LP-${String(fyStart).slice(2)}_${String(fyEnd).slice(2)}-${latestDealNumber}`;
 }
 
@@ -114,6 +110,14 @@ export const convertLeadToDealService = async (lead_id: string, author: { id: nu
     const deal_id = await generateDealId(quotation_code);
 
     await prisma.$transaction(async (tx) => {
+        const user = await tx.user.findFirst({
+            where: {
+                quotation_code: quotation_code,
+            },
+            select: {
+                id: true
+            }
+        });
         const lead = await tx.lead.findUnique({
             where: {
                 id: parseInt(lead_id)
@@ -129,7 +133,7 @@ export const convertLeadToDealService = async (lead_id: string, author: { id: nu
                     source_id: lead.source_id,
                     product_id: lead.product_id,
                     lead_id: parseInt(lead_id),
-                    updated_by: author.id
+                    updated_by: user?.id as number
                 }
             })
             await tx.asignee.updateMany({
@@ -138,20 +142,14 @@ export const convertLeadToDealService = async (lead_id: string, author: { id: nu
                 },
                 data: {
                     deal_id: deal.id,
-                    lead_id: null
                 }
             });
             await tx.notification.updateMany({
                 where: {
-                    OR: [
-                        { type: Notification_Type.client_meeting },
-                        { type: Notification_Type.mentioned }
-                    ],
                     lead_id: parseInt(lead_id)
                 },
                 data: {
                     deal_id: deal.id,
-                    lead_id: null,
                 }
             });
             await tx.description.updateMany({
@@ -160,7 +158,6 @@ export const convertLeadToDealService = async (lead_id: string, author: { id: nu
                 },
                 data: {
                     deal_id: deal.id,
-                    lead_id: null
                 }
             })
             await tx.lead.update({
@@ -186,7 +183,7 @@ export const editDealStatusService = async (deal_id: string, status: Deal_Status
     });
 }
 
-export const addDealService = async ({ company_id, employee_id, source_id, product_id, assigned_to, deal_status }: DealFormValues, author: any): Promise<void> => {
+export const addDealService = async ({ company_id, employee_id, source_id, product_id, assigned_to, deal_status }: AddDeal, author: any): Promise<void> => {
 
     await prisma.$transaction(async (tx) => {
         const quotation_code = await tx.user.findUnique({
@@ -207,7 +204,7 @@ export const addDealService = async ({ company_id, employee_id, source_id, produ
                 deal_status: deal_status,
                 id: deal_id,
                 lead_id: null,
-                updated_by: author.id,
+                updated_by: assigned_to[0].id,
             }
         });
         await tx.asignee.createMany({
@@ -216,5 +213,84 @@ export const addDealService = async ({ company_id, employee_id, source_id, produ
                 deal_id: deal_id
             }))
         })
+    })
+}
+
+export const editDealService = async ({ company_id, employee_id, source_id, product_id, assigned_to, deal_status }: AddDeal, deal_id: string): Promise<void> => {
+    await prisma.$transaction(async (tx) => {
+        const deal = await tx.deal.findUnique({
+            where: {
+                id: deal_id
+            }
+        });
+        const prevMasterUser = deal?.updated_by;
+        const currentMasterUser = assigned_to[0].id;
+        if (prevMasterUser === currentMasterUser) {
+            await tx.deal.update({
+                where: {
+                    id: deal_id
+                },
+                data: {
+                    company_id: parseInt(company_id),
+                    client_id: parseInt(employee_id),
+                    source_id: source_id,
+                    product_id: product_id,
+                    deal_status: deal_status
+                }
+            });
+            await tx.asignee.deleteMany({
+                where: {
+                    deal_id: deal_id
+                }
+            });
+            await tx.asignee.createMany({
+                data: assigned_to.map((id) => ({
+                    user_id: id.id,
+                    deal_id: deal_id
+                }))
+            });
+        } else {
+            const quotation_code = await tx.user.findUniqueOrThrow({
+                where: {
+                    id: assigned_to[0].id
+                },
+                select: {
+                    quotation_code: true
+                }
+            })
+            const newDealId = await generateDealId(quotation_code.quotation_code as string);
+            await tx.deal.create({
+                data: {
+                    id: newDealId,
+                    company_id: parseInt(company_id),
+                    client_id: parseInt(employee_id),
+                    source_id: source_id,
+                    product_id: product_id,
+                    deal_status: deal_status,
+                    updated_by: currentMasterUser,
+                    lead_id: deal?.lead_id ?? null
+                }
+            });
+            await tx.asignee.deleteMany({
+                where: {
+                    deal_id: deal_id
+                }
+            });
+            await tx.asignee.createMany({
+                data: assigned_to.map((id) => ({
+                    user_id: id.id,
+                    deal_id: newDealId
+                }))
+            });
+            await tx.notification.updateMany({ where: { deal_id }, data: { deal_id: newDealId } });
+            await tx.drawing.updateMany({ where: { deal_id }, data: { deal_id: newDealId } });
+            await tx.quotation.updateMany({ where: { deal_id }, data: { deal_id: newDealId } });
+            await tx.description.updateMany({ where: { deal_id }, data: { deal_id: newDealId } });
+            await tx.deal.delete({
+                where: {
+                    id: deal_id
+                }
+            })
+        }
     })
 }

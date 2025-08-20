@@ -1,5 +1,5 @@
 import { useMutation, useQueryClient } from "@tanstack/react-query"
-import { addDeal, approveDrawing, convertLeadToDeal, deleteDrawing, editStatus, getDrawingById, getUploadUrl, rejectDrawing, uploadDrawing } from "./deal.api"
+import { addDeal, approveDrawing, convertLeadToDeal, deleteDrawing, editDeal, editStatus, getDrawingById, getUploadUrl, rejectDrawing, uploadDrawing } from "./deal.api"
 import type { ErrorResponse, SuccessResponse } from "zs-crm-common"
 import { toast } from "sonner"
 import type { AxiosError } from "axios"
@@ -38,6 +38,22 @@ export const useAddDeal = () => {
     const navigate = useNavigate();
     return useMutation({
         mutationFn: addDeal,
+        onSuccess: (data: SuccessResponse) => {
+            (toast.success(data.message));
+            queryClient.invalidateQueries({ queryKey: ['deals'] });
+            navigate("/deal")
+        },
+        onError: (error: AxiosError<ErrorResponse>) => {
+            toast.error(error.response?.data.message);
+        }
+    })
+}
+
+export const useEditDeal = () => {
+    const queryClient = useQueryClient();
+    const navigate = useNavigate();
+    return useMutation({
+        mutationFn: editDeal,
         onSuccess: (data: SuccessResponse) => {
             (toast.success(data.message));
             queryClient.invalidateQueries({ queryKey: ['deals'] });

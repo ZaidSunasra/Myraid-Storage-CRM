@@ -21,8 +21,13 @@ export const getDealById = async (id: string): Promise<GetDealByIdSuccessRespons
     return response.data;
 }
 
-export const addDeal = async (  data : AddDeal): Promise<SuccessResponse> => {
+export const addDeal = async (data: AddDeal): Promise<SuccessResponse> => {
     const response = await axiosInstance.post("/deals/add", data);
+    return response.data;
+}
+
+export const editDeal = async ({data, id} : {data: AddDeal, id: string}) : Promise<SuccessResponse> => {
+     const response = await axiosInstance.put(`/deals/edit/${id}`, data);
     return response.data;
 }
 
