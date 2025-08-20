@@ -5,7 +5,7 @@ import { Button } from "@/shared/components/ui/button";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/shared/components/ui/tabs";
 import { capitalize, toTitleCase } from "@/utils/formatData";
 import { ArrowLeft, Edit } from "lucide-react";
-import { NavLink, useParams } from "react-router";
+import { NavLink, useNavigate, useParams } from "react-router";
 import DealDetails from "../components/DealDetails";
 import { type deal_status, type GetDealOutput } from "zs-crm-common";
 import { Badge } from "@/shared/components/ui/badge";
@@ -23,6 +23,7 @@ const DetailedDealPage = () => {
     const { id } = useParams()
     const { data: dealData, isPending: dealPending } = FetchDealById(id as string);
     const { user } = useUser();
+    const navigate = useNavigate();
 
     if (dealPending) return <>Loading...</>
     const { bg, icon: StatusIcon } = DEAL_STATUS_META[dealData?.deal?.deal_status as deal_status]
@@ -51,10 +52,12 @@ const DetailedDealPage = () => {
                             </Badge>
                         </div>
                     </div>
-                    <Button>
-                        <Edit className="h-4 w-4 mr-2" />
-                        Edit Deal
-                    </Button>
+                    {user?.department && canView(user?.department, "sales_admin") &&
+                        <Button onClick={() => navigate(`/deal/edit/${id}`)}>
+                            <Edit className="h-4 w-4 mr-2" />
+                            Edit Deal
+                        </Button>
+                    }
                 </div>
             </div>
             <div className="grid grid-cols-1 lg:grid-cols-4 gap-6">
@@ -71,7 +74,7 @@ const DetailedDealPage = () => {
                             <DealDetails data={dealData?.deal as GetDealOutput} />
                             {user?.department && canView(user?.department, "sales_admin") && <Description id={dealData?.deal?.id as string} type="deal" />}
                         </TabsContent>
-                        { user?.department && canView(user?.department, "sales_admin") &&
+                        {user?.department && canView(user?.department, "sales_admin") &&
                             <TabsContent value="scheduling" className="space-y-6">
                                 <MeetScheduling type="deal" id={id as string} />
                                 <ScheduledMeeting type="deal" id={id as string} />
@@ -79,7 +82,7 @@ const DetailedDealPage = () => {
                         }
                         <TabsContent value="drawing" className="space-y-6">
                             {user?.department && canView(user?.department, "drawing") && <DrawingUploads />}
-                            <DrawingList id={id as string}/>
+                            <DrawingList id={id as string} />
                         </TabsContent>
                     </Tabs>
                 </div>
