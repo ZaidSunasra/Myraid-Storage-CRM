@@ -8,7 +8,7 @@ import { ArrowLeft, ArrowRightLeft, Edit } from "lucide-react";
 import Description from "@/shared/components/Description";
 import LeadSideBar from "../components/LeadSidebar";
 import Navbar from "@/shared/components/Navbar";
-import type { GetEmployeeOutput, GetLeadOutput } from "zs-crm-common";
+import { type GetEmployeeOutput, type GetLeadOutput } from "zs-crm-common";
 import DetailedLeadPageLoader from "../components/loaders/DetailedLeadPageLoader";
 import { capitalize, toTitleCase } from "@/utils/formatData";
 import { Dialog, DialogClose, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle, DialogTrigger } from "@/shared/components/ui/dialog";
@@ -17,6 +17,8 @@ import { FetchAssignedEmployee } from "@/api/employees/employee.queries";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/shared/components/ui/select";
 import { useRef } from "react";
 import ScheduledMeeting from "@/shared/components/ScheduledMeeting";
+import { useUser } from "@/context/UserContext";
+import { canView } from "@/utils/viewPermission";
 
 const DetailedLeadPage = () => {
 
@@ -24,10 +26,11 @@ const DetailedLeadPage = () => {
 	const tab = searchParams.get("tab") || "info";
 	const navigate = useNavigate();
 	const { id } = useParams();
+	const { user } = useUser();
 	const { data, isPending, isError } = FetchLeadById(id as string);
 	const { data: assignedEmployeeData, isPending: assignedEmployeePending, isError: assignedEmployeeError } = FetchAssignedEmployee(id as string, "lead");
 
-	const quotationCode = useRef<string | null>(null);
+	const quotationCode = useRef<string>(user?.code);
 
 	const convertLead = useConvertToDeal();
 	const handleLeadConversion = () => {
@@ -78,8 +81,8 @@ const DetailedLeadPage = () => {
 								<Description id={String(data.lead?.id)} type="lead" />
 							</TabsContent>
 							<TabsContent value="scheduling" className="space-y-6">
-								<LeadScheduling type="lead" id={id as string}/>
-								<ScheduledMeeting id={id as string} type="lead"/>
+								<LeadScheduling type="lead" id={id as string} />
+								<ScheduledMeeting id={id as string} type="lead" />
 							</TabsContent>
 						</Tabs>
 					</div>
@@ -97,18 +100,20 @@ const DetailedLeadPage = () => {
 										<DialogTitle>Convert the lead to deal</DialogTitle>
 										<DialogDescription>Are you sure you want to convert the lead? This cannot be undone.</DialogDescription>
 									</DialogHeader>
-									<Select onValueChange={(value) => (quotationCode.current = value)}>
-										<SelectTrigger >
-											<SelectValue placeholder="Select quotation code" />
-										</SelectTrigger>
-										<SelectContent>
-											{assignedEmployeeData.employees.map((employee: GetEmployeeOutput) => (
-												<SelectItem value={employee.quotation_code as string}>
-													{employee.first_name} {employee.last_name} ({employee.quotation_code})
-												</SelectItem>
-											))}
-										</SelectContent>
-									</Select>
+									{user?.department && canView(user?.department, "admin") &&
+										<Select onValueChange={(value) => (quotationCode.current = value)}>
+											<SelectTrigger >
+												<SelectValue placeholder="Select quotation code" />
+											</SelectTrigger>
+											<SelectContent>
+												{assignedEmployeeData.employees.map((employee: GetEmployeeOutput) => (
+													<SelectItem value={employee.quotation_code as string} key={employee.id}>
+														{employee.first_name} {employee.last_name} ({employee.quotation_code})
+													</SelectItem>
+												))}
+											</SelectContent>
+										</Select>
+									}
 									<DialogFooter>
 										<DialogClose asChild>
 											<Button variant="outline">Cancel</Button>
