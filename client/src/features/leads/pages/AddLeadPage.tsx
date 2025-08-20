@@ -11,10 +11,12 @@ import AddEditCompanyDetails from "../components/AddEditCompanyDetails";
 import AddEditLeadDetails from "../components/AddEditLeadDetails";
 import { useAddLead } from "@/api/leads/leads.mutation";
 import { leadSchema, type AddLead } from "zs-crm-common";
+import { useUser } from "@/context/UserContext";
 
 const AddLeadPage = () => {
 	const [currentStep, setCurrentStep] = useState<1 | 2>(1);
 	const addLead = useAddLead();
+	const {user} = useUser()
 
     const form = useForm<AddLead>({
         resolver: zodResolver(leadSchema),
@@ -28,7 +30,7 @@ const AddLeadPage = () => {
             company_name: "",
             address: "",
             gst_no: "",
-            assigned_to: [{ id: 0 }]
+            assigned_to: [{ id: user?.id }]
         }),
     });
 
