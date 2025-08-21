@@ -62,8 +62,8 @@ const EditDealDetails = ({ data }: { data: GetDealOutput }) => {
                     <CardHeader>
                         <CardTitle>Edit Deal Details</CardTitle>
                     </CardHeader>
-                    <CardContent className="space-y-6">
-                        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <CardContent className="space-y-2">
+                        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
                             <FormField
                                 control={form.control}
                                 name="company_id"
@@ -129,7 +129,7 @@ const EditDealDetails = ({ data }: { data: GetDealOutput }) => {
                                             value={field.value || ""}
                                             disabled={companyEmployeePending}
                                         >
-                                            <SelectTrigger>
+                                            <SelectTrigger className="w-full">
                                                 <SelectValue placeholder="Select employee" />
                                             </SelectTrigger>
                                             <SelectContent>
@@ -157,7 +157,7 @@ const EditDealDetails = ({ data }: { data: GetDealOutput }) => {
                                             onValueChange={(val) => field.onChange(Number(val))}
                                             value={field.value ? String(field.value) : ""}
                                         >
-                                            <SelectTrigger>
+                                            <SelectTrigger className="w-full">
                                                 <SelectValue placeholder="Select source" />
                                             </SelectTrigger>
                                             <SelectContent>
@@ -185,7 +185,7 @@ const EditDealDetails = ({ data }: { data: GetDealOutput }) => {
                                             onValueChange={(val) => field.onChange(Number(val))}
                                             value={field.value ? String(field.value) : ""}
                                         >
-                                            <SelectTrigger>
+                                            <SelectTrigger className="w-full">
                                                 <SelectValue placeholder="Select product" />
                                             </SelectTrigger>
                                             <SelectContent>
@@ -213,7 +213,7 @@ const EditDealDetails = ({ data }: { data: GetDealOutput }) => {
                                             onValueChange={field.onChange}
                                             value={field.value || ""}
                                         >
-                                            <SelectTrigger>
+                                            <SelectTrigger className="w-full">
                                                 <SelectValue placeholder="Select status" />
                                             </SelectTrigger>
                                             <SelectContent>
@@ -228,61 +228,59 @@ const EditDealDetails = ({ data }: { data: GetDealOutput }) => {
                                     </FormItem>
                                 )}
                             />
-                        </div>
-                        <div className="space-y-2">
-                            <FormLabel className="mb-2">Assign Users*</FormLabel>
-                            {assignField.map((field, index) => (
-                                <FormField
-                                    key={field.id}
-                                    control={form.control}
-                                    name={`assigned_to.${index}.id`}
-                                    render={({ field }) => (
-                                        <FormItem className="flex flex-col mb-2">
-                                            <div className="flex gap-2">
-                                                <FormControl>
-                                                    <Select
-                                                        onValueChange={(val) => field.onChange(Number(val))}
-                                                        value={field.value ? String(field.value) : ""}
+                            <div className="space-y-2 col-span-1 md:col-span-2">
+                                <FormLabel className="mb-2">Assign Users*</FormLabel>
+                                {assignField.map((field, index) => (
+                                    <FormField
+                                        key={field.id}
+                                        control={form.control}
+                                        name={`assigned_to.${index}.id`}
+                                        render={({ field }) => (
+                                            <FormItem className="flex flex-col mb-2">
+                                                <div className="flex gap-2">
+                                                    <FormControl>
+                                                        <Select
+                                                            onValueChange={(val) => field.onChange(Number(val))}
+                                                            value={field.value ? String(field.value) : ""}
+                                                        >
+                                                            <SelectTrigger className="w-full">
+                                                                <SelectValue placeholder="Select user to assign" />
+                                                            </SelectTrigger>
+                                                            <SelectContent>
+                                                                {employeeData?.employees.map(
+                                                                    (employee: GetEmployeeOutput) => (
+                                                                        <SelectItem
+                                                                            key={employee.id}
+                                                                            value={String(employee.id)}
+                                                                        >
+                                                                            {employee.first_name} {employee.last_name}
+                                                                        </SelectItem>
+                                                                    )
+                                                                )}
+                                                            </SelectContent>
+                                                        </Select>
+                                                    </FormControl>
+                                                    <Button
+                                                        type="button"
+                                                        variant="destructive"
+                                                        onClick={() => assignRemove(index)}
                                                     >
-                                                        <SelectTrigger className="w-full">
-                                                            <SelectValue placeholder="Select user to assign" />
-                                                        </SelectTrigger>
-                                                        <SelectContent>
-                                                            {employeeData?.employees.map(
-                                                                (employee: GetEmployeeOutput) => (
-                                                                    <SelectItem
-                                                                        key={employee.id}
-                                                                        value={String(employee.id)}
-                                                                    >
-                                                                        {employee.first_name} {employee.last_name}
-                                                                    </SelectItem>
-                                                                )
-                                                            )}
-                                                        </SelectContent>
-                                                    </Select>
-                                                </FormControl>
-                                                <Button
-                                                    type="button"
-                                                    variant="destructive"
-                                                    onClick={() => assignRemove(index)}
-                                                >
-                                                    <Trash />
-                                                </Button>
-                                            </div>
-                                            <FormMessage />
-                                        </FormItem>
-
-                                    )}
-                                />
-                            ))}
-
-                            <Button
-                                type="button"
-                                onClick={() => assignAppend({ id: 0 })}
-                                variant="outline"
-                            >
-                                <Plus /> Add User
-                            </Button>
+                                                        <Trash />
+                                                    </Button>
+                                                </div>
+                                                <FormMessage />
+                                            </FormItem>
+                                        )}
+                                    />
+                                ))}
+                                <Button
+                                    type="button"
+                                    onClick={() => assignAppend({ id: 0 })}
+                                    variant="outline"
+                                >
+                                    <Plus /> Add User
+                                </Button>
+                            </div>
                         </div>
                         <div className="flex justify-end space-x-4">
                             <Button type="submit">Save Changes</Button>
