@@ -1,16 +1,16 @@
-import type { GetNotificationOutput, reminder_type } from "zs-crm-common";
+import type { reminder_type, Notification } from "zs-crm-common";
 
-export const getNavigationLink = (notification: GetNotificationOutput) => {
+export const getNavigationLink = (notification: Notification) => {
 	const navLink: Record<reminder_type, string> = {
-		client_meeting: `/lead/${notification.notification.lead_id}?tab=scheduling`,
-		mentioned: `/lead/${notification.notification.lead_id}`,
-		lead_assigned: `/lead/${notification.notification.lead_id}`,
-		drawing_uploaded: `/deal/${notification.notification.deal_id}`,
-		drawing_approved: `/deal/${notification.notification.deal_id}`,
-		drawing_rejected: `/deal/${notification.notification.deal_id}`,
-		color_changed: `/lead/${notification.notification.lead_id}`
+		client_meeting: notification.deal_id ? `/deal/${notification.deal_id}` : `/lead/${notification.lead_id}?tab=scheduling`,
+		mentioned: notification.deal_id ? `/deal/${notification.deal_id}` : `/lead/${notification.lead_id}`,
+		lead_assigned: notification.deal_id ? `/deal/${notification.deal_id}` : `/lead/${notification.lead_id}`,
+		drawing_uploaded: `/deal/${notification.deal_id}?tab=drawing`,
+		drawing_approved: `/deal/${notification.deal_id}?tab=drawing`,
+		drawing_rejected: `/deal/${notification.deal_id}?tab=drawing`,
+		color_changed: `/lead/${notification.lead_id}`
 	};
-	return navLink[notification.notification.type as reminder_type];
+	return navLink[notification.type as reminder_type];
 };
 
 export const navItems = {
@@ -20,14 +20,14 @@ export const navItems = {
 		{ title: "Quotation", url: "/quotation" },
 		{ title: "Orders", url: "/order" },
 		{ title: "Settings", url: "/setting" },
-		{ title: "Calendar", url: "/calendar" }
+		{ title: "Calendar", url: "/calender" }
 	],
 	sales: [
 		{ title: "Leads", url: "/lead" },
 		{ title: "Deals", url: "/deal" },
 		{ title: "Quotation", url: "/quotation" },
 		{ title: "Orders", url: "/order" },
-		{ title: "Calendar", url: "/calendar" }
+		{ title: "Calendar", url: "/calender" }
 	],
 	drawing: [
 		{ title: "Deals", url: "/deal" }

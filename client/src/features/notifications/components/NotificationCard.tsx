@@ -1,7 +1,7 @@
 import { useMarkNotification } from "@/api/notifications/notification.mutation";
 import { Button } from "@/shared/components/ui/button";
 import { Card, CardContent } from "@/shared/components/ui/card";
-import {getNavigationLink} from "@/utils/getNavigationLink";
+import { getNavigationLink } from "@/utils/getNavigationLink";
 import { Check } from "lucide-react";
 import { useNavigate } from "react-router";
 import type { GetNotificationOutput } from "zs-crm-common";
@@ -9,7 +9,7 @@ import type { GetNotificationOutput } from "zs-crm-common";
 const NotificationCard = ({ notification }: { notification: GetNotificationOutput }) => {
 	const markNotification = useMarkNotification();
 	const navigate = useNavigate();
-	const path = getNavigationLink(notification);
+	const path = getNavigationLink(notification.notification);
 
 	return (
 		<Card className={`transition-all duration-200 hover:shadow-md ${!notification.is_read ? "bg-blue-50/50 border-blue-200" : "bg-card"}`}>

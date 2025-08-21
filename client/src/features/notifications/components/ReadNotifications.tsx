@@ -5,7 +5,7 @@ import type { GetNotificationOutput } from "zs-crm-common";
 
 const ReadNotifications = ({ notification }: { notification: GetNotificationOutput }) => {
 	const navigate = useNavigate();
-	const path = getNavigationLink(notification);
+	const path = getNavigationLink(notification.notification);
 
 	return (
 		<Card className={`transition-all duration-200 hover:shadow-md ${!notification.is_read ? "bg-blue-50/50 border-blue-200" : "bg-card"}`}>

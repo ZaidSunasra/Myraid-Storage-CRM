@@ -5,7 +5,7 @@ import { Button } from "@/shared/components/ui/button";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/shared/components/ui/tabs";
 import { capitalize, toTitleCase } from "@/utils/formatData";
 import { ArrowLeft, Edit } from "lucide-react";
-import { NavLink, useNavigate, useParams } from "react-router";
+import { NavLink, useNavigate, useParams, useSearchParams } from "react-router";
 import DealDetails from "../components/DealDetails";
 import { type deal_status, type GetDealOutput } from "zs-crm-common";
 import { Badge } from "@/shared/components/ui/badge";
@@ -20,7 +20,9 @@ import DrawingList from "../components/DrawingList";
 
 const DetailedDealPage = () => {
 
-    const { id } = useParams()
+    const { id } = useParams();
+    const [searchParams] = useSearchParams();
+    const tab = searchParams.get("tab") || "info";
     const { data: dealData, isPending: dealPending } = FetchDealById(id as string);
     const { user } = useUser();
     const navigate = useNavigate();
@@ -62,7 +64,7 @@ const DetailedDealPage = () => {
             </div>
             <div className="grid grid-cols-1 lg:grid-cols-4 gap-6">
                 <div className="lg:col-span-3">
-                    <Tabs defaultValue="info" className="space-y-6">
+                    <Tabs defaultValue={tab} className="space-y-6">
                         <TabsList className="grid w-full grid-cols-3 bg-background">
                             <TabsTrigger value="info"> Deal Information</TabsTrigger>
                             {user?.department && canView(user?.department, "sales_admin") &&
