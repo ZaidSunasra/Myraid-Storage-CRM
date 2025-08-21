@@ -59,7 +59,7 @@ export const getDrawingsService = async (deal_id: string, author: any): Promise<
             deal_id: deal_id,
             ...(author.department === DEPARTMENTS[0] && { status: "approved" }),
             ...(author.department === DEPARTMENTS[1] && { OR: [{ status: "approved" }, { status: "pending" }, { status: "rejected" }] }),
-            ...(author.department === DEPARTMENTS[3] && { OR: [{ status: "rejected" }, { status: "pending" }] })
+            ...(author.department === DEPARTMENTS[3] && { OR: [{ status: "rejected" }, { status: "pending" }, {status: "approved"}] })
         },
         include: {
             user: {
