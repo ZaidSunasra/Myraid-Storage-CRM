@@ -1,3 +1,5 @@
+import { reminder_type } from "./reminder.schema";
+
 export type SuccessResponse = {
     message: string;
 };
@@ -41,3 +43,16 @@ export type Client_Details = {
     emails: { email: string | null; }[];
     phones: { phone: string; }[];
 };
+
+export type Notification = {
+	id: number;
+	lead_id: number | null;
+	deal_id: string | null;
+	created_at: Date;
+	message: string | null;
+	title: string;
+	send_at: Date | null;
+	is_sent: boolean;
+	type: reminder_type;
+	description_id: number | null;
+}

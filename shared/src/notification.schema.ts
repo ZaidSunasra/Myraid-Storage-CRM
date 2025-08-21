@@ -1,5 +1,4 @@
-import { SuccessResponse } from "./common.schema";
-import { reminder_type } from "./reminder.schema";
+import { Notification, SuccessResponse } from "./common.schema";
 
 export type Receipient = {
     id: number;
@@ -12,18 +11,7 @@ export type Receipient = {
 }
 
 export type GetNotificationOutput = Receipient & {
-    notification: {
-        id: number;
-        lead_id: number | null;
-        deal_id: string | null;
-        created_at: Date;
-        message: string | null;
-        title: string;
-        send_at: Date | null;
-        is_sent: boolean;
-        type: reminder_type;
-        description_id: number | null;
-    }
+	notification: Notification
 }
 
 export type GetNotificationSuccessResponse = SuccessResponse & {
