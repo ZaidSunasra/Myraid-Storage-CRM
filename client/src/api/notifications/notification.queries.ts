@@ -8,5 +8,6 @@ export const FetchUnreadNotifications = () => {
 };
 
 export const FetchReadNotifications = () => {
-	return useQuery({ queryKey: ["notifications-read"], queryFn: getReadNotifications });
+	const {user} = useUser();
+	return useQuery({ queryKey: ["notifications-read"], queryFn: getReadNotifications, enabled: !!user?.id });
 };
