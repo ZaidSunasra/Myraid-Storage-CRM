@@ -12,6 +12,7 @@ import { useFieldArray, type UseFormReturn } from "react-hook-form";
 import { DEPARTMENTS, type AddLead, type GetEmployeeOutput, type GetProductOutput, type GetSourceOutput } from "zs-crm-common";
 import EditLeadPageLoader from "./loaders/EditLeadPageLoader";
 import { capitalize, toTitleCase } from "@/utils/formatData";
+import MangeSourceOrProduct from "@/shared/components/ManageSourceOrProduct";
 
 const AddEditLeadDetails = ({ form, handleClick, isLoading }: { form: UseFormReturn<AddLead>; handleClick: () => void; isLoading?: boolean }) => {
 	const { data: employeeData, isError: employeeError, isPending: employeePending } = FetchSalesEmployee();
@@ -134,7 +135,7 @@ const AddEditLeadDetails = ({ form, handleClick, isLoading }: { form: UseFormRet
 							render={({ field }) => (
 								<FormItem>
 									<FormLabel>Source*</FormLabel>
-									<Select onValueChange={(val) => field.onChange(Number(val))}  value={field.value ? String(field.value) : ""}>
+									<Select onValueChange={(val) => field.onChange(Number(val))} value={field.value ? String(field.value) : ""}>
 										<FormControl>
 											<SelectTrigger className="w-full">
 												<SelectValue placeholder="Select lead source" />
@@ -146,6 +147,7 @@ const AddEditLeadDetails = ({ form, handleClick, isLoading }: { form: UseFormRet
 													{toTitleCase(source.name)}
 												</SelectItem>
 											))}
+											<MangeSourceOrProduct  type="sources"/>
 										</SelectContent>
 									</Select>
 									<FormMessage />
@@ -172,6 +174,7 @@ const AddEditLeadDetails = ({ form, handleClick, isLoading }: { form: UseFormRet
 													{capitalize(product.name)}
 												</SelectItem>
 											))}
+											<MangeSourceOrProduct type="products" />
 										</SelectContent>
 									</Select>
 									<FormMessage />

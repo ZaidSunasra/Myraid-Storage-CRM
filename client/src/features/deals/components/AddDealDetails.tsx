@@ -10,6 +10,7 @@ import { FetchSources } from "@/api/sources/source.queries"
 import { FetchProducts } from "@/api/products/product.queries"
 import { capitalize } from "@/utils/formatData"
 import { FetchSalesEmployee } from "@/api/employees/employee.queries"
+import ManageSourceOrProduct from "@/shared/components/ManageSourceOrProduct"
 
 const AddDealDetails = ({ form, handlePrev, isLoading}: { form: UseFormReturn<AddDeal>, handlePrev : () => void, isLoading:boolean}) => {
 
@@ -51,6 +52,7 @@ const AddDealDetails = ({ form, handlePrev, isLoading}: { form: UseFormReturn<Ad
                                             </div>
                                         </SelectItem>
                                     ))}
+                                     <ManageSourceOrProduct type="products"/>
                                 </SelectContent>
                             </Select>
                         </div>
@@ -79,6 +81,7 @@ const AddDealDetails = ({ form, handlePrev, isLoading}: { form: UseFormReturn<Ad
                                             </div>
                                         </SelectItem>
                                     ))}
+                                    <ManageSourceOrProduct type="sources"/>
                                 </SelectContent>
                             </Select>
                         </div>

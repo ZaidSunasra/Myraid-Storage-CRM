@@ -17,6 +17,7 @@ import { useState } from "react"
 import { useForm } from "react-hook-form"
 import { zodResolver } from "@hookform/resolvers/zod"
 import { useEditDeal } from "@/api/deals/deal.mutation"
+import ManageSourceOrProduct from "@/shared/components/ManageSourceOrProduct"
 
 const EditDealDetails = ({ data }: { data: GetDealOutput }) => {
 
@@ -169,6 +170,7 @@ const EditDealDetails = ({ data }: { data: GetDealOutput }) => {
                                                         {capitalize(source.name)}
                                                     </SelectItem>
                                                 ))}
+                                                 <ManageSourceOrProduct type="sources"/>
                                             </SelectContent>
                                         </Select>
                                         <FormMessage />
@@ -197,6 +199,7 @@ const EditDealDetails = ({ data }: { data: GetDealOutput }) => {
                                                         {capitalize(product.name)}
                                                     </SelectItem>
                                                 ))}
+                                                 <ManageSourceOrProduct type="products"/>
                                             </SelectContent>
                                         </Select>
                                         <FormMessage />
