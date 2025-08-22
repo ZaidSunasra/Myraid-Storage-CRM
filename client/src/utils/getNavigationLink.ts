@@ -27,6 +27,7 @@ export const navItems = {
 		{ title: "Deals", url: "/deal" },
 		{ title: "Quotation", url: "/quotation" },
 		{ title: "Orders", url: "/order" },
+		{ title: "Settings", url: "/setting" },
 		{ title: "Calendar", url: "/calender" }
 	],
 	drawing: [
