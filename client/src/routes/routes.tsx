@@ -9,6 +9,7 @@ import DetailedLeadPage from "@/features/leads/pages/DetailedLeadPage";
 import EditLeadPage from "@/features/leads/pages/EditLeadPage";
 import LeadsPage from "@/features/leads/pages/LeadsPage";
 import NotificationPage from "@/features/notifications/pages/NotificationPage";
+import SettingsPage from "@/features/settings/pages/SettingsPage";
 import ProtectedRoute from "@/utils/routePermission";
 import { BrowserRouter, Route, Routes } from "react-router";
 import { DEPARTMENTS } from "zs-crm-common";
@@ -23,6 +24,7 @@ const Router = () => {
 				<Route path="/lead/add" element={<AddLeadPage />} />
 				<Route path="/deal/add" element={<AddDealPage />} />
 				<Route path="/calender" element={<CalenderPage />} />
+				<Route path="/setting" element={<SettingsPage />} />
 			</Route>
 			<Route element={<ProtectedRoute allowedDepartment={[DEPARTMENTS[0], DEPARTMENTS[1]]} checkOwnership type="lead" />}>
 				<Route path="/lead/:id" element={<DetailedLeadPage />} />
