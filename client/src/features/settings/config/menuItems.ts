@@ -6,7 +6,6 @@ import SourceSettings from "../pages/SourceSettings"
 import RoleSettings from "../pages/RoleSettings"
 import UserSettings from "../pages/UserSettings"
 import CompanySettings from "../pages/CompanySettings"
-import ClientSettings from "../pages/ClientSettings"
 
 export interface MenuItem {
     id: string
@@ -33,14 +32,6 @@ export const menuItems: MenuItem[] = [
         description: "Configure company details",
         icon: Building2,
         component: CompanySettings,
-        roles: ["admin", "sales"]
-    },
-    {
-        id: "client",
-        name: "Client",
-        description: "Configure client details",
-        icon: Users,
-        component: ClientSettings,
         roles: ["admin", "sales"]
     },
     {

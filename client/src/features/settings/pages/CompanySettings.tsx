@@ -1,8 +1,67 @@
-
+import { useState, useCallback } from "react"
+import { Separator } from "@/shared/components/ui/separator"
+import { FetchCompanies, FetchCompanyEmployee } from "@/api/company/company.queries"
+import { type Client_Details, type Company } from "zs-crm-common"
+import { Card, CardContent, CardHeader, CardTitle } from "@/shared/components/ui/card"
+import { Building2 } from "lucide-react"
+import CompanySelector from "../components/CompanySelector"
+import EmployeeSelector from "../components/EmployeeSelector"
+import EditCompanyDetails from "../components/EditCompanyDetails"
+import EditClientDetails from "../components/EditClientDetails"
 
 const CompanySettings = () => {
+  const [selectedCompany, setSelectedCompany] = useState<Company | null>(null)
+  const [selectedEmployee, setSelectedEmployee] = useState<Client_Details | null>(null)
+
+  const { data: companyData, isPending: companyPending } = FetchCompanies("")
+  const { data: employeeData, isPending: employeePending } = FetchCompanyEmployee(selectedCompany?.id || 0)
+
+  const handleCompanySelect = useCallback((company: Company) => {
+    setSelectedCompany(company)
+    setSelectedEmployee(null);
+  }, [])
+
+  const handleEmployeeSelect = useCallback((emp: Client_Details) => {
+    setSelectedEmployee(emp)
+  }, [])
+
   return (
-    <div>CompanySettings</div>
+    <div className="space-y-6">
+      <div>
+        <h2 className="text-2xl font-bold tracking-tight">Company & Client Settings</h2>
+        <p className="text-muted-foreground">Manage company information and details.</p>
+      </div>
+      <Separator />
+      <Card className="border-0 shadow-lg bg-background">
+        <CardHeader>
+          <CardTitle className="flex items-center gap-2 text-xl">
+            <Building2 className="h-5 w-5 text-blue-600" />
+            Client & Company Information
+          </CardTitle>
+        </CardHeader>
+        <CardContent className="space-y-6">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <CompanySelector
+              companies={companyData?.companies || []}
+              selectedCompany={selectedCompany}
+              onSelect={handleCompanySelect}
+              isLoading={companyPending}
+            />
+            {selectedCompany && (
+              <EmployeeSelector
+                employees={employeeData?.employees || []}
+                selectedEmployee={selectedEmployee}
+                onSelect={handleEmployeeSelect}
+                isLoading={employeePending}
+              />
+            )}
+          </div>
+
+        </CardContent>
+      </Card>
+      {selectedCompany && <EditCompanyDetails key={`company-${selectedCompany.id}`} company={selectedCompany} />}
+      {selectedEmployee && <EditClientDetails key={`employee-${selectedEmployee.id}`} employee={selectedEmployee} />}
+    </div>
   )
 }
 
