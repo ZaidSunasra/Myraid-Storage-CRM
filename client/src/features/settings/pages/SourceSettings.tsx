@@ -118,7 +118,7 @@ const SourceSettings = () => {
                 <DialogClose asChild>
                   <Button variant="outline">Cancel</Button>
                 </DialogClose>
-                <Button type="submit">
+                <Button type="submit" disabled={addSource.isPending}>
                   {dialogData.action === "add" ? "Add Source" : "Edit Source"}
                 </Button>
               </div>

@@ -118,7 +118,7 @@ const ProductSettings = () => {
               <DialogClose asChild>
                 <Button variant="outline">Cancel</Button>
               </DialogClose>
-              <Button type="submit">
+              <Button type="submit" disabled={addProduct.isPending}>
                 {dialogData.action === "add" ? "Add Product" : "Edit Product"}
               </Button>
               </div>
