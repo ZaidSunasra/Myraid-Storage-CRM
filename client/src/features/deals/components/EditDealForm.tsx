@@ -286,7 +286,7 @@ const EditDealDetails = ({ data }: { data: GetDealOutput }) => {
                             </div>
                         </div>
                         <div className="flex justify-end space-x-4">
-                            <Button type="submit">Save Changes</Button>
+                            <Button type="submit" disabled={editDeal.isPending}>Save Changes</Button>
                         </div>
                     </CardContent>
                 </Card>
