@@ -1,4 +1,4 @@
-import { DEPARTMENTS, GetEmployeeOutput } from "zs-crm-common";
+import { DEPARTMENTS, GetAllEmployeeOutput, GetEmployeeOutput } from "zs-crm-common";
 import { prisma } from "../../libs/prisma";
 
 export const getSalesEmployeeService = async (): Promise<GetEmployeeOutput[]> => {
@@ -18,13 +18,17 @@ export const getSalesEmployeeService = async (): Promise<GetEmployeeOutput[]> =>
     return employees;
 }
 
-export const getAllEmployeeService = async (): Promise<GetEmployeeOutput[]> => {
+export const getAllEmployeeService = async (): Promise<GetAllEmployeeOutput[]> => {
     const employees = await prisma.user.findMany({
         where: {},
         select: {
             first_name: true,
             last_name: true,
-            id: true
+            email: true,
+            department: true,
+            phone: true,
+            id: true,
+            quotation_code: true
         }
     });
     return employees;

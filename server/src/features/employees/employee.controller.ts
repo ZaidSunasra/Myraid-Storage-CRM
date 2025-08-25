@@ -1,4 +1,4 @@
-import { ErrorResponse, GetEmployeeSuccessResponse } from "zs-crm-common";
+import { ErrorResponse, GetAllEmployeeSuccessResponse, GetEmployeeSuccessResponse } from "zs-crm-common";
 import { Request, Response } from "express";
 import { getAllEmployeeService, getAssignedEmployeeService, getSalesEmployeeService } from "./employee.service";
 
@@ -18,7 +18,7 @@ export const getSalesEmployeeController = async (req: Request, res: Response<Err
     }
 }
 
-export const getAllEmployeeController = async (req: Request, res: Response<ErrorResponse | GetEmployeeSuccessResponse>): Promise<any> => {
+export const getAllEmployeeController = async (req: Request, res: Response<ErrorResponse | GetAllEmployeeSuccessResponse>): Promise<any> => {
     try {
         const employees = await getAllEmployeeService();
         return res.status(200).json({

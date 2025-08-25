@@ -71,7 +71,6 @@ export const addClientService = async ({ first_name, last_name, emails, phones }
 export const editClientService = async ({ first_name, last_name, emails, phones, id }: EditClient, company_id: string): Promise<void> => {
     const emailString = convertEmailIntoArray(emails);
     const phoneString = convertPhoneIntoArray(phones);
-    console.log(company_id)
     await prisma.$transaction(async (tx) => {
         const client = await tx.client.update({
             where: {
