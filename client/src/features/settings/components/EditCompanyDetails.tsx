@@ -3,21 +3,16 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/shared/components/ui
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/shared/components/ui/form"
 import { Building2 } from "lucide-react"
 import { useForm } from "react-hook-form"
-import { type Company } from "zs-crm-common"
+import { editCompanyDetailSchema, type Company, type EditCompany } from "zs-crm-common"
 import { Input } from "@/shared/components/ui/input"
 import { zodResolver } from "@hookform/resolvers/zod"
-import { z } from "zod/v4";
 import { Textarea } from "@/shared/components/ui/textarea";
+import { useEditCompany } from "@/api/company/company.mutations"
+import type { Dispatch, SetStateAction } from "react"
 
-export const editCompanyDetailSchema = z.object({
-    company_name: z.string().min(1, "Name is required"),
-    gst_no: z.string().optional(),
-    address: z.string().min(1, "Address is required")
-});
-export type EditCompany = z.infer<typeof editCompanyDetailSchema>;
-
-const EditCompanyDetails = ({ company }: { company: Company | null }) => {
+const EditCompanyDetails = ({ company, setSelectedCompany}: { company: Company | null, setSelectedCompany: Dispatch<SetStateAction<Company | null >>}) => {
     
+    const editCompany = useEditCompany();
     const form = useForm<EditCompany>({
         resolver: zodResolver(editCompanyDetailSchema),
         defaultValues: ({
@@ -26,6 +21,11 @@ const EditCompanyDetails = ({ company }: { company: Company | null }) => {
             address: company?.address
         }),
     });
+
+    const onSubmit = (data: EditCompany) => {
+        editCompany.mutate({data, id: company?.id as number});
+        setSelectedCompany(null);
+    }
 
     return <Card className="border-0 shadow-lg bg-background">
         <CardHeader>
@@ -36,7 +36,7 @@ const EditCompanyDetails = ({ company }: { company: Company | null }) => {
         </CardHeader>
         <CardContent>
             <Form {...form}>
-                <form>
+                <form onSubmit={form.handleSubmit(onSubmit)}>
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
                         <div className="space-y-2">
                             <FormField
@@ -91,7 +91,7 @@ const EditCompanyDetails = ({ company }: { company: Company | null }) => {
                         </div>
                     </div>
                     <div className="flex justify-end">
-                        <Button>
+                        <Button disabled={editCompany.isPending}>
                             Save Changes
                         </Button>
                     </div>

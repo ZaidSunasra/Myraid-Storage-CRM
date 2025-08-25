@@ -3,11 +3,12 @@ import { Separator } from "@/shared/components/ui/separator"
 import { FetchCompanies, FetchCompanyEmployee } from "@/api/company/company.queries"
 import { type Client_Details, type Company } from "zs-crm-common"
 import { Card, CardContent, CardHeader, CardTitle } from "@/shared/components/ui/card"
-import { Building2 } from "lucide-react"
+import { Building2, Plus } from "lucide-react"
 import CompanySelector from "../components/CompanySelector"
 import EmployeeSelector from "../components/EmployeeSelector"
 import EditCompanyDetails from "../components/EditCompanyDetails"
 import EditClientDetails from "../components/EditClientDetails"
+import { Button } from "@/shared/components/ui/button"
 
 const CompanySettings = () => {
   const [selectedCompany, setSelectedCompany] = useState<Company | null>(null)
@@ -33,11 +34,17 @@ const CompanySettings = () => {
       </div>
       <Separator />
       <Card className="border-0 shadow-lg bg-background">
-        <CardHeader>
+        <CardHeader className="flex justify-between">
           <CardTitle className="flex items-center gap-2 text-xl">
             <Building2 className="h-5 w-5 text-blue-600" />
             Client & Company Information
           </CardTitle>
+          {selectedCompany &&
+            <Button onClick={() => setSelectedEmployee({company_id: selectedCompany.id, id: 0, first_name: "", last_name: "", emails: [], phones: [{phone: ""}]})}>
+              <Plus className="h-5 w-5" />
+              Add Client
+            </Button>
+          }
         </CardHeader>
         <CardContent className="space-y-6">
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
@@ -59,8 +66,8 @@ const CompanySettings = () => {
 
         </CardContent>
       </Card>
-      {selectedCompany && <EditCompanyDetails key={`company-${selectedCompany.id}`} company={selectedCompany} />}
-      {selectedEmployee && <EditClientDetails key={`employee-${selectedEmployee.id}`} employee={selectedEmployee} />}
+      {selectedCompany && <EditCompanyDetails key={`company-${selectedCompany.id}`} company={selectedCompany} setSelectedCompany={setSelectedCompany}/>}
+      {selectedEmployee && <EditClientDetails key={`employee-${selectedEmployee.id}`} employee={selectedEmployee} setSelectedEmployee={setSelectedEmployee}/>}
     </div>
   )
 }

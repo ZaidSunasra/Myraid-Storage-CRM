@@ -4,19 +4,15 @@ import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "
 import { Input } from "@/shared/components/ui/input";
 import { Plus, Trash, User } from "lucide-react";
 import { useFieldArray, useForm } from "react-hook-form";
-import { type Client_Details } from "zs-crm-common";
+import { editClientSchema, type Client_Details, type EditClient } from "zs-crm-common";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { z } from "zod/v4";
+import { useAddClient, useEditClient } from "@/api/company/company.mutations";
+import type { Dispatch, SetStateAction } from "react";
 
-export const editClientSchema = z.object({
-    first_name: z.string().min(1, "First name required"),
-    last_name: z.string().min(1, "Last name required"),
-    phones: z.array(z.object({ number: z.string().min(5, "Phone number too short").max(15, "Phone number too long") })).min(1, "Atleast 1 phone number required"),
-    emails: z.array(z.object({ email: z.email("Enter valid email address").optional() })).optional(),
-});
-export type EditClient = z.infer<typeof editClientSchema>
+const EditClientDetails = ({ employee, setSelectedEmployee}: { employee: Client_Details | null, setSelectedEmployee: Dispatch<SetStateAction<Client_Details | null>>}) => {
 
-const EditClientDetails = ({ employee }: { employee: Client_Details | null }) => {
+    const addClient = useAddClient();
+    const editClient = useEditClient();
 
     const form = useForm<EditClient>({
         resolver: zodResolver(editClientSchema),
@@ -26,8 +22,10 @@ const EditClientDetails = ({ employee }: { employee: Client_Details | null }) =>
             emails: employee?.emails?.filter((e): e is { email: string } => e.email !== null)
                 .map((e) => ({ email: e.email })) || [],
             phones: employee?.phones?.map((p: { phone: string }) => ({ number: p.phone })) || [],
+            id: String(employee?.id)
         }),
     });
+
     const { fields: emailFields, append: emailAppend, remove: emailRemove } = useFieldArray({
         control: form.control,
         name: "emails",
@@ -38,32 +36,27 @@ const EditClientDetails = ({ employee }: { employee: Client_Details | null }) =>
         name: "phones",
     });
 
-    const handleAddClient = () => {
-        form.reset({
-            first_name: "",
-            last_name: "",
-            emails: [],
-            phones: [{ number: "" }], 
-        });
-    };
+    const onSubmit = (data: EditClient) => {
+        if (employee?.id) {
+            editClient.mutate({ data, id: employee?.company_id as number })
+        }
+        else {
+            addClient.mutate({ data, id: employee?.company_id as number })
+        }
+        setSelectedEmployee(null)
+    }
 
     return <Card>
-        <CardHeader className="flex justify-between">
-            <div>
-                <CardTitle className="flex items-center space-x-2">
-                    <User className="h-5 w-5" />
-                    <span>Lead Details</span>
-                </CardTitle>
-                <CardDescription>Enter the contact person and product information</CardDescription>
-            </div>
-            <Button onClick={handleAddClient}>
-                <Plus className="h-5 w-5" />
-                Add Client
-            </Button>
+        <CardHeader>
+            <CardTitle className="flex items-center space-x-2">
+                <User className="h-5 w-5" />
+                <span>Lead Details</span>
+            </CardTitle>
+            <CardDescription>Enter the contact person and product information</CardDescription>
         </CardHeader>
         <CardContent className="space-y-6">
             <Form {...form}>
-                <form >
+                <form onSubmit={form.handleSubmit(onSubmit)}>
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-4">
                         <div className="space-y-2">
                             <FormField
@@ -155,7 +148,7 @@ const EditClientDetails = ({ employee }: { employee: Client_Details | null }) =>
                     </div>
                     <div className="flex justify-end">
                         <Button type="submit" >
-                            Save Changes
+                            {employee?.id ? "Save changes" : "Add client"}
                         </Button>
                     </div>
                 </form>
