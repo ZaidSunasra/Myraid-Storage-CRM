@@ -18,6 +18,10 @@ export const signupSchema = z.object({
     quotation_code: z.string().optional()
 });
 
+export const editUserSchema = signupSchema.omit({
+    password: true,
+})
+
 export type LoginSuccessResponse = {
     message: string;
     userData: {
@@ -35,4 +39,5 @@ export type SignupResponse = {
 };
 
 export type AddUser = z.infer<typeof signupSchema>;
+export type EditUser = z.infer<typeof editUserSchema>;
 export type LoginUser = z.infer<typeof loginSchema>;
