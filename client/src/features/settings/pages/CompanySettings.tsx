@@ -29,13 +29,13 @@ const CompanySettings = () => {
   return (
     <div className="space-y-6">
       <div>
-        <h2 className="text-2xl font-bold tracking-tight">Company & Client Settings</h2>
+        <h2 className="text-xl sm:text-2xl font-bold tracking-tight">Company & Client Settings</h2>
         <p className="text-muted-foreground">Manage company information and details.</p>
       </div>
       <Separator />
       <Card className="border-0 shadow-lg bg-background">
-        <CardHeader className="flex justify-between">
-          <CardTitle className="flex items-center gap-2 text-xl">
+        <CardHeader className="flex flex-col sm:flex-row justify-between gap-4">
+          <CardTitle className="flex items-center gap-2">
             <Building2 className="h-5 w-5 text-blue-600" />
             Client & Company Information
           </CardTitle>

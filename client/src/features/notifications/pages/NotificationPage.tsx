@@ -52,18 +52,18 @@ const NotificationPage = () => {
 					</div>
 				</div>
 			</div>
-			<div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
+			<div className="max-w-4xl mx-auto px-2 sm:px-6 lg:px-8 py-6">
 				<Tabs className="space-y-6" defaultValue="unread">
 					<TabsList className="grid w-full grid-cols-2 bg-background">
-						<TabsTrigger value="unread" className="flex items-center space-x-2">
+						<TabsTrigger value="unread" className="flex items-center sm:space-x-2">
 							<Bell className="h-4 w-4 hidden sm:block" />
 							<span>Unread</span>
 							{unreadCount > 0 && <Badge className="bg-red-500 text-white ml-2">{unreadCount}</Badge>}
 						</TabsTrigger>
-						<TabsTrigger value="past" className="flex items-center space-x-2">
+						<TabsTrigger value="past" className="flex items-center sm:space-x-2">
 							<Clock className="h-4 w-4 hidden sm:block" />
 							<span>Past Notifications</span>
-							<Badge variant="secondary" className="ml-2">
+							<Badge variant="secondary" className="sm:ml-2">
 								{readNotificationData?.notifications.length}
 							</Badge>
 						</TabsTrigger>

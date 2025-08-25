@@ -30,7 +30,7 @@ const SettingsPage = () => {
     return (
         <div className="bg-accent min-h-screen flex">
             <SideBar activeSection={activeSection as string} onSectionChange={handleSectionChange} />
-            <div className="flex-1 p-4">
+            <div className="flex-1 p-4 overflow-x-auto">
                 {ActiveComponent && <ActiveComponent />}
             </div>
         </div>

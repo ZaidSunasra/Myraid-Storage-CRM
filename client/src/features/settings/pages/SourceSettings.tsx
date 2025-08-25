@@ -48,12 +48,12 @@ const SourceSettings = () => {
       <Separator />
       <div className="grid gap-6">
         <Card>
-          <CardHeader className="flex flex-row items-center justify-between">
+          <CardHeader className="flex flex-col sm:flex-row justify-between gap-4">
             <div>
               <CardTitle>Sources</CardTitle>
               <CardDescription>Manage your source catalog</CardDescription>
             </div>
-            <Button onClick={() => setDialogData({ open: true, data: null, action: "add" })}>
+            <Button className="w-full sm:w-fit" onClick={() => setDialogData({ open: true, data: null, action: "add" })}>
               <Plus className="h-5 w-5" />
               Add Source
             </Button>

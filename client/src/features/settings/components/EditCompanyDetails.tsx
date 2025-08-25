@@ -29,7 +29,7 @@ const EditCompanyDetails = ({ company, setSelectedCompany}: { company: Company |
 
     return <Card className="border-0 shadow-lg bg-background">
         <CardHeader>
-            <CardTitle className="flex items-center gap-2 text-xl">
+            <CardTitle className="flex items-center gap-2">
                 <Building2 className="h-5 w-5 text-blue-600" />
                 Company Information
             </CardTitle>
