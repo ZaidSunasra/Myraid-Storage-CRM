@@ -1,6 +1,6 @@
-import { useMutation } from "@tanstack/react-query";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { type ErrorResponse, type LoginSuccessResponse, type SuccessResponse } from "zs-crm-common";
-import { login, logout } from "./auth.api";
+import { editUser, login, logout, signup } from "./auth.api";
 import { useUser } from "@/context/UserContext";
 import { toast } from "sonner";
 import { useNavigate } from "react-router";
@@ -16,6 +16,35 @@ export const useLogin = () => {
 			setUser({ name: data.userData.name, email: data.userData.email, department: data.userData.department, code: data.userData.code as string, id: data.userData.id });
 			toast.success(data.message);
 			navigate(navItems[data.userData.department][0].url);
+		},
+		onError: (error: AxiosError<ErrorResponse>) => {
+			toast.error(error.response?.data.message);
+		}
+	});
+};
+
+export const useSignup = () => {
+	const queryClient = useQueryClient();
+	return useMutation({
+		mutationFn: signup,
+		onSuccess: (data: SuccessResponse) => {
+			toast.success(data.message);
+			queryClient.invalidateQueries({ queryKey: ["all-employee"] })
+		},
+		onError: (error: AxiosError<ErrorResponse>) => {
+			toast.error(error.response?.data.message);
+		}
+	});
+};
+
+
+export const useEditUser = () => {
+	const queryClient = useQueryClient();
+	return useMutation({
+		mutationFn: editUser,
+		onSuccess: (data: SuccessResponse) => {
+			toast.success(data.message);
+			queryClient.invalidateQueries({ queryKey: ["all-employee"] })
 		},
 		onError: (error: AxiosError<ErrorResponse>) => {
 			toast.error(error.response?.data.message);

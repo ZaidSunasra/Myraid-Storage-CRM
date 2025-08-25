@@ -1,4 +1,4 @@
-import type { GetEmployeeSuccessResponse } from "zs-crm-common";
+import type { GetAllEmployeeSuccessResponse, GetEmployeeSuccessResponse } from "zs-crm-common";
 import axiosInstance from "../axiosInstance";
 
 export const getSalesEmployee = async (): Promise<GetEmployeeSuccessResponse> => {
@@ -6,7 +6,7 @@ export const getSalesEmployee = async (): Promise<GetEmployeeSuccessResponse> =>
 	return response.data;
 };
 
-export const getAllEmployee = async (): Promise<GetEmployeeSuccessResponse> => {
+export const getAllEmployee = async (): Promise<GetAllEmployeeSuccessResponse> => {
 	const response = await axiosInstance.get("/employees/get-all");
 	return response.data;
 };

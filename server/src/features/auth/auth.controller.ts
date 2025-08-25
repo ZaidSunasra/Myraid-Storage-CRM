@@ -1,7 +1,7 @@
 import { Request, Response } from "express";
 import jwt from "jsonwebtoken";
-import { loginSchema, signupSchema, LoginSuccessResponse, SignupResponse, ErrorResponse, SuccessResponse } from "zs-crm-common";
-import { addUser, comparePassword, findExistingUser } from "./auth.service";
+import { loginSchema, signupSchema, LoginSuccessResponse, SignupResponse, ErrorResponse, SuccessResponse, editUserSchema } from "zs-crm-common";
+import { addUser, comparePassword, editUserService, findExistingEmail, findExistingPhone } from "./auth.service";
 import { cookieOptions } from "../../utils/constant";
 
 export const loginController = async (req: Request, res: Response<LoginSuccessResponse | ErrorResponse>): Promise<any> => {
@@ -16,7 +16,7 @@ export const loginController = async (req: Request, res: Response<LoginSuccessRe
         })
     }
     try {
-        const user = await findExistingUser(email);
+        const user = await findExistingEmail(email);
         if (!user) {
             return res.status(400).json({
                 message: "Email not found. Enter correct email",
@@ -69,10 +69,11 @@ export const signupController = async (req: Request, res: Response<SignupRespons
         })
     }
     try {
-        const isEmailAvailable = await findExistingUser(email);
-        if (isEmailAvailable) {
+        const isEmailAvailable = await findExistingEmail(email);
+        const isPhoneAvailable = await findExistingPhone(phone);
+        if (isPhoneAvailable || isEmailAvailable) {
             return res.status(400).json({
-                message: "Email already registered",
+                message: isEmailAvailable ? "Email already registered" : "Phone already registered",
             })
         }
         await addUser({ first_name, last_name, email, phone, password, quotation_code, department })
@@ -88,7 +89,7 @@ export const signupController = async (req: Request, res: Response<SignupRespons
     }
 }
 
-export const logoutController =  (req: Request, res: Response<SuccessResponse>) : any => {
+export const logoutController = (req: Request, res: Response<SuccessResponse>): any => {
     try {
         res.clearCookie("Token");
         return res.status(200).send({
@@ -97,6 +98,39 @@ export const logoutController =  (req: Request, res: Response<SuccessResponse>) 
     } catch (error) {
         return res.status(500).send({
             message: "Internal server error",
+        });
+    }
+}
+
+export const editUserController = async (req: Request, res: Response<SignupResponse>): Promise<any> => {
+
+    const user_id = req.params.user_id;
+    const { email, phone, first_name, last_name, quotation_code, department } = req.body;
+
+    const validation = editUserSchema.safeParse(req.body);
+    if (!validation.success) {
+        return res.status(400).json({
+            message: "Input validation error",
+            error: validation.error.issues
+        })
+    }
+    try {
+        const isEmailAvailable = await findExistingEmail(email, parseInt(user_id));
+        const isPhoneAvailable = await findExistingPhone(email, parseInt(user_id));
+        if (isPhoneAvailable || isEmailAvailable) {
+            return res.status(400).json({
+                message: isEmailAvailable ? "Email already registered" : "Phone already registered",
+            })
+        }
+        await editUserService({ first_name, last_name, email, phone, quotation_code, department }, user_id);
+        return res.status(200).json({
+            message: "User details edited successfully",
+        })
+    } catch (error) {
+        console.log("Error in editing user details", error);
+        return res.status(500).json({
+            message: "Internal server error",
+            error: error
         });
     }
 }
