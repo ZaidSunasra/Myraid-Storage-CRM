@@ -1,17 +1,6 @@
 import { prisma } from "../../libs/prisma";
 import { AddLead, EditLead, DEPARTMENTS, GetLeadOutput, GetLeadSuccessResponse, GetLeadByDuration } from "zs-crm-common"
-
-export const convertEmailIntoArray = (emails?: { email?: string }[]): string[] => {
-    const emailStrings = emails?.map((e: any) => e.email?.trim()).filter((e: any): e is string => !!e) ?? [];
-    return emailStrings;
-}
-
-export const convertPhoneIntoArray = (phones: { number: string }[]): string[] => {
-    const phoneStrings = phones
-        ?.map((e: any) => e.number?.trim())
-        .filter((e: any): e is string => !!e) ?? [];
-    return phoneStrings;
-}
+import { convertEmailIntoArray, convertPhoneIntoArray } from "../../utils/dataFormatter";
 
 export const covertAssignIdsIntoArray = (assigned_to: { id: number }[]): number[] => {
     const idStrings = assigned_to?.map((e: any) => e.id).filter((e: any): e is number => !!e) ?? [];
