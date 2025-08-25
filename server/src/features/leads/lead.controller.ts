@@ -1,6 +1,7 @@
 import { Request, Response } from "express";
 import { ErrorResponse, SuccessResponse, leadSchema, GetLeadByIdSuccessResponse, GetLeadSuccessResponse, GetLeadByDurationSuccessResponse } from "zs-crm-common";
-import { addLeadService, convertEmailIntoArray, editLeadService, findExistingCompany, findExistingEmail, findExistingGST, getLeadByDurationService, getLeadByIdService, getLeadsService } from "./lead.service";
+import { addLeadService, editLeadService, findExistingCompany, findExistingEmail, findExistingGST, getLeadByDurationService, getLeadByIdService, getLeadsService } from "./lead.service";
+import { convertEmailIntoArray } from "../../utils/dataFormatter";
 
 export const addLeadController = async (req: Request, res: Response<ErrorResponse | SuccessResponse>): Promise<any> => {
     const { first_name, last_name, phones, emails, assigned_to, source_id, product_id, company_name, address, gst_no } = req.body;
@@ -17,7 +18,7 @@ export const addLeadController = async (req: Request, res: Response<ErrorRespons
         const checkCompany = await findExistingCompany(company_name, gst_no, address);
         if (checkCompany) {
             return res.status(400).json({
-                message: "Comapny detail already exists"
+                message: "Company detail already exists"
             })
         }
         const checkEmail = await findExistingEmail(emailStrings);

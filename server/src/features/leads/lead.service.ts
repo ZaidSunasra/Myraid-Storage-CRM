@@ -61,7 +61,7 @@ export const findExistingCompany = async (company_name: string, gst_no: string, 
 }
 
 export const findExistingGST = async (id: number, gst_no: string): Promise<boolean> => {
-    const comapny = await prisma.company.findFirst({
+    const company = await prisma.company.findFirst({
         where: {
             gst_no,
             lead: {
@@ -73,7 +73,7 @@ export const findExistingGST = async (id: number, gst_no: string): Promise<boole
             }
         }
     });
-    return comapny?.gst_no ? true : false;
+    return company?.gst_no ? true : false;
 }
 
 export const addLeadService = async ({ first_name, last_name, phones, emails, assigned_to, source_id, product_id, company_name, address, gst_no }: AddLead, author: any): Promise<void> => {

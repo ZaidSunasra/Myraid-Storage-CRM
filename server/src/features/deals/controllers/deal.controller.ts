@@ -38,7 +38,7 @@ export const getDealByCompanyController = async (req: Request, res: Response<Err
             deals,
         });
     } catch (error) {
-        console.log("Error in fetching comapny deals", error);
+        console.log("Error in fetching company deals", error);
         return res.status(500).send({
             message: "Internal server error",
             error: error

@@ -113,10 +113,10 @@ export const editClientService = async ({ first_name, last_name, emails, phones,
     })
 }
 
-export const editCompanyDetailService = async ({ company_name, gst_no, address }: EditCompany, comapny_id: string): Promise<void> => {
+export const editCompanyDetailService = async ({ company_name, gst_no, address }: EditCompany, company_id: string): Promise<void> => {
     await prisma.company.update({
         where: {
-            id: parseInt(comapny_id)
+            id: parseInt(company_id)
         },
         data: {
             name: company_name,
