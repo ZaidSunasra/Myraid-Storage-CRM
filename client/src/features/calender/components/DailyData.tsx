@@ -1,6 +1,5 @@
 import { useUser } from "@/context/UserContext";
-import { Button } from "@/shared/components/ui/button";
-import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/shared/components/ui/card";
+import { Card, CardContent, CardHeader, CardTitle } from "@/shared/components/ui/card";
 import { capitalize, toTitleCase } from "@/utils/formatData";
 import { canView } from "@/utils/viewPermission";
 import { useNavigate } from "react-router";
@@ -22,12 +21,12 @@ const DailyData = ({ data, meetingData }: { data: Record<string, GroupedRecords>
 							<div
 								key={meeting.lead_id}
 								onClick={() => navigate(link)}
-								className="p-3 rounded-lg bg-blue-700 shadow-sm hover:bg-blue-500 transition cursor-pointer"
+								className="p-3 rounded-lg bg-accent shadow-sm hover:bg-blue-500 transition cursor-pointer"
 							>
 								<div className="font-medium">{capitalize(meeting.title)}</div>
 								<div className="text-sm text-primary">
-									<div>Company: {""} {toTitleCase(meeting.company_name)} </div>
-									<div>Client: {""} {toTitleCase(meeting.client_name)}  </div>
+									<div>Company: {toTitleCase(meeting.company_name)} </div>
+									<div>Client: {toTitleCase(meeting.client_name)}  </div>
 								</div>
 							</div>
 						)
