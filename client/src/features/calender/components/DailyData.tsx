@@ -1,44 +1,106 @@
 import { useUser } from "@/context/UserContext";
+import { Button } from "@/shared/components/ui/button";
+import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/shared/components/ui/card";
 import { capitalize, toTitleCase } from "@/utils/formatData";
+import { canView } from "@/utils/viewPermission";
 import { useNavigate } from "react-router";
-import { DEPARTMENTS, type LeadByDay, type ReminderMonth } from "zs-crm-common";
+import { type GroupedRecords, type ReminderMonth } from "zs-crm-common";
 
-const DailyData = ({ leadsData, meetingData }: { leadsData: Record<string, LeadByDay[]>; meetingData: ReminderMonth[] }) => {
+const DailyData = ({ data, meetingData }: { data: Record<string, GroupedRecords>; meetingData: ReminderMonth[] }) => {
 	const navigate = useNavigate();
 	const { user } = useUser();
-
+	console.log(data);
 	return (
 		<div className="overflow-y-auto">
-			{meetingData &&
-				meetingData.length > 0 &&
-				meetingData.map((meeting: ReminderMonth) => (
-					<div className="space-y-1 p-2" key={meeting.lead_id}>
-						<div className="bg-blue-500 p-3 rounded text-white text-sm shadow hover:bg-blue-600 transition duration-200 cursor-pointer" onClick={() => navigate(`/lead/${meeting.lead_id}?tab=scheduling`)} title={meeting.title}>
-							{meeting.title} - {meeting.client_name} from {meeting.company_name}
-						</div>
-					</div>
-				))}
-			{user?.department === DEPARTMENTS[1] &&
-				leadsData &&
-				Object.keys(leadsData).length > 0 &&
-				Object.entries(leadsData).map(([employeeName, leads]: [string, LeadByDay[]]) => (
-					<div key={employeeName} className="space-y-1 p-2">
-						<h2 className="text-lg font-semibold text-primary">{employeeName}</h2>
-						<h4 className="font-normal ">Leads</h4>
-						<div className="space-y-1">
-							{leads.map((lead: LeadByDay) => (
-								<div key={lead.id} className="p-2 rounded-lg bg-muted shadow-sm hover:bg-muted/80 transition cursor-pointer" onClick={() => navigate(`/lead/${lead.id}`)}>
-									<div className="font-medium text-accent-foreground">
-										{capitalize(lead.client_detail.first_name)} {capitalize(lead.client_detail.last_name)}
-									</div>
-									<div className="text-sm text-muted-foreground">Company: {toTitleCase(lead.company.name)}</div>
+			{meetingData && meetingData.length > 0 && (
+				<div className="space-y-2">
+					{meetingData.map((meeting: ReminderMonth) => {
+						const link = meeting.deal_id
+							? `/deal/${meeting.deal_id}?tab=scheduling`
+							: `/lead/${meeting.lead_id}?tab=scheduling`
+						return (
+							<div
+								key={meeting.lead_id}
+								onClick={() => navigate(link)}
+								className="p-3 rounded-lg bg-blue-700 shadow-sm hover:bg-blue-500 transition cursor-pointer"
+							>
+								<div className="font-medium">{capitalize(meeting.title)}</div>
+								<div className="text-sm text-primary">
+									<div>Company: {""} {toTitleCase(meeting.company_name)} </div>
+									<div>Client: {""} {toTitleCase(meeting.client_name)}  </div>
 								</div>
-							))}
-						</div>
-					</div>
-				))}
-		</div>
-	);
-};
+							</div>
+						)
+					})}
+				</div>
+			)}
 
-export default DailyData;
+			{user?.department && canView(user.department, "admin") &&
+				data && Object.keys(data).length > 0 && (
+					Object.entries(data ?? {}).map(([employeeName, records]) => (
+						<Card key={employeeName} className="m-2">
+							<CardHeader className="text-lg font-semibold text-primary">
+								<CardTitle>{employeeName}</CardTitle>
+							</CardHeader>
+							<CardContent>
+								<h4 className="font-medium">Leads</h4>
+								<div className="space-y-1">
+									{records.leads.length > 0 ? (
+										records.leads.map((lead) => (
+											<div
+												key={lead.lead_id}
+												className="p-2 rounded-lg bg-muted shadow-sm hover:bg-muted/80 transition cursor-pointer"
+												onClick={() => navigate(`/lead/${lead.lead_id}`)}
+											>
+												<div className="font-medium text-accent-foreground">
+													{capitalize(lead.client_name)}
+												</div>
+												<div className="text-sm text-muted-foreground">
+													Company: {toTitleCase(lead.company_name)}
+												</div>
+												{lead.deal_id && (
+													<div className="text-xs text-muted-foreground">
+														Linked Deal: {lead.deal_id}
+													</div>
+												)}
+											</div>
+										))
+									) : (
+										<p className="text-sm text-muted-foreground">No leads</p>
+									)}
+								</div>
+							</CardContent>
+							<CardContent>
+								<h4 className="font-medium">Deals</h4>
+								<div className="space-y-1">
+									{records.deals.length > 0 ? (
+										records.deals.map((deal) => (
+											<div
+												key={deal.deal_id}
+												className="p-2 rounded-lg bg-muted shadow-sm hover:bg-muted/80 transition cursor-pointer"
+												onClick={() => navigate(`/deal/${deal.deal_id}`)}
+											>
+												<div className="font-medium text-accent-foreground">
+													{capitalize(deal.client_name)}
+												</div>
+												<div className="text-sm text-muted-foreground">
+													Company: {toTitleCase(deal.company_name)}
+												</div>
+												<div className="text-xs text-muted-foreground">
+													Deal ID: {deal.deal_id}
+												</div>
+											</div>
+										))
+									) : (
+										<p className="text-sm text-muted-foreground">No deals</p>
+									)}
+								</div>
+							</CardContent>
+						</Card>
+					))
+				)
+			}
+		</div>
+	)
+}
+export default DailyData

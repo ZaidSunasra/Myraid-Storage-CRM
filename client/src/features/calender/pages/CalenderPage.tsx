@@ -113,7 +113,7 @@ const CalendarPage = () => {
 												<SheetTitle>Team Activity Recap for {formatted}</SheetTitle>
 												<SheetDescription>Catch up on today's progress — leads added, client updates, and who did what. Everything you need to stay informed.</SheetDescription>
 											</SheetHeader>
-											<DailyData leadsData={data.leadsGrouped[formatted]} meetingData={data.remindersByDay[formatted]} />
+											<DailyData data={data.grouped[formatted]} meetingData={data.remindersByDay[formatted]} />
 										</SheetContent>
 									</Sheet>
 								}
