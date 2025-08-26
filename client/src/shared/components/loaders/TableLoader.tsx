@@ -1,6 +1,6 @@
 import { Skeleton } from "@/shared/components/ui/skeleton";
 
-const LeadTableLoader = () => {
+const TableLoader = () => {
 	return (
 		<div className="mb-6">
 			<div className="flex flex-col md:flex-row gap-4 h-9 mb-5">
@@ -20,4 +20,4 @@ const LeadTableLoader = () => {
 	);
 };
 
-export default LeadTableLoader;
+export default TableLoader;

@@ -1,8 +1,8 @@
 import Navbar from "@/shared/components/Navbar";
 import { Skeleton } from "@/shared/components/ui/skeleton";
-import LeadSideBar from "../LeadSidebar";
+import LeadSideBar from "../../../features/leads/components/LeadSidebar";
 
-const DetailedLeadPageLoader = () => {
+const DetailedPageLoader = () => {
 	return (
 		<div className="min-h-screen bg-accent">
 			<Navbar />
@@ -43,4 +43,4 @@ const DetailedLeadPageLoader = () => {
 	);
 };
 
-export default DetailedLeadPageLoader;
+export default DetailedPageLoader;

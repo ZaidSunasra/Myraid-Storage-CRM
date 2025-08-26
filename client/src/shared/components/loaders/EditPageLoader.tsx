@@ -3,7 +3,7 @@ import { Button } from "@/shared/components/ui/button";
 import { Skeleton } from "@/shared/components/ui/skeleton";
 import { ArrowLeft } from "lucide-react";
 
-const EditLeadPageLoader = () => {
+const EditPageLoader = ({ showSidebar }: { showSidebar: boolean }) => {
 	return (
 		<div className="bg-accent min-h-screen">
 			<Navbar />
@@ -19,10 +19,12 @@ const EditLeadPageLoader = () => {
 						</div>
 					</div>
 					<div className="grid grid-cols-1 lg:grid-cols-4 gap-6 mt-4">
-						<div className="lg:col-span-1">
-							<Skeleton className="h-62 w-full rounded-md bg-background" />
-						</div>
-						<div className="lg:col-span-3 space-y-6">
+						{showSidebar &&
+							<div className="lg:col-span-1">
+								<Skeleton className="h-62 w-full rounded-md bg-background" />
+							</div>
+						}
+						<div className={`${showSidebar ? "lg:col-span-3" : "lg:col-span-4"} space-y-6`}>
 							<Skeleton className="h-[350px] w-full rounded-md bg-background" />
 						</div>
 					</div>
@@ -32,4 +34,4 @@ const EditLeadPageLoader = () => {
 	);
 };
 
-export default EditLeadPageLoader;
+export default EditPageLoader;
