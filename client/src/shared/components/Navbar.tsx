@@ -59,9 +59,6 @@ const Navbar = () => {
 							<DropdownMenuContent align="end">
 								<DropdownMenuLabel>My Account</DropdownMenuLabel>
 								<DropdownMenuSeparator />
-								<DropdownMenuItem>Profile</DropdownMenuItem>
-								<DropdownMenuItem>Settings</DropdownMenuItem>
-								<DropdownMenuSeparator />
 								<DropdownMenuItem onClick={onSubmit}>Sign out</DropdownMenuItem>
 							</DropdownMenuContent>
 						</DropdownMenu>
@@ -72,7 +69,6 @@ const Navbar = () => {
 						</div>
 					</div>
 				</div>
-
 				{menuOpen && (
 					<div className="lg:hidden flex flex-col space-y-2 pb-4">
 						{navItems[department!].map((item) => (
