@@ -24,9 +24,6 @@ const DealsTableBody = ({ data }: { data: GetAllDealSuccessResponse }) => {
     const lastPage = Math.ceil((data?.totalDeals || 0) / rows) == 0 ? 1 : Math.ceil((data?.totalDeals || 0) / rows);
     const navigate = useNavigate();
 
-    if (sourcePending) return <>Loading..</>
-    if (sourceError) return <>Error</>
-
     return <>
         <Table>
             <TableHeader >
@@ -38,9 +35,9 @@ const DealsTableBody = ({ data }: { data: GetAllDealSuccessResponse }) => {
                     <TableHead >
                         <div className="flex justify-between items-center">
                             Source
-                            <Popover>
+                            {!sourceError && <Popover>
                                 <PopoverTrigger asChild>
-                                    <Button variant="ghost" className="ml-2" size="icon">
+                                    <Button variant="ghost" className="ml-2" size="icon" disabled={sourcePending}>
                                         <ChevronsUpDown className="h-4 w-4" />
                                     </Button>
                                 </PopoverTrigger>
@@ -60,7 +57,7 @@ const DealsTableBody = ({ data }: { data: GetAllDealSuccessResponse }) => {
                                         </CommandList>
                                     </Command>
                                 </PopoverContent>
-                            </Popover>
+                            </Popover>}
                         </div>
                     </TableHead>
                     <TableHead >

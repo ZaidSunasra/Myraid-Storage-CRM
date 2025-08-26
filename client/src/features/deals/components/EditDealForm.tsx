@@ -52,10 +52,6 @@ const EditDealDetails = ({ data }: { data: GetDealOutput }) => {
         control: form.control, name: "assigned_to",
     })
 
-    if (employeePending || sourcePending || productPending || companyPending) {
-        return <>Loading...</>
-    }
-
     return (
         <Form {...form}>
             <form onSubmit={form.handleSubmit(onSubmit)}>
@@ -77,6 +73,7 @@ const EditDealDetails = ({ data }: { data: GetDealOutput }) => {
                                                     <Button
                                                         variant="outline"
                                                         className="flex justify-between"
+                                                        disabled={companyPending}
                                                     >
                                                         {companyData?.companies.find(
                                                             (c) => String(c.id) === field.value
@@ -157,6 +154,7 @@ const EditDealDetails = ({ data }: { data: GetDealOutput }) => {
                                         <Select
                                             onValueChange={(val) => field.onChange(Number(val))}
                                             value={field.value ? String(field.value) : ""}
+                                            disabled={sourcePending}
                                         >
                                             <SelectTrigger className="w-full">
                                                 <SelectValue placeholder="Select source" />
@@ -186,6 +184,7 @@ const EditDealDetails = ({ data }: { data: GetDealOutput }) => {
                                         <Select
                                             onValueChange={(val) => field.onChange(Number(val))}
                                             value={field.value ? String(field.value) : ""}
+                                            disabled={productPending}
                                         >
                                             <SelectTrigger className="w-full">
                                                 <SelectValue placeholder="Select product" />
@@ -245,6 +244,7 @@ const EditDealDetails = ({ data }: { data: GetDealOutput }) => {
                                                         <Select
                                                             onValueChange={(val) => field.onChange(Number(val))}
                                                             value={field.value ? String(field.value) : ""}
+                                                            disabled={employeePending}
                                                         >
                                                             <SelectTrigger className="w-full">
                                                                 <SelectValue placeholder="Select user to assign" />

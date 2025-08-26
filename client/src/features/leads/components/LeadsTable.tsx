@@ -13,11 +13,12 @@ import { Command, CommandEmpty, CommandGroup, CommandInput, CommandItem, Command
 import { Calendar } from "@/shared/components/ui/calendar";
 import { Building2, Mail, Phone, User, ChevronsUpDown, CalendarIcon, X } from "lucide-react";
 import { FetchSources } from "@/api/sources/source.queries";
-import LeadTableLoader from "./loaders/LeadTableLoader";
+import TableLoader from "@/shared/components/loaders/TableLoader";
 import { capitalize, toTitleCase } from "@/utils/formatData";
 import PaginationControls from "@/shared/components/PaginationControl";
 import SearchFilterBar from "@/shared/components/SearchFilter";
 import { format } from "date-fns";
+import ErrorPage from "@/shared/components/ErrorPage";
 
 const LeadsTable = () => {
 	const { page, rows, search, employeeIDs, sources, startDate, endDate, toggleSource, setDate, setSearch, setSearchParams } = useQueryParams();
@@ -33,9 +34,9 @@ const LeadsTable = () => {
 		setSearch(debouncedSearch, search);
 	}, [debouncedSearch, search, setSearchParams, setSearch]);
 
-	if (leadsPending || sourcePending) return <LeadTableLoader />;
+	if (leadsPending || sourcePending) return <TableLoader />;
 
-	if (leadsError || sourceError) return <>Error while loading page</>;
+	if (leadsError) return <ErrorPage message="Failed to load data. Refresh or try again later" />;
 
 	return <Card className="mb-6 bg-background">
 		<CardHeader>
@@ -51,7 +52,7 @@ const LeadsTable = () => {
 							<TableHead>Contact</TableHead>
 							<TableHead className="flex justify-between items-center">
 								Source
-								<Popover>
+								{!sourceError && <Popover>
 									<PopoverTrigger asChild>
 										<Button variant="ghost" className="ml-2" size="icon">
 											<ChevronsUpDown className="h-4 w-4" />
@@ -63,7 +64,7 @@ const LeadsTable = () => {
 											<CommandList>
 												<CommandEmpty>No source found.</CommandEmpty>
 												<CommandGroup>
-													{sourceData.sources.map((source: GetSourceOutput) => (
+													{sourceData?.sources.map((source: GetSourceOutput) => (
 														<CommandItem key={source.id}>
 															<Checkbox className="mr-2" checked={sources.includes(String(source.id))} onCheckedChange={() => toggleSource(String(source.id))} />
 															{toTitleCase(source.name)}
@@ -73,7 +74,7 @@ const LeadsTable = () => {
 											</CommandList>
 										</Command>
 									</PopoverContent>
-								</Popover>
+								</Popover>}
 							</TableHead>
 							<TableHead>Assigned To</TableHead>
 							<TableHead>Product</TableHead>

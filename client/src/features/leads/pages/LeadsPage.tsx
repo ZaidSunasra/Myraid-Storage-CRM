@@ -5,7 +5,7 @@ import { Plus } from "lucide-react";
 import { useNavigate } from "react-router";
 import LeadAnalytics from "../components/LeadAnalytics";
 import { useUser } from "@/context/UserContext";
-import { DEPARTMENTS } from "zs-crm-common";
+import { canView } from "@/utils/viewPermission";
 
 const LeadsPage = () => {
 	const navigate = useNavigate();
@@ -25,7 +25,7 @@ const LeadsPage = () => {
 						Add Lead
 					</Button>
 				</div>
-				{user?.department === DEPARTMENTS[1] ? <LeadAnalytics /> : <></>}
+				{user?.department && canView(user?.department, "admin") &&  <LeadAnalytics /> }
 				<LeadsTable />
 			</div>
 		</div>

@@ -17,26 +17,27 @@ import DrawingUploads from "../components/DrawingUploads";
 import { useUser } from "@/context/UserContext";
 import { canView } from "@/utils/viewPermission";
 import DrawingList from "../components/DrawingList";
+import DetailedPageLoader from "@/shared/components/loaders/DetailedPageLoader";
+import ErrorDisplay from "@/shared/components/ErrorPage";
 
 const DetailedDealPage = () => {
 
     const { id } = useParams();
     const [searchParams] = useSearchParams();
     const tab = searchParams.get("tab") || "info";
-    const { data: dealData, isPending: dealPending } = FetchDealById(id as string);
+    const { data: dealData, isPending: dealPending, isError: dealError } = FetchDealById(id as string);
     const { user } = useUser();
     const navigate = useNavigate();
 
-    if (dealPending) return <>Loading...</>
+    if (dealPending) return <DetailedPageLoader />
+    if (dealError) return <ErrorDisplay fullPage />
     const { bg, icon: StatusIcon } = DEAL_STATUS_META[dealData?.deal?.deal_status as deal_status]
 
     return <div className="min-h-screen bg-accent">
         <Navbar />
         <div className="max-w-7xl mx-auto py-6 sm:px-6 lg:px-8">
             <div className="px-0 py-6">
-
                 <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between sm:mb-6 p-2 sm:p-0 gap-4">
-
                     <div className="flex items-center">
                         <NavLink to="/deal">
                             <Button variant="ghost" size="icon">

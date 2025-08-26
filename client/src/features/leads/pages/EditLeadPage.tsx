@@ -12,7 +12,7 @@ import AddEditCompanyDetails from "../components/AddEditCompanyDetails";
 import AddEditLeadDetails from "../components/AddEditLeadDetails";
 import FormSideBar from "../../../shared/components/FormSideBar";
 import { useEditLead } from "@/api/leads/leads.mutation";
-import EditLeadPageLoader from "../components/loaders/EditLeadPageLoader";
+import EditPageLoader from "@/shared/components/loaders/EditPageLoader";
 
 const EditLeadPage = () => {
 	const { id } = useParams();
@@ -72,7 +72,7 @@ const EditLeadPage = () => {
 		setCurrentStep(1);
 	};
 
-	if (isPending) return <EditLeadPageLoader />;
+	if (isPending) return <EditPageLoader showSidebar={true}/>;
 
 	return (
 		<div className="bg-accent min-h-screen">

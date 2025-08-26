@@ -3,14 +3,16 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/sha
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/shared/components/ui/select";
 import { TargetIcon } from "lucide-react";
 import { useState } from "react";
-import { Skeleton } from "@/shared/components/ui/skeleton";
+import DivLoader from "@/shared/components/loaders/DivLoader";
+import ErrorDisplay from "@/shared/components/ErrorPage";
 
 const LeadAnalytics = () => {
 	const [period, setPeriod] = useState<"today" | "weekly" | "monthly" | "yearly" | "all">("today");
 
-	const { data, isPending } = FetchLeadByDuration(period);
+	const { data, isPending, isError } = FetchLeadByDuration(period);
 
-	if (isPending) return <Skeleton className="w-full h-48 bg-background mb-5" />;
+	if (isPending) return <DivLoader height={48} showHeading={false}/>;
+	if(isError) return <ErrorDisplay message="Failed to load data. Refresh or please try again later" />
 
 	return (
 		<Card className="mb-4 bg-background">

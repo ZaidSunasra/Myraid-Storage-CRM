@@ -10,6 +10,7 @@ import { Sheet, SheetContent, SheetDescription, SheetHeader, SheetTitle, SheetTr
 import { Popover, PopoverContent, PopoverTrigger } from "@/shared/components/ui/popover";
 import { Input } from "@/shared/components/ui/input";
 import CalenderPageLoader from "../components/CalenderPageLoader";
+import ErrorPage from "@/shared/components/ErrorPage";
 
 const CalendarPage = () => {
 	const [currentMonth, setCurrentMonth] = useState(new Date());
@@ -34,7 +35,7 @@ const CalendarPage = () => {
 	const prevMonth = () => setCurrentMonth((prev) => subMonths(prev, 1));
 
 	if (isPending) return <CalenderPageLoader />;
-	if (isError) return <>Error...</>;
+	if (isError) return <ErrorPage fullPage/>;
 
 	return (
 		<div className="bg-accent min-h-screen">

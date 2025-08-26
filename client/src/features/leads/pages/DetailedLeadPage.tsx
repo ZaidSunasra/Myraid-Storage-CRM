@@ -9,7 +9,7 @@ import Description from "@/shared/components/Description";
 import LeadSideBar from "../components/LeadSidebar";
 import Navbar from "@/shared/components/Navbar";
 import { type GetEmployeeOutput, type GetLeadOutput } from "zs-crm-common";
-import DetailedLeadPageLoader from "../components/loaders/DetailedLeadPageLoader";
+import DetailedPageLoader from "@/shared/components/loaders/DetailedPageLoader";
 import { capitalize, toTitleCase } from "@/utils/formatData";
 import { Dialog, DialogClose, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle, DialogTrigger } from "@/shared/components/ui/dialog";
 import { useConvertToDeal } from "@/api/deals/deal.mutation";
@@ -19,6 +19,7 @@ import { useRef } from "react";
 import ScheduledMeeting from "@/shared/components/ScheduledMeeting";
 import { useUser } from "@/context/UserContext";
 import { canView } from "@/utils/viewPermission";
+import ErrorDisplay from "@/shared/components/ErrorPage";
 
 const DetailedLeadPage = () => {
 
@@ -38,11 +39,9 @@ const DetailedLeadPage = () => {
 		convertLead.mutate({ id: id as string, quotation_code: quotationCode.current, })
 	}
 
-	if (isPending || assignedEmployeePending) return <DetailedLeadPageLoader />;
+	if (isPending || assignedEmployeePending) return <DetailedPageLoader />;
 
-	if (isError || assignedEmployeeError) {
-		return <div>Error</div>;
-	}
+	if (isError || assignedEmployeeError) return <ErrorDisplay fullPage/>
 
 	return (
 		<div className="min-h-screen bg-accent">

@@ -8,6 +8,8 @@ import { Pencil, Plus } from "lucide-react"
 import AddUserForm from "../components/AddUserForm"
 import { useState } from "react"
 import { type AddUser, type EditUser, } from "zs-crm-common"
+import DivLoader from "@/shared/components/loaders/DivLoader"
+import ErrorDisplay from "@/shared/components/ErrorPage"
 
 const UserSettings = () => {
 
@@ -20,8 +22,8 @@ const UserSettings = () => {
     setUserData({id: null, type: null})
   }
 
-  if (isPending) return <>Loading..</>
-  if (isError) return <>Error..</>
+  if (isPending) return <DivLoader height={64} showHeading={true}/>
+ if (isError) return <ErrorDisplay message="Failed to load data"/>
 
   return (
     <div className="space-y-6">

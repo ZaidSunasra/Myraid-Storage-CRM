@@ -11,14 +11,17 @@ import { FetchReadNotifications } from "@/api/notifications/notification.queries
 import type { GetNotificationOutput } from "zs-crm-common";
 import { navItems } from "@/utils/getNavigationLink";
 import { useUser } from "@/context/UserContext";
+import NotificationPageLoader from "../components/NotificationPageLoader";
+import ErrorDisplay from "@/shared/components/ErrorPage";
 
 const NotificationPage = () => {
 	const { user } = useUser();
 	const { isLoading, notifications, unreadCount } = useNotifications();
-	const { data: readNotificationData, isLoading: readNotificationLoading } = FetchReadNotifications();
+	const { data: readNotificationData, isLoading: readNotificationLoading, isError: readNotificationErro} = FetchReadNotifications();
 	const navigate = useNavigate();
 
-	if (isLoading || readNotificationLoading) return <>Loading..</>;
+	if (isLoading || readNotificationLoading) return <NotificationPageLoader />;
+	if(readNotificationErro) return <ErrorDisplay fullPage />
 
 	return (
 		<div className="min-h-screen bg-accent">

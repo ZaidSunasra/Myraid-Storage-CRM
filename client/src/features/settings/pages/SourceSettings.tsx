@@ -1,5 +1,7 @@
 import { useAddSource, useEditSource } from "@/api/sources/source.mutation"
 import { FetchSources } from "@/api/sources/source.queries"
+import ErrorDisplay from "@/shared/components/ErrorPage"
+import DivLoader from "@/shared/components/loaders/DivLoader"
 import { Button } from "@/shared/components/ui/button"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/shared/components/ui/card"
 import { Dialog, DialogClose, DialogContent, DialogDescription, DialogHeader, DialogTitle, DialogTrigger } from "@/shared/components/ui/dialog"
@@ -36,8 +38,8 @@ const SourceSettings = () => {
       });
   }
 
-  if (isPending) return <>Loading...</>
-  if (isError) return <>Error..</>
+  if (isPending) return <DivLoader height={64} showHeading={true} />
+  if (isError) return <ErrorDisplay message="Failed to load data"/>
 
   return <>
     <div className="space-y-6">

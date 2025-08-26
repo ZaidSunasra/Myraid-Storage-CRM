@@ -10,11 +10,13 @@ import { AlertCircle, Calendar, CheckCircle, Download, Eye, FileText, Notebook, 
 import { useState } from "react";
 import { DEPARTMENTS, type Assignee, type Drawing, type drawing_status } from "zs-crm-common";
 import RejectDrawingDialog from "./RejectDrawingDialog";
+import DivLoader from "@/shared/components/loaders/DivLoader";
+import ErrorDisplay from "@/shared/components/ErrorPage";
 
 const DrawingList = ({ id }: { id: string }) => {
 
     const [dialog, setDialog] = useState<{ open: boolean; data: number | null; action: "approve" | "disapprove" | null }>({ open: false, data: null, action: null });
-    const { data, isPending } = FetchDrawings(id);
+    const { data, isPending, isError } = FetchDrawings(id);
     const { user } = useUser();
     const viewDrawing = useViewDrawing();
     const deleteDrawing = useDeleteDrawing();
@@ -38,7 +40,8 @@ const DrawingList = ({ id }: { id: string }) => {
         setDialog({ open: false, data: null, action: null })
     }
 
-    if (isPending) return <>Loading</>
+    if (isPending) return <DivLoader height={64} showHeading={false}/>
+    if(isError) return <ErrorDisplay message="Failed to load data. Refresh or please try again later"/>
 
     return <>
         <Card className="shadow-lg bg-background">

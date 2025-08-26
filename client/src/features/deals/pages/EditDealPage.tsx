@@ -5,15 +5,17 @@ import { NavLink, useParams } from "react-router"
 import { type GetDealOutput } from "zs-crm-common"
 import { FetchDealById } from "@/api/deals/deal.queries"
 import EditDealDetails from "../components/EditDealForm"
+import EditPageLoader from "@/shared/components/loaders/EditPageLoader"
+import ErrorDisplay from "@/shared/components/ErrorPage"
 
 
 const EditDealPage = () => {
 
     const { id } = useParams()
-    const { data, isPending } = FetchDealById(id as string)
+    const { data, isPending, isError } = FetchDealById(id as string)
 
-
-    if (isPending) return <>Loading</>
+    if (isPending) return <EditPageLoader showSidebar={false} />
+    if (isError) return <ErrorDisplay message="Failed to load data. Refresh or please try again later" fullPage/>
 
     return <div className="bg-accent min-h-screen">
         <Navbar />
@@ -32,7 +34,7 @@ const EditDealPage = () => {
                 </div>
                 <div className="grid grid-cols-1 lg:grid-cols-4 gap-6">
                     <div className="lg:col-span-4">
-                        <EditDealDetails data={data?.deal as GetDealOutput}  />
+                        <EditDealDetails data={data?.deal as GetDealOutput} />
                     </div>
                 </div>
             </div>

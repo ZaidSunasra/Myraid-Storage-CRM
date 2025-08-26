@@ -7,7 +7,7 @@ import { Checkbox } from "@/shared/components/ui/checkbox";
 import { ChevronsUpDown, Search, X } from "lucide-react";
 import useQueryParams from "@/hooks/useQueryParams";
 import { FetchSalesEmployee } from "@/api/employees/employee.queries";
-import LeadTableLoader from "@/features/leads/components/loaders/LeadTableLoader";
+import TableLoader from "@/shared/components/loaders/TableLoader";
 import { useUser } from "@/context/UserContext";
 import { DEPARTMENTS } from "zs-crm-common";
 
@@ -17,9 +17,7 @@ const SearchFilterBar = ({ searchInput, setSearchInput }: { searchInput: string;
     const { data: employeeData, isError: employeeError, isPending: employeePending } = FetchSalesEmployee();
     const { user } = useUser();
 
-    if (employeePending) return <LeadTableLoader />;
-
-    if (employeeError) return <div>Error while loading page</div>
+    if (employeePending) return <TableLoader />;
 
     return <div className="flex flex-col md:flex-row gap-4">
         <div className="flex-1 relative w-full md:w-[270px]">
@@ -32,7 +30,7 @@ const SearchFilterBar = ({ searchInput, setSearchInput }: { searchInput: string;
             />
         </div>
 
-        {user?.department == DEPARTMENTS[1] && (
+        {user?.department == DEPARTMENTS[1] && !employeeError &&(
             <Popover>
                 <PopoverTrigger asChild>
                     <Button variant="outline" className="flex justify-between">

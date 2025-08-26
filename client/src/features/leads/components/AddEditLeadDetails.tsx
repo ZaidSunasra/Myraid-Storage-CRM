@@ -10,9 +10,9 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { ArrowLeft, Plus, Trash, User } from "lucide-react";
 import { useFieldArray, type UseFormReturn } from "react-hook-form";
 import { DEPARTMENTS, type AddLead, type GetEmployeeOutput, type GetProductOutput, type GetSourceOutput } from "zs-crm-common";
-import EditLeadPageLoader from "./loaders/EditLeadPageLoader";
 import { capitalize, toTitleCase } from "@/utils/formatData";
 import MangeSourceOrProduct from "@/shared/components/ManageSourceOrProduct";
+import ErrorDisplay from "@/shared/components/ErrorPage";
 
 const AddEditLeadDetails = ({ form, handleClick, isLoading }: { form: UseFormReturn<AddLead>; handleClick: () => void; isLoading?: boolean }) => {
 	const { data: employeeData, isError: employeeError, isPending: employeePending } = FetchSalesEmployee();
@@ -27,8 +27,7 @@ const AddEditLeadDetails = ({ form, handleClick, isLoading }: { form: UseFormRet
 
 	const { fields: assignField, append: assignAppend, remove: assignRemove } = useFieldArray({ control: form.control, name: "assigned_to" });
 
-	if (employeePending || sourcePending || productPending) return <EditLeadPageLoader />;
-	if (employeeError || sourceError || productError) return <>Error..</>;
+	if (employeeError || sourceError || productError) return <ErrorDisplay /> ;
 
 	return (
 		<Card>
@@ -135,19 +134,19 @@ const AddEditLeadDetails = ({ form, handleClick, isLoading }: { form: UseFormRet
 							render={({ field }) => (
 								<FormItem>
 									<FormLabel>Source*</FormLabel>
-									<Select onValueChange={(val) => field.onChange(Number(val))} value={field.value ? String(field.value) : ""}>
+									<Select onValueChange={(val) => field.onChange(Number(val))} value={field.value ? String(field.value) : ""} disabled={sourcePending}>
 										<FormControl>
 											<SelectTrigger className="w-full">
 												<SelectValue placeholder="Select lead source" />
 											</SelectTrigger>
 										</FormControl>
 										<SelectContent>
-											{sourceData.sources.map((source: GetSourceOutput) => (
+											{sourceData?.sources.map((source: GetSourceOutput) => (
 												<SelectItem key={source.id} value={String(source.id)}>
 													{toTitleCase(source.name)}
 												</SelectItem>
 											))}
-											<MangeSourceOrProduct  type="sources"/>
+											<MangeSourceOrProduct type="sources" />
 										</SelectContent>
 									</Select>
 									<FormMessage />
@@ -162,14 +161,14 @@ const AddEditLeadDetails = ({ form, handleClick, isLoading }: { form: UseFormRet
 							render={({ field }) => (
 								<FormItem>
 									<FormLabel>Product*</FormLabel>
-									<Select onValueChange={(val) => field.onChange(Number(val))} value={field.value ? String(field.value) : ""}>
+									<Select onValueChange={(val) => field.onChange(Number(val))} value={field.value ? String(field.value) : ""} disabled={productPending}>
 										<FormControl>
 											<SelectTrigger className="w-full">
 												<SelectValue placeholder="Select Product" />
 											</SelectTrigger>
 										</FormControl>
 										<SelectContent>
-											{productData.products.map((product: GetProductOutput) => (
+											{productData?.products.map((product: GetProductOutput) => (
 												<SelectItem key={product.id} value={String(product.id)}>
 													{capitalize(product.name)}
 												</SelectItem>
@@ -193,12 +192,12 @@ const AddEditLeadDetails = ({ form, handleClick, isLoading }: { form: UseFormRet
 									render={({ field }) => (
 										<FormItem className="flex items-center gap-2 mb-2">
 											<FormControl>
-												<Select onValueChange={(val) => field.onChange(Number(val))} value={field.value ? String(field.value) : ""}>
+												<Select onValueChange={(val) => field.onChange(Number(val))} value={field.value ? String(field.value) : ""} disabled={employeePending}>
 													<SelectTrigger className="w-full">
 														<SelectValue placeholder="Select user to assign" />
 													</SelectTrigger>
 													<SelectContent>
-														{employeeData.employees.map((employee: GetEmployeeOutput) => (
+														{employeeData?.employees.map((employee: GetEmployeeOutput) => (
 															<SelectItem key={employee.id} value={String(employee.id)}>
 																{employee.first_name} {employee.last_name}
 															</SelectItem>

@@ -9,6 +9,8 @@ import { Kanban, Table } from "lucide-react";
 import { useEffect, useState } from "react";
 import DealsTableBody from "./DealsTableBody";
 import KanbanBoard from "./DealsKanbanBoard";
+import TableLoader from "@/shared/components/loaders/TableLoader";
+import ErrorDisplay from "@/shared/components/ErrorPage";
 
 const DealsTable = () => {
 
@@ -22,9 +24,9 @@ const DealsTable = () => {
         setSearch(debouncedSearch, search);
     }, [debouncedSearch, search, setSearchParams]);
 
-    if (dealsPending) return <>Loading</>
+    if (dealsPending) return <TableLoader />
 
-    if (dealsError) return <>Error</>
+    if (dealsError) return <ErrorDisplay message="Failed to display data. Refresh or please try again later"/>
 
     return <Card className="mb-6 bg-background">
         <CardHeader>

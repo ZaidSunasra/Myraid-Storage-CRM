@@ -9,6 +9,8 @@ import EditReminder from "./EditMeeting";
 import { type Reminders } from "zs-crm-common";
 import { capitalize, toTitleCase } from "@/utils/formatData";
 import { format } from "date-fns";
+import ErrorDisplay from "./ErrorPage";
+import DivLoader from "./loaders/DivLoader";
 
 const ScheduledMeeting = ({id, type} : {id: string, type: "lead" | "deal"}) => {
 
@@ -22,14 +24,10 @@ const ScheduledMeeting = ({id, type} : {id: string, type: "lead" | "deal"}) => {
 		setDialog({ open: false, data: null, action: null });
 	};
 
-	if (isPending) {
-		return <>Loading</>;
-	}
+	if (isPending) return <DivLoader showHeading={false} height={64}/>
 
-	if (isError) {
-		return <>Error...</>;
-	}
-
+	if (isError) return <ErrorDisplay message="Failed to load data. Refresh or please try again later"/>
+	
 	return (
 		<>
 			<Card>

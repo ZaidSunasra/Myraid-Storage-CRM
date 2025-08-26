@@ -16,6 +16,7 @@ import { FetchAssignedEmployee } from "@/api/employees/employee.queries";
 import { mentionStyle } from "@/utils/customStyle";
 import { Skeleton } from "@/shared/components/ui/skeleton";
 import { format } from "date-fns";
+import ErrorDisplay from "./ErrorPage";
 
 const Description = ({ id, type }: { id: string, type: "deal" | "lead" }) => {
 	const [actionType, setActionType] = useState<"edit" | "delete" | null>(null);
@@ -50,7 +51,7 @@ const Description = ({ id, type }: { id: string, type: "deal" | "lead" }) => {
 	};
 
 	if (descriptionPending || assignedEmployeePending) return <Skeleton className="bg-background w-full h-66" />;
-	if (descriptionError || assignedEmployeeError) return <>Error..</>;
+	if (descriptionError || assignedEmployeeError) return <ErrorDisplay message="Failed to load data. Refresh or please try again later"/>;
 
 	return (
 		<>
