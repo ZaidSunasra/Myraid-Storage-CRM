@@ -30,6 +30,7 @@ export type GetLeadOutput = {
     client_detail: Client_Details;
     product: Product;
     source: Source;
+    is_converted: boolean;
 }
 
 export type GetLeadSuccessResponse = {

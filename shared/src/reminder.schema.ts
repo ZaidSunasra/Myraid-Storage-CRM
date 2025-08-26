@@ -38,29 +38,31 @@ export type GetReminderSuccessResponse = {
 
 export type GetDataByMonth = {
     remindersByDay: Record<string, ReminderMonth[]>;
-    leadsGrouped: Record<string, Record<string, LeadByDay[]>>;
-}
+    grouped: Record<string, Record<string, GroupedRecords>>;
+};
 
 export type ReminderMonth = {
     client_name: string;
     company_name: string;
     title: string;
-    lead_id: number;
-}
+    lead_id: number | null;  
+    deal_id: string | null; 
+};
+
+export type GroupedRecords = {
+    leads: LeadByDay[];
+    deals: DealByDay[];
+};
+
+export type DealByDay = {
+    deal_id: string;
+    company_name: string;
+    client_name: string
+};
 
 export type LeadByDay = {
-    client_id: number;
-    company_id: number;
-    created_at: Date;
-    id: number;
-    product_id: number;
-    source_id: number;
-    client_detail: {
-        company_id: number;
-        id: number;
-        first_name: string;
-        last_name: string;
-    },
-    assigned_to: Assignee[];
-    company: Company;
-}
+    lead_id: number;
+    company_name: string,
+    client_name: string;
+    deal_id?: string; 
+};
