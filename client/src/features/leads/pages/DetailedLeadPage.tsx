@@ -86,10 +86,10 @@ const DetailedLeadPage = () => {
 						</Tabs>
 					</div>
 					<div className="lg:col-span-1">
-						<div className="w-full mb-8">
-							<Dialog>
+						<div className="w-full">
+							{!data.lead?.is_converted && <Dialog>
 								<DialogTrigger asChild>
-									<Button className=" text-white flex gap-2 px-6 py-2 rounded-xl shadow-md transition w-full bg-emerald-600 hover:bg-emerald-700">
+									<Button className="mb-8 text-white flex gap-2 px-6 py-2 rounded-xl shadow-md transition w-full bg-emerald-600 hover:bg-emerald-700">
 										<ArrowRightLeft className="w-4 h-4" />
 										Convert to Deal
 									</Button>
@@ -122,7 +122,7 @@ const DetailedLeadPage = () => {
 										</Button>
 									</DialogFooter>
 								</DialogContent>
-							</Dialog>
+							</Dialog>}
 						</div>
 						<LeadSideBar />
 					</div>
