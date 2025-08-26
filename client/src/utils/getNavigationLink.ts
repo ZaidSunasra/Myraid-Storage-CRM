@@ -1,4 +1,4 @@
-import type { reminder_type, Notification } from "zs-crm-common";
+import type { reminder_type, Notification, department } from "zs-crm-common";
 
 export const getNavigationLink = (notification: Notification) => {
 	const navLink: Record<reminder_type, string> = {
@@ -13,7 +13,7 @@ export const getNavigationLink = (notification: Notification) => {
 	return navLink[notification.type as reminder_type];
 };
 
-export const navItems = {
+export const navItems : Record<department, {url: string, title: string}[]>= {
 	admin: [
 		{ title: "Leads", url: "/lead" },
 		{ title: "Deals", url: "/deal" },
