@@ -20,6 +20,7 @@ import ScheduledMeeting from "@/shared/components/ScheduledMeeting";
 import { useUser } from "@/context/UserContext";
 import { canView } from "@/utils/viewPermission";
 import ErrorDisplay from "@/shared/components/ErrorPage";
+import { toast } from "sonner";
 
 const DetailedLeadPage = () => {
 
@@ -35,7 +36,10 @@ const DetailedLeadPage = () => {
 
 	const convertLead = useConvertToDeal();
 	const handleLeadConversion = () => {
-		if (!quotationCode.current) return;
+		if (!quotationCode.current) {
+			toast.error("User do not have a quotation code");
+			return;
+		};
 		convertLead.mutate({ id: id as string, quotation_code: quotationCode.current, })
 	}
 
