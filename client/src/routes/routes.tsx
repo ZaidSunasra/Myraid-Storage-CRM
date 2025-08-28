@@ -10,6 +10,7 @@ import EditLeadPage from "@/features/leads/pages/EditLeadPage";
 import LeadsPage from "@/features/leads/pages/LeadsPage";
 import NotificationPage from "@/features/notifications/pages/NotificationPage";
 import SettingsPage from "@/features/settings/pages/SettingsPage";
+import UnauthorizedPage from "@/shared/components/UnauthorizedPage";
 import WorkInProgress from "@/shared/components/WorkInProgress";
 import ProtectedRoute from "@/utils/routePermission";
 import { BrowserRouter, Route, Routes } from "react-router";
@@ -20,6 +21,7 @@ const Router = () => {
 		<Routes>
 			<Route path="/" element={<LandingPage />} />
 			<Route path="/notifications" element={<NotificationPage />} />
+			<Route path="/unauthorized-page" element={<UnauthorizedPage />} />
 			<Route element={<ProtectedRoute allowedDepartment={[DEPARTMENTS[0], DEPARTMENTS[1]]} />}>
 				<Route path="/lead" element={<LeadsPage />} />
 				<Route path="/lead/add" element={<AddLeadPage />} />
