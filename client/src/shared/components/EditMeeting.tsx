@@ -2,7 +2,7 @@ import { useForm } from "react-hook-form";
 import { addReminderSchema, type AddReminder, type Reminders } from "zs-crm-common";
 import { cn } from "@/shared/lib/utils";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { format } from "date-fns";
+import { format, isBefore, startOfDay } from "date-fns";
 import { Button } from "@/shared/components/ui/button";
 import { Calendar } from "@/shared/components/ui/calendar";
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/shared/components/ui/form";
@@ -14,7 +14,9 @@ import { useState } from "react";
 import { useEditReminder } from "@/api/reminders/reminder.mutation";
 import { setHoursAndMinutes } from "@/utils/formatDate";
 
-const EditMeeting = ({ data, dialog, type}: { data: Reminders; type: "deal" | "lead"; dialog: React.Dispatch<React.SetStateAction<{ open: boolean; data: Reminders | null | number | string; action: "edit" | "delete" | null }>> }) => {
+const EditMeeting = ({ data, dialog }: { data: Reminders; dialog: React.Dispatch<React.SetStateAction<{ open: boolean; data: Reminders | null | number | string; action: "edit" | "delete" | null }>> }) => {
+	
+	const [popoverOpen, setPopoverOpen] = useState(false)
 	
 	const getTime = () => {
 		const sendAt = new Date(data.send_at as Date);
@@ -27,11 +29,10 @@ const EditMeeting = ({ data, dialog, type}: { data: Reminders; type: "deal" | "l
 	const editReminder = useEditReminder();
 	const reminderId = data.id;
 
-	const form = useForm({ resolver: zodResolver(addReminderSchema), defaultValues: { title: data.title, send_at: data.send_at as Date, message: data.message as string, reminder_type: data.type} });
+	const form = useForm({ resolver: zodResolver(addReminderSchema), defaultValues: { title: data.title, send_at: data.send_at as Date, message: data.message as string, reminder_type: data.type } });
 
 	const onSubmit = (data: AddReminder) => {
 		const sendAt = data.send_at;
-		data.type = type;
 		if (sendAt && time) {
 			data.send_at = setHoursAndMinutes(time, sendAt);
 		}
@@ -67,17 +68,34 @@ const EditMeeting = ({ data, dialog, type}: { data: Reminders; type: "deal" | "l
 									<div className="space-y-2">
 										<FormLabel>Date & Time of reminder*</FormLabel>
 										<div className="flex space-x-2">
-											<Popover>
+											<Popover modal open={popoverOpen} onOpenChange={setPopoverOpen}>
 												<PopoverTrigger asChild>
 													<FormControl>
-														<Button variant={"outline"} className={cn("w-1/2 pl-3 text-left font-normal", !field.value && "text-muted-foreground")}>
-															{field.value ? format(field.value as Date, "PPP") : <span>Pick a date</span>}
+														<Button
+															variant="outline"
+															className={cn(
+																"w-1/2 pl-3 text-left font-normal",
+																!field.value && "text-muted-foreground"
+															)}
+														>
+															{field.value
+																? format(field.value as Date, "PPP")
+																: <span>Pick a date</span>}
 															<CalendarIcon className="ml-auto h-4 w-4 opacity-50" />
 														</Button>
 													</FormControl>
 												</PopoverTrigger>
 												<PopoverContent className="w-auto p-0" align="start">
-													<Calendar mode="single" selected={field.value as Date | undefined} onSelect={field.onChange} captionLayout="dropdown" />
+													<Calendar
+														mode="single"
+														selected={field.value as Date | undefined}	
+														onSelect={(date) => {
+															field.onChange(date)
+															setPopoverOpen(false) 
+														}}
+														captionLayout="dropdown"
+														 disabled={(date) => isBefore(date, startOfDay(new Date()))}
+													/>
 												</PopoverContent>
 											</Popover>
 											<Input type="time" value={time} onChange={(e) => setTime(e.target.value)} className="w-1/2" />
