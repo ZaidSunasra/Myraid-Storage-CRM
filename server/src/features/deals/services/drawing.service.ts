@@ -1,4 +1,4 @@
-import { Assignee, DEPARTMENTS, GetDrawingOutput, SuccessResponse, UploadDrawing } from "zs-crm-common";
+import { DEPARTMENTS, GetDrawingOutput, UploadDrawing } from "zs-crm-common";
 import { prisma } from "../../../libs/prisma";;
 import { DeleteObjectCommand, GetObjectCommand, PutObjectCommand } from "@aws-sdk/client-s3";
 import { getSignedUrl } from "@aws-sdk/s3-request-presigner";
@@ -107,7 +107,6 @@ export const deleteDrawingService = async (id: string): Promise<void> => {
                 drawing_url: true
             }
         });
-        console.log(drawing?.drawing_url)
         if (drawing?.drawing_url) {
             await s3Client.send(
                 new DeleteObjectCommand({

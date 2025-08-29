@@ -16,7 +16,7 @@ const  notificationReminderCron = () => {
                     },
                     {
                         send_at: {
-                            equals: now
+                            lte: now
                         }
                     }
                 ],
