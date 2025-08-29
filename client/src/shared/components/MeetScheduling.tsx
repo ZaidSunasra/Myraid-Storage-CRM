@@ -2,7 +2,7 @@ import { useForm } from "react-hook-form";
 import { addReminderSchema, type AddReminder } from "zs-crm-common";
 import { cn } from "@/shared/lib/utils";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { format } from "date-fns";
+import { format, isBefore, startOfDay } from "date-fns";
 import { useAddReminder } from "@/api/reminders/reminder.mutation";
 import { Button } from "@/shared/components/ui/button";
 import { Calendar } from "@/shared/components/ui/calendar";
@@ -77,7 +77,10 @@ const MeetScheduling = ({ type, id }: { type: "deal" | "lead", id: string }) => 
 													</FormControl>
 												</PopoverTrigger>
 												<PopoverContent className="w-auto p-0" align="start">
-													<Calendar mode="single" selected={field.value as Date | undefined} onSelect={field.onChange} captionLayout="dropdown" />
+													<Calendar mode="single" selected={field.value as Date | undefined} onSelect={field.onChange} 
+													captionLayout="dropdown" 
+													 disabled={(date) => isBefore(date, startOfDay(new Date()))}
+													 />
 												</PopoverContent>
 											</Popover>
 											<Input type="time" value={time} onChange={(e) => setTime(e.target.value)} className="w-1/2" />

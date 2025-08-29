@@ -101,7 +101,7 @@ const ScheduledMeeting = ({id, type} : {id: string, type: "lead" | "deal"}) => {
 								<DialogTitle>Edit Reminder</DialogTitle>
 								<DialogDescription>Update the details of the reminder.</DialogDescription>
 							</DialogHeader>
-							<EditReminder data={dialog.data as Reminders} dialog={setDialog} type={type}/>
+							<EditReminder data={dialog.data as Reminders} dialog={setDialog} />
 						</>
 					) : (
 						<></>

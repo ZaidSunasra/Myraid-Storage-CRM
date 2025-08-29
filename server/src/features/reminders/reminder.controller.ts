@@ -46,9 +46,8 @@ export const addReminderController = async (req: Request, res: Response<SuccessR
 }
 
 export const editReminderController = async (req: Request, res: Response<SuccessResponse | ErrorResponse>): Promise<any> => {
-    const reminder_id = req.params.id;
+    const reminder_id = req.params.reminder_id;
     const { title, send_at, message, reminder_type } = req.body;
-    console.log(req.body);
     const validation = addReminderSchema.safeParse(req.body);
     if (!validation.success) {
         return res.status(400).json({
