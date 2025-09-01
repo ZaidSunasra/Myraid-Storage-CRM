@@ -102,7 +102,7 @@ const AddEditLeadDetails = ({ form, handleClick, isLoading }: { form: UseFormRet
 						</Button>
 					</div>
 					<div className="space-y-2">
-						<FormLabel className="mb-2">Phone Numbers *</FormLabel>
+						<FormLabel className="mb-2">Phone Number*</FormLabel>
 						{phoneField.map((field, index) => (
 							<FormField
 								key={field.id}
@@ -112,7 +112,7 @@ const AddEditLeadDetails = ({ form, handleClick, isLoading }: { form: UseFormRet
 									<FormItem className="">
 										<div className="flex items-center gap-2">
 											<FormControl>
-												<Input {...field} placeholder="Enter phone number" />
+												<Input {...field} placeholder="Enter phone number" type="tel" />
 											</FormControl>
 											<Button type="button" variant="destructive" onClick={() => phoneRemove(index)}>
 												<Trash />
