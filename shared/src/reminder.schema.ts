@@ -11,9 +11,6 @@ export const addReminderSchema = z.object({
     send_at: z.coerce.date("Date and time are required"),
     reminder_type: z.enum(NOTIFICATION_TYPE),
     type: z.enum(["deal", "lead"]).optional(),
-    lead_id: z.coerce.number().optional(),
-    deal_id: z.string().optional(),
-    description_id: z.coerce.number().optional()
 })
 
 export type Reminders = {

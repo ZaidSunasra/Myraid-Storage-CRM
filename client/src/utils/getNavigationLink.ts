@@ -2,7 +2,7 @@ import type { reminder_type, Notification, department } from "zs-crm-common";
 
 export const getNavigationLink = (notification: Notification) => {
 	const navLink: Record<reminder_type, string> = {
-		client_meeting: notification.deal_id ? `/deal/${notification.deal_id}` : `/lead/${notification.lead_id}?tab=scheduling`,
+		client_meeting: notification.deal_id ? `/deal/${notification.deal_id}?tab=scheduling` : `/lead/${notification.lead_id}?tab=scheduling`,
 		mentioned: notification.deal_id ? `/deal/${notification.deal_id}` : `/lead/${notification.lead_id}`,
 		lead_assigned: notification.deal_id ? `/deal/${notification.deal_id}` : `/lead/${notification.lead_id}`,
 		drawing_uploaded: `/deal/${notification.deal_id}?tab=drawing`,

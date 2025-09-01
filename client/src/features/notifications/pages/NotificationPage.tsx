@@ -46,12 +46,12 @@ const NotificationPage = () => {
 								<p className="text-muted-foreground">Stay updated with your CRM activities</p>
 							</div>
 						</div>
-						{unreadCount > 0 && (
+						{/* {unreadCount > 0 && (
 							<Button className="bg-blue-600 hover:bg-blue-700">
 								<CheckCheck className="h-4 w-4 mr-2" />
 								Mark All as Read
 							</Button>
-						)}
+						)} */}
 					</div>
 				</div>
 			</div>
