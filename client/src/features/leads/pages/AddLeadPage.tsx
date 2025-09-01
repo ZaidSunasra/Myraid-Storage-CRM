@@ -23,7 +23,7 @@ const AddLeadPage = () => {
         defaultValues: ({
             first_name: "",
             last_name: "",
-            emails: [{ email: "" }],
+            emails: [],
             phones: [{ number: "" }],
             source_id: 0,
             product_id: 0,
