@@ -24,15 +24,14 @@ model User {
 }
 
 model Company {
-  id             Int         @id @default(autoincrement())
+  id             Int      @id @default(autoincrement())
   name           String
   address        String
   gst_no         String?
-  created_at     DateTime    @default(now())
+  created_at     DateTime @default(now())
   client_details Client[]
   lead           Lead[]
   deal           Deal[]
-  quotation      Quotation[]
 }
 
 model Lead {
@@ -190,7 +189,6 @@ model Drawing {
 model Quotation {
   id                 Int                @id @default(autoincrement())
   created_at         DateTime           @default(now())
-  company_id         Int
   deal_id            String
   subject            String
   quotation_template Quotation_Template
@@ -199,7 +197,6 @@ model Quotation {
   round_off          Decimal            @default(0)
   total_amount       Decimal            @default(0)
   deal               Deal               @relation(fields: [deal_id], references: [id])
-  company            Company            @relation(fields: [company_id], references: [id])
   order              Order[]
   items              QuotationItem[]
   working            QuotationWorking[]
@@ -210,44 +207,45 @@ model QuotationItem {
   quotation_id Int
   item_name    String
   item_code    String
-  height       Decimal
-  width        Decimal
-  depth        Decimal
+  height       Int
+  width        Int
+  depth        Int
   rate         Decimal
-  quantity     Decimal
+  quantity     Int
   quotation    Quotation @relation(fields: [quotation_id], references: [id])
 }
 
 model QuotationWorking {
-  id           Int       @id @default(autoincrement())
-  quotation_id Int @unique
-  total_weight Decimal @default(0)
-  sheet_material Decimal @default(0)
-  trolley_material Decimal @default(0)
-  powder_coating Decimal @default(0)
-  labour_cost Decimal @default(0)
-  installation Decimal @default(0)
-  transport Decimal @default(0)
-  accomodation Decimal @default(0)
+  id                  Int     @id @default(autoincrement())
+  quotation_id        Int     @unique
+  total_weight        Decimal @default(0)
+  sheet_material      Decimal @default(0)
+  trolley_material    Decimal @default(0)
+  powder_coating      Decimal @default(0)
+  labour_cost         Decimal @default(0)
+  installation        Decimal @default(0)
+  transport           Decimal @default(0)
+  accomodation        Decimal @default(0)
   provided_total_cost Decimal @default(0)
-  provided_rate Decimal @default(0)
-  provided_profit Decimal
-  market_rate Decimal @default(0)
-  market_total_cost Decimal @default(0)
-  market_profit Decimal @default(0)
-
-  quotation    Quotation @relation(fields: [quotation_id], references: [id])
+  provided_rate       Decimal @default(0)
+  provided_profit     Decimal
+  market_rate         Decimal @default(0)
+  market_total_cost   Decimal @default(0)
+  market_profit       Decimal @default(0)
+  total_body Int 
+  quotation Quotation @relation(fields: [quotation_id], references: [id])
 }
 
 model BaseProduct {
-  id Int @id @default(autoincrement())
-  name String
-  code String?
-  default_height Decimal @default(0)
-  default_weight Decimal @default(0)
-  default_depth Decimal @default(0)
-  per_bay_qty Int
-  compartment Int
+  id             Int     @id @default(autoincrement())
+  product_type Product_Type
+  name           String
+  code           String?
+  default_height Int @default(0)
+  default_width Int @default(0)
+  default_depth  Int @default(0)
+  per_bay_qty    Int
+  compartment    Int
 }
 
 model Order {
@@ -286,6 +284,11 @@ enum Notification_Type {
 enum Quotation_Template {
   set_wise
   item_wise
+}
+
+enum Product_Type {
+  compactor
+  locker
 }
 
 enum Deal_Status {
