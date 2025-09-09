@@ -1,19 +1,12 @@
-import { NotificationProvider } from "./context/NotificationContext";
-import { UserProvider } from "./context/UserContext";
+import { AppContext } from "./context/AppContext";
 import Router from "./routes/routes";
 import { Toaster } from "sonner";
 
 function App() {
-	return (
-		<>
-			<UserProvider>
-				<NotificationProvider>
-					<Toaster richColors expand={true} closeButton />
-					<Router />
-				</NotificationProvider>
-			</UserProvider>
-		</>
-	);
+	return <AppContext>
+		<Toaster richColors expand={true} closeButton />
+		<Router />
+	</AppContext>
 }
 
 export default App;
