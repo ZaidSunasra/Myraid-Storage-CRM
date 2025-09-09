@@ -9,6 +9,7 @@ import sourceRouter from "../features/sources/source.routes";
 import descriptionRouter from "../features/descriptions/description.routes";
 import reminderRouter from "../features/reminders/reminder.routes";
 import companyRouter from "../features/company/company.routes";
+import quotationRouter from "../features/quotation/quotation.routes";
 
 export const mainRouter = express.Router();
 
@@ -22,3 +23,4 @@ mainRouter.use("/sources", sourceRouter);
 mainRouter.use("/descriptions", descriptionRouter);
 mainRouter.use("/reminders", reminderRouter);
 mainRouter.use("/company", companyRouter);
+mainRouter.use("/quotations", quotationRouter);
