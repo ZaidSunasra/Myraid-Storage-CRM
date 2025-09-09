@@ -195,7 +195,8 @@ model Quotation {
   gst                Decimal            @default(0)
   discount           Decimal            @default(0)
   round_off          Decimal            @default(0)
-  total_amount       Decimal            @default(0)
+  sub_total       Decimal            @default(0)
+  grand_total Decimal @default(0)
   deal               Deal               @relation(fields: [deal_id], references: [id])
   order              Order[]
   items              QuotationItem[]
@@ -206,11 +207,12 @@ model QuotationItem {
   id           Int       @id @default(autoincrement())
   quotation_id Int
   item_name    String
-  item_code    String
+  item_code    String?
   height       Int
   width        Int
   depth        Int
-  rate         Decimal
+  provided_rate       Decimal @default(0)
+  market_rate         Decimal @default(0)
   quantity     Int
   quotation    Quotation @relation(fields: [quotation_id], references: [id])
 }
@@ -227,12 +229,9 @@ model QuotationWorking {
   transport           Decimal @default(0)
   accomodation        Decimal @default(0)
   provided_total_cost Decimal @default(0)
-  provided_rate       Decimal @default(0)
-  provided_profit     Decimal
-  market_rate         Decimal @default(0)
   market_total_cost   Decimal @default(0)
-  market_profit       Decimal @default(0)
   total_body Int 
+  metal_rate Decimal @default(0)
   quotation Quotation @relation(fields: [quotation_id], references: [id])
 }
 
