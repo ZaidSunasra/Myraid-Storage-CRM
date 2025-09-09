@@ -10,3 +10,4 @@ export * from "./description.schema";
 export * from "./reminder.schema";
 export * from "./drawing.schema";
 export * from "./company.schema";
+export * from "./quotation.schema";
