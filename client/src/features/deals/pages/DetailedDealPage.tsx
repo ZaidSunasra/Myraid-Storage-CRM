@@ -4,7 +4,7 @@ import Navbar from "@/shared/components/Navbar";
 import { Button } from "@/shared/components/ui/button";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/shared/components/ui/tabs";
 import { capitalize, toTitleCase } from "@/utils/formatData";
-import { ArrowLeft, Edit } from "lucide-react";
+import { ArrowLeft, Edit, ReceiptIndianRupee } from "lucide-react";
 import { NavLink, useNavigate, useParams, useSearchParams } from "react-router";
 import DealDetails from "../components/DealDetails";
 import { type deal_status, type GetDealOutput } from "zs-crm-common";
@@ -92,6 +92,14 @@ const DetailedDealPage = () => {
                     </Tabs>
                 </div>
                 <div className="lg:col-span-1">
+                   {user?.department && canView(user.department, "admin") && <div className="w-full">
+                        <Button className="mb-8 text-white flex gap-2 px-6 py-2 rounded-xl shadow-md transition w-full bg-blue-600 hover:bg-blue-700"
+                        onClick={() => navigate(`/add/quotation/${id}`)}
+                        >
+                            <ReceiptIndianRupee className="w-4 h-4" />
+                            Create Quotation
+                        </Button>
+                    </div>}
                     <LeadSideBar />
                 </div>
             </div>
