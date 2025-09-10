@@ -3,7 +3,7 @@ import { FetchLeadById } from "@/api/leads/leads.queries";
 import { useUser } from "@/context/UserContext";
 import DetailedPageLoader from "@/shared/components/loaders/DetailedPageLoader";
 import { Navigate, Outlet, useLocation, useParams } from "react-router";
-import { DEPARTMENTS, type Assignee, type department} from "zs-crm-common";
+import { DEPARTMENTS, type Assignee, type department } from "zs-crm-common";
 
 const ProtectedRoute = ({ allowedDepartment, checkOwnership = false, type }: { allowedDepartment: department[]; checkOwnership?: boolean; type?: "deal" | "lead" }) => {
 	const location = useLocation();
@@ -23,12 +23,12 @@ const ProtectedRoute = ({ allowedDepartment, checkOwnership = false, type }: { a
 			const { data, isPending, isError } = FetchLeadById(id as string);
 			if (isPending) return <DetailedPageLoader />;
 			const assignedIds = data?.lead?.assigned_to?.map((a: Assignee) => a.user.id) || [];
-			if (isError || !assignedIds.includes(user?.id)) return <Navigate to="/" replace />;
+			if (isError || !assignedIds.includes(user?.id)) return <Navigate to="/unauthorized-page" replace />;
 		} else {
 			const { data, isPending, isError } = FetchDealById(id as string);
 			if (isPending) return <DetailedPageLoader />;
 			const assignedIds = data?.deal?.assigned_to?.map((a: Assignee) => a.user.id) || [];
-			if (isError || !assignedIds.includes(user?.id)) return <Navigate to="/" replace />;
+			if (isError || !assignedIds.includes(user?.id)) return <Navigate to="/unauthorized-page" replace />;
 		}
 	}
 
