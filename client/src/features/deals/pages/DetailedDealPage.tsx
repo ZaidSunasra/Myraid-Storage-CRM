@@ -1,5 +1,4 @@
 import { FetchDealById } from "@/api/deals/deal.queries"
-import LeadSideBar from "@/features/leads/components/LeadSidebar";
 import Navbar from "@/shared/components/Navbar";
 import { Button } from "@/shared/components/ui/button";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/shared/components/ui/tabs";
@@ -19,6 +18,7 @@ import { canView } from "@/utils/viewPermission";
 import DrawingList from "../components/DrawingList";
 import DetailedPageLoader from "@/shared/components/loaders/DetailedPageLoader";
 import ErrorDisplay from "@/shared/components/ErrorPage";
+import DealQuotation from "../components/DealQuotation";
 
 const DetailedDealPage = () => {
 
@@ -92,15 +92,19 @@ const DetailedDealPage = () => {
                     </Tabs>
                 </div>
                 <div className="lg:col-span-1">
-                   {user?.department && canView(user.department, "admin") && <div className="w-full">
-                        <Button className="mb-8 text-white flex gap-2 px-6 py-2 rounded-xl shadow-md transition w-full bg-blue-600 hover:bg-blue-700"
-                        onClick={() => navigate(`/add/quotation/${id}`)}
-                        >
-                            <ReceiptIndianRupee className="w-4 h-4" />
-                            Create Quotation
-                        </Button>
-                    </div>}
-                    <LeadSideBar />
+                    {user?.department && canView(user.department, "admin") &&
+                        <div className="w-full">
+                            <Button className="mb-8 text-white flex gap-2 px-6 py-2 rounded-xl shadow-md transition w-full bg-blue-600 hover:bg-blue-700"
+                                onClick={() => navigate(`/add/quotation/${id}`)}
+                            >
+                                <ReceiptIndianRupee className="w-4 h-4" />
+                                Create Quotation
+                            </Button>
+                        </div>
+                    }
+                    {user?.department && canView(user.department, "sales_admin") &&
+                        <DealQuotation deal_id={id as string} />
+                    }
                 </div>
             </div>
         </div>
