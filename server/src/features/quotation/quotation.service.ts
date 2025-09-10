@@ -75,3 +75,46 @@ export const adddQuotationService = async ({ quotation_template, product_type, b
         })
     });
 }
+
+export const getQuotationByDealService = async (deal_id: string) : Promise<any> => {
+    const quotation = await prisma.quotation.findMany({
+        where: {
+            deal_id: deal_id
+        },
+        include: {
+            deal: true,
+            items: true,
+            working: true
+        }
+    });
+    return quotation;
+}
+
+export const getQuotationService = async () : Promise<any> => {
+    const quotation = await prisma.quotation.findMany({
+        where: {},
+        include: {
+            deal: true,
+            items: true,
+            working: true
+        },
+        orderBy: {
+            created_at: "desc"
+        }
+    });
+    return quotation;
+}
+
+export const getQuotationByIdService = async (id: string) : Promise<any> => {
+    const quotation = await prisma.quotation.findUnique({
+        where: {
+            id: parseInt(id)
+        },
+        include: {
+            deal: true,
+            items: true,
+            working: true
+        }
+    });
+    return quotation;
+}

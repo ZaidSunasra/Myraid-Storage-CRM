@@ -10,3 +10,18 @@ export const addQuotation = async ({data, deal_id} : {data: AddQuotation, deal_i
     const response = await axiosInstance.post(`/quotations/add/${deal_id}`, data);
     return response.data;
 };
+
+export const getQuotationByDeal = async (deal_id: string): Promise<any> => {
+    const response = await axiosInstance.get(`/quotations/get-by/${deal_id}`);
+    return response.data;
+};
+
+export const getQuotation= async (): Promise<any> => {
+    const response = await axiosInstance.get(`/quotations/get-all`);
+    return response.data;
+};
+
+export const getQuotationById = async (id: string): Promise<any> => {
+    const response = await axiosInstance.get(`/quotations/get/${id}`);
+    return response.data;
+};

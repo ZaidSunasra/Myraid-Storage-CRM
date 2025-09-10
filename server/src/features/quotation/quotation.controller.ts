@@ -1,5 +1,5 @@
 import { Request, Response } from "express";
-import { adddQuotationService, getQuotationProductsService } from "./quotation.service";
+import { adddQuotationService, getQuotationByDealService, getQuotationByIdService, getQuotationProductsService, getQuotationService } from "./quotation.service";
 import { addQuotationSchema, ErrorResponse, SuccessResponse } from "zs-crm-common";
 
 export const getQuotationProductsController = async (req: Request, res: Response): Promise<any> => {
@@ -42,6 +42,56 @@ export const addQuotationController = async (req: Request, res: Response<ErrorRe
         })
     } catch (error) {
         console.log(`Error in adding quotations`, error);
+        return res.status(500).send({
+            message: "Internal server error",
+            error: error
+        });
+    }
+}
+
+export const getQuotationByDealController = async (req: Request, res: Response): Promise<any> => {
+    const deal_id = req.params.deal_id;
+    try {
+        const quotations = await getQuotationByDealService(deal_id);
+        return res.status(200).json({
+            message: `Quotations by deal fetched  successfully`,
+            quotations
+        })
+    } catch (error) {
+        console.log(`Error in fetching quotations by deal`, error);
+        return res.status(500).send({
+            message: "Internal server error",
+            error: error
+        });
+    }
+}
+
+export const getQuotationController = async (req: Request, res: Response): Promise<any> => {
+    try {
+        const quotations = await getQuotationService();
+        return res.status(200).json({
+            message: `Quotations fetched  successfully`,
+            quotations
+        })
+    } catch (error) {
+        console.log(`Error in fetching quotations`, error);
+        return res.status(500).send({
+            message: "Internal server error",
+            error: error
+        });
+    }
+}
+
+export const getQuotationByIdController = async (req: Request, res: Response): Promise<any> => {
+    const id = req.params.id;
+    try {
+        const quotations = await getQuotationByIdService(id)
+        return res.status(200).json({
+            message: `Quotation with Id:${id} fetched successfully`,
+            quotations
+        })
+    } catch (error) {
+        console.log(`Error in fetching quotation with Id:${id}`, error);
         return res.status(500).send({
             message: "Internal server error",
             error: error
