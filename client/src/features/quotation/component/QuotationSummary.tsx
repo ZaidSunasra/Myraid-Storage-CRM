@@ -3,7 +3,7 @@ import { Card, CardHeader, CardDescription, CardTitle, CardContent, CardFooter }
 import { ChevronLeft, FileText } from "lucide-react"
 import { FormField, FormItem, FormLabel, FormMessage } from "@/shared/components/ui/form"
 import { Input } from "@/shared/components/ui/input"
-import { calculateGrandTotal, calculateGSTTotal, calculateRoundOff, calculateTotal } from "../utils/calculateTotal"
+import { calculateGrandTotal, calculateGSTTotal, calculateRoundOff } from "../utils/calculateTotal"
 import { Button } from "@/shared/components/ui/button"
 import { useEffect } from "react"
 import { useQuotation } from "@/context/QuotationContext"
@@ -11,17 +11,16 @@ import type { AddQuotation } from "zs-crm-common"
 
 const QuotationSummary = ({ form, handlePrev }: { form: UseFormReturn<AddQuotation>, handlePrev: () => void }) => {
 
-  const { totalProvidedRate } = useQuotation();
-  const total = calculateTotal(totalProvidedRate, form);
-  const gst_amount = calculateGSTTotal(total, form);
-  const round_off = calculateRoundOff(total, gst_amount);
-  const grand_total = calculateGrandTotal(total, gst_amount, round_off, form);
+  const { overallTotal } = useQuotation();
+  const gst_amount = calculateGSTTotal(overallTotal, form);
+  const round_off = calculateRoundOff(overallTotal, gst_amount);
+  const grand_total = calculateGrandTotal(overallTotal, gst_amount, round_off, form);
 
   useEffect(() => {
-    form.setValue("total", total);
+    form.setValue("total", overallTotal);
     form.setValue("grandTotal", grand_total);
     form.setValue("round_off", round_off);
-  }, [total, grand_total, round_off]);
+  }, [overallTotal, grand_total, round_off]);
 
 
   return <Card>
@@ -43,7 +42,7 @@ const QuotationSummary = ({ form, handlePrev }: { form: UseFormReturn<AddQuotati
             render={({ field }) => (
               <FormItem>
                 <FormLabel>Total*</FormLabel>
-                <Input {...field} placeholder="Enter total" type="number" disabled />
+                <Input value={field.value ? field.value : 0} placeholder="Enter total" type="number" disabled />
                 <FormMessage />
               </FormItem>
             )}
@@ -56,7 +55,7 @@ const QuotationSummary = ({ form, handlePrev }: { form: UseFormReturn<AddQuotati
             render={({ field }) => (
               <FormItem>
                 <FormLabel>GST (%)*</FormLabel>
-                <Input {...field} placeholder="Enter gst" type="number" onChange={(e) => field.onChange(Number(e.target.value))} min={0} />
+                <Input value={field.value ? field.value : 0} placeholder="Enter gst" type="number" onChange={(e) => field.onChange(Number(e.target.value))} min={0} />
                 <FormMessage />
               </FormItem>
             )}

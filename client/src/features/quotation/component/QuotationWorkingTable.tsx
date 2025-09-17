@@ -2,9 +2,19 @@ import { useQuotation } from "@/context/QuotationContext"
 import { Input } from "@/shared/components/ui/input"
 import { Table, TableBody, TableCell, TableFooter, TableHead, TableHeader, TableRow } from "@/shared/components/ui/table"
 
-const QuotationWorkingTable = () => {
+interface QuotationWorkingTableProps {
+    productId: string;
+}
 
-    const { items, updateItem, totalMarketRate, totalProvidedRate} = useQuotation()
+const QuotationWorkingTable = ({ productId }: QuotationWorkingTableProps) => {
+    const { 
+        getProductItems, 
+        updateItem, 
+        getProductTotals 
+    } = useQuotation()
+
+    const items = getProductItems(productId)
+    const { totalMarketRate, totalProvidedRate } = getProductTotals(productId)
 
     return <Table className="border">
         <TableHeader>
@@ -32,7 +42,9 @@ const QuotationWorkingTable = () => {
                             min={1}
                             value={item.qty}
                             onChange={e =>
-                                updateItem(item.id, { qty: Number(e.target.value) })
+                                updateItem(productId, item.id, { 
+                                    qty: Number(e.target.value) 
+                                })
                             }
                         />
                     </TableCell>
@@ -41,7 +53,9 @@ const QuotationWorkingTable = () => {
                             type="number"
                             value={item.provided_rate}
                             onChange={e =>
-                                updateItem(item.id, { provided_rate: Number(e.target.value) })
+                                updateItem(productId, item.id, { 
+                                    provided_rate: Number(e.target.value) 
+                                })
                             }
                         />
                     </TableCell>
@@ -57,7 +71,9 @@ const QuotationWorkingTable = () => {
                             type="number"
                             value={item.market_rate}
                             onChange={e =>
-                                updateItem(item.id, { market_rate: Number(e.target.value) })
+                                updateItem(productId, item.id, { 
+                                    market_rate: Number(e.target.value) 
+                                })
                             }
                         />
                     </TableCell>

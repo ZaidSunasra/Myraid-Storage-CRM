@@ -14,11 +14,12 @@ import { useQuotation } from "@/context/QuotationContext";
 import { useAddQuotation } from "@/api/quotations/quotations.mutation";
 import { addQuotationSchema, type AddQuotation } from "zs-crm-common";
 
+
 const AddQuotationPage = () => {
 
     const { id } = useParams();
     const [currentStep, setCurrentStep] = useState<number>(1);
-    const { items, totalBodies, totalMarketRate, totalProvidedRate } = useQuotation();
+    const { products } = useQuotation();
     const addQuotation = useAddQuotation();
 
     const form = useForm<AddQuotation>({
@@ -28,23 +29,10 @@ const AddQuotationPage = () => {
             product_type: undefined,
             bay: 1,
             compartment: 4,
-            quotation_item: items,
-            powder_coating: 0,
-            sheet_material: 0,
-            trolley_material: 0,
-            total_weight: 0,
-            labour_cost: 0,
-            accomodation: 0,
-            transport: 0,
-            installation: 0,
-            metal_rate: 0,
-            total: 0,
+            quotation_item: products,
             gst: 18,
             grandTotal: 0,
             discount: 0,
-            total_body: 0,
-            total_market_rate: 0,
-            total_provided_rate: 0,
             round_off: 0,
         }),
     });
@@ -60,13 +48,10 @@ const AddQuotationPage = () => {
     const onSubmit = (data: AddQuotation) => {
         const payload = {
             ...data,
-            quotation_item: items,
-            total_body: totalBodies,
-            total_market_rate: totalMarketRate,
-            total_provided_rate: totalProvidedRate,
+            quotation_item: products,
         }
         console.log(payload)
-        addQuotation.mutate({data: payload, deal_id:id as string})
+       addQuotation.mutate({data: payload, deal_id:id as string})
     }
 
     return <div className="bg-accent min-h-screen">

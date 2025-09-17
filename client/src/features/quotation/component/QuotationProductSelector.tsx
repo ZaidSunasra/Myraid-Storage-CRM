@@ -1,6 +1,6 @@
 import { Button } from "@/shared/components/ui/button"
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/shared/components/ui/card"
-import {  ChevronRight, Package } from "lucide-react"
+import { ChevronRight, Package } from "lucide-react"
 import type { UseFormReturn } from "react-hook-form"
 import { FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/shared/components/ui/form"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/shared/components/ui/select"
@@ -8,13 +8,13 @@ import { toTitleCase } from "@/utils/formatData"
 import { Input } from "@/shared/components/ui/input"
 import { useFetchQuotationProduct } from "@/api/quotations/quotations.mutation"
 import { useQuotation } from "@/context/QuotationContext"
-import QuotationTable from "./QuotationProductTable"
+import QuotationProductTable from "./QuotationProductTable"
 import { PRODUCT_TYPE, QUOTATION_TEMPLATE, type AddQuotation } from "zs-crm-common"
 
 const QuotationProductSelector = ({ form, handleNext }: { form: UseFormReturn<AddQuotation>, handleNext: () => void }) => {
 
-  const getProduct = useFetchQuotationProduct();
-  const { items } = useQuotation();
+  const getProduct = useFetchQuotationProduct(form.watch("bay"), form.watch("compartment"));
+  const { products } = useQuotation();
 
   return <Card>
     <CardHeader>
@@ -119,7 +119,7 @@ const QuotationProductSelector = ({ form, handleNext }: { form: UseFormReturn<Ad
       </div>
       <div className="flex justify-end">
         <Button
-        type="button"
+          type="button"
           disabled={!form.watch("product_type") || !form.watch("quotation_template")}
           onClick={() => getProduct.mutate({
             product_type: form.getValues("product_type"),
@@ -129,13 +129,13 @@ const QuotationProductSelector = ({ form, handleNext }: { form: UseFormReturn<Ad
           Add Products
         </Button>
       </div>
-      {items.length > 0 &&
-        <QuotationTable />
+      {products.length > 0 &&
+        <QuotationProductTable />
       }
       <CardFooter className="flex justify-end px-0">
-        <Button 
-        onClick={handleNext} 
-        disabled={!form.watch("quotation_template") || !form.watch("product_type") || items.length <= 0}
+        <Button
+          onClick={handleNext}
+          disabled={!form.watch("quotation_template") || !form.watch("product_type") || products.length <= 0}
         >
           Next
           <ChevronRight className="h-4 w-4 ml-2" />
