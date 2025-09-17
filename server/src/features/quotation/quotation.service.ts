@@ -21,82 +21,99 @@ export const getQuotationProductsService = async (product_type: Product_Type, ba
     return enrichedProducts;
 }
 
-export const adddQuotationService = async ({ quotation_template, product_type, bay, compartment, quotation_item, powder_coating, trolley_material,
-    sheet_material, total_weight, labour_cost, installation, accomodation, transport, metal_rate, total, grandTotal, gst, discount, total_body, total_market_rate,
-    total_provided_rate, round_off }: AddQuotation, deal_id: string): Promise<any> => {
-
+export const adddQuotationService = async ({ quotation_template, product_type, bay, compartment, quotation_item, total, grandTotal, gst, discount, round_off }: AddQuotation,
+    deal_id: string): Promise<any> => {
     await prisma.$transaction(async (tx) => {
         const quotation = await tx.quotation.create({
             data: {
                 deal_id: deal_id,
-                subject: `${bay} Bay ${compartment} Compartment - ${product_type}`,
                 quotation_template: quotation_template,
                 gst: gst,
                 discount: discount,
                 round_off: round_off,
                 sub_total: total,
-                grand_total: grandTotal
+                grand_total: grandTotal,
             },
-            select: {
-                id: true
-            }
+            select: { id: true },
         });
-       if(quotation_item && quotation_item?.length > 0) {
-            await tx.quotationItem.createMany({
-                data: quotation_item?.map((item) => ({
+        for (const product of quotation_item ?? []) {
+            const createdProduct = await tx.quotationProducts.create({
+                data: {
                     quotation_id: quotation.id,
-                    item_name: item.name,
-                    item_code: item.code,
-                    height: item.default_height,
-                    width: item.default_width,
-                    depth: item.default_depth,
-                    provided_rate: item.provided_rate,
-                    market_rate: item.market_rate,
-                    quantity: item.qty
-                }))
-            })
-        }
-        await tx.quotationWorking.create({
-            data: {
-                quotation_id: quotation.id,
-                total_weight: total_weight,
-                sheet_material: sheet_material,
-                trolley_material: trolley_material,
-                powder_coating: powder_coating,
-                labour_cost: labour_cost,
-                installation: installation,
-                transport: transport,
-                accomodation: accomodation,
-                provided_total_cost: total_provided_rate,
-                market_total_cost: total_market_rate,
-                total_body: total_body,
-                metal_rate: metal_rate
+                    name: product.name,
+                },
+            });
+            if (product.items && product.items.length > 0) {
+                await tx.quotationItem.createMany({
+                    data: product.items.map((item) => ({
+                        quotation_product_id: createdProduct.id,
+                        item_name: item.name,
+                        item_code: item.code ?? null,
+                        height: item.default_height,
+                        width: item.default_width,
+                        depth: item.default_depth,
+                        provided_rate: item.provided_rate,
+                        market_rate: item.market_rate,
+                        quantity: item.qty,
+                    })),
+                });
             }
-        })
+            await tx.quotationWorking.create({
+                data: {
+                    quotation_product_id: createdProduct.id,
+                    total_weight: product.total_weight,
+                    ss_material: product.ss_material,
+                    trolley_material: product.trolley_material,
+                    powder_coating: product.powder_coating,
+                    labour_cost: product.labour_cost,
+                    installation: product.installation,
+                    transport: product.transport,
+                    accomodation: product.accomodation,
+                    provided_total_cost: product.total_provided_rate,
+                    market_total_cost: product.total_market_rate,
+                    total_body: product.total_body,
+                    metal_rate: product.metal_rate,
+                    set: product.set,
+                    profit_percent: product.profit_percent,
+                },
+            });
+        }
     });
 }
 
-export const getQuotationByDealService = async (deal_id: string) : Promise<any> => {
+export const getQuotationByDealService = async (deal_id: string): Promise<any> => {
     const quotation = await prisma.quotation.findMany({
         where: {
             deal_id: deal_id
         },
         include: {
             deal: true,
-            items: true,
-            working: true
+            quotation_products: {
+                select: {
+                    name: true,
+                    quotation_item: true,
+                    quotation_working: true,
+                    id: true
+                }
+            }
         }
     });
     return quotation;
 }
 
-export const getQuotationService = async () : Promise<any> => {
+export const getQuotationService = async (): Promise<any> => {
     const quotation = await prisma.quotation.findMany({
         where: {},
         include: {
             deal: true,
-            items: true,
-            working: true
+            quotation_products: {
+                select: {
+                    name: true,
+                    quotation_item: true,
+                    quotation_working: true,
+                    id: true
+                }
+            }
         },
         orderBy: {
             created_at: "desc"
@@ -105,15 +122,31 @@ export const getQuotationService = async () : Promise<any> => {
     return quotation;
 }
 
-export const getQuotationByIdService = async (id: string) : Promise<any> => {
+export const getQuotationByIdService = async (id: string): Promise<any> => {
     const quotation = await prisma.quotation.findUnique({
         where: {
             id: parseInt(id)
         },
         include: {
-            deal: true,
-            items: true,
-            working: true
+            deal: {
+                select: {
+                    company: true,
+                    client_detail: {
+                        include: {
+                            emails: true,
+                            phones: true
+                        }
+                    }
+                },
+            },
+            quotation_products: {
+                select: {
+                    name: true,
+                    quotation_item: true,
+                    quotation_working: true,
+                    id: true
+                }
+            }
         }
     });
     return quotation;

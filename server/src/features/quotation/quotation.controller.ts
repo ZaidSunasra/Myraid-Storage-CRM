@@ -20,10 +20,7 @@ export const getQuotationProductsController = async (req: Request, res: Response
 }
 
 export const addQuotationController = async (req: Request, res: Response<ErrorResponse | SuccessResponse>): Promise<any> => {
-    const {
-        quotation_template, product_type, bay, compartment, quotation_item, powder_coating, trolley_material, sheet_material, total_weight, labour_cost, installation,
-        accomodation, transport, metal_rate, total, grandTotal, gst, discount, total_body, total_market_rate, total_provided_rate, round_off
-    } = req.body;
+    const { quotation_template, product_type, bay, compartment, quotation_item, total, grandTotal, gst, discount, round_off } = req.body;
     const deal_id = req.params.deal_id;
     const validation = addQuotationSchema.safeParse(req.body);
     if (!validation.success) {
@@ -33,10 +30,7 @@ export const addQuotationController = async (req: Request, res: Response<ErrorRe
         })
     }
     try {
-        await adddQuotationService({
-            quotation_template, product_type, bay, compartment, quotation_item, powder_coating, trolley_material, sheet_material, total_weight, labour_cost, installation,
-            accomodation, transport, metal_rate, total, grandTotal, gst, discount, total_body, total_market_rate, total_provided_rate, round_off
-        }, deal_id);
+        await adddQuotationService({ quotation_template, product_type, bay, compartment, quotation_item, total, grandTotal, gst, discount, round_off }, deal_id);
         return res.status(200).json({
             message: `Quotation added  successfully`,
         })
@@ -85,10 +79,10 @@ export const getQuotationController = async (req: Request, res: Response): Promi
 export const getQuotationByIdController = async (req: Request, res: Response): Promise<any> => {
     const id = req.params.id;
     try {
-        const quotations = await getQuotationByIdService(id)
+        const quotation = await getQuotationByIdService(id)
         return res.status(200).json({
             message: `Quotation with Id:${id} fetched successfully`,
-            quotations
+            quotation
         })
     } catch (error) {
         console.log(`Error in fetching quotation with Id:${id}`, error);

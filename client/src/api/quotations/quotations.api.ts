@@ -1,5 +1,5 @@
 import axiosInstance from "../axiosInstance";
-import type { AddQuotation, SuccessResponse, product_type} from "zs-crm-common";
+import type { SuccessResponse, product_type, AddQuotation} from "zs-crm-common";
 
 export const getQuotationProducts = async ({product_type, bay, compartment}: {product_type: product_type, bay: number, compartment: number}): Promise<any> => {
     const response = await axiosInstance.post("/quotations/get-products", {product_type, bay, compartment});
