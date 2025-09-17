@@ -187,62 +187,71 @@ model Drawing {
 }
 
 model Quotation {
-  id                 Int                @id @default(autoincrement())
-  created_at         DateTime           @default(now())
+  id                 Int                 @id @default(autoincrement())
+  created_at         DateTime            @default(now())
   deal_id            String
-  subject            String
   quotation_template Quotation_Template
-  gst                Decimal            @default(0)
-  discount           Decimal            @default(0)
-  round_off          Decimal            @default(0)
-  sub_total       Decimal            @default(0)
-  grand_total Decimal @default(0)
-  deal               Deal               @relation(fields: [deal_id], references: [id])
+  gst                Decimal             @default(0)
+  discount           Decimal             @default(0)
+  round_off          Decimal             @default(0)
+  sub_total          Decimal             @default(0)
+  grand_total        Decimal             @default(0)
+  deal               Deal                @relation(fields: [deal_id], references: [id])
   order              Order[]
-  items              QuotationItem[]
-  working            QuotationWorking[]
+  quotation_products QuotationProducts[]
+}
+
+model QuotationProducts {
+  id                Int                @id @default(autoincrement())
+  name              String
+  quotation_id      Int
+  quotation_item    QuotationItem[]
+  quotation         Quotation          @relation(fields: [quotation_id], references: [id])
+  quotation_working QuotationWorking[]
 }
 
 model QuotationItem {
-  id           Int       @id @default(autoincrement())
-  quotation_id Int
-  item_name    String
-  item_code    String?
-  height       Int
-  width        Int
-  depth        Int
-  provided_rate       Decimal @default(0)
-  market_rate         Decimal @default(0)
-  quantity     Int
-  quotation    Quotation @relation(fields: [quotation_id], references: [id])
+  id                   Int               @id @default(autoincrement())
+  item_name            String
+  item_code            String?
+  height               Int
+  width                Int
+  depth                Int
+  provided_rate        Decimal           @default(0)
+  market_rate          Decimal           @default(0)
+  quantity             Int
+  quotation_products   QuotationProducts @relation(fields: [quotation_product_id], references: [id])
+  quotation_product_id Int
 }
 
 model QuotationWorking {
-  id                  Int     @id @default(autoincrement())
-  quotation_id        Int     @unique
-  total_weight        Decimal @default(0)
-  sheet_material      Decimal @default(0)
-  trolley_material    Decimal @default(0)
-  powder_coating      Decimal @default(0)
-  labour_cost         Decimal @default(0)
-  installation        Decimal @default(0)
-  transport           Decimal @default(0)
-  accomodation        Decimal @default(0)
-  provided_total_cost Decimal @default(0)
-  market_total_cost   Decimal @default(0)
-  total_body Int 
-  metal_rate Decimal @default(0)
-  quotation Quotation @relation(fields: [quotation_id], references: [id])
+  id                   Int               @id @default(autoincrement())
+  total_weight         Decimal           @default(0)
+  ss_material          Decimal           @default(0)
+  trolley_material     Decimal           @default(0)
+  powder_coating       Decimal           @default(0)
+  labour_cost          Decimal           @default(0)
+  installation         Decimal           @default(0)
+  transport            Decimal           @default(0)
+  accomodation         Decimal           @default(0)
+  provided_total_cost  Decimal           @default(0)
+  market_total_cost    Decimal           @default(0)
+  total_body           Int
+  metal_rate           Decimal           @default(0)
+  set                  Int               @default(1)
+  profit_percent       Int
+  quotation_products   QuotationProducts @relation(fields: [quotation_product_id], references: [id])
+  quotation_product_id Int
 }
 
 model BaseProduct {
-  id             Int     @id @default(autoincrement())
-  product_type Product_Type
+  id             Int          @id @default(autoincrement())
+  product_type   Product_Type
   name           String
   code           String?
-  default_height Int @default(0)
-  default_width Int @default(0)
-  default_depth  Int @default(0)
+  default_height Int          @default(0)
+  default_width  Int          @default(0)
+  default_depth  Int          @default(0)
   per_bay_qty    Int
   compartment    Int
 }
