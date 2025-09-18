@@ -10,6 +10,7 @@ const DealQuotation = ({ deal_id }: { deal_id: string }) => {
 
     const { data, isPending, isError } = FetchQuotationByDeal(deal_id);
     const navigate = useNavigate();
+    console.log(data);
 
     if (isPending) return <Skeleton className="h-4/5 w-3xs bg-background" />
     if (isError) return <div><ErrorDisplay /></div>
@@ -31,9 +32,9 @@ const DealQuotation = ({ deal_id }: { deal_id: string }) => {
             ) : (
                 <div className="space-y-4">
                     {data.quotations.map((quotation: any) => (
-                        <div key={quotation.id} className="border-l-4 border-blue-500 pl-4 py-2" onClick={() => navigate(`/deal/${quotation.deal_id}/quotation/${quotation.id}`)}>
+                        <div key={quotation.id} className="border-l-4 border-blue-500 pl-4 py-2" onClick={() => navigate(`/quotation/${quotation.deal_id}/${quotation.id}`)}>
                             <div className="flex items-center justify-between mb-1">
-                                <h4 className="font-medium text-sm">{quotation.subject.split("-")[0]}</h4>
+                                <h4 className="font-medium text-sm">{quotation.quotation_products[0].name}</h4>
                             </div>
                             <div className="text-sm text-gray-600 space-y-1">
                                 <div className="flex items-center justify-between">
