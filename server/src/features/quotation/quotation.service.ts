@@ -54,6 +54,7 @@ export const adddQuotationService = async ({ quotation_template, product_type, b
                         depth: item.default_depth,
                         provided_rate: item.provided_rate,
                         market_rate: item.market_rate,
+                        per_bay_qty: item.per_bay_qty,
                         quantity: item.qty,
                     })),
                 });
