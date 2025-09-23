@@ -220,6 +220,7 @@ model QuotationItem {
   provided_rate        Decimal           @default(0)
   market_rate          Decimal           @default(0)
   quantity             Int
+  per_bay_qty Int
   quotation_products   QuotationProducts @relation(fields: [quotation_product_id], references: [id])
   quotation_product_id Int
 }
