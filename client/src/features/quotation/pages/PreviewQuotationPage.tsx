@@ -145,6 +145,12 @@ const PreviewQuotationPage = ({ data }: { data: any }) => {
              <TableRow>
               <TableCell></TableCell>
               <TableCell className="border-r border-black"></TableCell>
+              <TableCell colSpan={2} className="border-r border-black">Discount</TableCell>
+              <TableCell>{data.discount}</TableCell>
+            </TableRow>
+             <TableRow>
+              <TableCell></TableCell>
+              <TableCell className="border-r border-black"></TableCell>
               <TableCell colSpan={2} className="border-2 border-black border-r-0">Grand Total</TableCell>
               <TableCell className="border-2 border-black border-l-0">{data.grandTotal}</TableCell>
             </TableRow>
