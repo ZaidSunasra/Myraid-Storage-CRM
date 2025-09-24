@@ -98,7 +98,7 @@ const AddQuotationPage = () => {
                     />
                   )}
                   {currentStep === 3 && (
-                    <QuotationSummary form={form} handlePrev={handlePrev} />
+                    <QuotationSummary form={form} handlePrev={handlePrev} isSubmitting={addQuotation.isPending}/>
                   )}
                 </form>
               </Form>

@@ -9,7 +9,7 @@ import { useEffect } from "react"
 import { useQuotation } from "@/context/QuotationContext"
 import type { AddQuotation } from "zs-crm-common"
 
-const QuotationSummary = ({ form, handlePrev }: { form: UseFormReturn<AddQuotation>, handlePrev: () => void }) => {
+const QuotationSummary = ({ form, handlePrev, isSubmitting }: { form: UseFormReturn<AddQuotation>, handlePrev: () => void, isSubmitting: boolean}) => {
 
   const { overallTotal } = useQuotation();
   const gst_amount = calculateGSTTotal(overallTotal, form);
@@ -106,7 +106,7 @@ const QuotationSummary = ({ form, handlePrev }: { form: UseFormReturn<AddQuotati
         <ChevronLeft className="h-4 w-4 ml-2" />
         Previous
       </Button>
-      <Button type="submit">
+      <Button type="submit" disabled={isSubmitting}>
         Add Quotation
       </Button>
     </CardFooter>
