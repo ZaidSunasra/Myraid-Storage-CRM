@@ -47,7 +47,7 @@ const Router = () => {
 			<Route element={<ProtectedRoute allowedDepartment={[DEPARTMENTS[0], DEPARTMENTS[1]]} checkOwnership type="deal" />}>
 				<Route path="/deal/edit/:id" element={<EditDealPage />} />
 				<Route path="/quotation/:id/:quotation_id" element={<DetailedQuotationPage />} />
-				{/* <Route path="/quotation/print/:id/:quotation_id" element={< QuotationPrint />} /> */}
+				<Route path="/quotation/print/:id/:quotation_id" element={< QuotationPrint />} />
 			</Route>
 			<Route element={<ProtectedRoute allowedDepartment={[DEPARTMENTS[0], DEPARTMENTS[1], DEPARTMENTS[3]]} checkOwnership type="deal" />}>
 				<Route path="/deal/:id" element={<DetailedDealPage />} />
