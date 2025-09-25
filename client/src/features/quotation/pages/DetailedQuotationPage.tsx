@@ -21,9 +21,6 @@ const DetailedQuotationPage = () => {
     if (isPending) return <DetailedPageLoader />
     if (isError) return <ErrorDisplay fullPage />
 
-    // console.log(id + " " + quotation_id);
-    // console.log(data);
-
     return <div className="min-h-screen bg-accent">
         <Navbar />
         <div className="max-w-7xl mx-auto py-6 sm:px-6 lg:px-8">

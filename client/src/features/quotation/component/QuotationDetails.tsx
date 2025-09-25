@@ -5,7 +5,7 @@ import { toTitleCase } from "@/utils/formatData"
 import { IndianRupee, LayoutTemplate, Percent, User } from "lucide-react"
 
 const QuotationDetails = ({ data }: { data: any }) => {
-  console.log(data);
+
   return <>
     <Card className="bg-background">
       <CardHeader>

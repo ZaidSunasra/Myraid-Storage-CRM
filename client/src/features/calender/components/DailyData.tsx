@@ -8,7 +8,7 @@ import { type GroupedRecords, type ReminderMonth } from "zs-crm-common";
 const DailyData = ({ data, meetingData }: { data: Record<string, GroupedRecords>; meetingData: ReminderMonth[] }) => {
 	const navigate = useNavigate();
 	const { user } = useUser();
-	console.log(data);
+
 	return (
 		<div className="overflow-y-auto">
 			{meetingData && meetingData.length > 0 && (

@@ -5,8 +5,6 @@ import type { QuotationItem, QuotationProduct } from "zs-crm-common";
 const PreviewQuotationPage = ({ data }: { data: any }) => {
 
   const { products, overallTotal } = useQuotation();
-  console.log(data)
-  console.log(products)
 
   const calculateProductTotal = (product: QuotationProduct, item?: QuotationItem) => {
     const productTotal = Number(product.total_provided_rate) + Number(product.installation) * Number(product.total_body) + Number(product.transport) + Number(product.accomodation);

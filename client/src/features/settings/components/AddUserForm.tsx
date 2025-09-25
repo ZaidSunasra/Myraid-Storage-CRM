@@ -49,10 +49,7 @@ const AddUserForm = ({ userData, info, reset }: { userData: AddUser | EditUser |
         </CardHeader>
         <CardContent className="space-y-6">
             <Form {...form}>
-                <form onSubmit={form.handleSubmit(onSubmit,
-                    (errors) => {
-                        console.log("❌ Validation errors:", errors);
-                    })}>
+                <form onSubmit={form.handleSubmit(onSubmit)}>
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-4">
                         <div className="space-y-2">
                             <FormField

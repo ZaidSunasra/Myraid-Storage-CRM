@@ -2,16 +2,9 @@ import { useQuotation } from "@/context/QuotationContext"
 import { Input } from "@/shared/components/ui/input"
 import { Table, TableBody, TableCell, TableFooter, TableHead, TableHeader, TableRow } from "@/shared/components/ui/table"
 
-interface QuotationWorkingTableProps {
-    productId: string;
-}
-
-const QuotationWorkingTable = ({ productId }: QuotationWorkingTableProps) => {
-    const { 
-        getProductItems, 
-        updateItem, 
-        getProductTotals 
-    } = useQuotation()
+const QuotationWorkingTable = ({ productId }: { productId: string }) => {
+    
+    const { getProductItems, updateItem,  getProductTotals} = useQuotation()
 
     const items = getProductItems(productId)
     const { totalMarketRate, totalProvidedRate } = getProductTotals(productId)
@@ -42,8 +35,8 @@ const QuotationWorkingTable = ({ productId }: QuotationWorkingTableProps) => {
                             min={1}
                             value={item.qty}
                             onChange={e =>
-                                updateItem(productId, item.id, { 
-                                    qty: Number(e.target.value) 
+                                updateItem(productId, item.id, {
+                                    qty: Number(e.target.value)
                                 })
                             }
                         />
@@ -53,8 +46,8 @@ const QuotationWorkingTable = ({ productId }: QuotationWorkingTableProps) => {
                             type="number"
                             value={item.provided_rate}
                             onChange={e =>
-                                updateItem(productId, item.id, { 
-                                    provided_rate: Number(e.target.value) 
+                                updateItem(productId, item.id, {
+                                    provided_rate: Number(e.target.value)
                                 })
                             }
                         />
@@ -67,18 +60,18 @@ const QuotationWorkingTable = ({ productId }: QuotationWorkingTableProps) => {
                         />
                     </TableCell>
                     <TableCell>
-                         <Input
+                        <Input
                             type="number"
                             value={item.market_rate}
                             onChange={e =>
-                                updateItem(productId, item.id, { 
-                                    market_rate: Number(e.target.value) 
+                                updateItem(productId, item.id, {
+                                    market_rate: Number(e.target.value)
                                 })
                             }
                         />
                     </TableCell>
                     <TableCell>
-                         <Input
+                        <Input
                             type="number"
                             value={item.qty * item.market_rate}
                             disabled

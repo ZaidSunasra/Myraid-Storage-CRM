@@ -10,7 +10,6 @@ const DealQuotation = ({ deal_id }: { deal_id: string }) => {
 
     const { data, isPending, isError } = FetchQuotationByDeal(deal_id);
     const navigate = useNavigate();
-    console.log(data);
 
     if (isPending) return <Skeleton className="h-4/5 w-3xs bg-background" />
     if (isError) return <div><ErrorDisplay /></div>

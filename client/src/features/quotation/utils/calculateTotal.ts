@@ -12,7 +12,6 @@ export const calculateTotal = ( form: UseFormReturn<AddQuotation>): number => {
             
         );
     }, 0);
-    console.log(productsTotal)
     return Number(productsTotal.toFixed(2));
 };
 
