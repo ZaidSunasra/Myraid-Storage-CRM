@@ -50,6 +50,7 @@ export const addQuotationSchema = z.object({
     gst: z.number(),
     discount: z.number(),
     round_off: z.number(),
+    show_body_table: z.boolean(),
 })
 
 export type QuotationProduct = z.infer<typeof quotationProductSchema>;
