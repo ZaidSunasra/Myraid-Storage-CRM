@@ -47,6 +47,7 @@ const QuotationPrint = () => {
 
   if (isPending) return <Skeleton className="h-screen w-screen bg-accent" />
   if (isError) return <ErrorDisplay fullPage />
+  if (!data.quotation) return null;
 
   return (
     <div>

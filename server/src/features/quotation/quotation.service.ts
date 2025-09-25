@@ -1,8 +1,8 @@
 import { Product_Type } from "@prisma/client"
 import { prisma } from "../../libs/prisma"
-import { AddQuotation } from "zs-crm-common";
+import { AddQuotation, GetQuotationBaseProduct, GetQuotationByDealOutput, GetQuotationOutput, } from "zs-crm-common";
 
-export const getQuotationProductsService = async (product_type: Product_Type, bay: number, compartment: number): Promise<any> => {
+export const getQuotationProductsService = async (product_type: Product_Type, bay: number, compartment: number): Promise<GetQuotationBaseProduct[]> => {
     const products = await prisma.baseProduct.findMany({
         where: {
             product_type: product_type
@@ -83,31 +83,44 @@ export const adddQuotationService = async ({ quotation_template, product_type, b
     });
 }
 
-export const getQuotationByDealService = async (deal_id: string): Promise<any> => {
+export const getQuotationByDealService = async (deal_id: string): Promise<GetQuotationByDealOutput[]> => {
     const quotation = await prisma.quotation.findMany({
         where: {
             deal_id: deal_id
         },
-        include: {
-            deal: true,
+        select: {
+            id: true,
+            deal_id: true,
+            created_at: true,
+            grand_total: true,
             quotation_products: {
                 select: {
                     name: true,
-                    quotation_item: true,
-                    quotation_working: true,
-                    id: true
                 }
             }
         }
     });
-    return quotation;
+    return quotation.map(q => ({
+        ...q,
+        grand_total: Number(q.grand_total),
+    }));
 }
 
-export const getQuotationService = async (): Promise<any> => {
+export const getQuotationService = async (): Promise<GetQuotationOutput[] | null> => {
     const quotation = await prisma.quotation.findMany({
         where: {},
         include: {
-            deal: true,
+            deal: {
+                select: {
+                    company: true,
+                    client_detail: {
+                        include: {
+                            emails: true,
+                            phones: true
+                        }
+                    }
+                },
+            },
             quotation_products: {
                 select: {
                     name: true,
@@ -121,10 +134,42 @@ export const getQuotationService = async (): Promise<any> => {
             created_at: "desc"
         }
     });
-    return quotation;
+
+    if (!quotation) return null;
+
+    return quotation.map((q) => ({
+        ...q,
+        discount: q.discount.toNumber(),
+        grand_total: q.grand_total.toNumber(),
+        gst: q.gst.toNumber(),
+        round_off: q.round_off.toNumber(),
+        sub_total: q.sub_total.toNumber(),
+        quotation_products: q.quotation_products.map((qp) => ({
+            ...qp,
+            quotation_item: qp.quotation_item.map((item) => ({
+                ...item,
+                market_rate: item.market_rate.toNumber(),
+                provided_rate: item.provided_rate.toNumber(),
+            })),
+            quotation_working: qp.quotation_working.map((work) => ({
+                ...work,
+                accomodation: work.accomodation.toNumber(),
+                installation: work.installation.toNumber(),
+                labour_cost: work.labour_cost.toNumber(),
+                market_total_cost: work.market_total_cost.toNumber(),
+                metal_rate: work.metal_rate.toNumber(),
+                powder_coating: work.powder_coating.toNumber(),
+                provided_total_cost: work.provided_total_cost.toNumber(),
+                total_weight: work.total_weight.toNumber(),
+                transport: work.transport.toNumber(),
+                ss_material: work.ss_material.toNumber(),
+                trolley_material: work.trolley_material.toNumber(),
+            })),
+        })),
+    }));
 }
 
-export const getQuotationByIdService = async (id: string): Promise<any> => {
+export const getQuotationByIdService = async (id: string): Promise<GetQuotationOutput | null> => {
     const quotation = await prisma.quotation.findUnique({
         where: {
             id: parseInt(id)
@@ -151,5 +196,39 @@ export const getQuotationByIdService = async (id: string): Promise<any> => {
             }
         }
     });
-    return quotation;
+
+    if (!quotation) return null;
+
+    const convertedQuotation = {
+        ...quotation,
+        discount: quotation.discount.toNumber(),
+        grand_total: quotation.grand_total.toNumber(),
+        gst: quotation.gst.toNumber(),
+        round_off: quotation.round_off.toNumber(),
+        sub_total: quotation.sub_total.toNumber(),
+        quotation_products: quotation.quotation_products.map((qp) => ({
+            ...qp,
+            quotation_item: qp.quotation_item.map((item) => ({
+                ...item,
+                market_rate: item.market_rate.toNumber(),
+                provided_rate: item.provided_rate.toNumber(),
+            })),
+            quotation_working: qp.quotation_working.map((work) => ({
+                ...work,
+                accomodation: work.accomodation.toNumber(),
+                installation: work.installation.toNumber(),
+                labour_cost: work.labour_cost.toNumber(),
+                market_total_cost: work.market_total_cost.toNumber(),
+                metal_rate: work.metal_rate.toNumber(),
+                powder_coating: work.powder_coating.toNumber(),
+                provided_total_cost: work.provided_total_cost.toNumber(),
+                total_weight: work.total_weight.toNumber(),
+                transport: work.transport.toNumber(),
+                ss_material: work.ss_material.toNumber(),
+                trolley_material: work.trolley_material.toNumber(),
+            })),
+        })),
+    };
+
+    return convertedQuotation;
 }

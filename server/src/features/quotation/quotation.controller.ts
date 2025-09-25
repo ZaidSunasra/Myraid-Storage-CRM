@@ -1,8 +1,8 @@
 import { Request, Response } from "express";
 import { adddQuotationService, getQuotationByDealService, getQuotationByIdService, getQuotationProductsService, getQuotationService } from "./quotation.service";
-import { addQuotationSchema, ErrorResponse, SuccessResponse } from "zs-crm-common";
+import { addQuotationSchema, ErrorResponse, GetQuotationByDealSuccessResponse, GetQuotationByIdSuccessResponse, GetQuotationSuccessResponse, QuotationBaseProductSuccessResponse, SuccessResponse } from "zs-crm-common";
 
-export const getQuotationProductsController = async (req: Request, res: Response): Promise<any> => {
+export const getQuotationProductsController = async (req: Request, res: Response<ErrorResponse | QuotationBaseProductSuccessResponse>): Promise<any> => {
     const { product_type, bay, compartment } = req.body;
     try {
         const products = await getQuotationProductsService(product_type, bay, compartment);
@@ -43,7 +43,7 @@ export const addQuotationController = async (req: Request, res: Response<ErrorRe
     }
 }
 
-export const getQuotationByDealController = async (req: Request, res: Response): Promise<any> => {
+export const getQuotationByDealController = async (req: Request, res: Response<ErrorResponse | GetQuotationByDealSuccessResponse>): Promise<any> => {
     const deal_id = req.params.deal_id;
     try {
         const quotations = await getQuotationByDealService(deal_id);
@@ -60,7 +60,7 @@ export const getQuotationByDealController = async (req: Request, res: Response):
     }
 }
 
-export const getQuotationController = async (req: Request, res: Response): Promise<any> => {
+export const getQuotationController = async (req: Request, res: Response<ErrorResponse | GetQuotationSuccessResponse>): Promise<any> => {
     try {
         const quotations = await getQuotationService();
         return res.status(200).json({
@@ -76,7 +76,7 @@ export const getQuotationController = async (req: Request, res: Response): Promi
     }
 }
 
-export const getQuotationByIdController = async (req: Request, res: Response): Promise<any> => {
+export const getQuotationByIdController = async (req: Request, res: Response<GetQuotationByIdSuccessResponse | ErrorResponse>): Promise<any> => {
     const id = req.params.id;
     try {
         const quotation = await getQuotationByIdService(id)

@@ -34,11 +34,11 @@ const DetailedQuotationPage = () => {
                         </NavLink>
                         <div>
                             <h1 className="text-2xl font-bold ">
-                                {data.quotation.quotation_products.length > 1 ? 
+                                {data.quotation && data.quotation.quotation_products.length > 1 ? 
                                 toTitleCase(data.quotation.quotation_products[0].name) + ` & ${data.quotation.quotation_products.length - 1} Other Product`
-                                : toTitleCase(data.quotation.quotation_products[0].name)}
+                                : toTitleCase(data.quotation?.quotation_products[0].name as string)}
                             </h1>
-                            <p className="text-gray-600">{toTitleCase(data.quotation.deal.company.name)}</p>
+                            <p className="text-gray-600">{toTitleCase(data.quotation?.deal.company.name as string)}</p>
                         </div>
                     </div>
                     {user?.department && canView(user?.department, "admin") &&
