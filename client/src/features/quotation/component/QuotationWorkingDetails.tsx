@@ -3,11 +3,11 @@ import { Table, TableHeader, TableRow, TableHead, TableCell, TableBody, TableFoo
 
 const QuotationWorkingDetails = ({ data }: { data: any }) => {
 
-    console.log(data);
-
     return <>
         {data.quotation_products.map((product: any) => {
             const working = product.quotation_working[0] ?? [];
+            const productTotal = Number(working.provided_total_cost) + Number(working.installation) * Number(working.total_body) + Number(working.transport) + Number(working.accomodation);
+            const profitTotal = productTotal * (1 + Number(working.profit_percent) / 100);
             return (
                 <Card className="bg-background shadow-md rounded-2xl" key={product.id}>
                     <CardHeader>
@@ -114,11 +114,11 @@ const QuotationWorkingDetails = ({ data }: { data: any }) => {
                                 <TableFooter>
                                     <TableRow>
                                         <TableCell>Total</TableCell>
-                                        <TableCell>{Number(working.provided_total_cost) + Number(working.installation) * Number(working.total_body) + Number(working.installation) + Number(working.accomodation)}</TableCell>
+                                        <TableCell>{productTotal}</TableCell>
                                     </TableRow>
                                     <TableRow>
                                         <TableCell>With Profit ({working.profit_percent}%)</TableCell>
-                                        <TableCell>{Number(Number(working.provided_total_cost) + Number(working.installation) * Number(working.total_body) + Number(working.installation) + Number(working.accomodation)) * (1 + Number(working.profit_percent) / 100)}</TableCell>
+                                        <TableCell>{(profitTotal).toFixed(2)}</TableCell>
                                     </TableRow>
                                 </TableFooter>
                             </Table>
