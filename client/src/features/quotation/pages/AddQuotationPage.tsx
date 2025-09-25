@@ -35,6 +35,7 @@ const AddQuotationPage = () => {
       grandTotal: 0,
       discount: 0,
       round_off: 0,
+      show_body_table: true
     },
   })
 
@@ -43,8 +44,7 @@ const AddQuotationPage = () => {
 
   const onSubmit = (data: AddQuotation) => {
     const payload = { ...data, quotation_item: products }
-    console.log(payload)
-    addQuotation.mutate({ data: payload, deal_id: id as string })
+   addQuotation.mutate({ data: payload, deal_id: id as string })
   }
 
   return (

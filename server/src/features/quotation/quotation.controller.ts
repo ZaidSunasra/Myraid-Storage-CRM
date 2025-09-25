@@ -20,7 +20,7 @@ export const getQuotationProductsController = async (req: Request, res: Response
 }
 
 export const addQuotationController = async (req: Request, res: Response<ErrorResponse | SuccessResponse>): Promise<any> => {
-    const { quotation_template, product_type, bay, compartment, quotation_item, total, grandTotal, gst, discount, round_off } = req.body;
+    const { quotation_template, product_type, bay, compartment, quotation_item, total, grandTotal, gst, discount, round_off, show_body_table } = req.body;
     const deal_id = req.params.deal_id;
     const validation = addQuotationSchema.safeParse(req.body);
     if (!validation.success) {
@@ -30,7 +30,7 @@ export const addQuotationController = async (req: Request, res: Response<ErrorRe
         })
     }
     try {
-        await adddQuotationService({ quotation_template, product_type, bay, compartment, quotation_item, total, grandTotal, gst, discount, round_off }, deal_id);
+        await adddQuotationService({ quotation_template, product_type, bay, compartment, quotation_item, total, grandTotal, gst, discount, round_off, show_body_table }, deal_id);
         return res.status(200).json({
             message: `Quotation added  successfully`,
         })

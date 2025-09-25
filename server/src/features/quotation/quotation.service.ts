@@ -21,7 +21,7 @@ export const getQuotationProductsService = async (product_type: Product_Type, ba
     return enrichedProducts;
 }
 
-export const adddQuotationService = async ({ quotation_template, product_type, bay, compartment, quotation_item, total, grandTotal, gst, discount, round_off }: AddQuotation,
+export const adddQuotationService = async ({ quotation_template, product_type, bay, compartment, quotation_item, total, grandTotal, gst, discount, round_off, show_body_table }: AddQuotation,
     deal_id: string): Promise<any> => {
     await prisma.$transaction(async (tx) => {
         const quotation = await tx.quotation.create({
@@ -33,6 +33,7 @@ export const adddQuotationService = async ({ quotation_template, product_type, b
                 round_off: round_off,
                 sub_total: total,
                 grand_total: grandTotal,
+                show_body_table: show_body_table
             },
             select: { id: true },
         });

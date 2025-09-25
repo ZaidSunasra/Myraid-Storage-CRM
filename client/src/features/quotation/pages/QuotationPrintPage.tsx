@@ -47,7 +47,6 @@ const QuotationPrint = () => {
 
   if (isPending) return <Skeleton className="h-screen w-screen bg-accent" />
   if (isError) return <ErrorDisplay fullPage />
-  console.log(data)
 
   return (
     <div>
@@ -200,7 +199,7 @@ const QuotationPrint = () => {
               <TableCell className="border-r border-black"></TableCell>
               <TableCell className="border-r border-black">
                 <Input
-                 className="print:hidden"
+                  className="print:hidden"
                   value={specs[0]}
                   onChange={(e) => {
                     const newSpecs = [...specs];
@@ -217,7 +216,7 @@ const QuotationPrint = () => {
               <TableCell className="border-r border-black"></TableCell>
               <TableCell className="border-r border-black">
                 <Input
-                 className="print:hidden"
+                  className="print:hidden"
                   value={specs[1]}
                   onChange={(e) => {
                     const newSpecs = [...specs];
@@ -297,49 +296,51 @@ const QuotationPrint = () => {
             </TableRow>
           </TableBody>
         </Table>
-        <div className="mb-6 space-y-2">
-          {data.quotation.quotation_products.map((product: any) => (
-            <Table className="border border-black w-3/5">
-              <TableHeader>
-                <TableRow>
-                  <TableHead rowSpan={2} className="border border-black">Sr. No</TableHead>
-                  <TableHead colSpan={3} className="border border-black">Description of Goods</TableHead>
-                  <TableHead rowSpan={2} className="border border-black">Installation Body</TableHead>
-                </TableRow>
-                <TableRow>
-                  <TableHead className="border border-black">Per Bay Qty</TableHead>
-                  <TableHead className="border border-black">Qty</TableHead>
-                  <TableHead className="border border-black">Total</TableHead>
-                </TableRow>
-              </TableHeader>
-              <TableBody>
-                {product.quotation_item.map((item: any, index: number) => (
-                  <>
-                    {item.item_name !== "DOOR" &&
-                      <TableRow key={item.id}>
-                        <TableCell className="border border-black">{index + 1}</TableCell>
-                        <TableCell className="border border-black">
-                          <div>  {item.item_code} {product.name[0]} Bay </div>
-                          <div> Body in {item.item_code}</div>
-                        </TableCell>
-                        <TableCell className="border border-black">{item.per_bay_qty}</TableCell>
-                        <TableCell className="border border-black">{item.quantity}</TableCell>
-                        <TableCell className="border border-black">{Number(item.per_bay_qty) * Number(item.quantity)}</TableCell>
-                      </TableRow>
-                    }
-                  </>
-                ))}
-              </TableBody>
-              <TableFooter>
-                <TableRow>
-                  <TableCell colSpan={3} className="border border-black"></TableCell>
-                  <TableCell className="border border-black">Total</TableCell>
-                  <TableCell className="border border-black"> {product.quotation_working[0].total_body}</TableCell>
-                </TableRow>
-              </TableFooter>
-            </Table>
-          ))}
-        </div>
+        {data.quotation.show_body_table === true &&
+          <div className="mb-6 space-y-2">
+            {data.quotation.quotation_products.map((product: any) => (
+              <Table className="border border-black w-3/5">
+                <TableHeader>
+                  <TableRow>
+                    <TableHead rowSpan={2} className="border border-black">Sr. No</TableHead>
+                    <TableHead colSpan={3} className="border border-black">Description of Goods</TableHead>
+                    <TableHead rowSpan={2} className="border border-black">Installation Body</TableHead>
+                  </TableRow>
+                  <TableRow>
+                    <TableHead className="border border-black">Per Bay Qty</TableHead>
+                    <TableHead className="border border-black">Qty</TableHead>
+                    <TableHead className="border border-black">Total</TableHead>
+                  </TableRow>
+                </TableHeader>
+                <TableBody>
+                  {product.quotation_item.map((item: any, index: number) => (
+                    <>
+                      {item.item_name !== "DOOR" &&
+                        <TableRow key={item.id}>
+                          <TableCell className="border border-black">{index + 1}</TableCell>
+                          <TableCell className="border border-black">
+                            <div>  {item.item_code} {product.name[0]} Bay </div>
+                            <div> Body in {item.item_code}</div>
+                          </TableCell>
+                          <TableCell className="border border-black">{item.per_bay_qty}</TableCell>
+                          <TableCell className="border border-black">{item.quantity}</TableCell>
+                          <TableCell className="border border-black">{Number(item.per_bay_qty) * Number(item.quantity)}</TableCell>
+                        </TableRow>
+                      }
+                    </>
+                  ))}
+                </TableBody>
+                <TableFooter>
+                  <TableRow>
+                    <TableCell colSpan={3} className="border border-black"></TableCell>
+                    <TableCell className="border border-black">Total</TableCell>
+                    <TableCell className="border border-black"> {product.quotation_working[0].total_body}</TableCell>
+                  </TableRow>
+                </TableFooter>
+              </Table>
+            ))}
+          </div>
+        }
         <h3 className="text-lg text-red-600 font-bold">
           Terms and Conditions
         </h3>
