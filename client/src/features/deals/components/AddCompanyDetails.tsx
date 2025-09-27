@@ -7,14 +7,14 @@ import { Popover, PopoverContent, PopoverTrigger } from "@/shared/components/ui/
 import { Building2, Check, ChevronRight, ChevronsUpDown, Mail, Phone, User } from "lucide-react"
 import { type UseFormReturn } from "react-hook-form"
 import { useState } from "react"
-import { type AddDeal, type Company } from "zs-crm-common"
+import { type AddDeal, type Client_Details, type Company } from "zs-crm-common"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/shared/components/ui/select"
 import { Label } from "@/shared/components/ui/label"
 import { Input } from "@/shared/components/ui/input"
 
-const AddCompanyDetails = ({ form, handleNext}: { form: UseFormReturn<AddDeal>, handleNext : () => void}) => {
+const AddCompanyDetails = ({ form, handleNext }: { form: UseFormReturn<AddDeal>, handleNext: () => void }) => {
 
-    const [selectedEmployee, setSelectedEmployee] = useState<any>(null);
+    const [selectedEmployee, setSelectedEmployee] = useState<Client_Details | null>(null);
     const [selectedCompany, setSelectedCompany] = useState<Company | null>(null);
     const { data: companyData, isPending: companyPending } = FetchCompanies("");
     const { data: employeeData, isPending: employeePending } = FetchCompanyEmployee(selectedCompany?.id as number);
@@ -106,9 +106,9 @@ const AddCompanyDetails = ({ form, handleNext}: { form: UseFormReturn<AddDeal>, 
                                     onValueChange={(value) => {
                                         field.onChange(value);
                                         const employee = employeeData?.employees?.find(
-                                            (emp: any) => String(emp.id) === value
+                                            (emp: Client_Details) => String(emp.id) === value
                                         );
-                                        setSelectedEmployee(employee);
+                                        setSelectedEmployee(employee ? employee : null);
                                     }}
                                     value={field.value}
                                     defaultValue={field.value}
@@ -124,7 +124,7 @@ const AddCompanyDetails = ({ form, handleNext}: { form: UseFormReturn<AddDeal>, 
                                         />
                                     </SelectTrigger>
                                     <SelectContent>
-                                        {employeeData?.employees?.map((employee: any) => (
+                                        {employeeData?.employees?.map((employee: Client_Details) => (
                                             <SelectItem key={employee.id} value={String(employee.id)}>
                                                 <div className="flex items-center gap-2">
                                                     <User className="h-4 w-4 text-green-600" />
@@ -193,12 +193,12 @@ const AddCompanyDetails = ({ form, handleNext}: { form: UseFormReturn<AddDeal>, 
                             <FormLabel className="text-xs font-medium text-gray-600">Email</FormLabel>
                             <div className="space-y-2">
                                 {selectedEmployee.emails?.length ? (
-                                    selectedEmployee.emails.map((e: { email: string }, idx: number) => (
+                                    selectedEmployee.emails.map((e: { email: string | null }, idx: number) => (
                                         <div key={idx} className="relative">
                                             <Mail className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-gray-400" />
                                             <Input
                                                 className="bg-gray-50 text-sm pl-10"
-                                                value={e.email}
+                                                value={e.email ? e.email : ""}
                                                 readOnly
                                             />
                                         </div>

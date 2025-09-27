@@ -11,6 +11,7 @@ import { ArrowLeft, Edit, FileText } from "lucide-react";
 import { NavLink, useParams } from "react-router"
 import QuotationDetails from "../component/QuotationDetails";
 import QuotationWorkingDetails from "../component/QuotationWorkingDetails";
+import type { GetQuotationOutput } from "zs-crm-common";
 
 const DetailedQuotationPage = () => {
 
@@ -63,10 +64,10 @@ const DetailedQuotationPage = () => {
                             }
                         </TabsList>
                         <TabsContent value="info" className="space-y-6">
-                            <QuotationDetails data={data.quotation} />
+                            <QuotationDetails data={data.quotation as GetQuotationOutput} />
                         </TabsContent>
                         <TabsContent value="working" className="space-y-6">
-                            <QuotationWorkingDetails data={data.quotation} />
+                            <QuotationWorkingDetails data={data.quotation as GetQuotationOutput} />
                         </TabsContent>
                     </Tabs>
                 </div>

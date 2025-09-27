@@ -3,8 +3,9 @@ import { Table, TableHeader, TableRow, TableHead, TableCell, TableBody } from "@
 import { Label } from "@/shared/components/ui/label"
 import { toTitleCase } from "@/utils/formatData"
 import { IndianRupee, LayoutTemplate, Percent, User } from "lucide-react"
+import type { GetQuotationOutput } from "zs-crm-common"
 
-const QuotationDetails = ({ data }: { data: any }) => {
+const QuotationDetails = ({ data }: { data: GetQuotationOutput }) => {
 
   return <>
     <Card className="bg-background">
@@ -51,7 +52,7 @@ const QuotationDetails = ({ data }: { data: any }) => {
         </div>
       </CardContent>
     </Card>
-    {data.quotation_products.map((product: any) => (
+    {data.quotation_products.map((product) => (
       <Card className="bg-background shadow-md rounded-2xl" key={product.id}>
         <CardHeader>
           <CardTitle className="text-lg font-semibold">{product.name}</CardTitle>
@@ -68,7 +69,7 @@ const QuotationDetails = ({ data }: { data: any }) => {
               </TableRow>
             </TableHeader>
             <TableBody>
-              {product.quotation_item.map((item: any) => (
+              {product.quotation_item.map((item) => (
                 <TableRow key={item.id}>
                   <TableCell>
                     <div className="font-medium">{item.item_name}</div>

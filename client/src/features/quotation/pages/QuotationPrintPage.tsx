@@ -11,6 +11,7 @@ import { capitalize } from "@/utils/formatData"
 import { Table, TableBody, TableCell, TableFooter, TableHead, TableHeader, TableRow } from "@/shared/components/ui/table"
 import { Input } from "@/shared/components/ui/input"
 import { Textarea } from "@/shared/components/ui/textarea"
+import type { Quotation_Item, Quotation_Product } from "zs-crm-common"
 
 const QuotationPrint = () => {
 
@@ -30,14 +31,14 @@ const QuotationPrint = () => {
   `;
   const [terms, setTerms] = useState(defaultTerms);
 
-  const calculateProductTotal = (product: any, item?: any) => {
+  const calculateProductTotal = (product: Quotation_Product, item?: Quotation_Item) => {
     const productTotal = Number(product.quotation_working[0].provided_total_cost) + Number(product.quotation_working[0].installation) * Number(product.quotation_working[0].total_body) + Number(product.quotation_working[0].transport) + Number(product.quotation_working[0].accomodation);
     const profitTotal = Number(Number(productTotal) * (1 + (Number(product.quotation_working[0].profit_percent) / 100))).toFixed(2);
-    const doorItem = product.quotation_item.find((item: any) => item.name === "DOOR");
+    const doorItem = product.quotation_item.find((item: Quotation_Item) => item.item_name === "DOOR");
     const doorTotal = doorItem ? doorItem.provided_rate : 0;
     const qtyRatio = Number(item?.per_bay_qty) / Number(product.quotation_working[0].total_body);
     const itemWiseTotal = ((Number(profitTotal) - doorTotal) * qtyRatio).toFixed(2);
-    return { productTotal, profitTotal, doorTotal, itemWiseTotal };
+    return { profitTotal, itemWiseTotal };
   }
 
   const handlePrint = useReactToPrint({
@@ -57,6 +58,9 @@ const QuotationPrint = () => {
         </Button>
       </div>
       <div ref={printRef} className="relative p-2">
+        <div className="absolute inset-0 flex items-center justify-center pointer-events-none opacity-10">
+          <img src={Logo} alt="Watermark" />
+        </div>
         <div>
           <div className="flex mb-4 gap-1 -m-2">
             <div>
@@ -88,9 +92,6 @@ const QuotationPrint = () => {
           <p>Kind Attach: Mr. {capitalize(data.quotation.deal.client_detail.first_name)} {capitalize(data.quotation.deal.client_detail.last_name)}</p>
         </div>
         <Table className="mb-4 border border-black">
-          <div className="absolute inset-0 flex items-center justify-center pointer-events-none opacity-10">
-            <img src={Logo} alt="Watermark" />
-          </div>
           <TableHeader>
             <TableRow>
               <TableHead className="text-center border border-black">Sr. No</TableHead>
@@ -102,7 +103,7 @@ const QuotationPrint = () => {
           </TableHeader>
           {data.quotation.quotation_template === "item_wise" ?
             <>
-              {data.quotation.quotation_products.map((product: any) => {
+              {data.quotation.quotation_products.map((product) => {
                 return (
                   <TableBody>
                     <TableRow>
@@ -110,7 +111,7 @@ const QuotationPrint = () => {
                         {product.name}
                       </TableCell>
                     </TableRow>
-                    {product.quotation_item.map((item: any, index: number) => {
+                    {product.quotation_item.map((item, index: number) => {
                       const compartment = product.name[6];
                       const { itemWiseTotal } = calculateProductTotal(product, item)
                       return (
@@ -145,7 +146,7 @@ const QuotationPrint = () => {
               })}
             </>
             : <>
-              {data.quotation.quotation_products.map((product: any) => {
+              {data.quotation.quotation_products.map((product) => {
                 return (
                   <TableBody key={product.id}>
                     <TableRow>
@@ -153,7 +154,7 @@ const QuotationPrint = () => {
                         {product.name}
                       </TableCell>
                     </TableRow>
-                    {product.quotation_item.map((item: any, index: number) => {
+                    {product.quotation_item.map((item, index: number) => {
                       const compartment = product.name[6];
                       const { profitTotal } = calculateProductTotal(product, item)
                       return (
@@ -299,7 +300,7 @@ const QuotationPrint = () => {
         </Table>
         {data.quotation.show_body_table === true &&
           <div className="mb-6 space-y-2">
-            {data.quotation.quotation_products.map((product: any) => (
+            {data.quotation.quotation_products.map((product) => (
               <Table className="border border-black w-3/5">
                 <TableHeader>
                   <TableRow>
@@ -314,7 +315,7 @@ const QuotationPrint = () => {
                   </TableRow>
                 </TableHeader>
                 <TableBody>
-                  {product.quotation_item.map((item: any, index: number) => (
+                  {product.quotation_item.map((item, index: number) => (
                     <>
                       {item.item_name !== "DOOR" &&
                         <TableRow key={item.id}>

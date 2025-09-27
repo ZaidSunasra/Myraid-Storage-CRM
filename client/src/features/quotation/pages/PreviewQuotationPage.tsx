@@ -1,15 +1,15 @@
 import { useQuotation } from "@/context/QuotationContext"
 import { Table, TableBody, TableCell, TableFooter, TableHead, TableHeader, TableRow, } from "@/shared/components/ui/table"
-import type { QuotationItem, QuotationProduct } from "zs-crm-common";
+import type { AddQuotation, QuotationItem, QuotationProduct } from "zs-crm-common";
 
-const PreviewQuotationPage = ({ data }: { data: any }) => {
+const PreviewQuotationPage = ({ data }: { data: AddQuotation }) => {
 
   const { products, overallTotal } = useQuotation();
 
   const calculateProductTotal = (product: QuotationProduct, item?: QuotationItem) => {
     const productTotal = Number(product.total_provided_rate) + Number(product.installation) * Number(product.total_body) + Number(product.transport) + Number(product.accomodation);
     const profitTotal = Number(Number(productTotal) * (1 + (Number(product.profit_percent) / 100))).toFixed(2);
-    const doorItem = product.items.find((item: any) => item.name === "DOOR");
+    const doorItem = product.items.find((item) => item.name === "DOOR");
     const doorTotal = doorItem ? doorItem.provided_rate : 0;
     const qtyRatio = Number(item?.per_bay_qty) / Number(product.total_body);
     const itemWiseTotal = ((Number(profitTotal) - doorTotal) * qtyRatio).toFixed(2);
@@ -44,7 +44,7 @@ const PreviewQuotationPage = ({ data }: { data: any }) => {
               {products.map((product) => {
                 return (
                   <TableBody>
-                    {product.items.map((item: any, index: number) => {
+                    {product.items.map((item, index: number) => {
                       const compartment = product.name[6];
                       const { itemWiseTotal } = calculateProductTotal(product, item)
                       return (
@@ -82,7 +82,7 @@ const PreviewQuotationPage = ({ data }: { data: any }) => {
               {products.map((product) => {
                 return (
                   <TableBody>
-                    {product.items.map((item: any, index: number) => {
+                    {product.items.map((item, index: number) => {
                       const compartment = product.name[6];
                       const { profitTotal } = calculateProductTotal(product, item)
                       return (
@@ -170,7 +170,7 @@ const PreviewQuotationPage = ({ data }: { data: any }) => {
             </TableHeader>
             <TableBody>
               {
-                product.items.map((item: any, index: number) => (
+                product.items.map((item, index: number) => (
                   <>
                     {
                       item.name !== "DOOR" &&
@@ -239,7 +239,7 @@ const PreviewQuotationPage = ({ data }: { data: any }) => {
                   </TableRow>
                 </TableHeader>
                 <TableBody>
-                  {product.items.map((item: any) => (
+                  {product.items.map((item) => (
                     <TableRow key={item.id}>
                       <TableCell className="border border-black">{item.qty}</TableCell>
                       <TableCell className="border border-black">{item.provided_rate}</TableCell>

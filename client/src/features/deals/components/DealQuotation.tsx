@@ -30,7 +30,7 @@ const DealQuotation = ({ deal_id }: { deal_id: string }) => {
                 </div>
             ) : (
                 <div className="space-y-4">
-                    {data.quotations.map((quotation: any) => (
+                    {data.quotations.map((quotation) => (
                         <div key={quotation.id} className="border-l-4 border-blue-500 pl-4 py-2" onClick={() => navigate(`/quotation/${quotation.deal_id}/${quotation.id}`)}>
                             <div className="flex items-center justify-between mb-1">
                                 <h4 className="font-medium text-sm">{quotation.quotation_products[0].name}</h4>

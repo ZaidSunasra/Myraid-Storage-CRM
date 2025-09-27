@@ -10,7 +10,7 @@ export const useFetchQuotationProduct = (bay: number, compartment: number) => {
     const { addProduct } = useQuotation();
     return useMutation({
         mutationFn: getQuotationProducts,
-        onSuccess: (data: any) => {
+        onSuccess: (data) => {
             addProduct(data.products, `${bay} Bay ${compartment} Compartment`)
         },
         onError: (error: AxiosError<ErrorResponse>) => {

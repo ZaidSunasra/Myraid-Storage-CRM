@@ -1,10 +1,11 @@
 import { Card, CardHeader, CardTitle, CardContent, } from "@/shared/components/ui/card"
 import { Table, TableHeader, TableRow, TableHead, TableCell, TableBody, TableFooter, } from "@/shared/components/ui/table"
+import type { GetQuotationOutput } from "zs-crm-common";
 
-const QuotationWorkingDetails = ({ data }: { data: any }) => {
+const QuotationWorkingDetails = ({ data }: { data: GetQuotationOutput }) => {
 
     return <>
-        {data.quotation_products.map((product: any) => {
+        {data.quotation_products.map((product) => {
             const working = product.quotation_working[0] ?? [];
             const productTotal = Number(working.provided_total_cost) + Number(working.installation) * Number(working.total_body) + Number(working.transport) + Number(working.accomodation);
             const profitTotal = productTotal * (1 + Number(working.profit_percent) / 100);
@@ -61,7 +62,7 @@ const QuotationWorkingDetails = ({ data }: { data: any }) => {
                                         </TableRow>
                                     </TableHeader>
                                     <TableBody>
-                                        {product.quotation_item.map((item: any) => (
+                                        {product.quotation_item.map((item) => (
                                             <TableRow key={item.id}>
                                                 <TableCell className="border-r">
                                                     <div className="font-medium">{item.item_name}</div>
