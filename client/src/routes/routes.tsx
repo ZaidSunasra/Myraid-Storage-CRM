@@ -11,6 +11,7 @@ import LeadsPage from "@/features/leads/pages/LeadsPage";
 import NotificationPage from "@/features/notifications/pages/NotificationPage";
 import AddQuotationPage from "@/features/quotation/pages/AddQuotationPage";
 import DetailedQuotationPage from "@/features/quotation/pages/DetailedQuotationPage";
+import EditQuotationPage from "@/features/quotation/pages/EditQuotationPage";
 import QuotationPrint from "@/features/quotation/pages/QuotationPrintPage";
 import SettingsPage from "@/features/settings/pages/SettingsPage";
 import UnauthorizedPage from "@/shared/components/UnauthorizedPage";
@@ -48,6 +49,7 @@ const Router = () => {
 				<Route path="/deal/edit/:id" element={<EditDealPage />} />
 				<Route path="/quotation/:id/:quotation_id" element={<DetailedQuotationPage />} />
 				<Route path="/quotation/print/:id/:quotation_id" element={< QuotationPrint />} />
+				<Route path="/quotation/edit/:id/:quotation_id" element={< EditQuotationPage />} />
 			</Route>
 			<Route element={<ProtectedRoute allowedDepartment={[DEPARTMENTS[0], DEPARTMENTS[1], DEPARTMENTS[3]]} checkOwnership type="deal" />}>
 				<Route path="/deal/:id" element={<DetailedDealPage />} />
