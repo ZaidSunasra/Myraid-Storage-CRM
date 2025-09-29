@@ -1,14 +1,13 @@
 import type { UseFormReturn } from "react-hook-form"
 import { Card, CardHeader, CardDescription, CardTitle, CardContent, CardFooter } from "@/shared/components/ui/card"
 import { ChevronLeft, FileText } from "lucide-react"
-import { FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/shared/components/ui/form"
+import { FormField, FormItem, FormLabel, FormMessage } from "@/shared/components/ui/form"
 import { Input } from "@/shared/components/ui/input"
 import { calculateGrandTotal, calculateGSTTotal, calculateRoundOff } from "../utils/calculateTotal"
 import { Button } from "@/shared/components/ui/button"
 import { useEffect } from "react"
 import { useQuotation } from "@/context/QuotationContext"
 import type { AddQuotation } from "zs-crm-common"
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/shared/components/ui/select"
 
 const QuotationSummary = ({ form, handlePrev, isSubmitting }: { form: UseFormReturn<AddQuotation>, handlePrev: () => void, isSubmitting: boolean }) => {
 
@@ -95,29 +94,6 @@ const QuotationSummary = ({ form, handlePrev, isSubmitting }: { form: UseFormRet
               <FormItem>
                 <FormLabel>Grand Total*</FormLabel>
                 <Input {...field} placeholder="Enter total" type="number" disabled />
-                <FormMessage />
-              </FormItem>
-            )}
-          />
-        </div>
-        <div className="space-y-2">
-          <FormField
-            control={form.control}
-            name="show_body_table"
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel>Show body Table in Print?*</FormLabel>
-                <Select value={String(field.value)} onValueChange={(val) => field.onChange(val === "true")}>
-                  <FormControl>
-                    <SelectTrigger className="w-full">
-                      <SelectValue placeholder="Select yes/no" />
-                    </SelectTrigger>
-                  </FormControl>
-                  <SelectContent>
-                    <SelectItem value="true">Yes</SelectItem>
-                    <SelectItem value="false">No</SelectItem>
-                  </SelectContent>
-                </Select>
                 <FormMessage />
               </FormItem>
             )}

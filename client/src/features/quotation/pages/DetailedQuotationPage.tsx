@@ -8,7 +8,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/shared/components/ui
 import { toTitleCase } from "@/utils/formatData";
 import { canView } from "@/utils/viewPermission";
 import { ArrowLeft, Edit, FileText } from "lucide-react";
-import { NavLink, useParams } from "react-router"
+import { NavLink, useNavigate, useParams } from "react-router"
 import QuotationDetails from "../component/QuotationDetails";
 import QuotationWorkingDetails from "../component/QuotationWorkingDetails";
 import type { GetQuotationOutput } from "zs-crm-common";
@@ -18,6 +18,7 @@ const DetailedQuotationPage = () => {
     const { id, quotation_id } = useParams();
     const { data, isError, isPending } = FetchQuotationById(quotation_id as string);
     const { user } = useUser();
+    const navigate = useNavigate();
 
     if (isPending) return <DetailedPageLoader />
     if (isError) return <ErrorDisplay fullPage />
@@ -43,7 +44,7 @@ const DetailedQuotationPage = () => {
                         </div>
                     </div>
                     {user?.department && canView(user?.department, "admin") &&
-                        <Button>
+                        <Button onClick={() => navigate(`/quotation/edit/${id}/${quotation_id}`)}>
                             <Edit className="h-4 w-4 mr-2" />
                             Edit Quotation
                         </Button>

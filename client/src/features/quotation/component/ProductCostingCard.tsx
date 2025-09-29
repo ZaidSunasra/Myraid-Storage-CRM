@@ -9,7 +9,7 @@ import type { AddQuotation } from "zs-crm-common";
 
 interface ProductCostingCardProps {
     form: UseFormReturn<AddQuotation>
-    productId: string
+    productId: number
     productName: string
 }
 

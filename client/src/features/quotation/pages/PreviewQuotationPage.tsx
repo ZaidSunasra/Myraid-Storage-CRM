@@ -58,18 +58,18 @@ const PreviewQuotationPage = ({ data }: { data: AddQuotation }) => {
                               {item.code ? `(${item.code})` : ""}{" "}
                             </div>
                             <div className="text-xs text-muted-foreground">
-                              {item.name !== "DOOR" ? `${item.default_height} (HT) x ${item.default_width} (W) x ${item.default_depth} (D) MM` : ""}{" "}
+                              {item.name !== "DOOR" ? `${item.height} (HT) x ${item.width} (W) x ${item.depth} (D) MM` : ""}{" "}
                               {item.name !== "DOOR" ? compartment ? `${compartment} Compartments` : "" : ""}
                             </div>
                           </TableCell>
                           <TableCell className="border border-black text-center">
-                            {item.qty}
+                            {item.quantity}
                           </TableCell >
                           <TableCell className="border border-black text-center">
                             {item.name === "DOOR" ? `${item.provided_rate}` : `${itemWiseTotal}`}
                           </TableCell>
                           <TableCell className="border border-black text-center">
-                            {item.name === "DOOR" ? `${Number(item.provided_rate) * Number(item.qty)}` : `${Number(Number(item.qty) * Number(itemWiseTotal)).toFixed(2)}`}
+                            {item.name === "DOOR" ? `${Number(item.provided_rate) * Number(item.quantity)}` : `${Number(Number(item.quantity) * Number(itemWiseTotal)).toFixed(2)}`}
                           </TableCell>
                         </TableRow>
                       )
@@ -96,7 +96,7 @@ const PreviewQuotationPage = ({ data }: { data: AddQuotation }) => {
                               {item.code ? `(${item.code})` : ""}{" "}
                             </div>
                             <div className="text-xs text-muted-foreground">
-                              {item.name !== "DOOR" ? `${item.default_height} (HT) x ${item.default_width} (W) x ${item.default_depth} (D) MM` : ""}{" "}
+                              {item.name !== "DOOR" ? `${item.height} (HT) x ${item.width} (W) x ${item.depth} (D) MM` : ""}{" "}
                               {item.name !== "DOOR" ? compartment ? `${compartment} Compartments` : "" : ""}
                             </div>
                           </TableCell>
@@ -178,8 +178,8 @@ const PreviewQuotationPage = ({ data }: { data: AddQuotation }) => {
                         <TableCell className="border border-black">{index + 1} </TableCell>
                         <TableCell className="border border-black">{item.name}</TableCell>
                         <TableCell className="border border-black">{item.per_bay_qty}</TableCell>
-                        <TableCell className="border border-black">{item.qty}</TableCell>
-                        <TableCell className="border border-black">{Number(item.per_bay_qty) * Number(item.qty)}</TableCell>
+                        <TableCell className="border border-black">{item.quantity}</TableCell>
+                        <TableCell className="border border-black">{Number(item.per_bay_qty) * Number(item.quantity)}</TableCell>
                       </TableRow>
                     }
                   </>
@@ -241,11 +241,11 @@ const PreviewQuotationPage = ({ data }: { data: AddQuotation }) => {
                 <TableBody>
                   {product.items.map((item) => (
                     <TableRow key={item.id}>
-                      <TableCell className="border border-black">{item.qty}</TableCell>
+                      <TableCell className="border border-black">{item.quantity}</TableCell>
                       <TableCell className="border border-black">{item.provided_rate}</TableCell>
-                      <TableCell className="border border-r-2 border-black">{Number(item.qty) * Number(item.provided_rate)}</TableCell>
+                      <TableCell className="border border-r-2 border-black">{Number(item.quantity) * Number(item.provided_rate)}</TableCell>
                       <TableCell className="border border-black">{item.market_rate}</TableCell>
-                      <TableCell className="border border-black">{Number(item.qty) * Number(item.market_rate)}</TableCell>
+                      <TableCell className="border border-black">{Number(item.quantity) * Number(item.market_rate)}</TableCell>
                     </TableRow>
                   ))}
                 </TableBody>

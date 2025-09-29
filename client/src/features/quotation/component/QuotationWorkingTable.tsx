@@ -2,7 +2,7 @@ import { useQuotation } from "@/context/QuotationContext"
 import { Input } from "@/shared/components/ui/input"
 import { Table, TableBody, TableCell, TableFooter, TableHead, TableHeader, TableRow } from "@/shared/components/ui/table"
 
-const QuotationWorkingTable = ({ productId }: { productId: string }) => {
+const QuotationWorkingTable = ({ productId }: { productId: number }) => {
     
     const { getProductItems, updateItem,  getProductTotals} = useQuotation()
 
@@ -33,10 +33,10 @@ const QuotationWorkingTable = ({ productId }: { productId: string }) => {
                         <Input
                             type="number"
                             min={1}
-                            value={item.qty}
+                            value={item.quantity}
                             onChange={e =>
                                 updateItem(productId, item.id, {
-                                    qty: Number(e.target.value)
+                                    quantity: Number(e.target.value)
                                 })
                             }
                         />
@@ -55,7 +55,7 @@ const QuotationWorkingTable = ({ productId }: { productId: string }) => {
                     <TableCell>
                         <Input
                             type="number"
-                            value={item.qty * item.provided_rate}
+                            value={item.quantity * item.provided_rate}
                             disabled
                         />
                     </TableCell>
@@ -73,7 +73,7 @@ const QuotationWorkingTable = ({ productId }: { productId: string }) => {
                     <TableCell>
                         <Input
                             type="number"
-                            value={item.qty * item.market_rate}
+                            value={item.quantity * item.market_rate}
                             disabled
                         />
                     </TableCell>

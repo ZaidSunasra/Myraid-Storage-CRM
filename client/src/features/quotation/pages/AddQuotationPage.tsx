@@ -5,8 +5,7 @@ import { NavLink, useParams } from "react-router"
 import QuotationSideBar from "../component/QuotationSideBar"
 import { useState } from "react"
 import { Form } from "@/shared/components/ui/form"
-import QuotationProductSelector from "../component/QuotationProductSelector"
-import QuotationCosting from "../component/QuotationCosting"
+import QuotationCostingCard from "../component/QuotationCosting"
 import QuotationSummary from "../component/QuotationSummary"
 import { useForm } from "react-hook-form"
 import { zodResolver } from "@hookform/resolvers/zod"
@@ -14,22 +13,20 @@ import { useQuotation } from "@/context/QuotationContext"
 import { useAddQuotation } from "@/api/quotations/quotations.mutation"
 import { addQuotationSchema, type AddQuotation } from "zs-crm-common"
 import PreviewQuotationPage from "./PreviewQuotationPage"
-
+import QuotationProducts from "../component/QuotationProducts"
+import ProductSelectorCard from "../component/QuotationProductSelector"
 
 const AddQuotationPage = () => {
   const { id } = useParams()
   const [currentStep, setCurrentStep] = useState<number>(1)
-  const [showPreview, setShowPreview] = useState<boolean>(false) 
+  const [showPreview, setShowPreview] = useState<boolean>(false)
   const { products } = useQuotation()
   const addQuotation = useAddQuotation()
 
   const form = useForm<AddQuotation>({
     resolver: zodResolver(addQuotationSchema),
     defaultValues: {
-      quotation_template: undefined,
-      product_type: undefined,
-      bay: 1,
-      compartment: 4,
+      quotation_template: "set_wise",
       quotation_item: products,
       gst: 18,
       grandTotal: 0,
@@ -44,7 +41,8 @@ const AddQuotationPage = () => {
 
   const onSubmit = (data: AddQuotation) => {
     const payload = { ...data, quotation_item: products }
-   addQuotation.mutate({ data: payload, deal_id: id as string })
+    //console.log(payload);
+    addQuotation.mutate({ data: payload, deal_id: id as string })
   }
 
   return (
@@ -85,20 +83,23 @@ const AddQuotationPage = () => {
           {!showPreview ? (
             <div className="flex flex-col gap-8">
               <QuotationSideBar currentStep={currentStep} />
+              {currentStep === 1 && (
+                <ProductSelectorCard />
+              )}
               <Form {...form}>
                 <form onSubmit={form.handleSubmit(onSubmit)}>
                   {currentStep === 1 && (
-                    <QuotationProductSelector form={form} handleNext={handleNext} />
+                    <QuotationProducts handleNext={handleNext} />
                   )}
                   {currentStep === 2 && (
-                    <QuotationCosting
+                    <QuotationCostingCard
                       form={form}
                       handleNext={handleNext}
                       handlePrev={handlePrev}
                     />
                   )}
                   {currentStep === 3 && (
-                    <QuotationSummary form={form} handlePrev={handlePrev} isSubmitting={addQuotation.isPending}/>
+                    <QuotationSummary form={form} handlePrev={handlePrev} isSubmitting={addQuotation.isPending} />
                   )}
                 </form>
               </Form>
