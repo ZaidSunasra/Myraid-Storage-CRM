@@ -29,7 +29,7 @@ const DetailedQuotationPage = () => {
             <div className="px-0 py-6">
                 <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between sm:mb-6 p-2 sm:p-0 gap-4">
                     <div className="flex items-center">
-                        <NavLink to={`/deal/${id}`}>
+                        <NavLink to={`/quotation`}>
                             <Button variant="ghost" size="icon">
                                 <ArrowLeft className="h-4 w-4" />
                             </Button>

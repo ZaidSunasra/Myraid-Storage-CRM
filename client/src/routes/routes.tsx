@@ -13,6 +13,7 @@ import AddQuotationPage from "@/features/quotation/pages/AddQuotationPage";
 import DetailedQuotationPage from "@/features/quotation/pages/DetailedQuotationPage";
 import EditQuotationPage from "@/features/quotation/pages/EditQuotationPage";
 import QuotationPrint from "@/features/quotation/pages/QuotationPrintPage";
+import QuotationsPage from "@/features/quotation/pages/QuotationsPage";
 import SettingsPage from "@/features/settings/pages/SettingsPage";
 import UnauthorizedPage from "@/shared/components/UnauthorizedPage";
 import WorkInProgress from "@/shared/components/WorkInProgress";
@@ -26,17 +27,15 @@ const Router = () => {
 			<Route path="/" element={<LandingPage />} />
 			<Route path="/notifications" element={<NotificationPage />} />
 			<Route path="/unauthorized-page" element={<UnauthorizedPage />} />
-			<Route element={<ProtectedRoute allowedDepartment={[DEPARTMENTS[1]]} />}>
-				<Route path="/add/quotation/:id" element={<AddQuotationPage />} />
-			</Route>
 			<Route element={<ProtectedRoute allowedDepartment={[DEPARTMENTS[0], DEPARTMENTS[1]]} />}>
 				<Route path="/lead" element={<LeadsPage />} />
-				<Route path="/lead/add" element={<AddLeadPage />} />
-				<Route path="/deal/add" element={<AddDealPage />} />
+				<Route path="/quotation" element={<QuotationsPage />} />
 				<Route path="/calender" element={<CalenderPage />} />
 				<Route path="/setting" element={<SettingsPage />} />
-				<Route path="/quotation" element={<WorkInProgress />} />
 				<Route path="/order" element={<WorkInProgress />} />
+				<Route path="/lead/add" element={<AddLeadPage />} />
+				<Route path="/deal/add" element={<AddDealPage />} />
+				<Route path="/add/quotation/:id" element={<AddQuotationPage />} />
 			</Route>
 			<Route element={<ProtectedRoute allowedDepartment={[DEPARTMENTS[0], DEPARTMENTS[1]]} checkOwnership type="lead" />}>
 				<Route path="/lead/:id" element={<DetailedLeadPage />} />
