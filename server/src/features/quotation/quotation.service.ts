@@ -1,6 +1,6 @@
 import { Product_Type } from "@prisma/client"
 import { prisma } from "../../libs/prisma"
-import { AddQuotation, GetQuotationBaseProduct, GetQuotationByDealOutput, GetQuotationOutput, } from "zs-crm-common";
+import { AddQuotation, DEPARTMENTS, GetQuotationBaseProduct, GetQuotationByDealOutput, GetQuotationOutput, } from "zs-crm-common";
 
 export const getQuotationProductsService = async (product_type: Product_Type, bay: number, compartment: number): Promise<GetQuotationBaseProduct[]> => {
     const products = await prisma.baseProduct.findMany({
@@ -106,9 +106,65 @@ export const getQuotationByDealService = async (deal_id: string): Promise<GetQuo
     }));
 }
 
-export const getQuotationService = async (): Promise<GetQuotationOutput[] | null> => {
+export const getQuotationService = async (user: any, page: number, search: string, employeeId: string[], rows: number, startDate: string, endDate: string,): Promise<GetQuotationOutput[] | null> => {
+    const isAdmin = user.department === DEPARTMENTS[1];
     const quotation = await prisma.quotation.findMany({
-        where: {},
+        take: rows,
+        skip: (page - 1) * rows,
+        where: {
+            AND: [
+                startDate && endDate ? {
+                    created_at: {
+                        gte: new Date(startDate),
+                        lte: new Date(new Date(endDate).setHours(23, 59, 59, 999))
+                    }
+                } : startDate ? {
+                    created_at: {
+                        gte: new Date(new Date(startDate).setHours(0, 0, 0, 0)),
+                        lte: new Date(new Date(startDate).setHours(23, 59, 59, 999))
+                    }
+                } : endDate ? {
+                    created_at: {
+                        gte: new Date(new Date(endDate).setHours(0, 0, 0, 0)),
+                        lte: new Date(new Date(endDate).setHours(23, 59, 59, 999))
+                    }
+                } : {},
+                search ? {
+                    OR: [
+                        {
+                            deal: {
+                                company: {
+                                    name: { contains: search, mode: 'insensitive' }
+                                }
+                            }
+                        },
+                        {
+                            deal: {
+                                client_detail: {
+                                    first_name: { contains: search, mode: 'insensitive' }
+                                }
+                            }
+                        },
+                        {
+                            deal: {
+                                client_detail: {
+                                    last_name: { contains: search, mode: 'insensitive' }
+                                }
+                            }
+                        }
+                    ]
+                } : {},
+                !isAdmin
+                    ? {
+                        deal: {
+                            assigned_to: { some: { user_id: user.id } }
+                        }
+                    }
+                    : employeeId.length > 0
+                        ? { deal: { assigned_to: { some: { user_id: { in: employeeId.map(Number) } } } } }
+                        : {},
+            ]
+        },
         include: {
             deal: {
                 select: {

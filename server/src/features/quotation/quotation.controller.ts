@@ -61,8 +61,16 @@ export const getQuotationByDealController = async (req: Request, res: Response<E
 }
 
 export const getQuotationController = async (req: Request, res: Response<ErrorResponse | GetQuotationSuccessResponse>): Promise<any> => {
+    const user = res.locals.user;
+    const page = parseInt(req.query.page as string, 10) || 1;
+    const rows = parseInt(req.query.rows as string, 10) || 10;
+    const search = req.query.search as string;
+    const startDate = req.query.startDate as string;
+    const endDate = req.query.endDate as string;
+    const employees = req.query.employeeID as string | undefined;
+    const employeeId = employees ? employees.split(",").filter(Boolean) : [];
     try {
-        const quotations = await getQuotationService();
+        const quotations = await getQuotationService(user, page, search, employeeId, rows, startDate, endDate);
         return res.status(200).json({
             message: `Quotations fetched  successfully`,
             quotations

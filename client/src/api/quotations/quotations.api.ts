@@ -16,8 +16,15 @@ export const getQuotationByDeal = async (deal_id: string): Promise<GetQuotationB
     return response.data;
 };
 
-export const getQuotation = async (): Promise<GetQuotationSuccessResponse> => {
-    const response = await axiosInstance.get(`/quotations/get-all`);
+export const getQuotation = async ({ page = 1, search, employeeIDs, rows, startDate, endDate }: {
+    page: number;
+    search: string;
+    employeeIDs: string[];
+    rows: number;
+    startDate: string;
+    endDate: string;
+}): Promise<GetQuotationSuccessResponse> => {
+    const response = await axiosInstance.get(`/quotations/get-all?page=${page}&rows=${rows}&search=${search}&employeeID=${employeeIDs}&startDate=${startDate}&endDate=${endDate}`);
     return response.data;
 };
 
@@ -26,7 +33,7 @@ export const getQuotationById = async (id: string): Promise<GetQuotationByIdSucc
     return response.data;
 };
 
-export const editQuotation = async ({data, deal_id, id}: {data: AddQuotation, deal_id: string, id: string}) : Promise<SuccessResponse> => {
+export const editQuotation = async ({ data, deal_id, id }: { data: AddQuotation, deal_id: string, id: string }): Promise<SuccessResponse> => {
     const response = await axiosInstance.put(`/quotations/edit/${deal_id}/${id}`, data);
     return response.data
 }

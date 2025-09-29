@@ -1,4 +1,4 @@
-import { useQuery } from "@tanstack/react-query";
+import { keepPreviousData, useQuery } from "@tanstack/react-query";
 import { getQuotation, getQuotationByDeal, getQuotationById } from "./quotations.api";
 
 export const FetchQuotationByDeal = (deal_id: string) => {
@@ -8,10 +8,11 @@ export const FetchQuotationByDeal = (deal_id: string) => {
     });
 };
 
-export const FetchQuotation = () => {
+export const FetchQuotation = ({ page, search, employeeIDs, rows, startDate, endDate }: { page: number; search: string; employeeIDs: string[]; rows: number; startDate: string; endDate: string}) => {
     return useQuery({ 
-        queryKey: ["quotation"], 
-        queryFn: getQuotation
+        queryKey: ["quotation", page, search, employeeIDs, rows, startDate, endDate], 
+        queryFn: () =>getQuotation({ page, search, employeeIDs, rows, startDate, endDate}),
+        placeholderData: keepPreviousData
     });
 };
 
