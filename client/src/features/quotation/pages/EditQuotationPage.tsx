@@ -104,7 +104,7 @@ const EditQuotationPage = () => {
                 <div className="px-4 py-6 sm:px-0">
                     <div className="flex justify-between flex-col sm:flex-row">
                         <div className="flex items-center space-x-4 mb-6">
-                            <NavLink to={`/deal/${id}`}>
+                            <NavLink to={`/quotation/${id}/${quotation_id}`}>
                                 <Button variant="ghost" size="icon">
                                     <ArrowLeft className="h-4 w-4" />
                                 </Button>
