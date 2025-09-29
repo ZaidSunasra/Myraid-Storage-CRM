@@ -1,5 +1,5 @@
 import { Request, Response } from "express";
-import { adddQuotationService, getQuotationByDealService, getQuotationByIdService, getQuotationProductsService, getQuotationService } from "./quotation.service";
+import { adddQuotationService, editQuotationService, getQuotationByDealService, getQuotationByIdService, getQuotationProductsService, getQuotationService } from "./quotation.service";
 import { addQuotationSchema, ErrorResponse, GetQuotationByDealSuccessResponse, GetQuotationByIdSuccessResponse, GetQuotationSuccessResponse, QuotationBaseProductSuccessResponse, SuccessResponse } from "zs-crm-common";
 
 export const getQuotationProductsController = async (req: Request, res: Response<ErrorResponse | QuotationBaseProductSuccessResponse>): Promise<any> => {
@@ -20,7 +20,7 @@ export const getQuotationProductsController = async (req: Request, res: Response
 }
 
 export const addQuotationController = async (req: Request, res: Response<ErrorResponse | SuccessResponse>): Promise<any> => {
-    const { quotation_template, product_type, bay, compartment, quotation_item, total, grandTotal, gst, discount, round_off, show_body_table } = req.body;
+    const { quotation_template, quotation_item, total, grandTotal, gst, discount, round_off, show_body_table } = req.body;
     const deal_id = req.params.deal_id;
     const validation = addQuotationSchema.safeParse(req.body);
     if (!validation.success) {
@@ -30,7 +30,7 @@ export const addQuotationController = async (req: Request, res: Response<ErrorRe
         })
     }
     try {
-        await adddQuotationService({ quotation_template, product_type, bay, compartment, quotation_item, total, grandTotal, gst, discount, round_off, show_body_table }, deal_id);
+        await adddQuotationService({ quotation_template, quotation_item, total, grandTotal, gst, discount, round_off, show_body_table }, deal_id);
         return res.status(200).json({
             message: `Quotation added  successfully`,
         })
@@ -86,6 +86,31 @@ export const getQuotationByIdController = async (req: Request, res: Response<Get
         })
     } catch (error) {
         console.log(`Error in fetching quotation with Id:${id}`, error);
+        return res.status(500).send({
+            message: "Internal server error",
+            error: error
+        });
+    }
+}
+
+export const editQuotationController = async (req: Request, res: Response<ErrorResponse | SuccessResponse>): Promise<any> => {
+    const { quotation_template, quotation_item, total, grandTotal, gst, discount, round_off, show_body_table } = req.body;
+    const deal_id = req.params.deal_id;
+    const id = req.params.id;
+    const validation = addQuotationSchema.safeParse(req.body);
+    if (!validation.success) {
+        return res.status(400).json({
+            message: "Input validation error",
+            error: validation.error.issues
+        })
+    }
+    try {
+        await editQuotationService({ quotation_template, quotation_item, total, grandTotal, gst, discount, round_off, show_body_table }, deal_id, id);
+        return res.status(200).json({
+            message: `Quotation edited  successfully`,
+        })
+    } catch (error) {
+        console.log(`Error in editing quotation`, error);
         return res.status(500).send({
             message: "Internal server error",
             error: error

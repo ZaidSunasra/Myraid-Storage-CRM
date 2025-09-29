@@ -232,3 +232,73 @@ export const getQuotationByIdService = async (id: string): Promise<GetQuotationO
 
     return convertedQuotation;
 }
+
+export const editQuotationService = async ({ quotation_template, quotation_item, total, grandTotal, gst, discount, round_off, show_body_table }: AddQuotation,
+    deal_id: string, id: string): Promise<any> => {
+    await prisma.$transaction(async (tx) => {
+        const quotation = await tx.quotation.update({
+            where: {
+                id: parseInt(id)
+            },
+            data: {
+                deal_id: deal_id,
+                quotation_template: quotation_template,
+                gst: gst,
+                discount: discount,
+                round_off: round_off,
+                sub_total: total,
+                grand_total: grandTotal,
+                show_body_table: show_body_table
+            },
+            select: { id: true },
+        });
+        await tx.quotationProducts.deleteMany({
+            where: {
+                quotation_id: quotation.id
+            }
+        })
+        for (const product of quotation_item ?? []) {
+            const createdProduct = await tx.quotationProducts.create({
+                data: {
+                    quotation_id: quotation.id,
+                    name: product.name,
+                },
+            });
+            if (product.items && product.items.length > 0) {
+                await tx.quotationItem.createMany({
+                    data: product.items.map((item) => ({
+                        quotation_product_id: createdProduct.id,
+                        item_name: item.name,
+                        item_code: item.code ?? null,
+                        height: item.height,
+                        width: item.width,
+                        depth: item.depth,
+                        provided_rate: item.provided_rate,
+                        market_rate: item.market_rate,
+                        per_bay_qty: item.per_bay_qty,
+                        quantity: item.quantity,
+                    })),
+                });
+            }
+            await tx.quotationWorking.create({
+                data: {
+                    quotation_product_id: createdProduct.id,
+                    total_weight: product.total_weight,
+                    ss_material: product.ss_material,
+                    trolley_material: product.trolley_material,
+                    powder_coating: product.powder_coating,
+                    labour_cost: product.labour_cost,
+                    installation: product.installation,
+                    transport: product.transport,
+                    accomodation: product.accomodation,
+                    provided_total_cost: product.total_provided_rate,
+                    market_total_cost: product.total_market_rate,
+                    total_body: product.total_body,
+                    metal_rate: product.metal_rate,
+                    set: product.set,
+                    profit_percent: product.profit_percent,
+                },
+            });
+        }
+    });
+}

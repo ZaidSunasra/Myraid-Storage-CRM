@@ -25,3 +25,8 @@ export const getQuotationById = async (id: string): Promise<GetQuotationByIdSucc
     const response = await axiosInstance.get(`/quotations/get/${id}`);
     return response.data;
 };
+
+export const editQuotation = async ({data, deal_id, id}: {data: AddQuotation, deal_id: string, id: string}) : Promise<SuccessResponse> => {
+    const response = await axiosInstance.put(`/quotations/edit/${deal_id}/${id}`, data);
+    return response.data
+}
