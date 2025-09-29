@@ -1,5 +1,6 @@
 import { useQuotation } from "@/context/QuotationContext"
 import { Table, TableBody, TableCell, TableFooter, TableHead, TableHeader, TableRow, } from "@/shared/components/ui/table"
+import React from "react";
 import type { AddQuotation, QuotationItem, QuotationProduct } from "zs-crm-common";
 
 const PreviewQuotationPage = ({ data }: { data: AddQuotation }) => {
@@ -43,7 +44,7 @@ const PreviewQuotationPage = ({ data }: { data: AddQuotation }) => {
             <>
               {products.map((product) => {
                 return (
-                  <TableBody>
+                  <TableBody key={product.id}>
                     {product.items.map((item, index: number) => {
                       const compartment = product.name[6];
                       const { itemWiseTotal } = calculateProductTotal(product, item)
@@ -81,7 +82,7 @@ const PreviewQuotationPage = ({ data }: { data: AddQuotation }) => {
             : <>
               {products.map((product) => {
                 return (
-                  <TableBody>
+                  <TableBody key={product.id}>
                     {product.items.map((item, index: number) => {
                       const compartment = product.name[6];
                       const { profitTotal } = calculateProductTotal(product, item)
@@ -132,7 +133,7 @@ const PreviewQuotationPage = ({ data }: { data: AddQuotation }) => {
               <TableCell></TableCell>
               <TableCell className="border-r border-black"></TableCell>
               <TableCell colSpan={2} className="border-r border-black">GST {data.gst}%</TableCell>
-              <TableCell>{(Number(overallTotal) *  Number(data.gst) / 100).toFixed(2)}</TableCell>
+              <TableCell>{(Number(overallTotal) * Number(data.gst) / 100).toFixed(2)}</TableCell>
             </TableRow>
             <TableRow>
               <TableCell></TableCell>
@@ -140,13 +141,13 @@ const PreviewQuotationPage = ({ data }: { data: AddQuotation }) => {
               <TableCell colSpan={2} className="border-r border-black">Round Off</TableCell>
               <TableCell>{data.round_off}</TableCell>
             </TableRow>
-             <TableRow>
+            <TableRow>
               <TableCell></TableCell>
               <TableCell className="border-r border-black"></TableCell>
               <TableCell colSpan={2} className="border-r border-black">Discount</TableCell>
               <TableCell>{data.discount}</TableCell>
             </TableRow>
-             <TableRow>
+            <TableRow>
               <TableCell></TableCell>
               <TableCell className="border-r border-black"></TableCell>
               <TableCell colSpan={2} className="border-2 border-black border-r-0">Grand Total</TableCell>
@@ -171,7 +172,7 @@ const PreviewQuotationPage = ({ data }: { data: AddQuotation }) => {
             <TableBody>
               {
                 product.items.map((item, index: number) => (
-                  <>
+                  <React.Fragment key={item.id}>
                     {
                       item.name !== "DOOR" &&
                       <TableRow key={item.id}>
@@ -182,7 +183,7 @@ const PreviewQuotationPage = ({ data }: { data: AddQuotation }) => {
                         <TableCell className="border border-black">{Number(item.per_bay_qty) * Number(item.quantity)}</TableCell>
                       </TableRow>
                     }
-                  </>
+                  </React.Fragment>
                 ))
               }
             </TableBody>
@@ -199,14 +200,14 @@ const PreviewQuotationPage = ({ data }: { data: AddQuotation }) => {
         {products.map((product) => {
           const { productTotal, profitTotal } = calculateProductTotal(product)
           return (
-            <>
+            <React.Fragment key={product.id}>
               <Table className="border border-black">
                 <TableBody>
                   <TableRow>
-                    <TableCell className="border border-black">Labour</TableCell>
-                    <TableCell className="border border-black"></TableCell>
-                    <TableCell className="border border-black"></TableCell>
-                    <TableCell className="border border-black">{product.labour_cost}</TableCell>
+                      <TableCell className="border border-black">Labour Cost</TableCell>
+                      <TableCell className="border border-black">{product.labour_cost}</TableCell>
+                      <TableCell className="border border-black">{product.set}</TableCell>
+                      <TableCell className="border border-black">{Number(product.labour_cost) * Number(product.set)}</TableCell>
                   </TableRow>
                   <TableRow>
                     <TableCell className="border border-black">Material</TableCell>
@@ -221,10 +222,10 @@ const PreviewQuotationPage = ({ data }: { data: AddQuotation }) => {
                     <TableCell className="border border-black">{product.total_weight}</TableCell>
                   </TableRow>
                   <TableRow>
-                    <TableCell className="border border-black">Powder Coating</TableCell>
-                    <TableCell className="border border-black"></TableCell>
-                    <TableCell className="border border-black"></TableCell>
-                    <TableCell className="border border-black">{product.powder_coating}</TableCell>
+                      <TableCell className="border border-black">Powder Coating</TableCell>
+                      <TableCell className="border border-black">{product.powder_coating}</TableCell>
+                      <TableCell className="border border-black">{product.set}</TableCell>
+                      <TableCell className="border border-black">{Number(product.powder_coating) * Number(product.set)}</TableCell>
                   </TableRow>
                 </TableBody>
               </Table>
@@ -288,7 +289,7 @@ const PreviewQuotationPage = ({ data }: { data: AddQuotation }) => {
                   </TableRow>
                 </TableBody>
               </Table>
-            </>
+            </React.Fragment>
           )
         })}
       </div>

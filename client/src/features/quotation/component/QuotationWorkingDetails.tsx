@@ -22,9 +22,9 @@ const QuotationWorkingDetails = ({ data }: { data: GetQuotationOutput }) => {
                                 <TableBody>
                                     <TableRow>
                                         <TableCell className="border-r">Labour Cost</TableCell>
-                                        <TableCell className="border-r"></TableCell>
-                                        <TableCell className="border-r"></TableCell>
                                         <TableCell className="border-r">{working.labour_cost}</TableCell>
+                                        <TableCell className="border-r">{working.set}</TableCell>
+                                        <TableCell className="border-r">{Number(working.labour_cost) * Number(working.set)}</TableCell>
                                     </TableRow>
                                     <TableRow>
                                         <TableCell className="border-r">KG</TableCell>
@@ -40,9 +40,9 @@ const QuotationWorkingDetails = ({ data }: { data: GetQuotationOutput }) => {
                                     </TableRow>
                                     <TableRow>
                                         <TableCell className="border-r">Powder Coating</TableCell>
-                                        <TableCell className="border-r"></TableCell>
-                                        <TableCell className="border-r"></TableCell>
                                         <TableCell className="border-r">{working.powder_coating}</TableCell>
+                                        <TableCell className="border-r">{working.set}</TableCell>
+                                        <TableCell className="border-r">{Number(working.powder_coating) * Number(working.set)}</TableCell>
                                     </TableRow>
                                 </TableBody>
                             </Table>
