@@ -33,6 +33,7 @@ const QuotationCosting = ({ form, productId, productName }: ProductCostingCardPr
             <div className="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-4 gap-6">
                 <div className="space-y-2">
                     <FormField
+                        defaultValue={product[0].labour_cost}
                         control={form.control}
                         name={`quotation_item.${Number(productId)}.labour_cost`}
                         render={({ field }) => (
@@ -57,6 +58,7 @@ const QuotationCosting = ({ form, productId, productName }: ProductCostingCardPr
                 </div>
                 <div className="space-y-2">
                     <FormField
+                        defaultValue={product[0].trolley_material}
                         control={form.control}
                         name={`quotation_item.${Number(productId)}.trolley_material`}
                         render={({ field }) => (
@@ -81,6 +83,7 @@ const QuotationCosting = ({ form, productId, productName }: ProductCostingCardPr
                 </div>
                 <div className="space-y-2">
                     <FormField
+                     defaultValue={product[0].ss_material}
                         control={form.control}
                         name={`quotation_item.${Number(productId)}.ss_material`}
                         render={({ field }) => (
@@ -111,6 +114,7 @@ const QuotationCosting = ({ form, productId, productName }: ProductCostingCardPr
                 </div>
                 <div className="space-y-2">
                     <FormField
+                     defaultValue={product[0].total_weight}
                         control={form.control}
                         name={`quotation_item.${Number(productId)}.total_weight`}
                         render={({ field }) => (
@@ -135,6 +139,7 @@ const QuotationCosting = ({ form, productId, productName }: ProductCostingCardPr
                 </div>
                 <div className="space-y-2">
                     <FormField
+                     defaultValue={product[0].powder_coating}
                         control={form.control}
                         name={`quotation_item.${Number(productId)}.powder_coating`}
                         render={({ field }) => (
@@ -160,6 +165,7 @@ const QuotationCosting = ({ form, productId, productName }: ProductCostingCardPr
                 <div className="space-y-2">
                     <FormField
                         control={form.control}
+                         defaultValue={product[0].transport}
                         name={`quotation_item.${Number(productId)}.transport`}
                         render={({ field }) => (
                             <FormItem>
@@ -184,6 +190,7 @@ const QuotationCosting = ({ form, productId, productName }: ProductCostingCardPr
                 <div className="space-y-2">
                     <FormField
                         control={form.control}
+                         defaultValue={product[0].accomodation}
                         name={`quotation_item.${Number(productId)}.accomodation`}
                         render={({ field }) => (
                             <FormItem>
@@ -208,6 +215,7 @@ const QuotationCosting = ({ form, productId, productName }: ProductCostingCardPr
                 <div className="space-y-2">
                     <FormField
                         control={form.control}
+                         defaultValue={product[0].installation}
                         name={`quotation_item.${Number(productId)}.installation`}
                         render={({ field }) => (
                             <FormItem>
@@ -229,7 +237,7 @@ const QuotationCosting = ({ form, productId, productName }: ProductCostingCardPr
                         )}
                     />
                 </div>
-                  <div className="space-y-2">
+                <div className="space-y-2">
                     <FormItem>
                         <FormLabel>Total installation cost</FormLabel>
                         <Input value={product[0].installation * totals.totalBodies} disabled />
@@ -238,6 +246,7 @@ const QuotationCosting = ({ form, productId, productName }: ProductCostingCardPr
                 <div className="space-y-2">
                     <FormField
                         control={form.control}
+                         defaultValue={product[0].metal_rate}
                         name={`quotation_item.${Number(productId)}.metal_rate`}
                         render={({ field }) => (
                             <FormItem>
@@ -259,9 +268,10 @@ const QuotationCosting = ({ form, productId, productName }: ProductCostingCardPr
                         )}
                     />
                 </div>
-                <div className="space-y-2">
+                {form.watch("quotation_template") === "set_wise" && <div className="space-y-2">
                     <FormField
                         control={form.control}
+                         defaultValue={product[0].set}
                         name={`quotation_item.${Number(productId)}.set`}
                         render={({ field }) => (
                             <FormItem>
@@ -282,10 +292,11 @@ const QuotationCosting = ({ form, productId, productName }: ProductCostingCardPr
                             </FormItem>
                         )}
                     />
-                </div>
+                </div>}
                 <div className="space-y-2">
                     <FormField
                         control={form.control}
+                         defaultValue={product[0].profit_percent}
                         name={`quotation_item.${Number(productId)}.profit_percent`}
                         render={({ field }) => (
                             <FormItem>
