@@ -83,7 +83,7 @@ const QuotationCosting = ({ form, productId, productName }: ProductCostingCardPr
                 </div>
                 <div className="space-y-2">
                     <FormField
-                     defaultValue={product[0].ss_material}
+                        defaultValue={product[0].ss_material}
                         control={form.control}
                         name={`quotation_item.${Number(productId)}.ss_material`}
                         render={({ field }) => (
@@ -114,7 +114,7 @@ const QuotationCosting = ({ form, productId, productName }: ProductCostingCardPr
                 </div>
                 <div className="space-y-2">
                     <FormField
-                     defaultValue={product[0].total_weight}
+                        defaultValue={product[0].total_weight}
                         control={form.control}
                         name={`quotation_item.${Number(productId)}.total_weight`}
                         render={({ field }) => (
@@ -139,7 +139,7 @@ const QuotationCosting = ({ form, productId, productName }: ProductCostingCardPr
                 </div>
                 <div className="space-y-2">
                     <FormField
-                     defaultValue={product[0].powder_coating}
+                        defaultValue={product[0].powder_coating}
                         control={form.control}
                         name={`quotation_item.${Number(productId)}.powder_coating`}
                         render={({ field }) => (
@@ -165,7 +165,7 @@ const QuotationCosting = ({ form, productId, productName }: ProductCostingCardPr
                 <div className="space-y-2">
                     <FormField
                         control={form.control}
-                         defaultValue={product[0].transport}
+                        defaultValue={product[0].transport}
                         name={`quotation_item.${Number(productId)}.transport`}
                         render={({ field }) => (
                             <FormItem>
@@ -190,7 +190,7 @@ const QuotationCosting = ({ form, productId, productName }: ProductCostingCardPr
                 <div className="space-y-2">
                     <FormField
                         control={form.control}
-                         defaultValue={product[0].accomodation}
+                        defaultValue={product[0].accomodation}
                         name={`quotation_item.${Number(productId)}.accomodation`}
                         render={({ field }) => (
                             <FormItem>
@@ -215,7 +215,7 @@ const QuotationCosting = ({ form, productId, productName }: ProductCostingCardPr
                 <div className="space-y-2">
                     <FormField
                         control={form.control}
-                         defaultValue={product[0].installation}
+                        defaultValue={product[0].installation}
                         name={`quotation_item.${Number(productId)}.installation`}
                         render={({ field }) => (
                             <FormItem>
@@ -246,7 +246,7 @@ const QuotationCosting = ({ form, productId, productName }: ProductCostingCardPr
                 <div className="space-y-2">
                     <FormField
                         control={form.control}
-                         defaultValue={product[0].metal_rate}
+                        defaultValue={product[0].metal_rate}
                         name={`quotation_item.${Number(productId)}.metal_rate`}
                         render={({ field }) => (
                             <FormItem>
@@ -268,35 +268,42 @@ const QuotationCosting = ({ form, productId, productName }: ProductCostingCardPr
                         )}
                     />
                 </div>
-                {form.watch("quotation_template") === "set_wise" && <div className="space-y-2">
-                    <FormField
-                        control={form.control}
-                         defaultValue={product[0].set}
-                        name={`quotation_item.${Number(productId)}.set`}
-                        render={({ field }) => (
-                            <FormItem>
-                                <FormLabel>Set*</FormLabel>
-                                <Input
-                                    value={field.value ? field.value : ""}
-                                    placeholder="Enter number of set"
-                                    type="number"
-                                    onChange={(e) => {
-                                        const value = Number(e.target.value);
-                                        field.onChange(value)
-                                        updateCost(productId, {
-                                            set: value
-                                        })
-                                    }}
-                                />
-                                <FormMessage />
-                            </FormItem>
-                        )}
-                    />
-                </div>}
+                {form.watch("quotation_template") && (
+                    <div className="space-y-2">
+                        <FormField
+                            control={form.control}
+                            name={`quotation_item.${Number(productId)}.set`}
+                            render={({ field }) => {
+                                const isItemWise = form.watch("quotation_template") === "item_wise";
+                                if (isItemWise && field.value !== 1) {
+                                    field.onChange(1);
+                                    updateCost(productId, { set: 1 });
+                                }
+                                return (
+                                    <FormItem>
+                                        <FormLabel>Set*</FormLabel>
+                                        <Input
+                                            value={field.value ? field.value : ""}
+                                            placeholder="Enter number of set"
+                                            type="number"
+                                            disabled={isItemWise}
+                                            onChange={(e) => {
+                                                const val = Number(e.target.value);
+                                                field.onChange(val);
+                                                updateCost(productId, { set: val });
+                                            }}
+                                        />
+                                        <FormMessage />
+                                    </FormItem>
+                                );
+                            }}
+                        />
+                    </div>
+                )}
                 <div className="space-y-2">
                     <FormField
                         control={form.control}
-                         defaultValue={product[0].profit_percent}
+                        defaultValue={product[0].profit_percent}
                         name={`quotation_item.${Number(productId)}.profit_percent`}
                         render={({ field }) => (
                             <FormItem>
