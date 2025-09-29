@@ -222,7 +222,7 @@ model QuotationItem {
   market_rate          Decimal           @default(0)
   quantity             Int
   per_bay_qty Int
-  quotation_products   QuotationProducts @relation(fields: [quotation_product_id], references: [id])
+  quotation_products   QuotationProducts @relation(fields: [quotation_product_id], references: [id], onDelete: Cascade)
   quotation_product_id Int
 }
 
@@ -242,7 +242,7 @@ model QuotationWorking {
   metal_rate           Decimal           @default(0)
   set                  Int               @default(1)
   profit_percent       Int
-  quotation_products   QuotationProducts @relation(fields: [quotation_product_id], references: [id])
+  quotation_products   QuotationProducts @relation(fields: [quotation_product_id], references: [id], onDelete: Cascade)
   quotation_product_id Int
 }
 
