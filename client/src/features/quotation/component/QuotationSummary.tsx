@@ -8,8 +8,9 @@ import { Button } from "@/shared/components/ui/button"
 import { useEffect } from "react"
 import { useQuotation } from "@/context/QuotationContext"
 import type { AddQuotation } from "zs-crm-common"
+import { capitalize } from "@/utils/formatData"
 
-const QuotationSummary = ({ form, handlePrev, isSubmitting }: { form: UseFormReturn<AddQuotation>, handlePrev: () => void, isSubmitting: boolean }) => {
+const QuotationSummary = ({ form, handlePrev, isSubmitting, type}: { form: UseFormReturn<AddQuotation>, handlePrev: () => void, isSubmitting: boolean, type: "add" | "edit"}) => {
 
   const { overallTotal } = useQuotation();
   const gst_amount = calculateGSTTotal(overallTotal, form);
@@ -107,7 +108,7 @@ const QuotationSummary = ({ form, handlePrev, isSubmitting }: { form: UseFormRet
         Previous
       </Button>
       <Button type="submit" disabled={isSubmitting}>
-        Add Quotation
+        {capitalize(type)} Quotation
       </Button>
     </CardFooter>
   </Card>

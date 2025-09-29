@@ -110,9 +110,9 @@ const EditQuotationPage = () => {
                                 </Button>
                             </NavLink>
                             <div>
-                                <h1 className="text-2xl font-bold text-foreground">Add New Quotation</h1>
+                                <h1 className="text-2xl font-bold text-foreground">Edit Exisiting Quotation</h1>
                                 <p className="text-muted-foreground">
-                                    Create a new quotation in your CRM system
+                                    Edit an exisiting quotation in your CRM system
                                 </p>
                             </div>
                         </div>
