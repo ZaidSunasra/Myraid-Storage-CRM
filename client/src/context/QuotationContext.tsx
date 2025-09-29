@@ -1,29 +1,21 @@
-import type {  } from "@/features/quotation/pages/AddQuotationPage";
-import {
-  createContext,
-  useCallback,
-  useContext,
-  useMemo,
-  useState,
-  type ReactNode,
-} from "react";
+import { createContext, useCallback, useContext, useMemo, useState, type ReactNode, } from "react";
 import type { QuotationItem, QuotationProduct } from "zs-crm-common";
 
 type QuotationContextType = {
   products: QuotationProduct[];
   addProduct: (items: QuotationItem[], name: string) => void;
-  removeProduct: (productId: string) => void;
+  removeProduct: (productId: number) => void;
   updateItem: (
-    productId: string,
+    productId: number,
     itemId: number,
     updates: Partial<QuotationItem>
   ) => void;
-  updateCost: (productId: string, updates: Partial<QuotationProduct>) => void;
-  removeItem: (productId: string, itemId: number) => void;
+  updateCost: (productId: number, updates: Partial<QuotationProduct>) => void;
+  removeItem: (productId: number, itemId: number) => void;
   clearAll: () => void;
   overallTotal: number;
-  getProductItems: (productId: string) => QuotationItem[];
-  getProductTotals: (productId: string) => {
+  getProductItems: (productId: number) => QuotationItem[];
+  getProductTotals: (productId: number) => {
     totalMarketRate: number;
     totalProvidedRate: number;
     totalBodies: number;
@@ -39,15 +31,15 @@ export const QuotationProvider = ({ children }: { children: ReactNode }) => {
 
   const calculateTotals = (items: QuotationItem[]) => {
     const totalMarketRate = items.reduce(
-      (sum, item) => sum + item.qty * item.market_rate,
+      (sum, item) => sum + item.quantity * item.market_rate,
       0
     );
     const totalProvidedRate = items.reduce(
-      (sum, item) => sum + item.qty * item.provided_rate,
+      (sum, item) => sum + item.quantity * item.provided_rate,
       0
     );
     const totalBodies = items.reduce((sum, it) => {
-      const qty = Number(it.qty) || 0;
+      const qty = Number(it.quantity) || 0;
       const perBayQty = Number(it.per_bay_qty) || 0;
       return sum + perBayQty * qty;
     }, 0);
@@ -60,7 +52,7 @@ export const QuotationProvider = ({ children }: { children: ReactNode }) => {
     setProducts((prev) => [
       ...prev,
       {
-        id: Date.now().toString(),
+        id: Date.now(),
         name,
         items,
         powder_coating: 0,
@@ -81,13 +73,13 @@ export const QuotationProvider = ({ children }: { children: ReactNode }) => {
     ]);
   }, []);
 
-  const removeProduct = useCallback((productId: string) => {
+  const removeProduct = useCallback((productId: number) => {
     setProducts((prev) => prev.filter((p) => p.id !== productId));
   }, []);
 
   const updateItem = useCallback(
     (
-      productId: string,
+      productId: number,
       itemId: number,
       updates: Partial<QuotationItem>
     ) => {
@@ -115,7 +107,7 @@ export const QuotationProvider = ({ children }: { children: ReactNode }) => {
   );
 
   const updateCost = useCallback(
-    (productId: string, updates: Partial<QuotationProduct>) => {
+    (productId: number, updates: Partial<QuotationProduct>) => {
       setProducts((prev) =>
         prev.map((product) =>
           product.id === productId ? { ...product, ...updates } : product
@@ -125,7 +117,7 @@ export const QuotationProvider = ({ children }: { children: ReactNode }) => {
     []
   );
 
-  const removeItem = useCallback((productId: string, itemId: number) => {
+  const removeItem = useCallback((productId: number, itemId: number) => {
     setProducts((prev) =>
       prev.map((p) => {
         if (p.id !== productId) return p;
@@ -145,7 +137,7 @@ export const QuotationProvider = ({ children }: { children: ReactNode }) => {
   }, []);
 
   const getProductItems = useCallback(
-    (productId: string) => {
+    (productId: number) => {
       const product = products.find((p) => p.id === productId);
       return product?.items || [];
     },
@@ -153,7 +145,7 @@ export const QuotationProvider = ({ children }: { children: ReactNode }) => {
   );
 
   const getProductTotals = useCallback(
-    (productId: string) => {
+    (productId: number) => {
       const product = products.find((p) => p.id === productId);
       if (!product) return { totalMarketRate: 0, totalProvidedRate: 0, totalBodies: 0 };
       return {

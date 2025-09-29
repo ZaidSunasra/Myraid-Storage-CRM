@@ -6,12 +6,12 @@ import { toast } from "sonner";
 import { useQuotation } from "@/context/QuotationContext"
 import { useNavigate } from "react-router";
 
-export const useFetchQuotationProduct = (bay: number, compartment: number) => {
+export const useFetchQuotationProduct = (name: string) => {
     const { addProduct } = useQuotation();
     return useMutation({
         mutationFn: getQuotationProducts,
         onSuccess: (data) => {
-            addProduct(data.products, `${bay} Bay ${compartment} Compartment`)
+            addProduct(data.products, name)
         },
         onError: (error: AxiosError<ErrorResponse>) => {
             toast.error(error.response?.data.message);

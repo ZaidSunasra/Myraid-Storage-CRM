@@ -1,12 +1,12 @@
 import axiosInstance from "../axiosInstance";
-import type { SuccessResponse, product_type, AddQuotation, GetQuotationByDealSuccessResponse, GetQuotationSuccessResponse, GetQuotationByIdSuccessResponse, QuotationBaseProductSuccessResponse} from "zs-crm-common";
+import type { ProductSelector, SuccessResponse, GetQuotationByDealSuccessResponse, GetQuotationSuccessResponse, GetQuotationByIdSuccessResponse, AddQuotation, QuotationBaseProductSuccessResponse } from "zs-crm-common";
 
-export const getQuotationProducts = async ({product_type, bay, compartment}: {product_type: product_type, bay: number, compartment: number}): Promise<QuotationBaseProductSuccessResponse> => {
-    const response = await axiosInstance.post("/quotations/get-products", {product_type, bay, compartment});
+export const getQuotationProducts = async (data: ProductSelector): Promise<QuotationBaseProductSuccessResponse> => {
+    const response = await axiosInstance.post("/quotations/get-products", data);
     return response.data;
 };
 
-export const addQuotation = async ({data, deal_id} : {data: AddQuotation, deal_id: string}): Promise<SuccessResponse> => {
+export const addQuotation = async ({ data, deal_id }: { data: AddQuotation, deal_id: string }): Promise<SuccessResponse> => {
     const response = await axiosInstance.post(`/quotations/add/${deal_id}`, data);
     return response.data;
 };
@@ -16,7 +16,7 @@ export const getQuotationByDeal = async (deal_id: string): Promise<GetQuotationB
     return response.data;
 };
 
-export const getQuotation= async (): Promise<GetQuotationSuccessResponse> => {
+export const getQuotation = async (): Promise<GetQuotationSuccessResponse> => {
     const response = await axiosInstance.get(`/quotations/get-all`);
     return response.data;
 };

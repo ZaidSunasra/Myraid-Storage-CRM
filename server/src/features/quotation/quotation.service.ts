@@ -11,17 +11,17 @@ export const getQuotationProductsService = async (product_type: Product_Type, ba
     const enrichedProducts = products.map((product) => ({
         ...product,
         per_bay_qty: product.code != null ? product.per_bay_qty * bay : product.per_bay_qty,
-        default_height: product.code != null ? product.default_height + (compartment - 4) * 400 : product.default_height,
-        default_width: product.code != null ? product.default_width + (bay - 1) * 900 : product.default_width,
-        default_depth: compartment === 7 && product.code === "SFMU" ? 475 : product.default_depth,
-        qty: 1,
+        height: product.code != null ? product.default_height + (compartment - 4) * 400 : product.default_height,
+        width: product.code != null ? product.default_width + (bay - 1) * 900 : product.default_width,
+        depth: compartment === 7 && product.code === "SFMU" ? 475 : product.default_depth,
+        quantity: 1,
         provided_rate: 0,
         market_rate: 0
     }));
     return enrichedProducts;
 }
 
-export const adddQuotationService = async ({ quotation_template, product_type, bay, compartment, quotation_item, total, grandTotal, gst, discount, round_off, show_body_table }: AddQuotation,
+export const adddQuotationService = async ({ quotation_template, quotation_item, total, grandTotal, gst, discount, round_off, show_body_table }: AddQuotation,
     deal_id: string): Promise<any> => {
     await prisma.$transaction(async (tx) => {
         const quotation = await tx.quotation.create({
@@ -50,13 +50,13 @@ export const adddQuotationService = async ({ quotation_template, product_type, b
                         quotation_product_id: createdProduct.id,
                         item_name: item.name,
                         item_code: item.code ?? null,
-                        height: item.default_height,
-                        width: item.default_width,
-                        depth: item.default_depth,
+                        height: item.height,
+                        width: item.width,
+                        depth: item.depth,
                         provided_rate: item.provided_rate,
                         market_rate: item.market_rate,
                         per_bay_qty: item.per_bay_qty,
-                        quantity: item.qty,
+                        quantity: item.quantity,
                     })),
                 });
             }
