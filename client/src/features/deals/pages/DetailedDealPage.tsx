@@ -92,7 +92,7 @@ const DetailedDealPage = () => {
                     </Tabs>
                 </div>
                 <div className="lg:col-span-1">
-                    {user?.department && canView(user.department, "admin") &&
+                    {user?.department && canView(user.department, "sales_admin") &&
                         <div className="w-full">
                             <Button className="mb-8 text-white flex gap-2 px-6 py-2 rounded-xl shadow-md transition w-full bg-blue-600 hover:bg-blue-700"
                                 onClick={() => navigate(`/add/quotation/${id}`)}
