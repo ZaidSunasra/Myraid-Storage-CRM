@@ -1,6 +1,13 @@
 import z from "zod/v4";
 import { Client_Details, Company, SuccessResponse } from "./common.schema";
 
+export const productSelectorSchema = z.object({
+    product_type: z.string(),
+    bay: z.number().gte(1),
+    compartment: z.number().gte(4),
+})
+export type ProductSelector = z.infer<typeof productSelectorSchema>
+
 export const QUOTATION_TEMPLATE = ["set_wise", "item_wise"] as const;
 export type quotation_template = typeof QUOTATION_TEMPLATE[number];
 
@@ -11,17 +18,17 @@ export const quotationItemSchema = z.object({
     id: z.number().min(1, "Id is required"),
     code: z.string().optional().nullable(),
     name: z.string().min(1, "Name is required"),
-    default_height: z.number(),
-    default_width: z.number(),
-    default_depth: z.number(),
-    qty: z.number(),
+    height: z.number(),
+    width: z.number(),
+    depth: z.number(),
+    quantity: z.number(),
     per_bay_qty: z.number(),
     provided_rate: z.number(),
     market_rate: z.number(),
 })
 
 export const quotationProductSchema = z.object({
-    id: z.string(),
+    id: z.number(),
     name: z.string(),
     items: z.array(quotationItemSchema),
     powder_coating: z.number(),
@@ -42,9 +49,6 @@ export const quotationProductSchema = z.object({
 
 export const addQuotationSchema = z.object({
     quotation_template: z.enum(QUOTATION_TEMPLATE),
-    product_type: z.enum(PRODUCT_TYPE),
-    bay: z.number().gte(1).lte(7),
-    compartment: z.number().gte(4).lte(7),
     quotation_item: z.array(quotationProductSchema).optional(),
     total: z.number(),
     grandTotal: z.number(),
@@ -131,14 +135,14 @@ export type GetQuotationByDealOutput = {
 
 export type GetQuotationBaseProduct = {
     per_bay_qty: number;
-    default_height: number;
-    default_width: number;
-    default_depth: number;
-    qty: number;
+    height: number;
+    width: number;
+    depth: number;
+    quantity: number;
     provided_rate: number;
     market_rate: number;
     id: number;
-    product_type: product_type;
+    product_type: string;
     compartment: number;
     name: string;
     code: string | null;
