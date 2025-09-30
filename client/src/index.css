@@ -118,3 +118,15 @@
 		@apply bg-background text-foreground;
 	}
 }
+
+@media print {
+	@page {
+		size: A4;
+		margin: 25mm 20mm 20mm 20mm; /* top right bottom left */
+	}
+
+	body {
+		margin: 0;
+		padding: 0;
+	}
+}
