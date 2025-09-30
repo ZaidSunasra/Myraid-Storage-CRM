@@ -1,4 +1,4 @@
-import { useRef, useState } from "react"
+import React, { useEffect, useRef, useState } from "react"
 import { useReactToPrint } from "react-to-print"
 import { Button } from "@/shared/components/ui/button"
 import { FetchQuotationById } from "@/api/quotations/quotation.queries"
@@ -12,6 +12,8 @@ import { Table, TableBody, TableCell, TableFooter, TableHead, TableHeader, Table
 import { Input } from "@/shared/components/ui/input"
 import { Textarea } from "@/shared/components/ui/textarea"
 import type { Quotation_Item, Quotation_Product } from "zs-crm-common"
+import { Plus, X } from "lucide-react"
+import { Card, CardContent, CardHeader, CardTitle } from "@/shared/components/ui/card"
 
 const QuotationPrint = () => {
 
@@ -26,19 +28,29 @@ const QuotationPrint = () => {
     "POWDER COATED",
     "HSN CODE: 9403"
   ]);
+  const isDiscountAvailable = data?.quotation && data.quotation.discount > 0 ? true : false;
+  const rowsToPrint = isDiscountAvailable ? specs.length - 6 : specs.length - 5;
+
+  const [name, setName] = useState<string[]>([]);
+  useEffect(() => {
+    if (data?.quotation?.quotation_products && data?.quotation?.quotation_products.length > 0) {
+      setName(data.quotation?.quotation_products.map(product => product.name))
+    }
+  }, [data]);
 
   const defaultTerms = `1. Payment :- 50% Advance payment along with the purchase order, 50% payment before material dispatching.\n2. Delivery :- Order of material delivery within 4 to 5 weeks from the date of receipt of this P.O.\n3. Unloading Material :- At your scope (any mathadi union unloading issue to be managed by buyer & it will not be our responsibility).\n4. Packing Charges :- No extra charges for packing of material.\n5. Colour :- RAL 7032 STR, RAL 7035 STR, LIGHT GREY STR, D.A.GREY STR or AVAILABLE SHADES.\n6. Quotation Validity :- 15 days.\n7. Taxes :- Within Maharashtra 9% CGST + 9% SGST / outside Maharashtra 18% IGST Extra to your Account.\n8. Freight Charges :- At your scope.\n9. Installation Charges :- At your end.\n10. Loading and Boarding :- At your scope.\n11. Warranty :- 12 months Warranty against Manufacturing defect.\n12. Annual Maintenance Contract from "MYRIAD" will start after completion of 1 year’s Warranty. Till 1 year, any kind of servicing will be done free to client.\n
   `;
   const [terms, setTerms] = useState(defaultTerms);
 
   const calculateProductTotal = (product: Quotation_Product, item?: Quotation_Item) => {
-    const productTotal = Number(product.quotation_working[0].provided_total_cost) + Number(product.quotation_working[0].installation) * Number(product.quotation_working[0].total_body) + Number(product.quotation_working[0].transport) + Number(product.quotation_working[0].accomodation);
-    const profitTotal = Number(Number(productTotal) * (1 + (Number(product.quotation_working[0].profit_percent) / 100))).toFixed(2);
-    const doorItem = product.quotation_item.find((item: Quotation_Item) => item.item_name === "DOOR");
-    const doorTotal = doorItem ? doorItem.provided_rate : 0;
-    const qtyRatio = Number(item?.per_bay_qty) / Number(product.quotation_working[0].total_body);
-    const itemWiseTotal = ((Number(profitTotal) - doorTotal) * qtyRatio).toFixed(2);
-    return { profitTotal, itemWiseTotal };
+    const extraExpense = Number(product.quotation_working[0].installation) * Number(product.quotation_working[0].total_body) + Number(product.quotation_working[0].accomodation) + Number(product.quotation_working[0].transport);
+    const perBodyExpense = extraExpense / Number(product.quotation_working[0].total_body);
+    const itemWisetotal = Number(item?.provided_rate) + perBodyExpense * Number(item?.per_bay_qty);
+    const profitPercent = 1 + product.quotation_working[0].profit_percent / 100;
+    const itemWiseProfit = itemWisetotal * profitPercent;
+    const setWiseTotal = Number(product.quotation_working[0].provided_total_cost) + extraExpense;
+    const setWiseProfit = setWiseTotal * profitPercent;
+    return { setWiseTotal, setWiseProfit, itemWiseProfit };
   }
 
   const handlePrint = useReactToPrint({
@@ -57,7 +69,7 @@ const QuotationPrint = () => {
           Print
         </Button>
       </div>
-      <div ref={printRef} className="relative p-2">
+      <div ref={printRef} className="relative mt-2">
         <div className="absolute inset-0 flex items-center justify-center pointer-events-none opacity-10">
           <img src={Logo} alt="Watermark" />
         </div>
@@ -67,9 +79,9 @@ const QuotationPrint = () => {
               <img src={Logo} alt="logo" className="w-full" />
             </div>
             <div>
-              <p>702A, AL-HUSSAIN, Momin Nagar, Jogeshwari (W)</p>
-              <p>  MUMBAI 40102. State  :  Maharashtra, Code : 27</p>
-              <p className="">Contact: 9769370343 </p>
+              <p> A/702, Al Husain Bldg, Momin Nagar, Jogeshwari (W), Mumbai 400102 </p>
+              <p>State  :  Maharashtra, Code : 27</p>
+              <p>Contact: 9769370343 </p>
               <p>GST No: 27ABJFM1234A1Z5</p>
               <p>info@myriadstoragesystem.com</p>
               <p>sales@myriadstoragesystem.com</p>
@@ -82,6 +94,20 @@ const QuotationPrint = () => {
         <hr />
         <div className="mb-6 font-bold">
           <p>Quotation No: {id}</p>
+          {data.quotation.quotation_products.length == 1 &&
+            <>
+              <Input
+                className="print:hidden"
+                value={name[0] ?? ""}
+                onChange={(e) =>
+                  setName((prev) =>
+                    prev.map((val, i) => (i === 0 ? e.target.value : val))
+                  )
+                }
+              />
+              {name[0] !== "" && <p> Drawing No: {name[0]} </p>}
+            </>
+          }
           <p>Date: {format(data.quotation.created_at, "dd-MM-yyyy")}</p>
           <p>Buyer</p>
           <br />
@@ -103,17 +129,26 @@ const QuotationPrint = () => {
           </TableHeader>
           {data.quotation.quotation_template === "item_wise" ?
             <>
-              {data.quotation.quotation_products.map((product) => {
+              {data.quotation.quotation_products.map((product, index: number) => {
                 return (
-                  <TableBody>
-                    <TableRow>
-                      <TableCell colSpan={5} className="border border-black font-bold bg-gray-100 text-center">
-                        {product.name}
-                      </TableCell>
-                    </TableRow>
+                  <TableBody key={product.id}>
+                    {data.quotation?.quotation_products && data.quotation?.quotation_products.length > 1 &&
+                      <TableRow>
+                        <TableCell colSpan={5} className="border border-black font-bold bg-gray-100 text-center">
+                          <Input
+                            value={name[index] ?? ""}
+                            onChange={(e) =>
+                              setName((prev) =>
+                                prev.map((val, i) => (i === index ? e.target.value : val))
+                              )
+                            }
+                          />
+                        </TableCell>
+                      </TableRow>
+                    }
                     {product.quotation_item.map((item, index: number) => {
                       const compartment = product.name[6];
-                      const { itemWiseTotal } = calculateProductTotal(product, item)
+                      const { itemWiseProfit } = calculateProductTotal(product, item)
                       return (
                         <TableRow key={item.id} className="align-top">
                           <TableCell className="border border-black text-center">
@@ -133,10 +168,10 @@ const QuotationPrint = () => {
                             {item.quantity}
                           </TableCell >
                           <TableCell className="border border-black text-center">
-                            {item.item_name === "DOOR" ? `${item.provided_rate}` : `${itemWiseTotal}`}
+                            {itemWiseProfit.toFixed(2)}
                           </TableCell>
                           <TableCell className="border border-black text-center">
-                            {item.item_name === "DOOR" ? `${Number(item.provided_rate) * Number(item.quantity)}` : `${Number(Number(item.quantity) * Number(itemWiseTotal)).toFixed(2)}`}
+                            {Number(item.quantity) * Number(itemWiseProfit.toFixed(2))}
                           </TableCell>
                         </TableRow>
                       )
@@ -146,19 +181,31 @@ const QuotationPrint = () => {
               })}
             </>
             : <>
-              {data.quotation.quotation_products.map((product) => {
+              {data.quotation.quotation_products.map((product, index: number) => {
                 return (
                   <TableBody key={product.id}>
-                    <TableRow>
-                      <TableCell colSpan={5} className="border border-black font-bold bg-gray-100 text-center">
-                        {product.name}
-                      </TableCell>
-                    </TableRow>
+                    {data.quotation?.quotation_products && data.quotation?.quotation_products.length > 1 &&
+                      <TableRow>
+                        <TableCell className="border border-black font-bold bg-gray-100 text-center">{String.fromCharCode(65 + index)}</TableCell>
+                        <TableCell colSpan={4} className="border border-black font-bold bg-gray-100 text-center">
+                          <Input
+                            className="print:hidden"
+                            value={name[index] ?? ""}
+                            onChange={(e) =>
+                              setName((prev) =>
+                                prev.map((val, i) => (i === index ? e.target.value : val))
+                              )
+                            }
+                          />
+                          <span className="print:inline hidden font-bold">{name[index]}</span>
+                        </TableCell>
+                      </TableRow>
+                    }
                     {product.quotation_item.map((item, index: number) => {
                       const compartment = product.name[6];
-                      const { profitTotal } = calculateProductTotal(product, item)
+                      const { setWiseProfit } = calculateProductTotal(product, item)
                       return (
-                        <>
+                        <React.Fragment key={item.id}>
                           <TableRow key={item.id} className="align-top">
                             <TableCell className="border border-black text-center border-t-0">
                               {index + 1}
@@ -167,7 +214,7 @@ const QuotationPrint = () => {
                               <div className="font-semibold">
                                 {item.item_name}{" "}
                                 {item.item_code ? `(${item.item_code})` : ""}{" "}
-                                (QTY {item.quantity} Nos)
+                                {item.item_name !== "DOOR" ? `(Qty ${item.quantity} Nos)` : `(${item.quantity} SET)`}
                               </div>
                               <div className="text-xs text-muted-foreground border-t-0">
                                 {item.item_name !== "DOOR" ? `${item.height} (HT) x ${item.width} (W) x ${item.depth} (D) MM` : ""}{" "}
@@ -180,15 +227,15 @@ const QuotationPrint = () => {
                                   {product.quotation_working[0].set} SET
                                 </TableCell>
                                 <TableCell rowSpan={product.quotation_item.length} className="border border-black text-center border-t-0">
-                                  {profitTotal}
+                                  {setWiseProfit.toFixed(2)}
                                 </TableCell>
                                 <TableCell rowSpan={product.quotation_item.length} className="border border-black text-center border-t-0">
-                                  {Number(profitTotal) * Number(product.quotation_working[0].set)}
+                                  {Number(setWiseProfit.toFixed(2)) * Number(product.quotation_working[0].set)}
                                 </TableCell>
                               </>
                             }
                           </TableRow>
-                        </>
+                        </React.Fragment>
                       )
                     })}
                   </TableBody>
@@ -199,68 +246,42 @@ const QuotationPrint = () => {
           <TableBody>
             <TableRow>
               <TableCell className="border-r border-black"></TableCell>
-              <TableCell className="border-r border-black">
-                <Input
-                  className="print:hidden"
-                  value={specs[0]}
-                  onChange={(e) => {
-                    const newSpecs = [...specs];
-                    newSpecs[0] = e.target.value;
-                    setSpecs(newSpecs);
-                  }}
-                />
-                <span className="print:inline hidden text-red-600 font-bold">{specs[0]}</span>
-              </TableCell>
+              <TableCell className="border-r border-black"></TableCell>
               <TableCell colSpan={2} className="border border-black text-center">Total</TableCell>
               <TableCell className="border border-black text-center">{data.quotation.sub_total}</TableCell>
             </TableRow>
-            <TableRow>
+            {rowsToPrint > 0 &&
+              Array.from({ length: rowsToPrint }).map((_, index) => (
+                <TableRow key={index}>
+                  <TableCell className="border-r border-black"></TableCell>
+                  <TableCell className="border-r border-black">
+                    <span className="text-red-600 font-bold"> {specs[index]} </span>
+                  </TableCell>
+                  <TableCell colSpan={2} className="border border-black text-center"></TableCell>
+                  <TableCell className="border border-black text-center"></TableCell>
+                </TableRow>
+              ))
+            }
+            <TableRow className="h-[36.8px]">
               <TableCell className="border-r border-black"></TableCell>
               <TableCell className="border-r border-black">
-                <Input
-                  className="print:hidden"
-                  value={specs[1]}
-                  onChange={(e) => {
-                    const newSpecs = [...specs];
-                    newSpecs[1] = e.target.value;
-                    setSpecs(newSpecs);
-                  }}
-                />
-                <span className="print:inline hidden text-red-600 font-bold">{specs[1]}</span>
+                <span className="text-red-600 font-bold">{isDiscountAvailable ? specs[specs.length - 6] : specs[specs.length - 5]}</span>
               </TableCell>
               <TableCell colSpan={2} className="border border-black text-center"></TableCell>
+              <TableCell className="border border-black text-center"></TableCell>
+            </TableRow>
+            <TableRow className="h-[36.8px]">
+              <TableCell className="border-r border-black"></TableCell>
+              <TableCell className="border-r border-black">
+                <span className="text-red-600 font-bold">{isDiscountAvailable ? specs[specs.length - 5] : specs[specs.length - 4]}</span>
+              </TableCell>
+              <TableCell colSpan={2} className="border border-black text-center">  </TableCell>
               <TableCell className="border border-black text-center"></TableCell>
             </TableRow>
             <TableRow>
               <TableCell className="border-r border-black"></TableCell>
               <TableCell className="border-r border-black">
-                <Input
-                  className="print:hidden"
-                  value={specs[2]}
-                  onChange={(e) => {
-                    const newSpecs = [...specs];
-                    newSpecs[2] = e.target.value;
-                    setSpecs(newSpecs);
-                  }}
-                />
-                <span className="print:inline hidden text-red-600 font-bold">{specs[2]}</span>
-              </TableCell>
-              <TableCell colSpan={2} className="border border-black text-center"></TableCell>
-              <TableCell className="border border-black text-center"></TableCell>
-            </TableRow>
-            <TableRow>
-              <TableCell className="border-r border-black"></TableCell>
-              <TableCell className="border-r border-black">
-                <Input
-                  className="print:hidden"
-                  value={specs[3]}
-                  onChange={(e) => {
-                    const newSpecs = [...specs];
-                    newSpecs[3] = e.target.value;
-                    setSpecs(newSpecs);
-                  }}
-                />
-                <span className="print:inline hidden text-red-600 font-bold">{specs[3]}</span>
+                <span className="text-red-600 font-bold">{isDiscountAvailable ? specs[specs.length - 4] : specs[specs.length - 3]}</span>
               </TableCell>
               <TableCell colSpan={2} className="border border-black text-center">GST {data.quotation.gst}%</TableCell>
               <TableCell className="border border-black text-center">{(Number(data.quotation.sub_total) * (Number(data.quotation.gst) / 100)).toFixed(2)}</TableCell>
@@ -268,31 +289,26 @@ const QuotationPrint = () => {
             <TableRow>
               <TableCell className="border-r border-black"></TableCell>
               <TableCell className="border-r border-black">
-                <Input
-                  className="print:hidden"
-                  value={specs[4]}
-                  onChange={(e) => {
-                    const newSpecs = [...specs];
-                    newSpecs[4] = e.target.value;
-                    setSpecs(newSpecs);
-                  }}
-                />
-                <span className="print:inline hidden text-red-600 font-bold">{specs[4]}</span>
+                <span className="text-red-600 font-bold">{isDiscountAvailable ? specs[specs.length - 3] : specs[specs.length - 2]}</span>
               </TableCell>
               <TableCell colSpan={2} className="border border-black text-center">Round Off</TableCell>
               <TableCell className="border border-black text-center">{data.quotation.round_off}</TableCell>
             </TableRow>
-            {data.quotation.discount >= 0 &&
+            {isDiscountAvailable &&
               <TableRow>
                 <TableCell className="border-r border-black"></TableCell>
-                <TableCell className="border-r border-black"></TableCell>
+                <TableCell className="border-r border-black">
+                  <span className="text-red-600 font-bold">{specs[specs.length - 2]}</span>
+                </TableCell>
                 <TableCell colSpan={2} className="border border-black text-center">Discount</TableCell>
                 <TableCell className="border border-black text-center">{data.quotation.discount}</TableCell>
               </TableRow>
             }
             <TableRow>
               <TableCell className="border-r border-black"></TableCell>
-              <TableCell className="border-r border-black"></TableCell>
+              <TableCell className="border-r border-black">
+                <span className="text-red-600 font-bold">{specs[specs.length - 1]}</span>
+              </TableCell>
               <TableCell colSpan={2} className="border border-black text-center">Grand Total</TableCell>
               <TableCell className="border border-black text-center">{data.quotation.grand_total}</TableCell>
             </TableRow>
@@ -301,7 +317,7 @@ const QuotationPrint = () => {
         {data.quotation.show_body_table === true &&
           <div className="mb-6 space-y-2">
             {data.quotation.quotation_products.map((product) => (
-              <Table className="border border-black w-3/5">
+              <Table className="border border-black w-3/5" key={product.id}>
                 <TableHeader>
                   <TableRow>
                     <TableHead rowSpan={2} className="border border-black">Sr. No</TableHead>
@@ -316,7 +332,7 @@ const QuotationPrint = () => {
                 </TableHeader>
                 <TableBody>
                   {product.quotation_item.map((item, index: number) => (
-                    <>
+                    <React.Fragment key={item.id}>
                       {item.item_name !== "DOOR" &&
                         <TableRow key={item.id}>
                           <TableCell className="border border-black">{index + 1}</TableCell>
@@ -329,7 +345,7 @@ const QuotationPrint = () => {
                           <TableCell className="border border-black">{Number(item.per_bay_qty) * Number(item.quantity)}</TableCell>
                         </TableRow>
                       }
-                    </>
+                    </React.Fragment>
                   ))}
                 </TableBody>
                 <TableFooter>
@@ -343,6 +359,47 @@ const QuotationPrint = () => {
             ))}
           </div>
         }
+        <Card className="print:hidden mb-6 mt-6">
+          <CardHeader>
+            <CardTitle className="flex justify-between items-center">
+              <span>Specifications</span>
+              <Button
+                type="button"
+                variant="default"
+                className="bg-green-500 hover:bg-green-600"
+                onClick={() => setSpecs((prev) => [...prev, ""])}
+              >
+                <Plus className="w-4 h-4 mr-1" />
+                Add Spec
+              </Button>
+            </CardTitle>
+          </CardHeader>
+          <CardContent className="space-y-2">
+            {specs.map((spec, index) => (
+              <div key={index} className="flex gap-2 items-center">
+                <Input
+                  value={spec}
+                  onChange={(e) =>
+                    setSpecs((prev) =>
+                      prev.map((val, i) => (i === index ? e.target.value : val))
+                    )
+                  }
+                />
+                <Button
+                  type="button"
+                  size="icon"
+                  className="bg-red-500 hover:bg-red-600 text-white"
+                  onClick={() =>
+                    setSpecs((prev) => prev.filter((_, i) => i !== index))
+                  }
+                >
+                  <X className="w-4 h-4" />
+                </Button>
+              </div>
+            ))}
+          </CardContent>
+        </Card>
+
         <h3 className="text-lg text-red-600 font-bold">
           Terms and Conditions
         </h3>

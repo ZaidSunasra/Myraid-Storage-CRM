@@ -20,7 +20,7 @@ const ProductSelectorCard = () => {
         defaultValues: {
             product_type: "",
             bay: 1,
-            compartment: 4,
+            compartment: 5,
         },
     })
 

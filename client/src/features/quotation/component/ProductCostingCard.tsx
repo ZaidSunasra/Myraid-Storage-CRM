@@ -30,6 +30,7 @@ const QuotationCosting = ({ form, productId, productName }: ProductCostingCardPr
             </CardDescription>
         </CardHeader>
         <CardContent className="space-y-6">
+            <QuotationWorkingTable productId={productId} />
             <div className="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-4 gap-6">
                 <div className="space-y-2">
                     <FormField
@@ -58,31 +59,6 @@ const QuotationCosting = ({ form, productId, productName }: ProductCostingCardPr
                 </div>
                 <div className="space-y-2">
                     <FormField
-                        defaultValue={product[0].trolley_material}
-                        control={form.control}
-                        name={`quotation_item.${Number(productId)}.trolley_material`}
-                        render={({ field }) => (
-                            <FormItem>
-                                <FormLabel>Trolley Material*</FormLabel>
-                                <Input
-                                    value={field.value ? field.value : ""}
-                                    placeholder="Enter weight of trolley material"
-                                    type="number"
-                                    onChange={(e) => {
-                                        const value = Number(e.target.value);
-                                        field.onChange(value)
-                                        updateCost(productId, {
-                                            trolley_material: value
-                                        })
-                                    }}
-                                />
-                                <FormMessage />
-                            </FormItem>
-                        )}
-                    />
-                </div>
-                <div className="space-y-2">
-                    <FormField
                         defaultValue={product[0].ss_material}
                         control={form.control}
                         name={`quotation_item.${Number(productId)}.ss_material`}
@@ -98,6 +74,31 @@ const QuotationCosting = ({ form, productId, productName }: ProductCostingCardPr
                                         field.onChange(value)
                                         updateCost(productId, {
                                             ss_material: value
+                                        })
+                                    }}
+                                />
+                                <FormMessage />
+                            </FormItem>
+                        )}
+                    />
+                </div>
+                                <div className="space-y-2">
+                    <FormField
+                        defaultValue={product[0].trolley_material}
+                        control={form.control}
+                        name={`quotation_item.${Number(productId)}.trolley_material`}
+                        render={({ field }) => (
+                            <FormItem>
+                                <FormLabel>Trolley Material*</FormLabel>
+                                <Input
+                                    value={field.value ? field.value : ""}
+                                    placeholder="Enter weight of trolley material"
+                                    type="number"
+                                    onChange={(e) => {
+                                        const value = Number(e.target.value);
+                                        field.onChange(value)
+                                        updateCost(productId, {
+                                            trolley_material: value
                                         })
                                     }}
                                 />
@@ -326,9 +327,6 @@ const QuotationCosting = ({ form, productId, productName }: ProductCostingCardPr
                     />
                 </div>
             </div>
-            <QuotationWorkingTable
-                productId={productId}
-            />
         </CardContent>
     </Card >
 }

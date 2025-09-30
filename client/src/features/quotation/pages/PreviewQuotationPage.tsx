@@ -8,13 +8,14 @@ const PreviewQuotationPage = ({ data }: { data: AddQuotation }) => {
   const { products, overallTotal } = useQuotation();
 
   const calculateProductTotal = (product: QuotationProduct, item?: QuotationItem) => {
-    const productTotal = Number(product.total_provided_rate) + Number(product.installation) * Number(product.total_body) + Number(product.transport) + Number(product.accomodation);
-    const profitTotal = Number(Number(productTotal) * (1 + (Number(product.profit_percent) / 100))).toFixed(2);
-    const doorItem = product.items.find((item) => item.name === "DOOR");
-    const doorTotal = doorItem ? doorItem.provided_rate : 0;
-    const qtyRatio = Number(item?.per_bay_qty) / Number(product.total_body);
-    const itemWiseTotal = ((Number(profitTotal) - doorTotal) * qtyRatio).toFixed(2);
-    return { productTotal, profitTotal, doorTotal, itemWiseTotal };
+    const extraExpense = Number(product.installation) * Number(product.total_body) + Number(product.accomodation) + Number(product.transport);
+    const perBodyExpense = extraExpense / Number(product.total_body);
+    const itemWisetotal = Number(item?.provided_rate) + perBodyExpense * Number(item?.per_bay_qty);
+    const profitPercent = 1 + product.profit_percent / 100;
+    const itemWiseProfit = itemWisetotal * profitPercent;
+    const setWiseTotal = Number(product.total_provided_rate) + extraExpense;
+    const setWiseProfit = setWiseTotal * profitPercent;
+    return { setWiseTotal, setWiseProfit, itemWiseProfit };
   }
 
   return (
@@ -47,7 +48,7 @@ const PreviewQuotationPage = ({ data }: { data: AddQuotation }) => {
                   <TableBody key={product.id}>
                     {product.items.map((item, index: number) => {
                       const compartment = product.name[6];
-                      const { itemWiseTotal } = calculateProductTotal(product, item)
+                      const { itemWiseProfit } = calculateProductTotal(product, item)
                       return (
                         <TableRow key={item.id} className="align-top">
                           <TableCell className="border border-black text-center">
@@ -67,10 +68,10 @@ const PreviewQuotationPage = ({ data }: { data: AddQuotation }) => {
                             {item.quantity}
                           </TableCell >
                           <TableCell className="border border-black text-center">
-                            {item.name === "DOOR" ? `${item.provided_rate}` : `${itemWiseTotal}`}
+                            {itemWiseProfit.toFixed(2)}
                           </TableCell>
                           <TableCell className="border border-black text-center">
-                            {item.name === "DOOR" ? `${Number(item.provided_rate) * Number(item.quantity)}` : `${Number(Number(item.quantity) * Number(itemWiseTotal)).toFixed(2)}`}
+                            {Number(item.quantity) * Number(itemWiseProfit.toFixed(2))}
                           </TableCell>
                         </TableRow>
                       )
@@ -85,7 +86,7 @@ const PreviewQuotationPage = ({ data }: { data: AddQuotation }) => {
                   <TableBody key={product.id}>
                     {product.items.map((item, index: number) => {
                       const compartment = product.name[6];
-                      const { profitTotal } = calculateProductTotal(product, item)
+                      const { setWiseProfit } = calculateProductTotal(product, item)
                       return (
                         <TableRow key={item.id} className="align-top">
                           <TableCell className="border border-black text-center">
@@ -95,6 +96,7 @@ const PreviewQuotationPage = ({ data }: { data: AddQuotation }) => {
                             <div className="font-semibold">
                               {item.name}{" "}
                               {item.code ? `(${item.code})` : ""}{" "}
+                             {item.name !== "DOOR" ? `(Qty ${item.quantity} Nos)` : `(${item.quantity} SET)`}
                             </div>
                             <div className="text-xs text-muted-foreground">
                               {item.name !== "DOOR" ? `${item.height} (HT) x ${item.width} (W) x ${item.depth} (D) MM` : ""}{" "}
@@ -107,10 +109,10 @@ const PreviewQuotationPage = ({ data }: { data: AddQuotation }) => {
                                 {product.set} SET
                               </TableCell>
                               <TableCell rowSpan={product.items.length} className="border border-black text-center">
-                                {profitTotal}
+                                {setWiseProfit.toFixed(2)}
                               </TableCell>
                               <TableCell rowSpan={product.items.length} className="border border-black text-center">
-                                {Number(profitTotal) * Number(product.set)}
+                                {Number(setWiseProfit.toFixed(2)) * Number(product.set)}
                               </TableCell>
                             </>
                           }
@@ -133,7 +135,7 @@ const PreviewQuotationPage = ({ data }: { data: AddQuotation }) => {
               <TableCell></TableCell>
               <TableCell className="border-r border-black"></TableCell>
               <TableCell colSpan={2} className="border-r border-black">GST {data.gst}%</TableCell>
-              <TableCell>{(Number(overallTotal) * Number(data.gst) / 100).toFixed(2)}</TableCell>
+              <TableCell>{(Number(overallTotal) * data.gst / 100).toFixed(2)}</TableCell>
             </TableRow>
             <TableRow>
               <TableCell></TableCell>
@@ -156,7 +158,7 @@ const PreviewQuotationPage = ({ data }: { data: AddQuotation }) => {
           </TableFooter>
         </Table>
         {products.map((product) => (
-          <Table className="border border-black" key={product.id}>
+          <Table key={product.id}>
             <TableHeader>
               <TableRow>
                 <TableHead rowSpan={2} className="border border-black">Sr. No</TableHead>
@@ -188,26 +190,35 @@ const PreviewQuotationPage = ({ data }: { data: AddQuotation }) => {
               }
             </TableBody>
             <TableFooter>
-              <TableRow>
-                <TableCell colSpan={4}>Total Body</TableCell>
-                <TableCell>{product.total_body}</TableCell>
+              <TableRow  className="border-white">
+                 <TableCell colSpan={2} className="bg-background"></TableCell>
+                <TableCell colSpan={2} className="border border-black">Total Body</TableCell>
+                <TableCell className="border border-black">{product.total_body}</TableCell>
               </TableRow>
+              {data.quotation_template === "set_wise" &&
+              <TableRow>
+                <TableCell colSpan={2}  className="bg-background"></TableCell>
+                <TableCell className="border border-black border-r-0">Set</TableCell>
+                <TableCell className="border border-black border-l-0">{product.set}</TableCell>
+                <TableCell className="border border-black">{product.total_body * product.set}</TableCell>
+              </TableRow>
+              }
             </TableFooter>
           </Table>
         ))}
       </div>
       <div className="space-y-6">
         {products.map((product) => {
-          const { productTotal, profitTotal } = calculateProductTotal(product)
+          const { setWiseTotal, setWiseProfit } = calculateProductTotal(product)
           return (
             <React.Fragment key={product.id}>
               <Table className="border border-black">
                 <TableBody>
                   <TableRow>
-                      <TableCell className="border border-black">Labour Cost</TableCell>
-                      <TableCell className="border border-black">{product.labour_cost}</TableCell>
-                      <TableCell className="border border-black">{product.set}</TableCell>
-                      <TableCell className="border border-black">{Number(product.labour_cost) * Number(product.set)}</TableCell>
+                    <TableCell className="border border-black">Labour Cost</TableCell>
+                    <TableCell className="border border-black">{product.labour_cost}</TableCell>
+                    <TableCell className="border border-black">{product.set}</TableCell>
+                    <TableCell className="border border-black">{Number(product.labour_cost) * Number(product.set)}</TableCell>
                   </TableRow>
                   <TableRow>
                     <TableCell className="border border-black">Material</TableCell>
@@ -222,10 +233,10 @@ const PreviewQuotationPage = ({ data }: { data: AddQuotation }) => {
                     <TableCell className="border border-black">{product.total_weight}</TableCell>
                   </TableRow>
                   <TableRow>
-                      <TableCell className="border border-black">Powder Coating</TableCell>
-                      <TableCell className="border border-black">{product.powder_coating}</TableCell>
-                      <TableCell className="border border-black">{product.set}</TableCell>
-                      <TableCell className="border border-black">{Number(product.powder_coating) * Number(product.set)}</TableCell>
+                    <TableCell className="border border-black">Powder Coating</TableCell>
+                    <TableCell className="border border-black">{product.powder_coating}</TableCell>
+                    <TableCell className="border border-black">{product.set}</TableCell>
+                    <TableCell className="border border-black">{Number(product.powder_coating) * Number(product.set)}</TableCell>
                   </TableRow>
                 </TableBody>
               </Table>
@@ -275,17 +286,17 @@ const PreviewQuotationPage = ({ data }: { data: AddQuotation }) => {
                   <TableRow>
                     <TableCell className="border border-black">Total</TableCell>
                     <TableCell className="border border-black"></TableCell>
-                    <TableCell className="border border-black"> {productTotal} </TableCell>
+                    <TableCell className="border border-black"> {setWiseTotal} </TableCell>
                   </TableRow>
                   <TableRow>
                     <TableCell className="border border-black">Profit (%)</TableCell>
                     <TableCell className="border border-black">{product.profit_percent}</TableCell>
-                    <TableCell className="border border-black">{Number(profitTotal)}</TableCell>
+                    <TableCell className="border border-black">{Number(setWiseProfit.toFixed(2))}</TableCell>
                   </TableRow>
                   <TableRow>
                     <TableCell className="border border-black">Set</TableCell>
                     <TableCell className="border border-black">{product.set}</TableCell>
-                    <TableCell className="border border-black">{Number(profitTotal) * Number(product.set)}</TableCell>
+                    <TableCell className="border border-black">{Number(setWiseProfit.toFixed(2)) * Number(product.set)}</TableCell>
                   </TableRow>
                 </TableBody>
               </Table>

@@ -9,7 +9,7 @@ const QuotationWorkingTable = ({ productId }: { productId: number }) => {
     const items = getProductItems(productId)
     const { totalMarketRate, totalProvidedRate } = getProductTotals(productId)
 
-    return <Table className="border">
+    return <Table className="border mb-6">
         <TableHeader>
             <TableRow>
                 <TableHead colSpan={2} className="text-center border">Name</TableHead>
