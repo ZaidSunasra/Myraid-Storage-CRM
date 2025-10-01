@@ -1,4 +1,4 @@
-import type { AddDeal, deal_status, GetAllDealSuccessResponse, GetDealByIdSuccessResponse, GetDrawingByIdSuccessResponse, GetDrawingSuccessResponse, GetUploadUrl, GetUploadUrlSuccessResponse, SuccessResponse, UploadDrawing } from "zs-crm-common";
+import type { AddDeal, deal_status, GetAllDealSuccessResponse, GetDealByIdSuccessResponse, GetDrawingByIdSuccessResponse, GetDrawingSuccessResponse, GetOnlyDealSuccessResponse, GetUploadUrl, GetUploadUrlSuccessResponse, SuccessResponse, UploadDrawing } from "zs-crm-common";
 import axiosInstance from "../axiosInstance"
 
 export const convertLeadToDeal = async ({ id, quotation_code }: { id: string, quotation_code: string }): Promise<SuccessResponse> => {
@@ -63,5 +63,10 @@ export const approveDrawing = async (id: string): Promise<SuccessResponse> => {
 
 export const rejectDrawing = async ({ note, id }: { note?: string, id: string }): Promise<SuccessResponse> => {
     const response = await axiosInstance.post(`deals/drawing/reject/${id}`, { note });
+    return response.data;
+}
+
+export const getOnlyDealId = async (): Promise<GetOnlyDealSuccessResponse> => {
+    const response = await axiosInstance.get("deals/get-only-id");
     return response.data;
 }

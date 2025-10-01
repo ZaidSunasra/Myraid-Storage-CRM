@@ -1,6 +1,6 @@
 import { Deal_Status, Notification_Type } from "@prisma/client";
 import { prisma } from "../../../libs/prisma"
-import { AddDeal, DEPARTMENTS, Deal, GetAllDealOutput, GetDealOutput } from "zs-crm-common";
+import { AddDeal, DEPARTMENTS, Deal, GetAllDealOutput, GetDealOutput, GetOnlyDealIdOutput } from "zs-crm-common";
 import { Include } from "../constants";
 
 export const generateDealId = async (quotation_code: string): Promise<string> => {
@@ -293,4 +293,13 @@ export const editDealService = async ({ company_id, employee_id, source_id, prod
             })
         }
     })
+}
+
+export const getDealIdService = async () : Promise<GetOnlyDealIdOutput[]> => {
+    const dealIds = await prisma.deal.findMany({
+        select: {
+            id: true
+        }
+    });
+    return dealIds;
 }

@@ -1,6 +1,6 @@
 import { Request, Response } from "express";
-import { addDealService, convertLeadToDealService, editDealService, editDealStatusService, getDealByCompanyService, getDealByIdService, getDealService } from "../services/deal.service";
-import { GetAllDealSuccessResponse, GetDealByIdSuccessResponse, GetDealByompanySuccessResponse, ErrorResponse, SuccessResponse, editStatusSchema, DEAL_STATUS, dealSchema } from "zs-crm-common";
+import { addDealService, getDealIdService, convertLeadToDealService, editDealService, editDealStatusService, getDealByCompanyService, getDealByIdService, getDealService } from "../services/deal.service";
+import { GetAllDealSuccessResponse, GetDealByIdSuccessResponse, GetDealByompanySuccessResponse, ErrorResponse, SuccessResponse, editStatusSchema, DEAL_STATUS, dealSchema, GetOnlyDealSuccessResponse } from "zs-crm-common";
 
 export const getDealController = async (req: Request, res: Response<ErrorResponse | GetAllDealSuccessResponse>): Promise<any> => {
     const user = res.locals.user;
@@ -140,12 +140,28 @@ export const editDealController = async (req: Request, res: Response<SuccessResp
         })
     }
     try {
-        await editDealService({company_id, employee_id, source_id, product_id, assigned_to, deal_status}, deal_id) 
-    return res.status(200).json({
+        await editDealService({ company_id, employee_id, source_id, product_id, assigned_to, deal_status }, deal_id)
+        return res.status(200).json({
             message: `Deal edited succesfully`,
         });
     } catch (error) {
         console.log(`Error in editing deal`, error);
+        return res.status(500).send({
+            message: "Internal server error",
+            error: error
+        });
+    }
+}
+
+export const getDealIdController = async (req: Request, res: Response<ErrorResponse | GetOnlyDealSuccessResponse>): Promise<any> => {
+    try {
+        const dealIds = await getDealIdService();
+        return res.status(200).json({
+            message: `Deal Ids  fetched succesfully`,
+            dealIds
+        });
+    } catch (error) {
+        console.log(`Error in fetching deal Ids`, error);
         return res.status(500).send({
             message: "Internal server error",
             error: error
