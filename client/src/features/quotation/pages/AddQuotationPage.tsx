@@ -32,7 +32,8 @@ const AddQuotationPage = () => {
       grandTotal: 0,
       discount: 0,
       round_off: 0,
-      show_body_table: true
+      show_body_table: true,
+      note: null
     },
   })
 

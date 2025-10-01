@@ -9,8 +9,9 @@ import { useEffect } from "react"
 import { useQuotation } from "@/context/QuotationContext"
 import type { AddQuotation } from "zs-crm-common"
 import { capitalize } from "@/utils/formatData"
+import { Textarea } from "@/shared/components/ui/textarea"
 
-const QuotationSummary = ({ form, handlePrev, isSubmitting, type}: { form: UseFormReturn<AddQuotation>, handlePrev: () => void, isSubmitting: boolean, type: "add" | "edit"}) => {
+const QuotationSummary = ({ form, handlePrev, isSubmitting, type }: { form: UseFormReturn<AddQuotation>, handlePrev: () => void, isSubmitting: boolean, type: "add" | "edit" }) => {
 
   const { overallTotal } = useQuotation();
   const gst_amount = calculateGSTTotal(overallTotal, form);
@@ -22,7 +23,6 @@ const QuotationSummary = ({ form, handlePrev, isSubmitting, type}: { form: UseFo
     form.setValue("grandTotal", grand_total);
     form.setValue("round_off", round_off);
   }, [overallTotal, grand_total, round_off]);
-
 
   return <Card>
     <CardHeader>
@@ -100,6 +100,24 @@ const QuotationSummary = ({ form, handlePrev, isSubmitting, type}: { form: UseFo
             )}
           />
         </div>
+      </div>
+      <div className="space-y-2">
+        <FormField
+          control={form.control}
+          name="note"
+          render={({ field }) => (
+            <FormItem>
+              <FormLabel>Note</FormLabel>
+              <Textarea
+                rows={5}
+                placeholder="Enter special note to display on quotation"
+                value={field.value ?? ""}
+                onChange={(e) => field.onChange(e.target.value)} 
+              />
+              <FormMessage />
+            </FormItem>
+          )}
+        />
       </div>
     </CardContent>
     <CardFooter className="w-full flex justify-between">

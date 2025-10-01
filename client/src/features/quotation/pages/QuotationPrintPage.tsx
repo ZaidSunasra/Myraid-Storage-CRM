@@ -74,11 +74,11 @@ const QuotationPrint = () => {
           <img src={Logo} alt="Watermark" />
         </div>
         <div>
-          <div className="flex mb-4 gap-1 -m-2">
+          <div className="flex mb-4 gap-4 items-center">
             <div>
               <img src={Logo} alt="logo" className="w-full" />
             </div>
-            <div>
+            <div className="text-xs font-medium">
               <p> A/702, Al Husain Bldg, Momin Nagar, Jogeshwari (W), Mumbai 400102 </p>
               <p>State  :  Maharashtra, Code : 27</p>
               <p>Contact: 9769370343 </p>
@@ -314,6 +314,9 @@ const QuotationPrint = () => {
             </TableRow>
           </TableBody>
         </Table>
+        {data.quotation.note &&
+          <p className="mb-4">Note: {data.quotation.note}</p>
+        }
         {data.quotation.show_body_table === true &&
           <div className="mb-6 space-y-2">
             {data.quotation.quotation_products.map((product) => (

@@ -80,6 +80,7 @@ const EditQuotationPage = () => {
             discount: Number(data.quotation.discount ?? 0),
             round_off: Number(data.quotation.round_off ?? 0),
             show_body_table: data.quotation.show_body_table ?? false,
+            note: data.quotation.note ?? null,
             quotation_item: quotation_item
         });
     }, [data, addProduct, clearAll, form]);
@@ -87,15 +88,12 @@ const EditQuotationPage = () => {
 
     const onSubmit = (data: AddQuotation) => {
         const payload = { ...data, quotation_item: products }
-        console.log(payload)
+        //console.log(payload)
         editQuotation.mutate({data: payload, deal_id: id as string, id: quotation_id as string})
     }
 
     if (isPending) return <DetailedPageLoader />
     if (isError) return <ErrorDisplay fullPage />
-    console.log(data.quotation)
-    console.log(form.getValues())
-    console.log(products)
 
     return (
         <div className="bg-accent min-h-screen">
