@@ -57,6 +57,11 @@ export const addQuotationSchema = z.object({
     note: z.string().trim().optional().nullable(),
 })
 
+export const copyQuotationschema = z.object({
+    deal_id: z.string()
+})
+
+export type CopyQuotation = z.infer<typeof copyQuotationschema>;
 export type QuotationProduct = z.infer<typeof quotationProductSchema>;
 export type QuotationItem = z.infer<typeof quotationItemSchema>
 export type AddQuotation = z.infer<typeof addQuotationSchema>;
