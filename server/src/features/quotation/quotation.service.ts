@@ -361,3 +361,68 @@ export const editQuotationService = async ({ quotation_template, quotation_item,
         }
     });
 }
+
+export const copyQuotationDataService = async (quotation: GetQuotationOutput | null, deal_id: string) : Promise<void>=> {
+    if (!quotation) return;
+    await prisma.$transaction(async (tx) => {
+        const quotation_id = await tx.quotation.create({
+            data: {
+                deal_id: deal_id,
+                quotation_template: quotation?.quotation_template,
+                gst: quotation.gst,
+                discount: quotation.discount,
+                round_off: quotation.round_off,
+                sub_total: quotation.sub_total,
+                grand_total: quotation.grand_total,
+                show_body_table: quotation.show_body_table,
+                note: quotation.note
+            },
+            select: {
+                id: true
+            }
+        });
+        for(const product of quotation.quotation_products) {
+        const createdProduct = await tx.quotationProducts.create({
+                data: {
+                    quotation_id: quotation_id.id,
+                    name: product.name,
+                },
+            });
+            if (product.quotation_item && product.quotation_item.length > 0) {
+                await tx.quotationItem.createMany({
+                    data: product.quotation_item.map((item) => ({
+                        quotation_product_id: createdProduct.id,
+                        item_name: item.item_name,
+                        item_code: item.item_code ?? null,
+                        height: item.height,
+                        width: item.width,
+                        depth: item.depth,
+                        provided_rate: item.provided_rate,
+                        market_rate: item.market_rate,
+                        per_bay_qty: item.per_bay_qty,
+                        quantity: item.quantity,
+                    })),
+                });
+            }
+            await tx.quotationWorking.create({
+                data: {
+                    quotation_product_id: createdProduct.id,
+                    total_weight: product.quotation_working[0].total_weight,
+                    ss_material: product.quotation_working[0].ss_material,
+                    trolley_material: product.quotation_working[0].trolley_material,
+                    powder_coating: product.quotation_working[0].powder_coating,
+                    labour_cost: product.quotation_working[0].labour_cost,
+                    installation: product.quotation_working[0].installation,
+                    transport: product.quotation_working[0].transport,
+                    accomodation: product.quotation_working[0].accomodation,
+                    provided_total_cost: product.quotation_working[0].provided_total_cost,
+                    market_total_cost: product.quotation_working[0].market_total_cost,
+                    total_body: product.quotation_working[0].total_body,
+                    metal_rate: product.quotation_working[0].metal_rate,
+                    set: product.quotation_working[0].set,
+                    profit_percent: product.quotation_working[0].profit_percent,
+                },
+            });
+        }
+    })
+}

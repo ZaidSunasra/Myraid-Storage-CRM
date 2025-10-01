@@ -37,3 +37,8 @@ export const editQuotation = async ({ data, deal_id, id }: { data: AddQuotation,
     const response = await axiosInstance.put(`/quotations/edit/${deal_id}/${id}`, data);
     return response.data
 }
+
+export const copyQuotation = async ({id, data} :{id: string, data: {deal_id: string}}) : Promise<SuccessResponse> => {
+    const response =  await axiosInstance.post(`/quotations/import/${id}`, data);
+    return response.data;
+}

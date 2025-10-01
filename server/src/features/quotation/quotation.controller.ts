@@ -1,5 +1,5 @@
 import { Request, Response } from "express";
-import { adddQuotationService, editQuotationService, getQuotationByDealService, getQuotationByIdService, getQuotationProductsService, getQuotationService } from "./quotation.service";
+import { adddQuotationService, copyQuotationDataService, editQuotationService, getQuotationByDealService, getQuotationByIdService, getQuotationProductsService, getQuotationService } from "./quotation.service";
 import { addQuotationSchema, ErrorResponse, GetQuotationByDealSuccessResponse, GetQuotationByIdSuccessResponse, GetQuotationSuccessResponse, QuotationBaseProductSuccessResponse, SuccessResponse } from "zs-crm-common";
 
 export const getQuotationProductsController = async (req: Request, res: Response<ErrorResponse | QuotationBaseProductSuccessResponse>): Promise<any> => {
@@ -20,7 +20,7 @@ export const getQuotationProductsController = async (req: Request, res: Response
 }
 
 export const addQuotationController = async (req: Request, res: Response<ErrorResponse | SuccessResponse>): Promise<any> => {
-    const { quotation_template, quotation_item, total, grandTotal, gst, discount, round_off, show_body_table, note} = req.body;
+    const { quotation_template, quotation_item, total, grandTotal, gst, discount, round_off, show_body_table, note } = req.body;
     const deal_id = req.params.deal_id;
     const validation = addQuotationSchema.safeParse(req.body);
     if (!validation.success) {
@@ -119,6 +119,25 @@ export const editQuotationController = async (req: Request, res: Response<ErrorR
         })
     } catch (error) {
         console.log(`Error in editing quotation`, error);
+        return res.status(500).send({
+            message: "Internal server error",
+            error: error
+        });
+    }
+}
+
+export const importQuotationController = async (req: Request, res: Response<SuccessResponse | ErrorResponse>): Promise<any> => {
+    const { deal_id } = req.body;
+    console.log(deal_id)
+    const quotation_id = req.params.id;
+    try {
+        const quotation = await getQuotationByIdService(quotation_id);
+        await copyQuotationDataService(quotation, deal_id);
+        return res.status(200).json({
+            message: `Quotation imported successfully`,
+        })
+    } catch (error) {
+        console.log(`Error in importing quotation`, error);
         return res.status(500).send({
             message: "Internal server error",
             error: error
