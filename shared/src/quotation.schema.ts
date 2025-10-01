@@ -11,9 +11,6 @@ export type ProductSelector = z.infer<typeof productSelectorSchema>
 export const QUOTATION_TEMPLATE = ["set_wise", "item_wise"] as const;
 export type quotation_template = typeof QUOTATION_TEMPLATE[number];
 
-export const PRODUCT_TYPE = ["compactor", "locker"] as const;
-export type product_type = typeof PRODUCT_TYPE[number];
-
 export const quotationItemSchema = z.object({
     id: z.number().min(1, "Id is required"),
     code: z.string().optional().nullable(),
@@ -25,6 +22,7 @@ export const quotationItemSchema = z.object({
     per_bay_qty: z.number(),
     provided_rate: z.number(),
     market_rate: z.number(),
+    removed: z.boolean()
 })
 
 export const quotationProductSchema = z.object({
@@ -148,6 +146,7 @@ export type GetQuotationBaseProduct = {
     compartment: number;
     name: string;
     code: string | null;
+    removed: boolean
 }
 
 export type QuotationBaseProductSuccessResponse = SuccessResponse & {

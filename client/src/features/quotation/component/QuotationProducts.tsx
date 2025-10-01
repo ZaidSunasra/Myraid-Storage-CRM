@@ -1,13 +1,13 @@
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/shared/components/ui/table"
 import { Input } from "@/shared/components/ui/input"
 import { useQuotation } from "@/context/QuotationContext"
-import { Trash2 } from "lucide-react"
+import { Plus, Trash2, X } from "lucide-react"
 import { Button } from "@/shared/components/ui/button"
 import { Card, CardContent, CardFooter } from "@/shared/components/ui/card"
 
-const QuotationProducts = ({handleNext} : {handleNext: () => void}) => {
+const QuotationProducts = ({ handleNext }: { handleNext: () => void }) => {
 
-  const { products, updateItem, removeItem, removeProduct } = useQuotation()
+  const { products, updateItem, softDeleteItem, restoreItem, removeProduct} = useQuotation()
 
   return <Card>
     <CardContent>
@@ -38,7 +38,10 @@ const QuotationProducts = ({handleNext} : {handleNext: () => void}) => {
                 </TableHeader>
                 <TableBody>
                   {product.items.map((item) => (
-                    <TableRow key={item.id}>
+                    <TableRow
+                      key={item.id}
+                      className={item.removed ? "bg-red-100/70 hover:bg-red-200 transition-colors" : "hover:bg-gray-50 transition-colors"}
+                    >
                       <TableCell className="whitespace-normal break-words">{item.name}</TableCell>
                       <TableCell>{item.code}</TableCell>
                       <TableCell>
@@ -79,12 +82,25 @@ const QuotationProducts = ({handleNext} : {handleNext: () => void}) => {
                         />
                       </TableCell>
                       <TableCell>
-                        <Button
-                          variant="destructive"
-                          onClick={() => removeItem(product.id, item.id)}
-                        >
-                          <Trash2 size={18} />
-                        </Button>
+                        {item.removed ? (
+                          <Button
+                            className="bg-green-500 text-white hover:bg-green-600 transition-colors p-2 rounded-full"
+                            onClick={() => restoreItem(product.id, item.id)}
+                            title="Restore Item"
+                            type="button"
+                          >
+                            <Plus size={18} />
+                          </Button>
+                        ) : (
+                          <Button
+                            className="bg-red-500 text-white hover:bg-red-600 transition-colors p-2 rounded-full"
+                            onClick={() => softDeleteItem(product.id, item.id)}
+                            title="Soft Delete Item"
+                            type="button"
+                          >
+                            <X size={18} />
+                          </Button>
+                        )}
                       </TableCell>
                     </TableRow>
                   ))}

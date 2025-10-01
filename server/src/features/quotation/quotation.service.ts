@@ -16,7 +16,8 @@ export const getQuotationProductsService = async (product_type: Product_Type, ba
         depth: compartment === 7 && product.code === "SFMU" ? 475 : product.default_depth,
         quantity: 1,
         provided_rate: 0,
-        market_rate: 0
+        market_rate: 0,
+        removed: false
     }));
     return enrichedProducts;
 }

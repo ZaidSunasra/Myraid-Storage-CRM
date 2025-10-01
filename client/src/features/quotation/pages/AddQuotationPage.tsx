@@ -15,6 +15,7 @@ import { addQuotationSchema, type AddQuotation } from "zs-crm-common"
 import PreviewQuotationPage from "./PreviewQuotationPage"
 import QuotationProducts from "../component/QuotationProducts"
 import ProductSelectorCard from "../component/QuotationProductSelector"
+import { toast } from "sonner"
 
 const AddQuotationPage = () => {
   const { id } = useParams()
@@ -33,7 +34,8 @@ const AddQuotationPage = () => {
       discount: 0,
       round_off: 0,
       show_body_table: true,
-      note: null
+      note: null,
+      total: 0
     },
   })
 
@@ -41,9 +43,22 @@ const AddQuotationPage = () => {
   const handlePrev = () => setCurrentStep((step) => step - 1)
 
   const onSubmit = (data: AddQuotation) => {
-    const payload = { ...data, quotation_item: products }
-    //console.log(payload);
-    addQuotation.mutate({ data: payload, deal_id: id as string })
+    const payload = {
+      ...data,
+      quotation_item: products
+        .map((p) => ({
+          ...p,
+          items: p.items.filter((it) => !it.removed),
+        }))
+        .filter((p) => p.items.length > 0),
+    };
+    if (payload.quotation_item.length == 0) {
+      toast.error("Atleast 1 product or item required")
+    } else {
+      addQuotation.mutate({ data: payload, deal_id: id as string })
+    }
+    console.log(payload);
+
   }
 
   return (
@@ -100,7 +115,7 @@ const AddQuotationPage = () => {
                     />
                   )}
                   {currentStep === 3 && (
-                    <QuotationSummary form={form} handlePrev={handlePrev} isSubmitting={addQuotation.isPending} type="add"/>
+                    <QuotationSummary form={form} handlePrev={handlePrev} isSubmitting={addQuotation.isPending} type="add" />
                   )}
                 </form>
               </Form>

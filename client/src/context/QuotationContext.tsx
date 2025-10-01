@@ -7,7 +7,8 @@ type QuotationContextType = {
   removeProduct: (productId: number) => void;
   updateItem: (productId: number, itemId: number, updates: Partial<QuotationItem>) => void;
   updateCost: (productId: number, updates: Partial<QuotationProduct>) => void;
-  removeItem: (productId: number, itemId: number) => void;
+  softDeleteItem: (productId: number, itemId: number) => void;
+  restoreItem: (productId: number, itemId: number) => void;
   clearAll: () => void;
   overallTotal: number;
   getProductItems: (productId: number) => QuotationItem[];
@@ -21,9 +22,16 @@ export const QuotationProvider = ({ children }: { children: ReactNode }) => {
   const [products, setProducts] = useState<QuotationProduct[]>([]);
 
   const calculateTotals = (items: QuotationItem[]) => {
-    const totalMarketRate = items.reduce((sum, item) => sum + item.quantity * item.market_rate, 0);
-    const totalProvidedRate = items.reduce((sum, item) => sum + item.quantity * item.provided_rate, 0);
-    const totalBodies = items.reduce((sum, it) => {
+    const activeItems = items.filter((it) => !it.removed);
+    const totalMarketRate = activeItems.reduce(
+      (sum, item) => sum + item.quantity * item.market_rate,
+      0
+    );
+    const totalProvidedRate = activeItems.reduce(
+      (sum, item) => sum + item.quantity * item.provided_rate,
+      0
+    );
+    const totalBodies = activeItems.reduce((sum, it) => {
       const qty = Number(it.quantity) || 0;
       const perBayQty = Number(it.per_bay_qty) || 0;
       return sum + perBayQty * qty;
@@ -88,14 +96,33 @@ export const QuotationProvider = ({ children }: { children: ReactNode }) => {
     );
   }, []);
 
-  const removeItem = useCallback((productId: number, itemId: number) => {
+  const softDeleteItem = useCallback((productId: number, itemId: number) => {
     setProducts((prev) =>
       prev.map((p) => {
         if (p.id !== productId) return p;
-
-        const updatedItems = p.items.filter((it) => it.id !== itemId);
+        const updatedItems = p.items.map((it) =>
+          it.id === itemId ? { ...it, removed: true } : it
+        );
         const totals = calculateTotals(updatedItems);
+        return {
+          ...p,
+          items: updatedItems,
+          total_market_rate: totals.totalMarketRate,
+          total_provided_rate: totals.totalProvidedRate,
+          total_body: totals.totalBodies,
+        };
+      })
+    );
+  }, []);
 
+  const restoreItem = useCallback((productId: number, itemId: number) => {
+    setProducts((prev) =>
+      prev.map((p) => {
+        if (p.id !== productId) return p;
+        const updatedItems = p.items.map((it) =>
+          it.id === itemId ? { ...it, removed: false } : it
+        );
+        const totals = calculateTotals(updatedItems);
         return {
           ...p,
           items: updatedItems,
@@ -109,7 +136,7 @@ export const QuotationProvider = ({ children }: { children: ReactNode }) => {
 
   const getProductItems = useCallback((productId: number) => {
     const product = products.find((p) => p.id === productId);
-    return product?.items || [];
+    return product ? product.items.filter((it) => !it.removed) : [];
   }, [products]);
 
   const getProductTotals = useCallback((productId: number) => {
@@ -147,7 +174,8 @@ export const QuotationProvider = ({ children }: { children: ReactNode }) => {
         removeProduct,
         updateItem,
         updateCost,
-        removeItem,
+        softDeleteItem,
+        restoreItem,
         clearAll,
         overallTotal,
       }}

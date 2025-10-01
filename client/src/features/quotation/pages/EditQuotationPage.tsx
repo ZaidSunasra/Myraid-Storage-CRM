@@ -18,6 +18,7 @@ import ErrorDisplay from "@/shared/components/ErrorPage"
 import QuotationProducts from "../component/QuotationProducts"
 import QuotationProductSelector from "../component/QuotationProductSelector"
 import { useEditQuotation } from "@/api/quotations/quotations.mutation"
+import { toast } from "sonner"
 
 const EditQuotationPage = () => {
 
@@ -50,6 +51,7 @@ const EditQuotationPage = () => {
                 provided_rate: Number(item.provided_rate ?? 0),
                 market_rate: Number(item.market_rate ?? 0),
                 code: item.item_code ?? null,
+                removed: false,
             }));
             const working = p.quotation_working?.[0];
             addProduct(mappedItems, p.name, working, index);
@@ -87,9 +89,22 @@ const EditQuotationPage = () => {
 
 
     const onSubmit = (data: AddQuotation) => {
-        const payload = { ...data, quotation_item: products }
-        //console.log(payload)
-        editQuotation.mutate({data: payload, deal_id: id as string, id: quotation_id as string})
+        const payload = {
+            ...data,
+            quotation_item: products
+                .map((p) => ({
+                    ...p,
+                    items: p.items.filter((it) => !it.removed),
+                }))
+                .filter((p) => p.items.length > 0),
+        };
+        if (payload.quotation_item.length == 0) {
+            toast.error("Atleast 1 product or item required")
+        } else {
+            editQuotation.mutate({ data: payload, deal_id: id as string, id: quotation_id as string })
+        }
+        console.log(payload);
+       
     }
 
     if (isPending) return <DetailedPageLoader />
@@ -150,7 +165,7 @@ const EditQuotationPage = () => {
                                         />
                                     )}
                                     {currentStep === 3 && (
-                                        <QuotationSummary form={form} handlePrev={handlePrev} isSubmitting={editQuotation.isPending} type="edit"/>
+                                        <QuotationSummary form={form} handlePrev={handlePrev} isSubmitting={editQuotation.isPending} type="edit" />
                                     )}
                                 </form>
                             </Form>
