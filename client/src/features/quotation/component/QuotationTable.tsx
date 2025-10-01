@@ -42,6 +42,7 @@ const QuotationTable = () => {
                 <Table>
                     <TableHeader>
                         <TableRow>
+                            <TableHead>Deal Id</TableHead>
                             <TableHead>Company</TableHead>
                             <TableHead>Product</TableHead>
                             <TableHead>Amount</TableHead>
@@ -78,7 +79,8 @@ const QuotationTable = () => {
                     <TableBody>
                         {quotationData?.quotations?.map((quotation) => (
                             <TableRow key={quotation.id} onClick={() => navigate(`/quotation/${quotation.deal_id}/${quotation.id}`)}>
-                                <TableCell className="font-medium">{toTitleCase(quotation.deal.company.name)}</TableCell>
+                                <TableCell  className="font-medium">{quotation.deal_id.replace(/-/g, "/").replace(/_/g, "-")}</TableCell>
+                                <TableCell>{toTitleCase(quotation.deal.company.name)}</TableCell>
                                 <TableCell>
                                     {toTitleCase(quotation.quotation_products[0].name)}
                                     {quotation.quotation_products.length > 1 ? ` + ${quotation.quotation_products.length - 1} Product` : ` `}
