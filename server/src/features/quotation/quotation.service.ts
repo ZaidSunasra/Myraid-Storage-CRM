@@ -21,7 +21,7 @@ export const getQuotationProductsService = async (product_type: Product_Type, ba
     return enrichedProducts;
 }
 
-export const adddQuotationService = async ({ quotation_template, quotation_item, total, grandTotal, gst, discount, round_off, show_body_table }: AddQuotation,
+export const adddQuotationService = async ({ quotation_template, quotation_item, total, grandTotal, gst, discount, round_off, show_body_table, note }: AddQuotation,
     deal_id: string): Promise<any> => {
     await prisma.$transaction(async (tx) => {
         const quotation = await tx.quotation.create({
@@ -33,7 +33,8 @@ export const adddQuotationService = async ({ quotation_template, quotation_item,
                 round_off: round_off,
                 sub_total: total,
                 grand_total: grandTotal,
-                show_body_table: show_body_table
+                show_body_table: show_body_table,
+                note: note
             },
             select: { id: true },
         });
@@ -289,7 +290,7 @@ export const getQuotationByIdService = async (id: string): Promise<GetQuotationO
     return convertedQuotation;
 }
 
-export const editQuotationService = async ({ quotation_template, quotation_item, total, grandTotal, gst, discount, round_off, show_body_table }: AddQuotation,
+export const editQuotationService = async ({ quotation_template, quotation_item, total, grandTotal, gst, discount, round_off, show_body_table, note }: AddQuotation,
     deal_id: string, id: string): Promise<any> => {
     await prisma.$transaction(async (tx) => {
         const quotation = await tx.quotation.update({
@@ -304,7 +305,8 @@ export const editQuotationService = async ({ quotation_template, quotation_item,
                 round_off: round_off,
                 sub_total: total,
                 grand_total: grandTotal,
-                show_body_table: show_body_table
+                show_body_table: show_body_table,
+                note: note
             },
             select: { id: true },
         });

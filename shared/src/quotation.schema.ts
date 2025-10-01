@@ -56,6 +56,7 @@ export const addQuotationSchema = z.object({
     discount: z.number(),
     round_off: z.number(),
     show_body_table: z.boolean(),
+    note: z.string().trim().optional().nullable(),
 })
 
 export type QuotationProduct = z.infer<typeof quotationProductSchema>;
@@ -73,6 +74,7 @@ export type Quotation = {
     round_off: number
     show_body_table: boolean
     sub_total: number
+    note: string | null
     quotation_products: Quotation_Product[]
 }
 
