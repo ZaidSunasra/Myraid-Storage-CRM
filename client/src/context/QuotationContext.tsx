@@ -61,6 +61,7 @@ export const QuotationProvider = ({ children }: { children: ReactNode }) => {
         transport: working?.transport ?? 0,
         set: working?.set ?? 1,
         profit_percent: working?.profit_percent ?? 15,
+        discount: working?.discount ?? 0
       },
     ]);
   }, []);
@@ -158,8 +159,9 @@ export const QuotationProvider = ({ children }: { children: ReactNode }) => {
       const installation = product.installation * product.total_body;
       const totalAmount = product.total_provided_rate;
       const profit_percent = product.profit_percent / 100;
+      const discount = product.discount / 100
       return (
-        sum + (transport + accomodation + installation + totalAmount) * (1 + profit_percent) * (product.set)
+        sum + (transport + accomodation + installation + totalAmount) * (1 + profit_percent) * (1 - discount) * (product.set)
       );
     }, 0);
   }, [products]);

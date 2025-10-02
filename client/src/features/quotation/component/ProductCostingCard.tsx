@@ -41,7 +41,7 @@ const QuotationCosting = ({ form, productId, productName }: ProductCostingCardPr
                             <FormItem>
                                 <FormLabel>Labour Cost*</FormLabel>
                                 <Input
-                                    value={field.value ? field.value : ""}
+                                    value={field.value ?? ""}
                                     placeholder="Enter labour cost"
                                     type="number"
                                     onChange={(e) => {
@@ -66,7 +66,7 @@ const QuotationCosting = ({ form, productId, productName }: ProductCostingCardPr
                             <FormItem>
                                 <FormLabel>SS Material*</FormLabel>
                                 <Input
-                                    value={field.value ? field.value : ""}
+                                    value={field.value ?? ""}
                                     placeholder="Enter weight of ss material"
                                     type="number"
                                     onChange={(e) => {
@@ -82,7 +82,7 @@ const QuotationCosting = ({ form, productId, productName }: ProductCostingCardPr
                         )}
                     />
                 </div>
-                                <div className="space-y-2">
+                <div className="space-y-2">
                     <FormField
                         defaultValue={product[0].trolley_material}
                         control={form.control}
@@ -91,7 +91,7 @@ const QuotationCosting = ({ form, productId, productName }: ProductCostingCardPr
                             <FormItem>
                                 <FormLabel>Trolley Material*</FormLabel>
                                 <Input
-                                    value={field.value ? field.value : ""}
+                                    value={field.value ?? ""}
                                     placeholder="Enter weight of trolley material"
                                     type="number"
                                     onChange={(e) => {
@@ -122,7 +122,7 @@ const QuotationCosting = ({ form, productId, productName }: ProductCostingCardPr
                             <FormItem>
                                 <FormLabel>Total Weight*</FormLabel>
                                 <Input
-                                    value={field.value ? field.value : ""}
+                                    value={field.value ?? ""}
                                     placeholder="Enter total weight"
                                     type="number"
                                     onChange={(e) => {
@@ -147,7 +147,7 @@ const QuotationCosting = ({ form, productId, productName }: ProductCostingCardPr
                             <FormItem>
                                 <FormLabel>Powder Coating*</FormLabel>
                                 <Input
-                                    value={field.value ? field.value : ""}
+                                    value={field.value ?? ""}
                                     placeholder="Enter powder coating cost"
                                     type="number"
                                     onChange={(e) => {
@@ -172,7 +172,7 @@ const QuotationCosting = ({ form, productId, productName }: ProductCostingCardPr
                             <FormItem>
                                 <FormLabel>Transport*</FormLabel>
                                 <Input
-                                    value={field.value ? field.value : ""}
+                                    value={field.value ?? ""}
                                     placeholder="Enter transport cost"
                                     type="number"
                                     onChange={(e) => {
@@ -197,7 +197,7 @@ const QuotationCosting = ({ form, productId, productName }: ProductCostingCardPr
                             <FormItem>
                                 <FormLabel>Accomodation*</FormLabel>
                                 <Input
-                                    value={field.value ? field.value : ""}
+                                    value={field.value ?? ""}
                                     placeholder="Enter accomodation cost"
                                     type="number"
                                     onChange={(e) => {
@@ -222,7 +222,7 @@ const QuotationCosting = ({ form, productId, productName }: ProductCostingCardPr
                             <FormItem>
                                 <FormLabel>Installation per body*</FormLabel>
                                 <Input
-                                    value={field.value ? field.value : ""}
+                                    value={field.value ?? ""}
                                     placeholder="Enter installation cost of single body"
                                     type="number"
                                     onChange={(e) => {
@@ -253,7 +253,7 @@ const QuotationCosting = ({ form, productId, productName }: ProductCostingCardPr
                             <FormItem>
                                 <FormLabel>Metal Rate*</FormLabel>
                                 <Input
-                                    value={field.value ? field.value : ""}
+                                    value={field.value ?? ""}
                                     placeholder="Enter metal rate"
                                     type="number"
                                     onChange={(e) => {
@@ -284,7 +284,7 @@ const QuotationCosting = ({ form, productId, productName }: ProductCostingCardPr
                                     <FormItem>
                                         <FormLabel>Set*</FormLabel>
                                         <Input
-                                            value={field.value ? field.value : ""}
+                                            value={field.value ?? ""}
                                             placeholder="Enter number of set"
                                             type="number"
                                             disabled={isItemWise}
@@ -310,7 +310,7 @@ const QuotationCosting = ({ form, productId, productName }: ProductCostingCardPr
                             <FormItem>
                                 <FormLabel>Profit (%)*</FormLabel>
                                 <Input
-                                    value={field.value ? field.value : ""}
+                                    value={field.value ?? ""}
                                     placeholder="Enter profit percentage"
                                     type="number"
                                     onChange={(e) => {
@@ -318,6 +318,31 @@ const QuotationCosting = ({ form, productId, productName }: ProductCostingCardPr
                                         field.onChange(value)
                                         updateCost(productId, {
                                             profit_percent: value
+                                        })
+                                    }}
+                                />
+                                <FormMessage />
+                            </FormItem>
+                        )}
+                    />
+                </div>
+                <div className="space-y-2">
+                    <FormField
+                        defaultValue={product[0].discount}
+                        control={form.control}
+                        name={`quotation_item.${Number(productId)}.discount`}
+                        render={({ field }) => (
+                            <FormItem>
+                                <FormLabel>Discount (%)</FormLabel>
+                                <Input
+                                    value={field.value ??  ""}
+                                    placeholder="Enter discount percentage"
+                                    type="number"
+                                    onChange={(e) => {
+                                        const value = Number(e.target.value);
+                                        field.onChange(value)
+                                        updateCost(productId, {
+                                            discount: value
                                         })
                                     }}
                                 />

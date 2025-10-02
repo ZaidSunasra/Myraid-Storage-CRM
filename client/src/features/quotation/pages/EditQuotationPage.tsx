@@ -73,13 +73,13 @@ const EditQuotationPage = () => {
                 total_provided_rate: Number(working?.provided_total_cost ?? 0),
                 set: Number(working?.set ?? 1),
                 profit_percent: Number(working?.profit_percent ?? 15),
+                discount: Number(working?.discount ?? 0)
             };
         });
         form.reset({
             quotation_template: data.quotation.quotation_template,
             grandTotal: Number(data.quotation.grand_total ?? 0),
             gst: Number(data.quotation.gst ?? 0),
-            discount: Number(data.quotation.discount ?? 0),
             round_off: Number(data.quotation.round_off ?? 0),
             show_body_table: data.quotation.show_body_table ?? false,
             note: data.quotation.note ?? null,
@@ -87,6 +87,7 @@ const EditQuotationPage = () => {
         });
     }, [data, addProduct, clearAll, form]);
 
+    console.log(data?.quotation)
 
     const onSubmit = (data: AddQuotation) => {
         const payload = {
@@ -103,8 +104,6 @@ const EditQuotationPage = () => {
         } else {
             editQuotation.mutate({ data: payload, deal_id: id as string, id: quotation_id as string })
         }
-        console.log(payload);
-       
     }
 
     if (isPending) return <DetailedPageLoader />
@@ -153,7 +152,7 @@ const EditQuotationPage = () => {
                                 <QuotationProductSelector />
                             }
                             <Form {...form}>
-                                <form onSubmit={form.handleSubmit(onSubmit, (errors) => { console.log(errors), alert("Error") })}>
+                                <form onSubmit={form.handleSubmit(onSubmit, (errors) => { console.log(errors)})}>
                                     {currentStep === 1 && (
                                         <QuotationProducts handleNext={handleNext} />
                                     )}

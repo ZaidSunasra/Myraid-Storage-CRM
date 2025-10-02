@@ -16,10 +16,10 @@ const QuotationSummary = ({ form, handlePrev, isSubmitting, type }: { form: UseF
   const { overallTotal } = useQuotation();
   const gst_amount = calculateGSTTotal(overallTotal, form);
   const round_off = calculateRoundOff(overallTotal, gst_amount);
-  const grand_total = calculateGrandTotal(overallTotal, gst_amount, round_off, form);
+  const grand_total = calculateGrandTotal(overallTotal, gst_amount, round_off);
 
   useEffect(() => {
-    form.setValue("total", overallTotal);
+    form.setValue("total", Number(overallTotal.toFixed(2)));
     form.setValue("grandTotal", grand_total);
     form.setValue("round_off", round_off);
   }, [overallTotal, grand_total, round_off]);
@@ -73,19 +73,6 @@ const QuotationSummary = ({ form, handlePrev, isSubmitting, type }: { form: UseF
             <FormLabel>Round Off</FormLabel>
             <Input value={round_off} disabled />
           </FormItem>
-        </div>
-        <div className="space-y-2">
-          <FormField
-            control={form.control}
-            name="discount"
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel>Discount</FormLabel>
-                <Input {...field} placeholder="Enter discount" type="number" onChange={(e) => field.onChange(Number(e.target.value))} />
-                <FormMessage />
-              </FormItem>
-            )}
-          />
         </div>
         <div className="space-y-2">
           <FormField

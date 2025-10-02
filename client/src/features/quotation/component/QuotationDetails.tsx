@@ -36,13 +36,6 @@ const QuotationDetails = ({ data }: { data: GetQuotationOutput }) => {
             </div>
           </div>
           <div className="space-y-2">
-            <Label>Discount</Label>
-            <div className="flex items-center space-x-2">
-              <IndianRupee className="h-4 w-4 text-gray-400" />
-              <span>{data.discount}</span>
-            </div>
-          </div>
-          <div className="space-y-2">
             <Label>Template</Label>
             <div className="flex items-center space-x-2">
               <LayoutTemplate className="h-4 w-4 text-gray-400" />

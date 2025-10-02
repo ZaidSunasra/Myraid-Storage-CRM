@@ -31,7 +31,6 @@ const AddQuotationPage = () => {
       quotation_item: products,
       gst: 18,
       grandTotal: 0,
-      discount: 0,
       round_off: 0,
       show_body_table: true,
       note: null,
@@ -57,8 +56,6 @@ const AddQuotationPage = () => {
     } else {
       addQuotation.mutate({ data: payload, deal_id: id as string })
     }
-    console.log(payload);
-
   }
 
   return (

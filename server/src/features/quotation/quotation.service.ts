@@ -22,7 +22,7 @@ export const getQuotationProductsService = async (product_type: Product_Type, ba
     return enrichedProducts;
 }
 
-export const adddQuotationService = async ({ quotation_template, quotation_item, total, grandTotal, gst, discount, round_off, show_body_table, note }: AddQuotation,
+export const adddQuotationService = async ({ quotation_template, quotation_item, total, grandTotal, gst, round_off, show_body_table, note }: AddQuotation,
     deal_id: string): Promise<any> => {
     await prisma.$transaction(async (tx) => {
         const quotation = await tx.quotation.create({
@@ -30,7 +30,6 @@ export const adddQuotationService = async ({ quotation_template, quotation_item,
                 deal_id: deal_id,
                 quotation_template: quotation_template,
                 gst: gst,
-                discount: discount,
                 round_off: round_off,
                 sub_total: total,
                 grand_total: grandTotal,
@@ -79,6 +78,7 @@ export const adddQuotationService = async ({ quotation_template, quotation_item,
                     metal_rate: product.metal_rate,
                     set: product.set,
                     profit_percent: product.profit_percent,
+                    discount: product.discount,
                 },
             });
         }
@@ -197,7 +197,6 @@ export const getQuotationService = async (user: any, page: number, search: strin
 
     return quotation.map((q) => ({
         ...q,
-        discount: q.discount.toNumber(),
         grand_total: q.grand_total.toNumber(),
         gst: q.gst.toNumber(),
         round_off: q.round_off.toNumber(),
@@ -222,6 +221,7 @@ export const getQuotationService = async (user: any, page: number, search: strin
                 transport: work.transport.toNumber(),
                 ss_material: work.ss_material.toNumber(),
                 trolley_material: work.trolley_material.toNumber(),
+                discount: work.discount.toNumber()
             })),
         })),
     }));
@@ -259,7 +259,6 @@ export const getQuotationByIdService = async (id: string): Promise<GetQuotationO
 
     const convertedQuotation = {
         ...quotation,
-        discount: quotation.discount.toNumber(),
         grand_total: quotation.grand_total.toNumber(),
         gst: quotation.gst.toNumber(),
         round_off: quotation.round_off.toNumber(),
@@ -284,6 +283,7 @@ export const getQuotationByIdService = async (id: string): Promise<GetQuotationO
                 transport: work.transport.toNumber(),
                 ss_material: work.ss_material.toNumber(),
                 trolley_material: work.trolley_material.toNumber(),
+                discount: work.discount.toNumber(),
             })),
         })),
     };
@@ -291,7 +291,7 @@ export const getQuotationByIdService = async (id: string): Promise<GetQuotationO
     return convertedQuotation;
 }
 
-export const editQuotationService = async ({ quotation_template, quotation_item, total, grandTotal, gst, discount, round_off, show_body_table, note }: AddQuotation,
+export const editQuotationService = async ({ quotation_template, quotation_item, total, grandTotal, gst, round_off, show_body_table, note }: AddQuotation,
     deal_id: string, id: string): Promise<any> => {
     await prisma.$transaction(async (tx) => {
         const quotation = await tx.quotation.update({
@@ -302,12 +302,12 @@ export const editQuotationService = async ({ quotation_template, quotation_item,
                 deal_id: deal_id,
                 quotation_template: quotation_template,
                 gst: gst,
-                discount: discount,
                 round_off: round_off,
                 sub_total: total,
                 grand_total: grandTotal,
                 show_body_table: show_body_table,
-                note: note
+                note: note,
+                created_at: new Date(Date.now())
             },
             select: { id: true },
         });
@@ -356,13 +356,14 @@ export const editQuotationService = async ({ quotation_template, quotation_item,
                     metal_rate: product.metal_rate,
                     set: product.set,
                     profit_percent: product.profit_percent,
+                    discount: product.discount
                 },
             });
         }
     });
 }
 
-export const copyQuotationDataService = async (quotation: GetQuotationOutput | null, deal_id: string) : Promise<void>=> {
+export const copyQuotationDataService = async (quotation: GetQuotationOutput | null, deal_id: string): Promise<void> => {
     if (!quotation) return;
     await prisma.$transaction(async (tx) => {
         const quotation_id = await tx.quotation.create({
@@ -370,7 +371,6 @@ export const copyQuotationDataService = async (quotation: GetQuotationOutput | n
                 deal_id: deal_id,
                 quotation_template: quotation?.quotation_template,
                 gst: quotation.gst,
-                discount: quotation.discount,
                 round_off: quotation.round_off,
                 sub_total: quotation.sub_total,
                 grand_total: quotation.grand_total,
@@ -381,8 +381,8 @@ export const copyQuotationDataService = async (quotation: GetQuotationOutput | n
                 id: true
             }
         });
-        for(const product of quotation.quotation_products) {
-        const createdProduct = await tx.quotationProducts.create({
+        for (const product of quotation.quotation_products) {
+            const createdProduct = await tx.quotationProducts.create({
                 data: {
                     quotation_id: quotation_id.id,
                     name: product.name,
@@ -421,6 +421,7 @@ export const copyQuotationDataService = async (quotation: GetQuotationOutput | n
                     metal_rate: product.quotation_working[0].metal_rate,
                     set: product.quotation_working[0].set,
                     profit_percent: product.quotation_working[0].profit_percent,
+                    discount: product.quotation_working[0].discount,
                 },
             });
         }
