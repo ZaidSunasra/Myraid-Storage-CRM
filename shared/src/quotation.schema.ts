@@ -42,7 +42,8 @@ export const quotationProductSchema = z.object({
     total_market_rate: z.number(),
     total_provided_rate: z.number(),
     set: z.number(),
-    profit_percent: z.number()
+    profit_percent: z.number(),
+    discount: z.number(),
 })
 
 export const addQuotationSchema = z.object({
@@ -51,7 +52,6 @@ export const addQuotationSchema = z.object({
     total: z.number(),
     grandTotal: z.number(),
     gst: z.number(),
-    discount: z.number(),
     round_off: z.number(),
     show_body_table: z.boolean(),
     note: z.string().trim().optional().nullable(),
@@ -67,9 +67,8 @@ export type QuotationItem = z.infer<typeof quotationItemSchema>
 export type AddQuotation = z.infer<typeof addQuotationSchema>;
 
 export type Quotation = {
-    created_at: Date,
+    created_at: Date
     deal_id: string
-    discount: number
     grand_total: number
     gst: number
     id: number
@@ -97,6 +96,7 @@ export type Quotation_Working = {
     metal_rate: number
     powder_coating: number
     profit_percent: number
+    discount: number
     provided_total_cost: number
     quotation_product_id: number
     set: number

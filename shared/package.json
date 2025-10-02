@@ -1,6 +1,6 @@
 {
   "name": "zs-crm-common",
-  "version": "1.0.90",
+  "version": "1.0.91",
   "main": "./dist/index.js",
   "types": "./dist/index.d.ts",
   "scripts": {

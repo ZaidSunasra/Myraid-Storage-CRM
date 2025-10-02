@@ -192,12 +192,11 @@ model Quotation {
   deal_id            String
   quotation_template Quotation_Template
   gst                Decimal             @default(0)
-  discount           Decimal             @default(0)
   round_off          Decimal             @default(0)
   sub_total          Decimal             @default(0)
   grand_total        Decimal             @default(0)
-  show_body_table Boolean @default(true)
-  note String? 
+  show_body_table    Boolean             @default(true)
+  note               String?
   deal               Deal                @relation(fields: [deal_id], references: [id])
   order              Order[]
   quotation_products QuotationProducts[]
@@ -222,7 +221,7 @@ model QuotationItem {
   provided_rate        Decimal           @default(0)
   market_rate          Decimal           @default(0)
   quantity             Int
-  per_bay_qty Int
+  per_bay_qty          Int
   quotation_products   QuotationProducts @relation(fields: [quotation_product_id], references: [id], onDelete: Cascade)
   quotation_product_id Int
 }
@@ -243,6 +242,7 @@ model QuotationWorking {
   metal_rate           Decimal           @default(0)
   set                  Int               @default(1)
   profit_percent       Int
+  discount             Decimal           @default(0)
   quotation_products   QuotationProducts @relation(fields: [quotation_product_id], references: [id], onDelete: Cascade)
   quotation_product_id Int
 }
