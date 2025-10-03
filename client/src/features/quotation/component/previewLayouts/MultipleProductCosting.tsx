@@ -1,10 +1,11 @@
 import { useQuotation } from "@/context/QuotationContext"
 import { Table, TableBody, TableCell, TableFooter, TableHead, TableHeader, TableRow, } from "@/shared/components/ui/table"
 import React from "react";
+import { calculatePerKgPreview } from "../../utils/calculateTotal";
 
 const MultipleProductCosting = () => {
 
-    const { products, getProductItems } = useQuotation();
+    const { products, getProductItems, overallTotal } = useQuotation();
 
     return (
         <React.Fragment >
@@ -124,25 +125,14 @@ const MultipleProductCosting = () => {
                     </Table>
                 )
             })}
-            {/* <Table className="border border-black">
-                        <TableBody>
-                            <TableRow>
-                                <TableCell className="border border-black">Total</TableCell>
-                                <TableCell className="border border-black"></TableCell>
-                                <TableCell className="border border-black"> {setWiseTotal} </TableCell>
-                            </TableRow>
-                            <TableRow>
-                                <TableCell className="border border-black">Profit (%)</TableCell>
-                                <TableCell className="border border-black">{product.profit_percent}</TableCell>
-                                <TableCell className="border border-black">{(profitPercent * setWiseTotal).toFixed(2)}</TableCell>
-                            </TableRow>
-                            <TableRow>
-                                <TableCell className="border border-black">Set</TableCell>
-                                <TableCell className="border border-black">{product.set}</TableCell>
-                                <TableCell className="border border-black">{Number(setWiseProfit.toFixed(2)) * Number(product.set) * Number(1 - product.discount / 100)}</TableCell>
-                            </TableRow>
-                        </TableBody>
-                    </Table> */}
+            <Table className="border-2 border-black ">
+                <TableFooter>
+                    <TableRow>
+                        <TableCell>Per KG</TableCell>
+                        <TableCell>{calculatePerKgPreview(products, overallTotal)}</TableCell>
+                    </TableRow>
+                </TableFooter>
+            </Table>
         </React.Fragment>
     )
 }
