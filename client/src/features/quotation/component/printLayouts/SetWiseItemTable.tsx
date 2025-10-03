@@ -2,7 +2,7 @@ import { type Dispatch, type SetStateAction } from "react"
 import {  TableBody, TableCell, TableRow } from "@/shared/components/ui/table"
 import { Input } from "@/shared/components/ui/input"
 import { type GetQuotationOutput } from "zs-crm-common"
-import { calculateProductTotal } from "../../utils/calculateTotal"
+import { calculatePrintMultiProductTotals, calculatePrintProductTotal } from "../../utils/calculateTotal"
 
 const SetWiseItemTable = ({ quotation, name, setName, isDiscountGiven}: { quotation: GetQuotationOutput, name: string[], setName: Dispatch<SetStateAction<string[]>>, isDiscountGiven: boolean}) => {
 
@@ -30,7 +30,7 @@ const SetWiseItemTable = ({ quotation, name, setName, isDiscountGiven}: { quotat
                         }
                         {product.quotation_item.map((item, index: number) => {
                             const compartment = product.name[6];
-                            const { setWiseProfit } = calculateProductTotal(product, item);
+                            const { setWiseProfit } = quotation.quotation_products.length == 1 ? calculatePrintProductTotal(product, item) : calculatePrintMultiProductTotals(quotation.quotation_products, item, product);
                             const discountRate = Number(((1 - product.quotation_working[0].discount / 100) * Number(setWiseProfit.toFixed(2))).toFixed(2));
                             return (
                                 <TableRow key={item.id} className="align-top">
