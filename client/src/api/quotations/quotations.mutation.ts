@@ -1,5 +1,5 @@
 import { useMutation } from "@tanstack/react-query";
-import { addQuotation, copyQuotation, editQuotation, getQuotationProducts } from "./quotations.api";
+import { addQuotation, copyQuotation, deleteQuotation, editQuotation, getQuotationProducts } from "./quotations.api";
 import type { AxiosError } from "axios";
 import type { ErrorResponse, SuccessResponse } from "zs-crm-common";
 import { toast } from "sonner";
@@ -56,6 +56,20 @@ export const useCopyQuotation = () => {
     const navigate = useNavigate();
 	return useMutation({
 		mutationFn: copyQuotation,
+		onSuccess: (data: SuccessResponse) => {
+			(toast.success(data.message));
+            navigate("/quotation")
+		},
+		onError: (error: AxiosError<ErrorResponse>) => {
+			toast.error(error.response?.data.message);
+		}
+	});
+};
+
+export const useDeleteQuotation = () => {
+    const navigate = useNavigate();
+	return useMutation({
+		mutationFn: deleteQuotation,
 		onSuccess: (data: SuccessResponse) => {
 			(toast.success(data.message));
             navigate("/quotation")

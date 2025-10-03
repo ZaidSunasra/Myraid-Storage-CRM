@@ -1,6 +1,6 @@
 import { Product_Type } from "@prisma/client"
 import { prisma } from "../../libs/prisma"
-import { AddQuotation, DEPARTMENTS, GetQuotationBaseProduct, GetQuotationByDealOutput, GetQuotationOutput, } from "zs-crm-common";
+import { AddQuotation, DEPARTMENTS, GetAllQuotationOutput, GetQuotationBaseProduct, GetQuotationByDealOutput, GetQuotationOutput, } from "zs-crm-common";
 
 export const getQuotationProductsService = async (product_type: Product_Type, bay: number, compartment: number): Promise<GetQuotationBaseProduct[]> => {
     const products = await prisma.baseProduct.findMany({
@@ -22,7 +22,7 @@ export const getQuotationProductsService = async (product_type: Product_Type, ba
     return enrichedProducts;
 }
 
-export const adddQuotationService = async ({ quotation_template, quotation_item, total, grandTotal, gst, round_off, show_body_table, note }: AddQuotation,
+export const addQuotationService = async ({ quotation_template, quotation_item, total, grandTotal, gst, round_off, show_body_table, note, quotation_no }: AddQuotation,
     deal_id: string): Promise<any> => {
     await prisma.$transaction(async (tx) => {
         const quotation = await tx.quotation.create({
@@ -34,7 +34,8 @@ export const adddQuotationService = async ({ quotation_template, quotation_item,
                 sub_total: total,
                 grand_total: grandTotal,
                 show_body_table: show_body_table,
-                note: note
+                note: note,
+                quotation_no: quotation_no
             },
             select: { id: true },
         });
@@ -95,11 +96,7 @@ export const getQuotationByDealService = async (deal_id: string): Promise<GetQuo
             deal_id: true,
             created_at: true,
             grand_total: true,
-            quotation_products: {
-                select: {
-                    name: true,
-                }
-            }
+            quotation_no: true
         }
     });
     return quotation.map(q => ({
@@ -108,7 +105,7 @@ export const getQuotationByDealService = async (deal_id: string): Promise<GetQuo
     }));
 }
 
-export const getQuotationService = async (user: any, page: number, search: string, employeeId: string[], rows: number, startDate: string, endDate: string,): Promise<GetQuotationOutput[] | null> => {
+export const getQuotationService = async (user: any, page: number, search: string, employeeId: string[], rows: number, startDate: string, endDate: string,): Promise<GetAllQuotationOutput> => {
     const isAdmin = user.department === DEPARTMENTS[1];
     const quotation = await prisma.quotation.findMany({
         take: rows,
@@ -193,9 +190,9 @@ export const getQuotationService = async (user: any, page: number, search: strin
         }
     });
 
-    if (!quotation) return null;
+    const totalQuotations = await prisma.quotation.count();
 
-    return quotation.map((q) => ({
+    const convertedQuotation = quotation.map((q) => ({
         ...q,
         grand_total: q.grand_total.toNumber(),
         gst: q.gst.toNumber(),
@@ -214,7 +211,6 @@ export const getQuotationService = async (user: any, page: number, search: strin
                 installation: work.installation.toNumber(),
                 labour_cost: work.labour_cost.toNumber(),
                 market_total_cost: work.market_total_cost.toNumber(),
-                metal_rate: work.metal_rate.toNumber(),
                 powder_coating: work.powder_coating.toNumber(),
                 provided_total_cost: work.provided_total_cost.toNumber(),
                 total_weight: work.total_weight.toNumber(),
@@ -225,6 +221,8 @@ export const getQuotationService = async (user: any, page: number, search: strin
             })),
         })),
     }));
+
+    return { convertedQuotation, totalQuotations }
 }
 
 export const getQuotationByIdService = async (id: string): Promise<GetQuotationOutput | null> => {
@@ -276,7 +274,6 @@ export const getQuotationByIdService = async (id: string): Promise<GetQuotationO
                 installation: work.installation.toNumber(),
                 labour_cost: work.labour_cost.toNumber(),
                 market_total_cost: work.market_total_cost.toNumber(),
-                metal_rate: work.metal_rate.toNumber(),
                 powder_coating: work.powder_coating.toNumber(),
                 provided_total_cost: work.provided_total_cost.toNumber(),
                 total_weight: work.total_weight.toNumber(),
@@ -291,7 +288,7 @@ export const getQuotationByIdService = async (id: string): Promise<GetQuotationO
     return convertedQuotation;
 }
 
-export const editQuotationService = async ({ quotation_template, quotation_item, total, grandTotal, gst, round_off, show_body_table, note }: AddQuotation,
+export const editQuotationService = async ({ quotation_template, quotation_item, total, grandTotal, gst, round_off, show_body_table, note, quotation_no }: AddQuotation,
     deal_id: string, id: string): Promise<any> => {
     await prisma.$transaction(async (tx) => {
         const quotation = await tx.quotation.update({
@@ -299,6 +296,7 @@ export const editQuotationService = async ({ quotation_template, quotation_item,
                 id: parseInt(id)
             },
             data: {
+                quotation_no: quotation_no,
                 deal_id: deal_id,
                 quotation_template: quotation_template,
                 gst: gst,
@@ -363,12 +361,13 @@ export const editQuotationService = async ({ quotation_template, quotation_item,
     });
 }
 
-export const copyQuotationDataService = async (quotation: GetQuotationOutput | null, deal_id: string): Promise<void> => {
+export const copyQuotationDataService = async (quotation: GetQuotationOutput | null, deal_id: string, quotation_no: string): Promise<void> => {
     if (!quotation) return;
     await prisma.$transaction(async (tx) => {
         const quotation_id = await tx.quotation.create({
             data: {
                 deal_id: deal_id,
+                quotation_no: quotation_no,
                 quotation_template: quotation?.quotation_template,
                 gst: quotation.gst,
                 round_off: quotation.round_off,
@@ -424,6 +423,14 @@ export const copyQuotationDataService = async (quotation: GetQuotationOutput | n
                     discount: product.quotation_working[0].discount,
                 },
             });
+        }
+    })
+}
+
+export const deleteQuotationService = async (id: string): Promise<void> => {
+    await prisma.quotation.delete({
+        where: {
+            id: parseInt(id)
         }
     })
 }

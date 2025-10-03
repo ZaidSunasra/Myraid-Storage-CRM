@@ -1,6 +1,6 @@
 import { Request, Response } from "express";
-import { adddQuotationService, copyQuotationDataService, editQuotationService, getQuotationByDealService, getQuotationByIdService, getQuotationProductsService, getQuotationService } from "./quotation.service";
-import { addQuotationSchema, ErrorResponse, GetQuotationByDealSuccessResponse, GetQuotationByIdSuccessResponse, GetQuotationSuccessResponse, QuotationBaseProductSuccessResponse, SuccessResponse } from "zs-crm-common";
+import { addQuotationService, copyQuotationDataService, deleteQuotationService, editQuotationService, getQuotationByDealService, getQuotationByIdService, getQuotationProductsService, getQuotationService } from "./quotation.service";
+import { addQuotationSchema, copyQuotationschema, ErrorResponse, GetAllQuotationSuccessResponse, GetQuotationByDealSuccessResponse, GetQuotationByIdSuccessResponse, QuotationBaseProductSuccessResponse, SuccessResponse } from "zs-crm-common";
 
 export const getQuotationProductsController = async (req: Request, res: Response<ErrorResponse | QuotationBaseProductSuccessResponse>): Promise<any> => {
     const { product_type, bay, compartment } = req.body;
@@ -20,7 +20,7 @@ export const getQuotationProductsController = async (req: Request, res: Response
 }
 
 export const addQuotationController = async (req: Request, res: Response<ErrorResponse | SuccessResponse>): Promise<any> => {
-    const { quotation_template, quotation_item, total, grandTotal, gst, round_off, show_body_table, note } = req.body;
+    const { quotation_template, quotation_item, total, grandTotal, gst, round_off, show_body_table, note, quotation_no } = req.body;
     const deal_id = req.params.deal_id;
     const validation = addQuotationSchema.safeParse(req.body);
     if (!validation.success) {
@@ -30,7 +30,7 @@ export const addQuotationController = async (req: Request, res: Response<ErrorRe
         })
     }
     try {
-        await adddQuotationService({ quotation_template, quotation_item, total, grandTotal, gst, round_off, show_body_table, note }, deal_id);
+        await addQuotationService({ quotation_template, quotation_item, total, grandTotal, gst, round_off, show_body_table, note, quotation_no }, deal_id);
         return res.status(200).json({
             message: `Quotation added  successfully`,
         })
@@ -60,7 +60,7 @@ export const getQuotationByDealController = async (req: Request, res: Response<E
     }
 }
 
-export const getQuotationController = async (req: Request, res: Response<ErrorResponse | GetQuotationSuccessResponse>): Promise<any> => {
+export const getQuotationController = async (req: Request, res: Response<ErrorResponse | GetAllQuotationSuccessResponse>): Promise<any> => {
     const user = res.locals.user;
     const page = parseInt(req.query.page as string, 10) || 1;
     const rows = parseInt(req.query.rows as string, 10) || 10;
@@ -70,10 +70,11 @@ export const getQuotationController = async (req: Request, res: Response<ErrorRe
     const employees = req.query.employeeID as string | undefined;
     const employeeId = employees ? employees.split(",").filter(Boolean) : [];
     try {
-        const quotations = await getQuotationService(user, page, search, employeeId, rows, startDate, endDate);
+        const {convertedQuotation, totalQuotations} = await getQuotationService(user, page, search, employeeId, rows, startDate, endDate);
         return res.status(200).json({
             message: `Quotations fetched  successfully`,
-            quotations
+            convertedQuotation,
+            totalQuotations
         })
     } catch (error) {
         console.log(`Error in fetching quotations`, error);
@@ -102,7 +103,7 @@ export const getQuotationByIdController = async (req: Request, res: Response<Get
 }
 
 export const editQuotationController = async (req: Request, res: Response<ErrorResponse | SuccessResponse>): Promise<any> => {
-    const { quotation_template, quotation_item, total, grandTotal, gst, round_off, show_body_table, note } = req.body;
+    const { quotation_template, quotation_item, total, grandTotal, gst, round_off, show_body_table, note, quotation_no } = req.body;
     const deal_id = req.params.deal_id;
     const id = req.params.id;
     const validation = addQuotationSchema.safeParse(req.body);
@@ -113,7 +114,7 @@ export const editQuotationController = async (req: Request, res: Response<ErrorR
         })
     }
     try {
-        await editQuotationService({ quotation_template, quotation_item, total, grandTotal, gst, round_off, show_body_table, note }, deal_id, id);
+        await editQuotationService({ quotation_template, quotation_item, total, grandTotal, gst, round_off, show_body_table, note, quotation_no }, deal_id, id);
         return res.status(200).json({
             message: `Quotation edited  successfully`,
         })
@@ -127,17 +128,40 @@ export const editQuotationController = async (req: Request, res: Response<ErrorR
 }
 
 export const importQuotationController = async (req: Request, res: Response<SuccessResponse | ErrorResponse>): Promise<any> => {
-    const { deal_id } = req.body;
-    console.log(deal_id)
+    const { deal_id, quotation_no } = req.body;
     const quotation_id = req.params.id;
+    const validation = copyQuotationschema.safeParse(req.body);
+    if (!validation.success) {
+        return res.status(400).json({
+            message: "Input validation error",
+            error: validation.error.issues
+        })
+    }
     try {
         const quotation = await getQuotationByIdService(quotation_id);
-        await copyQuotationDataService(quotation, deal_id);
+        await copyQuotationDataService(quotation, deal_id, quotation_no);
         return res.status(200).json({
             message: `Quotation imported successfully`,
         })
     } catch (error) {
         console.log(`Error in importing quotation`, error);
+        return res.status(500).send({
+            message: "Internal server error",
+            error: error
+        });
+    }
+}
+
+export const deleteQuotationController = async (req: Request, res: Response<SuccessResponse | ErrorResponse>): Promise<any> => {
+    const id = req.params.id;
+
+    try {
+        await deleteQuotationService(id)
+        return res.status(200).json({
+            message: `Quotation deleted successfully`,
+        })
+    } catch (error) {
+        console.log(`Error in deleting quotation`, error);
         return res.status(500).send({
             message: "Internal server error",
             error: error
