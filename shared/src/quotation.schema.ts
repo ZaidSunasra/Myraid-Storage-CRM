@@ -37,7 +37,7 @@ export const quotationProductSchema = z.object({
     installation: z.number(),
     accomodation: z.number(),
     transport: z.number(),
-    metal_rate: z.number(),
+    metal_rate: z.string(),
     total_body: z.number(),
     total_market_rate: z.number(),
     total_provided_rate: z.number(),
@@ -49,6 +49,7 @@ export const quotationProductSchema = z.object({
 export const addQuotationSchema = z.object({
     quotation_template: z.enum(QUOTATION_TEMPLATE),
     quotation_item: z.array(quotationProductSchema).optional(),
+    quotation_no: z.string(),
     total: z.number(),
     grandTotal: z.number(),
     gst: z.number(),
@@ -58,7 +59,8 @@ export const addQuotationSchema = z.object({
 })
 
 export const copyQuotationschema = z.object({
-    deal_id: z.string()
+    deal_id: z.string(),
+    quotation_no: z.string()
 })
 
 export type CopyQuotation = z.infer<typeof copyQuotationschema>;
@@ -70,6 +72,7 @@ export type Quotation = {
     created_at: Date
     deal_id: string
     grand_total: number
+    quotation_no: string
     gst: number
     id: number
     quotation_template: quotation_template
@@ -93,7 +96,7 @@ export type Quotation_Working = {
     installation: number
     labour_cost: number
     market_total_cost: number
-    metal_rate: number
+    metal_rate: string
     powder_coating: number
     profit_percent: number
     discount: number
@@ -128,14 +131,17 @@ export type GetQuotationOutput = Quotation & {
     },
 };
 
+export type GetAllQuotationOutput = {
+    convertedQuotation: GetQuotationOutput[] | null,
+    totalQuotations: number
+}
+
 export type GetQuotationByDealOutput = {
     id: number,
     deal_id: string,
     created_at: Date,
     grand_total: number,
-    quotation_products: {
-        name: string
-    }[]
+    quotation_no: string
 }
 
 export type GetQuotationBaseProduct = {
@@ -162,9 +168,7 @@ export type GetQuotationByDealSuccessResponse = SuccessResponse & {
     quotations: GetQuotationByDealOutput[]
 }
 
-export type GetQuotationSuccessResponse = SuccessResponse & {
-    quotations: GetQuotationOutput[] | null
-}
+export type GetAllQuotationSuccessResponse = SuccessResponse & GetAllQuotationOutput
 
 export type GetQuotationByIdSuccessResponse = SuccessResponse & {
     quotation: GetQuotationOutput | null

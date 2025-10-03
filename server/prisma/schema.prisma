@@ -189,6 +189,7 @@ model Drawing {
 model Quotation {
   id                 Int                 @id @default(autoincrement())
   created_at         DateTime            @default(now())
+  quotation_no String   
   deal_id            String
   quotation_template Quotation_Template
   gst                Decimal             @default(0)
@@ -207,7 +208,7 @@ model QuotationProducts {
   name              String
   quotation_id      Int
   quotation_item    QuotationItem[]
-  quotation         Quotation          @relation(fields: [quotation_id], references: [id])
+  quotation         Quotation          @relation(fields: [quotation_id], references: [id], onDelete: Cascade)
   quotation_working QuotationWorking[]
 }
 
@@ -239,7 +240,7 @@ model QuotationWorking {
   provided_total_cost  Decimal           @default(0)
   market_total_cost    Decimal           @default(0)
   total_body           Int
-  metal_rate           Decimal           @default(0)
+  metal_rate           String
   set                  Int               @default(1)
   profit_percent       Int
   discount             Decimal           @default(0)
