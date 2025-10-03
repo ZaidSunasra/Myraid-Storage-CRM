@@ -7,22 +7,29 @@ import { Button } from "@/shared/components/ui/button";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/shared/components/ui/tabs";
 import { toTitleCase } from "@/utils/formatData";
 import { canView } from "@/utils/viewPermission";
-import { ArrowLeft, Copy, Edit, FileText } from "lucide-react";
+import { ArrowLeft, Copy, Edit, FileText, Trash2 } from "lucide-react";
 import { NavLink, useNavigate, useParams } from "react-router"
 import QuotationDetails from "../component/QuotationDetails";
 import QuotationWorkingDetails from "../component/QuotationWorkingDetails";
 import type { GetQuotationOutput } from "zs-crm-common";
-import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from "@/shared/components/ui/dialog";
+import { Dialog, DialogClose, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle, DialogTrigger } from "@/shared/components/ui/dialog";
 import { useState } from "react";
 import CopyQuotationForm from "../component/CopyQuotationForm";
+import { useDeleteQuotation } from "@/api/quotations/quotations.mutation";
 
 const DetailedQuotationPage = () => {
 
     const { id, quotation_id } = useParams();
-    const [open, setOpen] = useState<boolean>(false);
+    const [dialog, setDialog] = useState<{ open: boolean; action: "copy" | "delete" | null }>({ open: false, action: null });
     const { data, isError, isPending } = FetchQuotationById(quotation_id as string);
     const { user } = useUser();
     const navigate = useNavigate();
+    const deleteQuotation = useDeleteQuotation();
+
+    const onSubmit = () => {
+        console.log(quotation_id);
+        deleteQuotation.mutate(quotation_id as string)
+    }
 
     if (isPending) return <DetailedPageLoader />
     if (isError) return <ErrorDisplay fullPage />
@@ -40,9 +47,7 @@ const DetailedQuotationPage = () => {
                         </NavLink>
                         <div>
                             <h1 className="text-2xl font-bold ">
-                                {data.quotation && data.quotation.quotation_products.length > 1 ?
-                                    toTitleCase(data.quotation.quotation_products[0].name) + ` & ${data.quotation.quotation_products.length - 1} Other Product`
-                                    : toTitleCase(data.quotation?.quotation_products[0].name as string)}
+                                {data.quotation?.quotation_no}
                             </h1>
                             <p className="text-gray-600">{toTitleCase(data.quotation?.deal.company.name as string)}</p>
                         </div>
@@ -77,36 +82,73 @@ const DetailedQuotationPage = () => {
                     </Tabs>
                 </div>
                 <div className="lg:col-span-1">
-                    <div className="w-full">
-                        <Button className="mb-8 text-white flex gap-2 px-6 py-2 rounded-xl shadow-md transition w-full bg-blue-600 hover:bg-blue-700"
-                            onClick={() => window.open(`/quotation/print/${id}/${quotation_id}`, "_blank")}
-                        >
-                            <FileText className="w-4 h-4" />
-                            View Quotation
+                    <div className="w-full mb-8">
+                        <Button className=" text-white flex gap-2 px-6 py-2 rounded-xl shadow-md transition w-full" onClick={() => navigate(`/deal/${id}`)} >
+                            <ArrowLeft className="w-4 h-4" />
+                            Deal Page
                         </Button>
                     </div>
-                    <div className="w-full">
-                        <Button className="mb-8 text-white flex gap-2 px-6 py-2 rounded-xl shadow-md transition w-full" onClick={() => setOpen(true)}>
-                            <Copy className="w-4 h-4" />
-                            Copy Quotation
-                        </Button>
+                    <div className="space-y-4">
+                        <div className="w-full">
+                            <Button className=" text-white flex gap-2 px-6 py-2 rounded-xl shadow-md transition w-full bg-green-600 hover:bg-green-700"
+                                onClick={() => setDialog({ open: true, action: "copy" })}
+                            >
+                                <Copy className="w-4 h-4" />
+                                Copy Quotation
+                            </Button>
+                        </div>
+                        <div className="w-full">
+                            <Button className=" text-white flex gap-2 px-6 py-2 rounded-xl shadow-md transition w-full bg-blue-600 hover:bg-blue-700"
+                                onClick={() => window.open(`/quotation/print/${id}/${quotation_id}`, "_blank")}
+                            >
+                                <FileText className="w-4 h-4" />
+                                View Quotation
+                            </Button>
+                        </div>
+                        {user?.department && canView(user?.department, "admin") &&
+                            <div className="w-full">
+                                <Button className=" text-white flex gap-2 px-6 py-2 rounded-xl shadow-md transition w-full hover:bg-red-700" variant="destructive"
+                                    onClick={() => setDialog({ open: true, action: "delete" })}
+                                >
+                                    <Trash2 className="w-4 h-4" />
+                                    Delete Quotation
+                                </Button>
+                            </div>
+                        }
                     </div>
                 </div>
             </div>
         </div>
-        <Dialog open={open} onOpenChange={setOpen}>
-            <DialogContent className="sm:max-w-md">
-                <DialogHeader>
-                    <DialogTitle>Copy Quotation</DialogTitle>
-                    <DialogDescription>
-                        Enter the Deal ID where you want to copy this quotation.
-                    </DialogDescription>
-                    <CopyQuotationForm />
-                </DialogHeader>
+        <Dialog open={dialog.open} onOpenChange={(open) => setDialog((prev) => ({ ...prev, open, ...(open ? {} : { action: null }) }))}>
+            <DialogTrigger asChild></DialogTrigger>
+            <DialogContent className="sm:max-w-[425px]">
+                {dialog.action === "copy" ? (
+                    <DialogHeader>
+                        <DialogTitle>Copy Quotation</DialogTitle>
+                        <DialogDescription>
+                            Enter the Deal ID where you want to copy this quotation.
+                        </DialogDescription>
+                        <CopyQuotationForm />
+                    </DialogHeader>
+                ) : (
+                    <>
+                        <DialogHeader>
+                            <DialogTitle>Delete Quotation</DialogTitle>
+                            <DialogDescription>Are you sure you want to delete? This cannot be undone.</DialogDescription>
+                        </DialogHeader>
+                        <DialogFooter>
+                            <DialogClose asChild>
+                                <Button variant="outline">Cancel</Button>
+                            </DialogClose>
+                            <Button type="submit" variant="destructive" onClick={() => onSubmit()}>
+                                Delete
+                            </Button>
+                        </DialogFooter>
+                    </>
+                )}
             </DialogContent>
         </Dialog>
     </div>
-
 }
 
 export default DetailedQuotationPage
