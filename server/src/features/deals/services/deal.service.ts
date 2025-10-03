@@ -58,6 +58,9 @@ export const getDealService = async (user: any, rows: number, page: number, sear
                             }
                         },
                         {
+                            id: {contains: search, mode: 'insensitive'}
+                        },
+                        {
                             client_detail: {
                                 first_name: { contains: search, mode: 'insensitive' }
                             }
