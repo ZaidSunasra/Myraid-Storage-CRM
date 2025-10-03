@@ -9,6 +9,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { QUOTATION_TEMPLATE } from "zs-crm-common"
 import { toTitleCase } from "@/utils/formatData"
 import type { AddQuotation } from "zs-crm-common"
+import { Input } from "@/shared/components/ui/input"
 
 const QuotationCostingCard = ({ form, handlePrev, handleNext }: { form: UseFormReturn<AddQuotation>, handleNext: () => void, handlePrev: () => void }) => {
 
@@ -72,6 +73,19 @@ const QuotationCostingCard = ({ form, handlePrev, handleNext }: { form: UseFormR
                         <SelectItem value="false">No</SelectItem>
                       </SelectContent>
                     </Select>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+            </div>
+            <div className="space-y-2">
+              <FormField
+                control={form.control}
+                name="quotation_no"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Quotation No.*</FormLabel>
+                    <Input {...field} placeholder="Enter quotation no." />
                     <FormMessage />
                   </FormItem>
                 )}
