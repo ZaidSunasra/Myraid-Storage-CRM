@@ -24,7 +24,7 @@ const QuotationTable = () => {
     const [searchInput, setSearchInput] = useState(search);
     const debouncedSearch = useDebounce(searchInput, 500);
     const { data: quotationData, isError: quotationError, isLoading: quotationLoading } = FetchQuotation({ page, search, employeeIDs, rows, startDate, endDate });
-    const lastPage = Math.ceil((quotationData?.quotations?.length || 0) / rows) == 0 ? 1 : Math.ceil((quotationData?.quotations?.length || 0) / rows);
+    const lastPage = Math.ceil((quotationData?.totalQuotations || 0) / rows) == 0 ? 1 : Math.ceil((quotationData?.totalQuotations || 0) / rows);
 
     useEffect(() => {
         setSearch(debouncedSearch, search);
@@ -77,7 +77,7 @@ const QuotationTable = () => {
                         </TableRow>
                     </TableHeader>
                     <TableBody>
-                        {quotationData?.quotations?.map((quotation) => (
+                        {quotationData?.convertedQuotation?.map((quotation) => (
                             <TableRow key={quotation.id} onClick={() => navigate(`/quotation/${quotation.deal_id}/${quotation.id}`)}>
                                 <TableCell  className="font-medium">{quotation.deal_id.replace(/-/g, "/").replace(/_/g, "-")}</TableCell>
                                 <TableCell>{toTitleCase(quotation.deal.company.name)}</TableCell>
