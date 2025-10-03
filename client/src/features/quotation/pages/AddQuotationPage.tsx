@@ -34,7 +34,8 @@ const AddQuotationPage = () => {
       round_off: 0,
       show_body_table: true,
       note: null,
-      total: 0
+      total: 0,
+      quotation_no: id
     },
   })
 

@@ -67,7 +67,7 @@ const EditQuotationPage = () => {
                 installation: Number(working?.installation ?? 0),
                 accomodation: Number(working?.accomodation ?? 0),
                 transport: Number(working?.transport ?? 0),
-                metal_rate: Number(working?.metal_rate ?? 0),
+                metal_rate: working?.metal_rate ?? 0,
                 total_body: Number(working?.total_body ?? 0),
                 total_market_rate: Number(working?.market_total_cost ?? 0),
                 total_provided_rate: Number(working?.provided_total_cost ?? 0),
@@ -83,11 +83,10 @@ const EditQuotationPage = () => {
             round_off: Number(data.quotation.round_off ?? 0),
             show_body_table: data.quotation.show_body_table ?? false,
             note: data.quotation.note ?? null,
-            quotation_item: quotation_item
+            quotation_item: quotation_item,
+            quotation_no: data.quotation.quotation_no ?? id
         });
     }, [data, addProduct, clearAll, form]);
-
-    console.log(data?.quotation)
 
     const onSubmit = (data: AddQuotation) => {
         const payload = {

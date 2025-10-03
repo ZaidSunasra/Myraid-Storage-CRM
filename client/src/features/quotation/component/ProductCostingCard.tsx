@@ -255,9 +255,8 @@ const QuotationCosting = ({ form, productId, productName }: ProductCostingCardPr
                                 <Input
                                     value={field.value ?? ""}
                                     placeholder="Enter metal rate"
-                                    type="number"
                                     onChange={(e) => {
-                                        const value = Number(e.target.value);
+                                        const value = e.target.value;
                                         field.onChange(value)
                                         updateCost(productId, {
                                             metal_rate: value
