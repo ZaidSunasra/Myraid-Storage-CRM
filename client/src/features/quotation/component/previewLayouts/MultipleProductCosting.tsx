@@ -1,7 +1,6 @@
 import { useQuotation } from "@/context/QuotationContext"
 import { Table, TableBody, TableCell, TableFooter, TableHead, TableHeader, TableRow, } from "@/shared/components/ui/table"
 import React from "react";
-import { calculatePreviewProductTotal } from "../../utils/calculateTotal";
 
 const MultipleProductCosting = () => {
 
@@ -12,10 +11,10 @@ const MultipleProductCosting = () => {
             <Table className="border border-black">
                 <TableHeader>
                     <TableRow>
-                        <TableHead>Product Name</TableHead>
-                        <TableHead>Labour Cost</TableHead>
-                        <TableHead>SS Material</TableHead>
-                        <TableHead>Trolley Material</TableHead>
+                        <TableHead>Sr. No</TableHead>
+                        <TableHead>Labour</TableHead>
+                        <TableHead>SS</TableHead>
+                        <TableHead>Trolley</TableHead>
                         <TableHead>Total</TableHead>
                         <TableHead>Weight</TableHead>
                         <TableHead>Powder Coating</TableHead>
@@ -63,7 +62,7 @@ const MultipleProductCosting = () => {
             <Table className="border border-black">
                 <TableHeader>
                     <TableRow>
-                        <TableHead>Product Name</TableHead>
+                        <TableHead>Sr</TableHead>
                         <TableHead>Installation</TableHead>
                         <TableHead>Total Installation</TableHead>
                         <TableHead>Accomodation</TableHead>

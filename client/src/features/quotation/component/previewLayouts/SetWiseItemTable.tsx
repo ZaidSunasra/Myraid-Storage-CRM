@@ -8,10 +8,18 @@ const SetWiseItemTable = ({ isDiscountGiven }: { isDiscountGiven: boolean }) => 
 
     return (
         <>
-            {products.map((product) => {
+            {products.map((product, index: number) => {
                 const items = getProductItems(product.id)
                 return (
                     <TableBody key={product.id}>
+                        {products.length > 1 &&
+                            <TableRow>
+                                <TableCell className="border border-black font-bold bg-gray-100 text-center">{String.fromCharCode(65 + index)}</TableCell>
+                                <TableCell colSpan={isDiscountGiven ? 6 : 4} className="border border-black font-bold bg-gray-100 text-center">
+                                    {product.name}
+                                </TableCell>
+                            </TableRow>
+                        }
                         {items.map((item, index: number) => {
                             const compartment = product.name[6];
                             const { setWiseProfit } = products.length == 1 ? calculatePreviewProductTotal(product, item) : calculatePreviewMultiProductTotals(products, item, product)

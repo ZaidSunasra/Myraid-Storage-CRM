@@ -1,5 +1,5 @@
 import { useQuotation } from "@/context/QuotationContext"
-import {  TableBody, TableCell,  TableRow, } from "@/shared/components/ui/table"
+import { TableBody, TableCell, TableRow, } from "@/shared/components/ui/table"
 import { calculatePreviewMultiProductTotals, calculatePreviewProductTotal } from "../../utils/calculateTotal";
 
 const ItemWiseItemTable = ({ isDiscountGiven }: { isDiscountGiven: boolean }) => {
@@ -8,14 +8,22 @@ const ItemWiseItemTable = ({ isDiscountGiven }: { isDiscountGiven: boolean }) =>
 
     return (
         <>
-            {products.map((product) => {
+            {products.map((product, index: number) => {
                 const items = getProductItems(product.id)
                 return (
                     <TableBody key={product.id}>
+                        {products.length > 1 &&
+                            <TableRow>
+                                <TableCell className="border border-black font-bold bg-gray-100 text-center">{String.fromCharCode(65 + index)}</TableCell>
+                                <TableCell colSpan={isDiscountGiven ? 6 : 4} className="border border-black font-bold bg-gray-100 text-center">
+                                    {product.name}
+                                </TableCell>
+                            </TableRow>
+                        }
                         {items.map((item, index: number) => {
                             const compartment = product.name[6];
                             const { itemWiseProfit } = products.length == 1 ? calculatePreviewProductTotal(product, item) : calculatePreviewMultiProductTotals(products, item, product);
-                            const discountRate = Number(itemWiseProfit.toFixed(2)) * (1- product.discount / 100);
+                            const discountRate = Number(itemWiseProfit.toFixed(2)) * (1 - product.discount / 100);
                             return (
                                 <TableRow key={item.id} className="align-top">
                                     <TableCell className="border border-black text-center">
