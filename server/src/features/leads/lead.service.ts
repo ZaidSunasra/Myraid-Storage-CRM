@@ -2,7 +2,7 @@ import { prisma } from "../../libs/prisma";
 import { AddLead, EditLead, DEPARTMENTS, GetLeadOutput, GetLeadSuccessResponse, GetLeadByDuration } from "zs-crm-common"
 import { convertEmailIntoArray, convertPhoneIntoArray } from "../../utils/dataFormatter";
 
-export const covertAssignIdsIntoArray = (assigned_to: { id: number }[]): number[] => {
+export const convertAssignIdsIntoArray = (assigned_to: { id: number }[]): number[] => {
     const idStrings = assigned_to?.map((e: any) => e.id).filter((e: any): e is number => !!e) ?? [];
     return idStrings;
 }
@@ -79,7 +79,7 @@ export const findExistingGST = async (id: number, gst_no: string): Promise<boole
 export const addLeadService = async ({ first_name, last_name, phones, emails, assigned_to, source_id, product_id, company_name, address, gst_no }: AddLead, author: any): Promise<void> => {
     const editedEmail = convertEmailIntoArray(emails);
     const editedPhone = convertPhoneIntoArray(phones);
-    const editedId = covertAssignIdsIntoArray(assigned_to);
+    const editedId = convertAssignIdsIntoArray(assigned_to);
     const assignedId = editedId.filter((id) => id !== parseInt(author.id));
 
     await prisma.$transaction(async (tx) => {
@@ -250,7 +250,7 @@ export const getLeadsService = async (user: any, page: number, search: string, e
 export const editLeadService = async ({ id, first_name, last_name, phones, emails, assigned_to, source_id, product_id, company_name, address, gst_no }: EditLead, author: any): Promise<void> => {
     const editedEmail = convertEmailIntoArray(emails);
     const editedPhone = convertPhoneIntoArray(phones);
-    const editedId = covertAssignIdsIntoArray(assigned_to);
+    const editedId = convertAssignIdsIntoArray(assigned_to);
     const assignedId = editedId.filter((id) => id !== author.id);
     await prisma.$transaction(async (tx) => {
         const updatedLead = await tx.lead.update({
