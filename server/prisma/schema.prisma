@@ -291,6 +291,7 @@ enum Notification_Type {
   client_meeting
   mentioned
   lead_assigned
+  deal_assigned
 }
 
 enum Quotation_Template {
