@@ -189,6 +189,9 @@ export const editDealStatusService = async (deal_id: string, status: Deal_Status
 
 export const addDealService = async ({ company_id, employee_id, source_id, product_id, assigned_to, deal_status }: AddDeal, author: any): Promise<void> => {
 
+    const editedId = convertAssignIdsIntoArray(assigned_to);
+    const recipientId = editedId.filter((id) => id !== author.id);
+
     await prisma.$transaction(async (tx) => {
         const quotation_code = await tx.user.findUnique({
             where: {
@@ -217,6 +220,23 @@ export const addDealService = async ({ company_id, employee_id, source_id, produ
                 deal_id: deal_id
             }))
         })
+        if (recipientId.length > 0) {
+            const notification = await tx.notification.create({
+                data: {
+                    title: "Deal assigned",
+                    message: `You were assigned to a new deal by ${author.name}`,
+                    type: "deal_assigned",
+                    send_at: null,
+                    deal_id: deal_id
+                }
+            })
+            await tx.recipient.createMany({
+                data: recipientId.map((id) => ({
+                    notification_id: notification.id,
+                    user_id: id
+                }))
+            })
+        }
     })
 }
 
@@ -259,7 +279,7 @@ export const editDealService = async ({ company_id, employee_id, source_id, prod
                 const notification = await tx.notification.create({
                     data: {
                         title: "Deal assigned",
-                        message: `You were assigned to a deal by ${author.name}`,
+                        message: `You were assigned to an existing deal by ${author.name}`,
                         type: "deal_assigned",
                         send_at: null,
                         deal_id: deal_id
@@ -309,7 +329,7 @@ export const editDealService = async ({ company_id, employee_id, source_id, prod
                 const notification = await tx.notification.create({
                     data: {
                         title: "Deal assigned",
-                        message: `You were assigned to a deal by ${author.name}`,
+                        message: `You were assigned to an existing deal by ${author.name}`,
                         type: "deal_assigned",
                         send_at: null,
                         deal_id: deal_id
