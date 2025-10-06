@@ -2,6 +2,7 @@ import { Deal_Status, Notification_Type } from "@prisma/client";
 import { prisma } from "../../../libs/prisma"
 import { AddDeal, DEPARTMENTS, Deal, GetAllDealOutput, GetDealOutput, GetOnlyDealIdOutput } from "zs-crm-common";
 import { Include } from "../constants";
+import { convertAssignIdsIntoArray } from "../../leads/lead.service";
 
 export const generateDealId = async (quotation_code: string): Promise<string> => {
     const today = new Date();
@@ -58,7 +59,7 @@ export const getDealService = async (user: any, rows: number, page: number, sear
                             }
                         },
                         {
-                            id: {contains: search, mode: 'insensitive'}
+                            id: { contains: search, mode: 'insensitive' }
                         },
                         {
                             client_detail: {
@@ -219,7 +220,8 @@ export const addDealService = async ({ company_id, employee_id, source_id, produ
     })
 }
 
-export const editDealService = async ({ company_id, employee_id, source_id, product_id, assigned_to, deal_status }: AddDeal, deal_id: string): Promise<void> => {
+export const editDealService = async ({ company_id, employee_id, source_id, product_id, assigned_to, deal_status }: AddDeal, deal_id: string, author: any): Promise<void> => {
+    const editedId = convertAssignIdsIntoArray(assigned_to);
     await prisma.$transaction(async (tx) => {
         const deal = await tx.deal.findUnique({
             where: {
@@ -228,6 +230,7 @@ export const editDealService = async ({ company_id, employee_id, source_id, prod
         });
         const prevMasterUser = deal?.updated_by;
         const currentMasterUser = assigned_to[0].id;
+        const recipientId = editedId.filter((id) => id !== prevMasterUser && id !== author.id);
         if (prevMasterUser === currentMasterUser) {
             await tx.deal.update({
                 where: {
@@ -252,6 +255,23 @@ export const editDealService = async ({ company_id, employee_id, source_id, prod
                     deal_id: deal_id
                 }))
             });
+            if (recipientId.length > 0) {
+                const notification = await tx.notification.create({
+                    data: {
+                        title: "Deal assigned",
+                        message: `You were assigned to a deal by ${author.name}`,
+                        type: "deal_assigned",
+                        send_at: null,
+                        deal_id: deal_id
+                    }
+                })
+                await tx.recipient.createMany({
+                    data: recipientId.map((id) => ({
+                        notification_id: notification.id,
+                        user_id: id
+                    }))
+                })
+            }
         } else {
             const quotation_code = await tx.user.findUniqueOrThrow({
                 where: {
@@ -285,20 +305,33 @@ export const editDealService = async ({ company_id, employee_id, source_id, prod
                     deal_id: newDealId
                 }))
             });
+            if (recipientId.length > 0) {
+                const notification = await tx.notification.create({
+                    data: {
+                        title: "Deal assigned",
+                        message: `You were assigned to a deal by ${author.name}`,
+                        type: "deal_assigned",
+                        send_at: null,
+                        deal_id: deal_id
+                    }
+                })
+                await tx.recipient.createMany({
+                    data: recipientId.map((id) => ({
+                        notification_id: notification.id,
+                        user_id: id
+                    }))
+                })
+            }
             await tx.notification.updateMany({ where: { deal_id }, data: { deal_id: newDealId } });
             await tx.drawing.updateMany({ where: { deal_id }, data: { deal_id: newDealId } });
             await tx.quotation.updateMany({ where: { deal_id }, data: { deal_id: newDealId } });
             await tx.description.updateMany({ where: { deal_id }, data: { deal_id: newDealId } });
-            await tx.deal.delete({
-                where: {
-                    id: deal_id
-                }
-            })
+            await tx.deal.delete({ where: { id: deal_id } })
         }
     })
 }
 
-export const getDealIdService = async () : Promise<GetOnlyDealIdOutput[]> => {
+export const getDealIdService = async (): Promise<GetOnlyDealIdOutput[]> => {
     const dealIds = await prisma.deal.findMany({
         select: {
             id: true

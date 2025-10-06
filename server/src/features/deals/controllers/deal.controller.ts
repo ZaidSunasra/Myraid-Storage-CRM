@@ -132,6 +132,7 @@ export const addDealController = async (req: Request, res: Response<SuccessRespo
 export const editDealController = async (req: Request, res: Response<SuccessResponse | ErrorResponse>): Promise<any> => {
     const { company_id, employee_id, source_id, product_id, assigned_to, deal_status } = req.body;
     const deal_id = req.params.id;
+    const author = res.locals.user;
     const validation = dealSchema.safeParse(req.body);
     if (!validation.success) {
         return res.status(400).json({
@@ -140,7 +141,7 @@ export const editDealController = async (req: Request, res: Response<SuccessResp
         })
     }
     try {
-        await editDealService({ company_id, employee_id, source_id, product_id, assigned_to, deal_status }, deal_id)
+        await editDealService({ company_id, employee_id, source_id, product_id, assigned_to, deal_status }, deal_id, author)
         return res.status(200).json({
             message: `Deal edited succesfully`,
         });
