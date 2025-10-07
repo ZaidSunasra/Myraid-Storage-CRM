@@ -14,6 +14,7 @@ export type quotation_template = typeof QUOTATION_TEMPLATE[number];
 export const quotationItemSchema = z.object({
     id: z.number().min(1, "Id is required"),
     code: z.string().optional().nullable(),
+    description: z.string().optional().nullable(),
     name: z.string().min(1, "Name is required"),
     height: z.number(),
     width: z.number(),
@@ -115,6 +116,7 @@ export type Quotation_Item = {
     height: number
     id: number
     item_code: string | null
+    description: string | null
     item_name: string
     market_rate: number
     per_bay_qty: number
@@ -157,6 +159,7 @@ export type GetQuotationBaseProduct = {
     compartment: number;
     name: string;
     code: string | null;
+    description: string | null;
     removed: boolean
 }
 

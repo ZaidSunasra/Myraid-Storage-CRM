@@ -215,6 +215,7 @@ model QuotationProducts {
 model QuotationItem {
   id                   Int               @id @default(autoincrement())
   item_name            String
+  description String?
   item_code            String?
   height               Int
   width                Int
@@ -250,7 +251,7 @@ model QuotationWorking {
 
 model BaseProduct {
   id             Int          @id @default(autoincrement())
-  product_type   Product_Type
+  product_type   String 
   name           String
   code           String?
   default_height Int          @default(0)
@@ -297,11 +298,6 @@ enum Notification_Type {
 enum Quotation_Template {
   set_wise
   item_wise
-}
-
-enum Product_Type {
-  compactor
-  locker
 }
 
 enum Deal_Status {
