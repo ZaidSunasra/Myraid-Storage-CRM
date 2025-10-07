@@ -4,7 +4,7 @@ import {  Package } from "lucide-react"
 import { useForm } from "react-hook-form"
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/shared/components/ui/form"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/shared/components/ui/select"
-import { toTitleCase } from "@/utils/formatData"
+import { capitalize, toTitleCase } from "@/utils/formatData"
 import { Input } from "@/shared/components/ui/input"
 import { useFetchQuotationProduct } from "@/api/quotations/quotations.mutation"
 import { zodResolver } from "@hookform/resolvers/zod"
@@ -30,7 +30,9 @@ const ProductSelectorCard = () => {
         const compartment = form.watch("compartment")
         let name = ""
         if (product === "compactor") {
-            name = `${bay} Bay ${compartment} Compartment`
+            name = `${capitalize(product)} - ${bay} Bay ${compartment} Compartment`
+        } else {
+            name = `${capitalize(product)}`
         }
         return name
     }

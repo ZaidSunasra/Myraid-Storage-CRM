@@ -11,7 +11,6 @@ const PreviewQuotationPage = ({ data }: { data: AddQuotation }) => {
   const isDiscountGiven = products.some(
     (product) => (product.discount) > 0
   );
-  console.log(products.length)
 
   return (
     <div className="grid grid-cols-1 sm:grid-cols-5 gap-4">

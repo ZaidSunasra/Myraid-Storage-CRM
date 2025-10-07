@@ -14,7 +14,7 @@ const PreviewBodyTable = ({data} : {data: AddQuotation}) => {
                         <TableHeader>
                             <TableRow>
                                 <TableHead rowSpan={2} className="border border-black">Sr. No</TableHead>
-                                <TableHead colSpan={3} className="border border-black">Description of Goods</TableHead>
+                                <TableHead colSpan={3} className="border border-black max-w-sm">Description of Goods</TableHead>
                                 <TableHead rowSpan={2} className="border border-black">Installation Body</TableHead>
                             </TableRow>
                             <TableRow>
@@ -30,7 +30,7 @@ const PreviewBodyTable = ({data} : {data: AddQuotation}) => {
                                         item.name !== "DOOR" &&
                                         <TableRow key={item.id}>
                                             <TableCell className="border border-black">{index + 1} </TableCell>
-                                            <TableCell className="border border-black">{item.name}</TableCell>
+                                            <TableCell className="border border-black max-wd-sm whitespace-normal break-words">{item.name}</TableCell>
                                             <TableCell className="border border-black">{item.per_bay_qty}</TableCell>
                                             <TableCell className="border border-black">{item.quantity}</TableCell>
                                             <TableCell className="border border-black">{Number(item.per_bay_qty) * Number(item.quantity)}</TableCell>

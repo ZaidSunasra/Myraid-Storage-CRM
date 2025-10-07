@@ -12,7 +12,7 @@ const QuotationWorkingTable = ({ productId }: { productId: number }) => {
     return <Table className="border mb-6">
         <TableHeader>
             <TableRow>
-                <TableHead colSpan={2} className="text-center border">Name</TableHead>
+                <TableHead colSpan={2} className="text-center border max-w-md">Name</TableHead>
                 <TableHead colSpan={2} className="text-center border">Provided Rate</TableHead>
                 <TableHead colSpan={2} className="text-center border">Market Rate</TableHead>
             </TableRow>
@@ -28,7 +28,7 @@ const QuotationWorkingTable = ({ productId }: { productId: number }) => {
         <TableBody>
             {items.map((item) => (
                 <TableRow key={item.id}>
-                    <TableCell>{item.name}</TableCell>
+                    <TableCell className="max-w-md break-words whitespace-normal">{item.name}</TableCell>
                     <TableCell>
                         <Input
                             type="number"

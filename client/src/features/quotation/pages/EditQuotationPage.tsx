@@ -51,6 +51,7 @@ const EditQuotationPage = () => {
                 provided_rate: Number(item.provided_rate ?? 0),
                 market_rate: Number(item.market_rate ?? 0),
                 code: item.item_code ?? null,
+                description: item.description ?? null,
                 removed: false,
             }));
             const working = p.quotation_working?.[0];

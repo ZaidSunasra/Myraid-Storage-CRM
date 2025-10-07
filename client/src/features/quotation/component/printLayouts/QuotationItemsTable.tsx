@@ -15,7 +15,11 @@ const QuotationItemsTable = ({ quotation, name, setName }: { quotation: GetQuota
         "0.8 MM THICKNESS SUPERSTRUCTURE",
         "2.5 MM TROLLY",
         "POWDER COATED",
-        "HSN CODE: 9403"
+        "HSN CODE: 9403",
+        "All dimensions are in MM",
+        "Mild Steel",
+        "Body 0.6 and Door 0,7 Thickness",
+        "Powder Coated with Epoxy Polyester"
     ]);
 
     const rowsToPrint = specs.length - 5;
@@ -24,15 +28,13 @@ const QuotationItemsTable = ({ quotation, name, setName }: { quotation: GetQuota
         (product) => (product.quotation_working[0].discount) > 0
     );
 
-    console.log(isDiscountGiven)
-
     return (
         <>
             <Table className="mb-4 border border-black">
                 <TableHeader>
                     <TableRow>
                         <TableHead className="text-center border border-black">Sr. No</TableHead>
-                        <TableHead className="text-center border border-black">Description of Goods</TableHead>
+                        <TableHead className="text-center border border-black max-w-sm">Description of Goods</TableHead>
                         <TableHead className="text-center border border-black">Quantity</TableHead>
                         <TableHead className="text-center border border-black">Rate</TableHead>
                         {isDiscountGiven &&

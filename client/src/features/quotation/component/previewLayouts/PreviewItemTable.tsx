@@ -15,7 +15,7 @@ const PreviewItemTable = ({ isDiscountGiven, data}: { isDiscountGiven: boolean, 
                     <TableHead className="border border-black w-12 text-center">
                         Sr. No
                     </TableHead>
-                    <TableHead className="border border-black">
+                    <TableHead className="border border-black max-w-sm">
                         Description of Goods
                     </TableHead>
                     <TableHead className="border border-black text-center">

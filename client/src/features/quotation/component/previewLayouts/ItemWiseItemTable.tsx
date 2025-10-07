@@ -21,7 +21,7 @@ const ItemWiseItemTable = ({ isDiscountGiven }: { isDiscountGiven: boolean }) =>
                             </TableRow>
                         }
                         {items.map((item, index: number) => {
-                            const compartment = product.name[6];
+                            const compartment = product.name[18];
                             const { itemWiseProfit } = products.length == 1 ? calculatePreviewProductTotal(product, item) : calculatePreviewMultiProductTotals(products, item, product);
                             const discountRate = Number(itemWiseProfit.toFixed(2)) * (1 - product.discount / 100);
                             return (
@@ -29,14 +29,24 @@ const ItemWiseItemTable = ({ isDiscountGiven }: { isDiscountGiven: boolean }) =>
                                     <TableCell className="border border-black text-center">
                                         {index + 1}
                                     </TableCell>
-                                    <TableCell className="border border-black">
-                                        <div className="font-semibold">
+                                    <TableCell className="border border-black max-w-sm break-words whitespace-normal font-semibold">
+                                        <div>
                                             {item.name}{" "}
                                             {item.code ? `(${item.code})` : ""}{" "}
                                         </div>
-                                        <div className="text-xs text-muted-foreground">
-                                            {item.name !== "DOOR" ? `${item.height} (HT) x ${item.width} (W) x ${item.depth} (D) MM` : ""}{" "}
-                                            {item.name !== "DOOR" ? compartment ? `${compartment} Compartments` : "" : ""}
+                                        <div className="text-xs text-muted-foreground whitespace-pre-line">
+                                            {product.name.startsWith("Compactor") ? (
+                                                <>
+                                                    {item.name !== "DOOR" && (
+                                                        <>
+                                                            {`${item.height} (HT) x ${item.width} (W) x ${item.depth} (D) MM`}{" "}
+                                                            {compartment ? `${compartment} Compartments` : ""}
+                                                        </>
+                                                    )}
+                                                </>
+                                            ) : (
+                                                item.description
+                                            )}
                                         </div>
                                     </TableCell>
                                     <TableCell className="border border-black text-center">
@@ -51,12 +61,12 @@ const ItemWiseItemTable = ({ isDiscountGiven }: { isDiscountGiven: boolean }) =>
                                                 {product.discount} %
                                             </TableCell >
                                             <TableCell className="border border-black text-center">
-                                                {discountRate}
+                                                {discountRate.toFixed(2)}
                                             </TableCell>
                                         </>
                                     }
                                     <TableCell className="border border-black text-center">
-                                        {Number(item.quantity) * discountRate}
+                                        {(item.quantity * discountRate).toFixed(2)}
                                     </TableCell>
                                 </TableRow>
                             )

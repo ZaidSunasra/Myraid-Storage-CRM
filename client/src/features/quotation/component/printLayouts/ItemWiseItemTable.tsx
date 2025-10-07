@@ -35,14 +35,24 @@ const ItemWiseItemTable = ({ quotation, name, setName, isDiscountGiven }: { quot
                                     <TableCell className="border border-black text-center">
                                         {index + 1}
                                     </TableCell>
-                                    <TableCell className="border border-black">
-                                        <div className="font-semibold">
+                                    <TableCell className="border border-black max-w-sm whitespace-normal break-words font-semibold">
+                                        <div>
                                             {item.item_name}{" "}
                                             {item.item_code ? `(${item.item_code})` : ""}{" "}
                                         </div>
-                                        <div className="text-xs text-muted-foreground">
-                                            {item.item_name !== "DOOR" ? `${item.height} (HT) x ${item.width} (W) x ${item.depth} (D) MM` : ""}{" "}
-                                            {item.item_name !== "DOOR" ? compartment ? `${compartment} Compartments` : "" : ""}
+                                        <div className="text-xs text-muted-foreground whitespace-pre-line">
+                                            {product.name.startsWith("Compactor") ? (
+                                                <>
+                                                    {item.item_name !== "DOOR" && (
+                                                        <>
+                                                            {`${item.height} (HT) x ${item.width} (W) x ${item.depth} (D) MM`}{" "}
+                                                            {compartment ? `${compartment} Compartments` : ""}
+                                                        </>
+                                                    )}
+                                                </>
+                                            ) : (
+                                                item.description
+                                            )}
                                         </div>
                                     </TableCell>
                                     <TableCell className="border border-black text-center">
@@ -57,12 +67,12 @@ const ItemWiseItemTable = ({ quotation, name, setName, isDiscountGiven }: { quot
                                                 {product.quotation_working[0].discount.toFixed(2)}
                                             </TableCell>
                                             <TableCell className="border border-black text-center">
-                                                {discountRate}
+                                                {discountRate.toFixed(2)}
                                             </TableCell>
                                         </>
                                     }
                                     <TableCell className="border border-black text-center">
-                                        {item.quantity * discountRate}
+                                        {(item.quantity * discountRate).toFixed(2)}
                                     </TableCell>
                                 </TableRow>
                             )

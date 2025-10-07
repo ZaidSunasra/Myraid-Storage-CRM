@@ -32,274 +32,278 @@ const QuotationCosting = ({ form, productId, productName }: ProductCostingCardPr
         <CardContent className="space-y-6">
             <QuotationWorkingTable productId={productId} />
             <div className="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-4 gap-6">
-                <div className="space-y-2">
-                    <FormField
-                        defaultValue={product[0].labour_cost}
-                        control={form.control}
-                        name={`quotation_item.${Number(productId)}.labour_cost`}
-                        render={({ field }) => (
-                            <FormItem>
-                                <FormLabel>Labour Cost*</FormLabel>
-                                <Input
-                                    value={field.value ?? ""}
-                                    placeholder="Enter labour cost"
-                                    type="number"
-                                    onChange={(e) => {
-                                        const value = Number(e.target.value);
-                                        field.onChange(value)
-                                        updateCost(productId, {
-                                            labour_cost: value
-                                        })
-                                    }}
-                                />
-                                <FormMessage />
-                            </FormItem>
-                        )}
-                    />
-                </div>
-                <div className="space-y-2">
-                    <FormField
-                        defaultValue={product[0].ss_material}
-                        control={form.control}
-                        name={`quotation_item.${Number(productId)}.ss_material`}
-                        render={({ field }) => (
-                            <FormItem>
-                                <FormLabel>SS Material*</FormLabel>
-                                <Input
-                                    value={field.value ?? ""}
-                                    placeholder="Enter weight of ss material"
-                                    type="number"
-                                    onChange={(e) => {
-                                        const value = Number(e.target.value);
-                                        field.onChange(value)
-                                        updateCost(productId, {
-                                            ss_material: value
-                                        })
-                                    }}
-                                />
-                                <FormMessage />
-                            </FormItem>
-                        )}
-                    />
-                </div>
-                <div className="space-y-2">
-                    <FormField
-                        defaultValue={product[0].trolley_material}
-                        control={form.control}
-                        name={`quotation_item.${Number(productId)}.trolley_material`}
-                        render={({ field }) => (
-                            <FormItem>
-                                <FormLabel>Trolley Material*</FormLabel>
-                                <Input
-                                    value={field.value ?? ""}
-                                    placeholder="Enter weight of trolley material"
-                                    type="number"
-                                    onChange={(e) => {
-                                        const value = Number(e.target.value);
-                                        field.onChange(value)
-                                        updateCost(productId, {
-                                            trolley_material: value
-                                        })
-                                    }}
-                                />
-                                <FormMessage />
-                            </FormItem>
-                        )}
-                    />
-                </div>
-                <div className="space-y-2">
-                    <FormItem>
-                        <FormLabel>Total material</FormLabel>
-                        <Input value={product[0].ss_material + product[0].trolley_material} disabled />
-                    </FormItem>
-                </div>
-                <div className="space-y-2">
-                    <FormField
-                        defaultValue={product[0].total_weight}
-                        control={form.control}
-                        name={`quotation_item.${Number(productId)}.total_weight`}
-                        render={({ field }) => (
-                            <FormItem>
-                                <FormLabel>Total Weight*</FormLabel>
-                                <Input
-                                    value={field.value ?? ""}
-                                    placeholder="Enter total weight"
-                                    type="number"
-                                    onChange={(e) => {
-                                        const value = Number(e.target.value);
-                                        field.onChange(value)
-                                        updateCost(productId, {
-                                            total_weight: value
-                                        })
-                                    }}
-                                />
-                                <FormMessage />
-                            </FormItem>
-                        )}
-                    />
-                </div>
-                <div className="space-y-2">
-                    <FormField
-                        defaultValue={product[0].powder_coating}
-                        control={form.control}
-                        name={`quotation_item.${Number(productId)}.powder_coating`}
-                        render={({ field }) => (
-                            <FormItem>
-                                <FormLabel>Powder Coating*</FormLabel>
-                                <Input
-                                    value={field.value ?? ""}
-                                    placeholder="Enter powder coating cost"
-                                    type="number"
-                                    onChange={(e) => {
-                                        const value = Number(e.target.value);
-                                        field.onChange(value)
-                                        updateCost(productId, {
-                                            powder_coating: value
-                                        })
-                                    }}
-                                />
-                                <FormMessage />
-                            </FormItem>
-                        )}
-                    />
-                </div>
-                <div className="space-y-2">
-                    <FormField
-                        control={form.control}
-                        defaultValue={product[0].transport}
-                        name={`quotation_item.${Number(productId)}.transport`}
-                        render={({ field }) => (
-                            <FormItem>
-                                <FormLabel>Transport*</FormLabel>
-                                <Input
-                                    value={field.value ?? ""}
-                                    placeholder="Enter transport cost"
-                                    type="number"
-                                    onChange={(e) => {
-                                        const value = Number(e.target.value);
-                                        field.onChange(value)
-                                        updateCost(productId, {
-                                            transport: value
-                                        })
-                                    }}
-                                />
-                                <FormMessage />
-                            </FormItem>
-                        )}
-                    />
-                </div>
-                <div className="space-y-2">
-                    <FormField
-                        control={form.control}
-                        defaultValue={product[0].accomodation}
-                        name={`quotation_item.${Number(productId)}.accomodation`}
-                        render={({ field }) => (
-                            <FormItem>
-                                <FormLabel>Accomodation*</FormLabel>
-                                <Input
-                                    value={field.value ?? ""}
-                                    placeholder="Enter accomodation cost"
-                                    type="number"
-                                    onChange={(e) => {
-                                        const value = Number(e.target.value);
-                                        field.onChange(value)
-                                        updateCost(productId, {
-                                            accomodation: value
-                                        })
-                                    }}
-                                />
-                                <FormMessage />
-                            </FormItem>
-                        )}
-                    />
-                </div>
-                <div className="space-y-2">
-                    <FormField
-                        control={form.control}
-                        defaultValue={product[0].installation}
-                        name={`quotation_item.${Number(productId)}.installation`}
-                        render={({ field }) => (
-                            <FormItem>
-                                <FormLabel>Installation per body*</FormLabel>
-                                <Input
-                                    value={field.value ?? ""}
-                                    placeholder="Enter installation cost of single body"
-                                    type="number"
-                                    onChange={(e) => {
-                                        const value = Number(e.target.value);
-                                        field.onChange(value)
-                                        updateCost(productId, {
-                                            installation: value
-                                        })
-                                    }}
-                                />
-                                <FormMessage />
-                            </FormItem>
-                        )}
-                    />
-                </div>
-                <div className="space-y-2">
-                    <FormItem>
-                        <FormLabel>Total installation cost</FormLabel>
-                        <Input value={product[0].installation * totals.totalBodies} disabled />
-                    </FormItem>
-                </div>
-                <div className="space-y-2">
-                    <FormField
-                        control={form.control}
-                        defaultValue={product[0].metal_rate}
-                        name={`quotation_item.${Number(productId)}.metal_rate`}
-                        render={({ field }) => (
-                            <FormItem>
-                                <FormLabel>Metal Rate*</FormLabel>
-                                <Input
-                                    value={field.value ?? ""}
-                                    placeholder="Enter metal rate"
-                                    onChange={(e) => {
-                                        const value = e.target.value;
-                                        field.onChange(value)
-                                        updateCost(productId, {
-                                            metal_rate: value
-                                        })
-                                    }}
-                                />
-                                <FormMessage />
-                            </FormItem>
-                        )}
-                    />
-                </div>
-                {form.watch("quotation_template") && (
-                    <div className="space-y-2">
-                        <FormField
-                            control={form.control}
-                            name={`quotation_item.${Number(productId)}.set`}
-                            render={({ field }) => {
-                                const isItemWise = form.watch("quotation_template") === "item_wise";
-                                if (isItemWise && field.value !== 1) {
-                                    field.onChange(1);
-                                    updateCost(productId, { set: 1 });
-                                }
-                                return (
+                {product[0].name.startsWith("Compactor") &&
+                    <>
+                        <div className="space-y-2">
+                            <FormField
+                                defaultValue={product[0].labour_cost}
+                                control={form.control}
+                                name={`quotation_item.${Number(productId)}.labour_cost`}
+                                render={({ field }) => (
                                     <FormItem>
-                                        <FormLabel>Set*</FormLabel>
+                                        <FormLabel>Labour Cost*</FormLabel>
                                         <Input
                                             value={field.value ?? ""}
-                                            placeholder="Enter number of set"
+                                            placeholder="Enter labour cost"
                                             type="number"
-                                            disabled={isItemWise}
                                             onChange={(e) => {
-                                                const val = Number(e.target.value);
-                                                field.onChange(val);
-                                                updateCost(productId, { set: val });
+                                                const value = Number(e.target.value);
+                                                field.onChange(value)
+                                                updateCost(productId, {
+                                                    labour_cost: value
+                                                })
                                             }}
                                         />
                                         <FormMessage />
                                     </FormItem>
-                                );
-                            }}
-                        />
-                    </div>
-                )}
+                                )}
+                            />
+                        </div>
+                        <div className="space-y-2">
+                            <FormField
+                                defaultValue={product[0].ss_material}
+                                control={form.control}
+                                name={`quotation_item.${Number(productId)}.ss_material`}
+                                render={({ field }) => (
+                                    <FormItem>
+                                        <FormLabel>SS Material*</FormLabel>
+                                        <Input
+                                            value={field.value ?? ""}
+                                            placeholder="Enter weight of ss material"
+                                            type="number"
+                                            onChange={(e) => {
+                                                const value = Number(e.target.value);
+                                                field.onChange(value)
+                                                updateCost(productId, {
+                                                    ss_material: value
+                                                })
+                                            }}
+                                        />
+                                        <FormMessage />
+                                    </FormItem>
+                                )}
+                            />
+                        </div>
+                        <div className="space-y-2">
+                            <FormField
+                                defaultValue={product[0].trolley_material}
+                                control={form.control}
+                                name={`quotation_item.${Number(productId)}.trolley_material`}
+                                render={({ field }) => (
+                                    <FormItem>
+                                        <FormLabel>Trolley Material*</FormLabel>
+                                        <Input
+                                            value={field.value ?? ""}
+                                            placeholder="Enter weight of trolley material"
+                                            type="number"
+                                            onChange={(e) => {
+                                                const value = Number(e.target.value);
+                                                field.onChange(value)
+                                                updateCost(productId, {
+                                                    trolley_material: value
+                                                })
+                                            }}
+                                        />
+                                        <FormMessage />
+                                    </FormItem>
+                                )}
+                            />
+                        </div>
+                        <div className="space-y-2">
+                            <FormItem>
+                                <FormLabel>Total material</FormLabel>
+                                <Input value={product[0].ss_material + product[0].trolley_material} disabled />
+                            </FormItem>
+                        </div>
+                        <div className="space-y-2">
+                            <FormField
+                                defaultValue={product[0].total_weight}
+                                control={form.control}
+                                name={`quotation_item.${Number(productId)}.total_weight`}
+                                render={({ field }) => (
+                                    <FormItem>
+                                        <FormLabel>Total Weight*</FormLabel>
+                                        <Input
+                                            value={field.value ?? ""}
+                                            placeholder="Enter total weight"
+                                            type="number"
+                                            onChange={(e) => {
+                                                const value = Number(e.target.value);
+                                                field.onChange(value)
+                                                updateCost(productId, {
+                                                    total_weight: value
+                                                })
+                                            }}
+                                        />
+                                        <FormMessage />
+                                    </FormItem>
+                                )}
+                            />
+                        </div>
+                        <div className="space-y-2">
+                            <FormField
+                                defaultValue={product[0].powder_coating}
+                                control={form.control}
+                                name={`quotation_item.${Number(productId)}.powder_coating`}
+                                render={({ field }) => (
+                                    <FormItem>
+                                        <FormLabel>Powder Coating*</FormLabel>
+                                        <Input
+                                            value={field.value ?? ""}
+                                            placeholder="Enter powder coating cost"
+                                            type="number"
+                                            onChange={(e) => {
+                                                const value = Number(e.target.value);
+                                                field.onChange(value)
+                                                updateCost(productId, {
+                                                    powder_coating: value
+                                                })
+                                            }}
+                                        />
+                                        <FormMessage />
+                                    </FormItem>
+                                )}
+                            />
+                        </div>
+                        <div className="space-y-2">
+                            <FormField
+                                control={form.control}
+                                defaultValue={product[0].transport}
+                                name={`quotation_item.${Number(productId)}.transport`}
+                                render={({ field }) => (
+                                    <FormItem>
+                                        <FormLabel>Transport*</FormLabel>
+                                        <Input
+                                            value={field.value ?? ""}
+                                            placeholder="Enter transport cost"
+                                            type="number"
+                                            onChange={(e) => {
+                                                const value = Number(e.target.value);
+                                                field.onChange(value)
+                                                updateCost(productId, {
+                                                    transport: value
+                                                })
+                                            }}
+                                        />
+                                        <FormMessage />
+                                    </FormItem>
+                                )}
+                            />
+                        </div>
+                        <div className="space-y-2">
+                            <FormField
+                                control={form.control}
+                                defaultValue={product[0].accomodation}
+                                name={`quotation_item.${Number(productId)}.accomodation`}
+                                render={({ field }) => (
+                                    <FormItem>
+                                        <FormLabel>Accomodation*</FormLabel>
+                                        <Input
+                                            value={field.value ?? ""}
+                                            placeholder="Enter accomodation cost"
+                                            type="number"
+                                            onChange={(e) => {
+                                                const value = Number(e.target.value);
+                                                field.onChange(value)
+                                                updateCost(productId, {
+                                                    accomodation: value
+                                                })
+                                            }}
+                                        />
+                                        <FormMessage />
+                                    </FormItem>
+                                )}
+                            />
+                        </div>
+                        <div className="space-y-2">
+                            <FormField
+                                control={form.control}
+                                defaultValue={product[0].installation}
+                                name={`quotation_item.${Number(productId)}.installation`}
+                                render={({ field }) => (
+                                    <FormItem>
+                                        <FormLabel>Installation per body*</FormLabel>
+                                        <Input
+                                            value={field.value ?? ""}
+                                            placeholder="Enter installation cost of single body"
+                                            type="number"
+                                            onChange={(e) => {
+                                                const value = Number(e.target.value);
+                                                field.onChange(value)
+                                                updateCost(productId, {
+                                                    installation: value
+                                                })
+                                            }}
+                                        />
+                                        <FormMessage />
+                                    </FormItem>
+                                )}
+                            />
+                        </div>
+                        <div className="space-y-2">
+                            <FormItem>
+                                <FormLabel>Total installation cost</FormLabel>
+                                <Input value={product[0].installation * totals.totalBodies} disabled />
+                            </FormItem>
+                        </div>
+                        <div className="space-y-2">
+                            <FormField
+                                control={form.control}
+                                defaultValue={product[0].metal_rate}
+                                name={`quotation_item.${Number(productId)}.metal_rate`}
+                                render={({ field }) => (
+                                    <FormItem>
+                                        <FormLabel>Metal Rate*</FormLabel>
+                                        <Input
+                                            value={field.value ?? ""}
+                                            placeholder="Enter metal rate"
+                                            onChange={(e) => {
+                                                const value = e.target.value;
+                                                field.onChange(value)
+                                                updateCost(productId, {
+                                                    metal_rate: value
+                                                })
+                                            }}
+                                        />
+                                        <FormMessage />
+                                    </FormItem>
+                                )}
+                            />
+                        </div>
+                        {form.watch("quotation_template") && (
+                            <div className="space-y-2">
+                                <FormField
+                                    control={form.control}
+                                    name={`quotation_item.${Number(productId)}.set`}
+                                    render={({ field }) => {
+                                        const isItemWise = form.watch("quotation_template") === "item_wise";
+                                        if (isItemWise && field.value !== 1) {
+                                            field.onChange(1);
+                                            updateCost(productId, { set: 1 });
+                                        }
+                                        return (
+                                            <FormItem>
+                                                <FormLabel>Set*</FormLabel>
+                                                <Input
+                                                    value={field.value ?? ""}
+                                                    placeholder="Enter number of set"
+                                                    type="number"
+                                                    disabled={isItemWise}
+                                                    onChange={(e) => {
+                                                        const val = Number(e.target.value);
+                                                        field.onChange(val);
+                                                        updateCost(productId, { set: val });
+                                                    }}
+                                                />
+                                                <FormMessage />
+                                            </FormItem>
+                                        );
+                                    }}
+                                />
+                            </div>
+                        )}
+                    </>
+                }
                 <div className="space-y-2">
                     <FormField
                         control={form.control}
@@ -309,6 +313,7 @@ const QuotationCosting = ({ form, productId, productName }: ProductCostingCardPr
                             <FormItem>
                                 <FormLabel>Profit (%)*</FormLabel>
                                 <Input
+                                    min={0}
                                     value={field.value ?? ""}
                                     placeholder="Enter profit percentage"
                                     type="number"
@@ -334,7 +339,8 @@ const QuotationCosting = ({ form, productId, productName }: ProductCostingCardPr
                             <FormItem>
                                 <FormLabel>Discount (%)</FormLabel>
                                 <Input
-                                    value={field.value ??  ""}
+                                    min={0}
+                                    value={field.value ?? ""}
                                     placeholder="Enter discount percentage"
                                     type="number"
                                     onChange={(e) => {

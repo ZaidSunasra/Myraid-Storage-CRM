@@ -1,10 +1,10 @@
 import { type Dispatch, type SetStateAction } from "react"
-import {  TableBody, TableCell, TableRow } from "@/shared/components/ui/table"
+import { TableBody, TableCell, TableRow } from "@/shared/components/ui/table"
 import { Input } from "@/shared/components/ui/input"
 import { type GetQuotationOutput } from "zs-crm-common"
 import { calculatePrintMultiProductTotals, calculatePrintProductTotal } from "../../utils/calculateTotal"
 
-const SetWiseItemTable = ({ quotation, name, setName, isDiscountGiven}: { quotation: GetQuotationOutput, name: string[], setName: Dispatch<SetStateAction<string[]>>, isDiscountGiven: boolean}) => {
+const SetWiseItemTable = ({ quotation, name, setName, isDiscountGiven }: { quotation: GetQuotationOutput, name: string[], setName: Dispatch<SetStateAction<string[]>>, isDiscountGiven: boolean }) => {
 
     return <>
         {
@@ -37,15 +37,24 @@ const SetWiseItemTable = ({ quotation, name, setName, isDiscountGiven}: { quotat
                                     <TableCell className="border border-black text-center border-t-0">
                                         {index + 1}
                                     </TableCell>
-                                    <TableCell className="border border-black border-t-0">
-                                        <div className="font-semibold">
+                                    <TableCell className="border border-black max-w-sm whitespace-normal break-words font-semibold">
+                                        <div>
                                             {item.item_name}{" "}
                                             {item.item_code ? `(${item.item_code})` : ""}{" "}
-                                            {item.item_name !== "DOOR" ? `(Qty ${item.quantity} Nos)` : `(${item.quantity} SET)`}
                                         </div>
-                                        <div className="text-xs text-muted-foreground border-t-0">
-                                            {item.item_name !== "DOOR" ? `${item.height} (HT) x ${item.width} (W) x ${item.depth} (D) MM` : ""}{" "}
-                                            {item.item_name !== "DOOR" ? compartment ? `${compartment} Compartments` : "" : ""}
+                                        <div className="text-xs text-muted-foreground whitespace-pre-line">
+                                            {product.name.startsWith("Compactor") ? (
+                                                <>
+                                                    {item.item_name !== "DOOR" && (
+                                                        <>
+                                                            {`${item.height} (HT) x ${item.width} (W) x ${item.depth} (D) MM`}{" "}
+                                                            {compartment ? `${compartment} Compartments` : ""}
+                                                        </>
+                                                    )}
+                                                </>
+                                            ) : (
+                                                item.description
+                                            )}
                                         </div>
                                     </TableCell>
                                     {index === 0 &&
@@ -62,12 +71,12 @@ const SetWiseItemTable = ({ quotation, name, setName, isDiscountGiven}: { quotat
                                                         {product.quotation_working[0].discount}
                                                     </TableCell>
                                                     <TableCell rowSpan={product.quotation_item.length} className="border border-black text-center">
-                                                        {discountRate}
+                                                        {discountRate.toFixed(2)}
                                                     </TableCell>
                                                 </>
                                             }
                                             <TableCell rowSpan={product.quotation_item.length} className="border border-black text-center border-t-0">
-                                                 {discountRate *  product.quotation_working[0].set}
+                                                {(discountRate * product.quotation_working[0].set).toFixed(2)}
                                             </TableCell>
                                         </>
                                     }

@@ -1,8 +1,7 @@
-import { Product_Type } from "@prisma/client"
 import { prisma } from "../../libs/prisma"
 import { AddQuotation, DEPARTMENTS, GetAllQuotationOutput, GetQuotationBaseProduct, GetQuotationByDealOutput, GetQuotationOutput, } from "zs-crm-common";
 
-export const getQuotationProductsService = async (product_type: Product_Type, bay: number, compartment: number): Promise<GetQuotationBaseProduct[]> => {
+export const getQuotationProductsService = async (product_type: string, bay: number, compartment: number): Promise<GetQuotationBaseProduct[]> => {
     const products = await prisma.baseProduct.findMany({
         where: {
             product_type: product_type
@@ -17,7 +16,8 @@ export const getQuotationProductsService = async (product_type: Product_Type, ba
         quantity: 1,
         provided_rate: 0,
         market_rate: 0,
-        removed: false
+        removed: false,
+        description: null
     }));
     return enrichedProducts;
 }
@@ -52,6 +52,7 @@ export const addQuotationService = async ({ quotation_template, quotation_item, 
                         quotation_product_id: createdProduct.id,
                         item_name: item.name,
                         item_code: item.code ?? null,
+                        description: item.description ?? null,
                         height: item.height,
                         width: item.width,
                         depth: item.depth,
@@ -327,6 +328,7 @@ export const editQuotationService = async ({ quotation_template, quotation_item,
                         quotation_product_id: createdProduct.id,
                         item_name: item.name,
                         item_code: item.code ?? null,
+                        description: item.description ?? null,
                         height: item.height,
                         width: item.width,
                         depth: item.depth,
@@ -393,6 +395,7 @@ export const copyQuotationDataService = async (quotation: GetQuotationOutput | n
                         quotation_product_id: createdProduct.id,
                         item_name: item.item_name,
                         item_code: item.item_code ?? null,
+                        description: item.description ?? null,
                         height: item.height,
                         width: item.width,
                         depth: item.depth,

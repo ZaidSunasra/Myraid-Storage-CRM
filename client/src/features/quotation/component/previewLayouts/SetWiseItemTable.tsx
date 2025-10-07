@@ -29,15 +29,24 @@ const SetWiseItemTable = ({ isDiscountGiven }: { isDiscountGiven: boolean }) => 
                                     <TableCell className="border border-black text-center">
                                         {index + 1}
                                     </TableCell>
-                                    <TableCell className="border border-black">
-                                        <div className="font-semibold">
+                                    <TableCell className="border border-black max-wd-sm break-words whitespace-normal font-semibold">
+                                        <div>
                                             {item.name}{" "}
                                             {item.code ? `(${item.code})` : ""}{" "}
-                                            {item.name !== "DOOR" ? `(Qty ${item.quantity} Nos)` : `(${item.quantity} SET)`}
                                         </div>
-                                        <div className="text-xs text-muted-foreground">
-                                            {item.name !== "DOOR" ? `${item.height} (HT) x ${item.width} (W) x ${item.depth} (D) MM` : ""}{" "}
-                                            {item.name !== "DOOR" ? compartment ? `${compartment} Compartments` : "" : ""}
+                                        <div className="text-xs text-muted-foreground whitespace-pre-line">
+                                            {product.name.startsWith("Compactor") ? (
+                                                <>
+                                                    {item.name !== "DOOR" && (
+                                                        <>
+                                                            {`${item.height} (HT) x ${item.width} (W) x ${item.depth} (D) MM`}{" "}
+                                                            {compartment ? `${compartment} Compartments` : ""}
+                                                        </>
+                                                    )}
+                                                </>
+                                            ) : (
+                                                item.description
+                                            )}
                                         </div>
                                     </TableCell>
                                     {index === 0 &&
@@ -54,12 +63,12 @@ const SetWiseItemTable = ({ isDiscountGiven }: { isDiscountGiven: boolean }) => 
                                                         {product.discount} %
                                                     </TableCell >
                                                     <TableCell rowSpan={product.items.length} className="border border-black text-center">
-                                                        {discountRate}
+                                                        {discountRate.toFixed(2)}
                                                     </TableCell>
                                                 </>
                                             }
                                             <TableCell rowSpan={product.items.length} className="border border-black text-center">
-                                                {discountRate * Number(product.set)}
+                                                {(discountRate * product.set).toFixed(2)}
                                             </TableCell>
                                         </>
                                     }
