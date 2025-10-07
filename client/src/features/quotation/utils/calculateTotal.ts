@@ -34,7 +34,7 @@ export const calculateGrandTotal = (total: number, gst: number, roundOff: number
 
 export const calculatePrintProductTotal = (product: Quotation_Product, item?: Quotation_Item) => {
     const extraExpense = Number(product.quotation_working[0].installation) * Number(product.quotation_working[0].total_body) + Number(product.quotation_working[0].accomodation) + Number(product.quotation_working[0].transport);
-    const perBodyExpense = extraExpense / Number(product.quotation_working[0].total_body);
+    const perBodyExpense = product.quotation_working[0].total_body === 0 ? 0 : extraExpense / Number(product.quotation_working[0].total_body);
     const itemWisetotal = Number(item?.provided_rate) + perBodyExpense * Number(item?.per_bay_qty);
     const profitPercent = 1 + product.quotation_working[0].profit_percent / 100;
     const itemWiseProfit = itemWisetotal * profitPercent;
@@ -45,7 +45,7 @@ export const calculatePrintProductTotal = (product: Quotation_Product, item?: Qu
 
 export const calculatePreviewProductTotal = (product: QuotationProduct, item?: QuotationItem) => {
     const extraExpense = Number(product.installation) * Number(product.total_body) + Number(product.accomodation) + Number(product.transport);
-    const perBodyExpense = extraExpense / Number(product.total_body);
+    const perBodyExpense = product.total_body === 0 ? 0 : extraExpense / Number(product.total_body);
     const itemWisetotal = Number(item?.provided_rate) + perBodyExpense * Number(item?.per_bay_qty);
     const profitPercent = product.profit_percent / 100;
     const itemWiseProfit = itemWisetotal * (1 + profitPercent);
