@@ -4,6 +4,7 @@ import type { Quotation_Working, QuotationItem, QuotationProduct } from "zs-crm-
 type QuotationContextType = {
   products: QuotationProduct[];
   addProduct: (items: QuotationItem[], name: string, working?: Quotation_Working, productId?: number) => void;
+  addItem : (productId: number) => void;
   removeProduct: (productId: number) => void;
   updateItem: (productId: number, itemId: number, updates: Partial<QuotationItem>) => void;
   updateCost: (productId: number, updates: Partial<QuotationProduct>) => void;
@@ -65,6 +66,35 @@ export const QuotationProvider = ({ children }: { children: ReactNode }) => {
       },
     ]);
   }, []);
+
+  const addItem = (productId: number) => {
+    setProducts((prev) =>
+      prev.map((product) => {
+        if (product.id !== productId) return product;
+
+        const newItem = {
+          id: Date.now(), 
+          name: "",
+          height: 0,
+          width: 0,
+          depth: 0,
+          quantity: 1,
+          per_bay_qty: 0,
+          provided_rate: 0,
+          market_rate: 0,
+          removed: false,
+          code: null,
+          description: null,
+        };
+
+        return {
+          ...product,
+          items: [...product.items, newItem],
+        };
+      })
+    );
+  };
+
 
   const removeProduct = useCallback((productId: number) => {
     setProducts((prev) => prev.filter((p) => p.id !== productId));
@@ -173,6 +203,7 @@ export const QuotationProvider = ({ children }: { children: ReactNode }) => {
         getProductTotals,
         products,
         addProduct,
+        addItem,
         removeProduct,
         updateItem,
         updateCost,
