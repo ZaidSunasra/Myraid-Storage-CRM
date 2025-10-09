@@ -99,10 +99,10 @@ export const calculatePrintMultiProductTotals = (products: Quotation_Product[], 
 };
 
 export const calculatePerKgPreview = (products: QuotationProduct[], overallTotal: number) => {
-    const marketTotal = products.reduce((sum, p) => sum + p.total_market_rate, 0)
+    const marketTotal = products.reduce((sum, p) => sum + p.total_market_rate * p.set, 0)
     const grandTotal = overallTotal;
     const totalLabourCost = products.reduce((sum, p) => sum + p.labour_cost * p.set, 0)
-    const totalMaterial = products.reduce((sum, p) => sum + p.ss_material + p.trolley_material, 0);
+    const totalMaterial = products.reduce((sum, p) => sum + (p.ss_material + p.trolley_material) * p.set, 0);
     const perKg = ((grandTotal - marketTotal) + totalLabourCost) / totalMaterial
     return perKg.toFixed(2)
 }
