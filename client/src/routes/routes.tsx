@@ -27,28 +27,44 @@ const Router = () => {
 			<Route path="/" element={<LandingPage />} />
 			<Route path="/notifications" element={<NotificationPage />} />
 			<Route path="/unauthorized-page" element={<UnauthorizedPage />} />
+			<Route element={<ProtectedRoute permissionKey="add_lead" />} >
+				<Route path="/lead/add" element={<AddLeadPage />} />
+				<Route element={<ProtectedRoute checkOwnership type="lead" />}>
+					<Route path="/lead/edit/:id" element={<EditLeadPage />} />
+				</Route>
+			</Route>
+			<Route element={<ProtectedRoute permissionKey="add_deal" />} >
+				<Route path="/deal/add" element={<AddDealPage />} />
+				<Route element={<ProtectedRoute checkOwnership type="deal" />}>
+					<Route path="/deal/edit/:id" element={<EditDealPage />} />
+				</Route>
+			</Route>
+			<Route element={<ProtectedRoute permissionKey="add_quotation" />} >
+				<Route path="/add/quotation/:id" element={<AddQuotationPage />} />
+				<Route element={<ProtectedRoute checkOwnership type="deal" />}>
+					<Route path="/quotation/edit/:id/:quotation_id" element={< EditQuotationPage />} />
+				</Route>
+			</Route>
+			<Route element={<ProtectedRoute permissionKey="view_quotation" />} >
+				<Route element={<ProtectedRoute checkOwnership type="deal" />}>
+				<Route path="/quotation/print/:id/:quotation_id" element={< QuotationPrint />} />
+			</Route>
+			</Route>
 			<Route element={<ProtectedRoute allowedDepartment={[DEPARTMENTS[0], DEPARTMENTS[1]]} />}>
 				<Route path="/lead" element={<LeadsPage />} />
 				<Route path="/quotation" element={<QuotationsPage />} />
 				<Route path="/calender" element={<CalenderPage />} />
 				<Route path="/setting" element={<SettingsPage />} />
 				<Route path="/order" element={<WorkInProgress />} />
-				<Route path="/lead/add" element={<AddLeadPage />} />
-				<Route path="/deal/add" element={<AddDealPage />} />
-				<Route path="/add/quotation/:id" element={<AddQuotationPage />} />
-			</Route>
-			<Route element={<ProtectedRoute allowedDepartment={[DEPARTMENTS[0], DEPARTMENTS[1]]} checkOwnership type="lead" />}>
-				<Route path="/lead/:id" element={<DetailedLeadPage />} />
-				<Route path="/lead/edit/:id" element={<EditLeadPage />} />
 			</Route>
 			<Route element={<ProtectedRoute allowedDepartment={[DEPARTMENTS[0], DEPARTMENTS[1], DEPARTMENTS[3]]} />}>
 				<Route path="/deal" element={<DealsPage />} />
 			</Route>
 			<Route element={<ProtectedRoute allowedDepartment={[DEPARTMENTS[0], DEPARTMENTS[1]]} checkOwnership type="deal" />}>
-				<Route path="/deal/edit/:id" element={<EditDealPage />} />
 				<Route path="/quotation/:id/:quotation_id" element={<DetailedQuotationPage />} />
-				<Route path="/quotation/print/:id/:quotation_id" element={< QuotationPrint />} />
-				<Route path="/quotation/edit/:id/:quotation_id" element={< EditQuotationPage />} />
+			</Route>
+			<Route element={<ProtectedRoute allowedDepartment={[DEPARTMENTS[0], DEPARTMENTS[1]]} checkOwnership type="lead" />}>
+				<Route path="/lead/:id" element={<DetailedLeadPage />} />
 			</Route>
 			<Route element={<ProtectedRoute allowedDepartment={[DEPARTMENTS[0], DEPARTMENTS[1], DEPARTMENTS[3]]} checkOwnership type="deal" />}>
 				<Route path="/deal/:id" element={<DetailedDealPage />} />
