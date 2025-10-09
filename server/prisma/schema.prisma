@@ -284,6 +284,12 @@ model Advance {
   order          Order    @relation(fields: [order_id], references: [id])
 }
 
+model Permission {
+  id Int @id @default(autoincrement())
+  permission_key String
+  allowed_dept Department[]
+}
+
 enum Notification_Type {
   color_changed
   drawing_uploaded
