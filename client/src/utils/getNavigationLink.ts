@@ -5,6 +5,7 @@ export const getNavigationLink = (notification: Notification) => {
 		client_meeting: notification.deal_id ? `/deal/${notification.deal_id}?tab=scheduling` : `/lead/${notification.lead_id}?tab=scheduling`,
 		mentioned: notification.deal_id ? `/deal/${notification.deal_id}` : `/lead/${notification.lead_id}`,
 		lead_assigned: notification.deal_id ? `/deal/${notification.deal_id}` : `/lead/${notification.lead_id}`,
+		deal_assigned: `/deal/${notification.deal_id}`,
 		drawing_uploaded: `/deal/${notification.deal_id}?tab=drawing`,
 		drawing_approved: `/deal/${notification.deal_id}?tab=drawing`,
 		drawing_rejected: `/deal/${notification.deal_id}?tab=drawing`,
