@@ -20,3 +20,10 @@ export const DEAL_STATUS_META: Record<deal_status, { icon: LucideIcon, bg: strin
 	order_lost: { icon: X, bg: "bg-gradient-to-r from-red-500 to-red-600" },
 	order_confirmed: { icon: CheckCircle, bg: "bg-gradient-to-r from-green-500 to-green-600" }
 };
+
+export const ROLE_COLORS: Record<string, string> = {
+  admin: "bg-blue-100 text-blue-800",
+  sales: "bg-green-100 text-green-800",
+  drawing: "bg-yellow-100 text-yellow-800",
+  factory: "bg-orange-100 text-orange-800",
+};
