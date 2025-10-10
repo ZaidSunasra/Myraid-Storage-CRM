@@ -1,13 +1,14 @@
+import { usePermissions } from "@/context/PermissionContext";
 import { useUser } from "@/context/UserContext";
 import { Card, CardContent, CardHeader, CardTitle } from "@/shared/components/ui/card";
 import { capitalize, toTitleCase } from "@/utils/formatData";
-import { canView } from "@/utils/viewPermission";
 import { useNavigate } from "react-router";
 import { type GroupedRecords, type ReminderMonth } from "zs-crm-common";
 
 const DailyData = ({ data, meetingData }: { data: Record<string, GroupedRecords>; meetingData: ReminderMonth[] }) => {
 	const navigate = useNavigate();
 	const { user } = useUser();
+	const {canView} = usePermissions();
 
 	return (
 		<div className="overflow-y-auto">
@@ -34,7 +35,7 @@ const DailyData = ({ data, meetingData }: { data: Record<string, GroupedRecords>
 				</div>
 			)}
 
-			{user?.department && canView(user.department, "admin") &&
+			{user?.department && canView(user.department, "daily_calendar_data") &&
 				data && Object.keys(data).length > 0 && (
 					Object.entries(data ?? {}).map(([employeeName, records]) => (
 						<Card key={employeeName} className="m-2">

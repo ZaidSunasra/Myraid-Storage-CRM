@@ -5,10 +5,10 @@ import { getDescriptionsController, getDescriptionByIdController, addDescription
 
 const descriptionRouter = express.Router();
 
-descriptionRouter.get("/get/:ref_id", authMiddleware, checkDepartment(["admin", "sales"]), getDescriptionsController);
-descriptionRouter.get("/get/:id", authMiddleware, checkDepartment(["admin", "sales"]), getDescriptionByIdController)
-descriptionRouter.post("/add/:id", authMiddleware, checkDepartment(["admin", "sales"]), addDescriptionController);
-descriptionRouter.put("/edit/:id", authMiddleware, checkDepartment(["admin", "sales"]), editDescriptionController);
-descriptionRouter.delete("/delete/:id", authMiddleware, checkDepartment(["admin", "sales"]), deleteDescriptionController);
+descriptionRouter.get("/get/:ref_id", authMiddleware, checkDepartment(undefined, "add_description"), getDescriptionsController);
+descriptionRouter.get("/get/:id", authMiddleware, checkDepartment(undefined, "add_description"), getDescriptionByIdController)
+descriptionRouter.post("/add/:id", authMiddleware, checkDepartment(undefined, "add_description"), addDescriptionController);
+descriptionRouter.put("/edit/:id", authMiddleware, checkDepartment(undefined, "add_description"), editDescriptionController);
+descriptionRouter.delete("/delete/:id", authMiddleware, checkDepartment(undefined, "add_description"), deleteDescriptionController);
 
 export default descriptionRouter;

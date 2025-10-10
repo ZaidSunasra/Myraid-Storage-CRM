@@ -6,7 +6,6 @@ import Navbar from "@/shared/components/Navbar";
 import { Button } from "@/shared/components/ui/button";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/shared/components/ui/tabs";
 import { toTitleCase } from "@/utils/formatData";
-import { canView } from "@/utils/viewPermission";
 import { ArrowLeft, Copy, Edit, FileText, Trash2 } from "lucide-react";
 import { NavLink, useNavigate, useParams } from "react-router"
 import QuotationDetails from "../component/QuotationDetails";
@@ -16,6 +15,7 @@ import { Dialog, DialogClose, DialogContent, DialogDescription, DialogFooter, Di
 import { useState } from "react";
 import CopyQuotationForm from "../component/CopyQuotationForm";
 import { useDeleteQuotation } from "@/api/quotations/quotations.mutation";
+import { usePermissions } from "@/context/PermissionContext";
 
 const DetailedQuotationPage = () => {
 
@@ -23,6 +23,7 @@ const DetailedQuotationPage = () => {
     const [dialog, setDialog] = useState<{ open: boolean; action: "copy" | "delete" | null }>({ open: false, action: null });
     const { data, isError, isPending } = FetchQuotationById(quotation_id as string);
     const { user } = useUser();
+    const { canView } = usePermissions();
     const navigate = useNavigate();
     const deleteQuotation = useDeleteQuotation();
 
@@ -52,7 +53,7 @@ const DetailedQuotationPage = () => {
                             <p className="text-gray-600">{toTitleCase(data.quotation?.deal.company.name as string)}</p>
                         </div>
                     </div>
-                    {user?.department && canView(user?.department, "admin") &&
+                    {user?.department && canView(user?.department, "add_quotation") &&
                         <Button onClick={() => navigate(`/quotation/edit/${id}/${quotation_id}`)}>
                             <Edit className="h-4 w-4 mr-2" />
                             Edit Quotation
@@ -67,7 +68,7 @@ const DetailedQuotationPage = () => {
                             <TabsTrigger value="info">
                                 Quotation Information
                             </TabsTrigger>
-                            {user?.department && canView(user?.department, "admin") &&
+                            {user?.department && canView(user?.department, "view_quotation_preview_details") &&
                                 <TabsTrigger value="working">
                                     Quotation Working
                                 </TabsTrigger>
@@ -89,23 +90,25 @@ const DetailedQuotationPage = () => {
                         </Button>
                     </div>
                     <div className="space-y-4">
-                        <div className="w-full">
-                            <Button className=" text-white flex gap-2 px-6 py-2 rounded-xl shadow-md transition w-full bg-green-600 hover:bg-green-700"
-                                onClick={() => setDialog({ open: true, action: "copy" })}
-                            >
-                                <Copy className="w-4 h-4" />
-                                Copy Quotation
-                            </Button>
-                        </div>
-                        <div className="w-full">
+                        {user?.department && canView(user.department, "copy_quotation") &&
+                            <div className="w-full">
+                                <Button className=" text-white flex gap-2 px-6 py-2 rounded-xl shadow-md transition w-full bg-green-600 hover:bg-green-700"
+                                    onClick={() => setDialog({ open: true, action: "copy" })}
+                                >
+                                    <Copy className="w-4 h-4" />
+                                    Copy Quotation
+                                </Button>
+                            </div>
+                        }
+                     {user?.department && canView(user.department, "view_quotation") && <div className="w-full">
                             <Button className=" text-white flex gap-2 px-6 py-2 rounded-xl shadow-md transition w-full bg-blue-600 hover:bg-blue-700"
                                 onClick={() => window.open(`/quotation/print/${id}/${quotation_id}`, "_blank")}
                             >
                                 <FileText className="w-4 h-4" />
                                 View Quotation
                             </Button>
-                        </div>
-                        {user?.department && canView(user?.department, "admin") &&
+                        </div>}
+                        {user?.department && canView(user?.department, "delete_quotation") &&
                             <div className="w-full">
                                 <Button className=" text-white flex gap-2 px-6 py-2 rounded-xl shadow-md transition w-full hover:bg-red-700" variant="destructive"
                                     onClick={() => setDialog({ open: true, action: "delete" })}

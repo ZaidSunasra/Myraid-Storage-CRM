@@ -93,7 +93,7 @@ export const deleteDrawingController = async (req: Request, res: Response<Succes
     try {
         await deleteDrawingService(id);
         return res.status(200).json({
-            message: "Drawing delted successfully",
+            message: "Drawing deleted successfully",
         });
     } catch (error) {
         console.log(`Error in deleting drawing`, error);

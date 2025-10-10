@@ -110,7 +110,7 @@ const CalendarPage = () => {
 										</SheetTrigger>
 										<SheetContent>
 											<SheetHeader>
-												<SheetTitle>Team Activity Recap for {formatted}</SheetTitle>
+												<SheetTitle>Team Activity Recap for {format(formatted, "dd-MM-yyyy")}</SheetTitle>
 												<SheetDescription>Catch up on today's progress — leads added, client updates, and who did what. Everything you need to stay informed.</SheetDescription>
 											</SheetHeader>
 											<DailyData data={data.grouped[formatted]} meetingData={data.remindersByDay[formatted]} />

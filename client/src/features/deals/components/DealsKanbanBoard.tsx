@@ -1,4 +1,6 @@
 import { useEditStatus } from "@/api/deals/deal.mutation";
+import { usePermissions } from "@/context/PermissionContext";
+import { useUser } from "@/context/UserContext";
 import { Badge } from "@/shared/components/ui/badge";
 import { Button } from "@/shared/components/ui/button";
 import { Card, CardContent } from "@/shared/components/ui/card";
@@ -14,6 +16,8 @@ const KanbanBoard = ({ data }: { data: GetAllDealSuccessResponse }) => {
 
     const editStatus = useEditStatus();
     const navigate = useNavigate();
+    const {user} = useUser();4
+    const {canView} = usePermissions();
 
     const handleStatus = ({ id, status }: { id: string, status: deal_status }) => {
         editStatus.mutate({ id, status })
@@ -57,7 +61,7 @@ const KanbanBoard = ({ data }: { data: GetAllDealSuccessResponse }) => {
                                                         <div className="flex items-center space-x-2">
                                                             <span className="text-xs font-medium text-foreground">{deal.id.replace(/-/g, "/").replace(/_/g, "-")}</span>
                                                         </div>
-                                                        <DropdownMenu>
+                                                       {user?.department && canView(user.department, "edit_deal_status") &&<DropdownMenu>
                                                             <DropdownMenuTrigger asChild>
                                                                 <Button variant="ghost" size="icon" className="h-5 w-5">
                                                                     <MoreHorizontal className="h-3 w-3" />
@@ -68,7 +72,7 @@ const KanbanBoard = ({ data }: { data: GetAllDealSuccessResponse }) => {
                                                                     <DropdownMenuItem key={status} onClick={(e) => { e.stopPropagation(), handleStatus({ id: deal.id, status }) }} disabled={editStatus.isPending}>Move to {toTitleCase(status)}</DropdownMenuItem>
                                                                 ))}
                                                             </DropdownMenuContent>
-                                                        </DropdownMenu>
+                                                        </DropdownMenu>}
                                                     </div>
                                                     <div className="flex items-center space-x-2">
                                                         <Building2 className="h-3 w-3 text-muted-foreground" />

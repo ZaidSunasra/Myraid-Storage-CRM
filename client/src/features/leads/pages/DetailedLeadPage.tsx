@@ -18,9 +18,9 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { useRef } from "react";
 import ScheduledMeeting from "@/shared/components/ScheduledMeeting";
 import { useUser } from "@/context/UserContext";
-import { canView } from "@/utils/viewPermission";
 import ErrorDisplay from "@/shared/components/ErrorPage";
 import { toast } from "sonner";
+import { usePermissions } from "@/context/PermissionContext";
 
 const DetailedLeadPage = () => {
 
@@ -29,6 +29,7 @@ const DetailedLeadPage = () => {
 	const navigate = useNavigate();
 	const { id } = useParams();
 	const { user } = useUser();
+	const { canView } = usePermissions()
 	const { data, isPending, isError } = FetchLeadById(id as string);
 	const { data: assignedEmployeeData, isPending: assignedEmployeePending, isError: assignedEmployeeError } = FetchAssignedEmployee(id as string, "lead");
 
@@ -45,7 +46,7 @@ const DetailedLeadPage = () => {
 
 	if (isPending || assignedEmployeePending) return <DetailedPageLoader />;
 
-	if (isError || assignedEmployeeError) return <ErrorDisplay fullPage/>
+	if (isError || assignedEmployeeError) return <ErrorDisplay fullPage />
 
 	return (
 		<div className="min-h-screen bg-accent">
@@ -66,10 +67,12 @@ const DetailedLeadPage = () => {
 								<p className="text-gray-600">{toTitleCase(data.lead?.company.name as string)}</p>
 							</div>
 						</div>
-						<Button onClick={() => navigate(`/lead/edit/${id}`)}>
-							<Edit className="h-4 w-4 mr-2" />
-							Edit Lead
-						</Button>
+						{user?.department && canView(user.department, "add_lead") &&
+							<Button onClick={() => navigate(`/lead/edit/${id}`)}>
+								<Edit className="h-4 w-4 mr-2" />
+								Edit Lead
+							</Button>
+						}
 					</div>
 				</div>
 				<div className="grid grid-cols-1 lg:grid-cols-4 gap-6">
@@ -81,10 +84,12 @@ const DetailedLeadPage = () => {
 							</TabsList>
 							<TabsContent value="info" className="space-y-6">
 								<LeadDetails data={data.lead as GetLeadOutput} />
-								<Description id={String(data.lead?.id)} type="lead" />
+								{user?.department && canView(user.department, "add_description") &&
+									<Description id={String(data.lead?.id)} type="lead" />
+								}
 							</TabsContent>
 							<TabsContent value="scheduling" className="space-y-6">
-								<LeadScheduling type="lead" id={id as string} />
+								{user?.department && canView(user.department, "schedule_meeting") && <LeadScheduling type="lead" id={id as string} />}
 								<ScheduledMeeting id={id as string} type="lead" />
 							</TabsContent>
 						</Tabs>
@@ -103,7 +108,7 @@ const DetailedLeadPage = () => {
 										<DialogTitle>Convert the lead to deal</DialogTitle>
 										<DialogDescription>Are you sure you want to convert the lead? This cannot be undone.</DialogDescription>
 									</DialogHeader>
-									{user?.department && canView(user?.department, "admin") &&
+									{user?.department && canView(user?.department, "select_quotation_code") &&
 										<Select onValueChange={(value) => (quotationCode.current = value)}>
 											<SelectTrigger >
 												<SelectValue placeholder="Select quotation code" />

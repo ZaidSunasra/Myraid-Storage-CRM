@@ -7,7 +7,7 @@ const authRouter = express.Router();
 
 authRouter.post("/login", loginController);
 authRouter.post("/signup", authMiddleware, checkDepartment(["admin"]), signupController);
-authRouter.post("/logout", authMiddleware, checkDepartment(["admin", "sales", "factory", "drawing"]), logoutController);
+authRouter.post("/logout", authMiddleware, logoutController);
 authRouter.post("/edit-user/:user_id", authMiddleware, checkDepartment(["admin", "sales"]), editUserController);
 
 export default authRouter;

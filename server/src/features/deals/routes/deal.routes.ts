@@ -10,10 +10,10 @@ dealRouter.get("/get", authMiddleware, checkDepartment(["admin", "sales", "drawi
 dealRouter.get("/get/:id", authMiddleware, checkDepartment(["admin", "sales", "drawing"]), getDealByIdController);
 dealRouter.get("/get/by-company", authMiddleware, checkDepartment(["admin", "sales", "drawing"]), getDealByCompanyController);
 dealRouter.post("/convert/:lead_id", authMiddleware, checkDepartment(["admin", "sales"]), convertLeadToDealController);
-dealRouter.post("/add", authMiddleware, checkDepartment(["admin", "sales"]), addDealController);
-dealRouter.put("/edit/:id", authMiddleware, checkDepartment(["admin", "sales"]), editDealController);
-dealRouter.put("/edit/status/:id", authMiddleware, checkDepartment(["admin", "sales"]), editDealStatusController);
-dealRouter.get("/get-only-id", authMiddleware, checkDepartment(["admin", "sales"]), getDealIdController)
+dealRouter.post("/add", authMiddleware, checkDepartment(undefined, "add_deal"), addDealController);
+dealRouter.put("/edit/:id", authMiddleware, checkDepartment(undefined, "add_deal"), editDealController);
+dealRouter.put("/edit/status/:id", authMiddleware, checkDepartment(undefined, "edit_deal_status"), editDealStatusController);
+dealRouter.get("/get-only-id", authMiddleware, checkDepartment(undefined, "copy_quotation"), getDealIdController)
 dealRouter.use("/drawing", drawingRouter);
 
 export default dealRouter;

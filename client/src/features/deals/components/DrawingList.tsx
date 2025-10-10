@@ -8,16 +8,18 @@ import { Dialog, DialogClose, DialogContent, DialogDescription, DialogFooter, Di
 import { format } from "date-fns";
 import { AlertCircle, Calendar, CheckCircle, Download, Eye, FileText, Notebook, Trash, User } from "lucide-react";
 import { useState } from "react";
-import { DEPARTMENTS, type Assignee, type Drawing, type drawing_status } from "zs-crm-common";
+import { type Assignee, type Drawing, type drawing_status } from "zs-crm-common";
 import RejectDrawingDialog from "./RejectDrawingDialog";
 import DivLoader from "@/shared/components/loaders/DivLoader";
 import ErrorDisplay from "@/shared/components/ErrorPage";
+import { usePermissions } from "@/context/PermissionContext";
 
 const DrawingList = ({ id }: { id: string }) => {
 
     const [dialog, setDialog] = useState<{ open: boolean; data: number | null; action: "approve" | "disapprove" | null }>({ open: false, data: null, action: null });
     const { data, isPending, isError } = FetchDrawings(id);
     const { user } = useUser();
+    const {canView} = usePermissions()
     const viewDrawing = useViewDrawing();
     const deleteDrawing = useDeleteDrawing();
     const approveDrawing = useApproveDrawing();
@@ -40,8 +42,8 @@ const DrawingList = ({ id }: { id: string }) => {
         setDialog({ open: false, data: null, action: null })
     }
 
-    if (isPending) return <DivLoader height={64} showHeading={false}/>
-    if(isError) return <ErrorDisplay message="Failed to load data. Refresh or please try again later"/>
+    if (isPending) return <DivLoader height={64} showHeading={false} />
+    if (isError) return <ErrorDisplay message="Failed to load data. Refresh or please try again later" />
 
     return <>
         <Card className="shadow-lg bg-background">
@@ -120,7 +122,7 @@ const DrawingList = ({ id }: { id: string }) => {
                                                 >
                                                     <Eye className="h-3 w-3 mr-1" /> Preview
                                                 </Button>
-                                                {drawing.status === "pending" && user?.department === DEPARTMENTS[1] && (
+                                                {drawing.status === "pending" && user?.department && canView(user?.department, "approve_drawing") && (
                                                     <>
                                                         <Button
                                                             variant="outline"

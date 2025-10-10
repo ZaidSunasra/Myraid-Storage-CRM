@@ -52,7 +52,7 @@ export const getDrawingById = async (id: string): Promise<GetDrawingByIdSuccessR
 }
 
 export const deleteDrawing = async (id: string): Promise<SuccessResponse> => {
-    const response = await axiosInstance.post(`deals/drawing/delete/${id}`);
+    const response = await axiosInstance.delete(`deals/drawing/delete/${id}`);
     return response.data;
 }
 

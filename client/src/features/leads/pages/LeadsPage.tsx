@@ -5,11 +5,12 @@ import { Plus } from "lucide-react";
 import { useNavigate } from "react-router";
 import LeadAnalytics from "../components/LeadAnalytics";
 import { useUser } from "@/context/UserContext";
-import { canView } from "@/utils/viewPermission";
+import { usePermissions } from "@/context/PermissionContext";
 
 const LeadsPage = () => {
 	const navigate = useNavigate();
 	const { user } = useUser();
+	const { canView } = usePermissions()
 
 	return (
 		<div className="bg-accent min-h-screen">
@@ -20,12 +21,16 @@ const LeadsPage = () => {
 						<h1 className="text-2xl font-bold text-primary">Leads</h1>
 						<p className="text-muted-foreground">Manage and track your sales leads</p>
 					</div>
-					<Button onClick={() => navigate("/lead/add")}>
-						<Plus className="h-4 w-4 mr-2" />
-						Add Lead
-					</Button>
+					{user?.department && canView(user?.department, "add_lead") &&
+						<Button onClick={() => navigate("/lead/add")}>
+							<Plus className="h-4 w-4 mr-2" />
+							Add Lead
+						</Button>
+					}
 				</div>
-				{user?.department && canView(user?.department, "admin") &&  <LeadAnalytics /> }
+				{user?.department && canView(user?.department, "view_lead_analytics") &&
+					<LeadAnalytics />
+				}
 				<LeadsTable />
 			</div>
 		</div>

@@ -14,11 +14,11 @@ import MeetScheduling from "@/shared/components/MeetScheduling";
 import ScheduledMeeting from "@/shared/components/ScheduledMeeting";
 import DrawingUploads from "../components/DrawingUploads";
 import { useUser } from "@/context/UserContext";
-import { canView } from "@/utils/viewPermission";
 import DrawingList from "../components/DrawingList";
 import DetailedPageLoader from "@/shared/components/loaders/DetailedPageLoader";
 import ErrorDisplay from "@/shared/components/ErrorPage";
 import DealQuotation from "../components/DealQuotation";
+import { usePermissions } from "@/context/PermissionContext";
 
 const DetailedDealPage = () => {
 
@@ -27,6 +27,7 @@ const DetailedDealPage = () => {
     const tab = searchParams.get("tab") || "info";
     const { data: dealData, isPending: dealPending, isError: dealError } = FetchDealById(id as string);
     const { user } = useUser();
+      const {canView} = usePermissions();
     const navigate = useNavigate();
 
     if (dealPending) return <DetailedPageLoader />
@@ -57,7 +58,7 @@ const DetailedDealPage = () => {
                             </Badge>
                         </div>
                     </div>
-                    {user?.department && canView(user?.department, "sales_admin") &&
+                    {user?.department && canView(user?.department, "add_deal") &&
                         <Button onClick={() => navigate(`/deal/edit/${id}`)}>
                             <Edit className="h-4 w-4 mr-2" />
                             Edit Deal
@@ -70,29 +71,29 @@ const DetailedDealPage = () => {
                     <Tabs defaultValue={tab} className="space-y-6">
                         <TabsList className="grid w-full grid-cols-3 bg-background">
                             <TabsTrigger value="info"> Deal Information</TabsTrigger>
-                            {user?.department && canView(user?.department, "sales_admin") &&
+                            {user?.department && canView(user?.department, "schedule_meeting") &&
                                 <TabsTrigger value="scheduling">Scheduling</TabsTrigger>
                             }
                             <TabsTrigger value="drawing">Drawings</TabsTrigger>
                         </TabsList>
                         <TabsContent value="info" className="space-y-6">
                             <DealDetails data={dealData?.deal as GetDealOutput} />
-                            {user?.department && canView(user?.department, "sales_admin") && <Description id={dealData?.deal?.id as string} type="deal" />}
+                            {user?.department && canView(user?.department, "add_description") && <Description id={dealData?.deal?.id as string} type="deal" />}
                         </TabsContent>
-                        {user?.department && canView(user?.department, "sales_admin") &&
+                        {user?.department && canView(user?.department, "schedule_meeting") &&
                             <TabsContent value="scheduling" className="space-y-6">
                                 <MeetScheduling type="deal" id={id as string} />
                                 <ScheduledMeeting type="deal" id={id as string} />
                             </TabsContent>
                         }
                         <TabsContent value="drawing" className="space-y-6">
-                            {user?.department && canView(user?.department, "drawing") && <DrawingUploads />}
+                            {user?.department && canView(user?.department, "upload_drawing") && <DrawingUploads />}
                             <DrawingList id={id as string} />
                         </TabsContent>
                     </Tabs>
                 </div>
                 <div className="lg:col-span-1">
-                    {user?.department && canView(user.department, "sales_admin") &&
+                    {user?.department && canView(user.department, "add_quotation") &&
                         <div className="w-full">
                             <Button className="mb-8 text-white flex gap-2 px-6 py-2 rounded-xl shadow-md transition w-full bg-blue-600 hover:bg-blue-700"
                                 onClick={() => navigate(`/add/quotation/${id}`)}
@@ -102,7 +103,7 @@ const DetailedDealPage = () => {
                             </Button>
                         </div>
                     }
-                    {user?.department && canView(user.department, "sales_admin") &&
+                    {user?.department && canView(user.department, "view_deal_quotation") &&
                         <DealQuotation deal_id={id as string} />
                     }
                 </div>
