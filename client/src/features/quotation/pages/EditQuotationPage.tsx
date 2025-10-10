@@ -1,7 +1,7 @@
 import Navbar from "@/shared/components/Navbar"
 import { Button } from "@/shared/components/ui/button"
 import { ArrowLeft, Eye, X } from "lucide-react"
-import { NavLink, useParams } from "react-router"
+import { useNavigate, useParams } from "react-router"
 import QuotationSideBar from "../component/QuotationSideBar"
 import { useEffect, useState } from "react"
 import { Form } from "@/shared/components/ui/form"
@@ -19,13 +19,16 @@ import QuotationProducts from "../component/QuotationProducts"
 import QuotationProductSelector from "../component/QuotationProductSelector"
 import { useEditQuotation } from "@/api/quotations/quotations.mutation"
 import { toast } from "sonner"
+import { Dialog, DialogClose, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle, DialogTrigger } from "@/shared/components/ui/dialog"
 
 const EditQuotationPage = () => {
 
     const { id, quotation_id } = useParams()
     const [currentStep, setCurrentStep] = useState<number>(1)
     const [showPreview, setShowPreview] = useState<boolean>(false)
-    const { products, addProduct, clearAll } = useQuotation()
+    const { products, addProduct, clearAll} = useQuotation();
+    const [dialog, setDialog] = useState<{ open: boolean; }>({ open: false });
+    const navigate = useNavigate();
     const handleNext = () => setCurrentStep((step) => step + 1)
     const handlePrev = () => setCurrentStep((step) => step - 1)
 
@@ -85,7 +88,8 @@ const EditQuotationPage = () => {
             show_body_table: data.quotation.show_body_table ?? false,
             note: data.quotation.note ?? null,
             quotation_item: quotation_item,
-            quotation_no: data.quotation.quotation_no ?? id
+            quotation_no: data.quotation.quotation_no ?? id,
+            total: data.quotation.sub_total ?? 0
         });
     }, [data, addProduct, clearAll, form]);
 
@@ -116,11 +120,9 @@ const EditQuotationPage = () => {
                 <div className="px-4 py-6 sm:px-0">
                     <div className="flex justify-between flex-col sm:flex-row">
                         <div className="flex items-center space-x-4 mb-6">
-                            <NavLink to={`/quotation/${id}/${quotation_id}`}>
-                                <Button variant="ghost" size="icon">
-                                    <ArrowLeft className="h-4 w-4" />
-                                </Button>
-                            </NavLink>
+                            <Button variant="ghost" size="icon" onClick={() => setDialog({ open: true })}>
+                                <ArrowLeft className="h-4 w-4" />
+                            </Button>
                             <div>
                                 <h1 className="text-2xl font-bold text-foreground">Edit Exisiting Quotation</h1>
                                 <p className="text-muted-foreground">
@@ -152,7 +154,7 @@ const EditQuotationPage = () => {
                                 <QuotationProductSelector />
                             }
                             <Form {...form}>
-                                <form onSubmit={form.handleSubmit(onSubmit, (errors) => { console.log(errors)})}>
+                                <form onSubmit={form.handleSubmit(onSubmit, (errors) => { console.log(errors) })}>
                                     {currentStep === 1 && (
                                         <QuotationProducts handleNext={handleNext} />
                                     )}
@@ -177,7 +179,28 @@ const EditQuotationPage = () => {
                     )}
                 </div>
             </div>
-        </div>
+            <Dialog open={dialog.open} onOpenChange={(open) => setDialog((prev) => ({ ...prev, open, ...(open ? {} : { data: null, action: null }) }))}>
+                <DialogTrigger asChild></DialogTrigger>
+                <DialogContent className="sm:max-w-[425px]">
+                    <DialogHeader>
+                        <DialogTitle>Save changes</DialogTitle>
+                        <DialogDescription>
+                            You’ve modified this quotation. Save your changes to keep them.
+                        </DialogDescription>
+                    </DialogHeader>
+                    <DialogFooter>
+                        <DialogClose asChild>
+                            <Button variant="outline" onClick={() => navigate(`/quotation/${id}/${quotation_id}`)}>
+                                Discard Changes
+                            </Button>
+                        </DialogClose>
+                        <form onSubmit={form.handleSubmit(onSubmit)}>
+                            <Button type="submit" disabled={editQuotation.isPending}>Save Changes</Button>
+                        </form>
+                    </DialogFooter>
+                </DialogContent>
+            </Dialog>
+        </div >
     )
 }
 
