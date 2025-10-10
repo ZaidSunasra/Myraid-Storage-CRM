@@ -15,7 +15,7 @@ const QuotationProducts = ({ handleNext }: { handleNext: () => void }) => {
       {products.length > 0 &&
         <div className="space-y-8">
           {products.map((product) => {
-            const isCompactor = product.name.startsWith("Compactor");
+            const isCompactor = product.name.toLowerCase().includes("compactor");
             return (
               <div key={product.id} className="border rounded-lg shadow-sm p-4">
                 <div className="flex justify-between">

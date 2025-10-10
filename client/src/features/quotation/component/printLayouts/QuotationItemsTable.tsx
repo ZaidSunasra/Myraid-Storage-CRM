@@ -22,7 +22,7 @@ const QuotationItemsTable = ({ quotation, name, setName }: { quotation: GetQuota
         "Powder Coated with Epoxy Polyester"
     ]);
 
-    const rowsToPrint = specs.length - 5;
+    const rowsToPrint = specs.length - 4;
 
     const isDiscountGiven = quotation.quotation_products.some(
         (product) => (product.quotation_working[0].discount) > 0
@@ -47,56 +47,30 @@ const QuotationItemsTable = ({ quotation, name, setName }: { quotation: GetQuota
                     </TableRow>
                 </TableHeader>
                 {quotation.quotation_template === "set_wise" ?
-                    <SetWiseItemTable quotation={quotation} name={name} setName={setName} isDiscountGiven={isDiscountGiven}/>
-                    : <ItemWiseItemTable quotation={quotation} name={name} setName={setName} isDiscountGiven={isDiscountGiven}/>
+                    <SetWiseItemTable quotation={quotation} name={name} setName={setName} isDiscountGiven={isDiscountGiven} />
+                    : <ItemWiseItemTable quotation={quotation} name={name} setName={setName} isDiscountGiven={isDiscountGiven} />
                 }
                 <TableBody>
                     <TableRow>
                         <TableCell className="border-r border-black"></TableCell>
-                        <TableCell className="border-r border-black"></TableCell>
+                        <TableCell className="border-r border-black">
+                            <span className="text-red-600 font-bold">{specs[0]}</span>
+                        </TableCell>
                         <TableCell colSpan={isDiscountGiven ? 4 : 2} className="border border-black text-center">Total</TableCell>
-                        <TableCell  className="border border-black text-center">{quotation.sub_total}</TableCell>
-                    </TableRow>
-                    {rowsToPrint > 0 &&
-                        Array.from({ length: rowsToPrint }).map((_, index) => (
-                            <TableRow key={index}>
-                                <TableCell className="border-r border-black"></TableCell>
-                                <TableCell className="border-r border-black">
-                                    <span className="text-red-600 font-bold"> {specs[index]} </span>
-                                </TableCell>
-                                <TableCell colSpan={isDiscountGiven ? 4 : 2} className="border border-black text-center"></TableCell>
-                                <TableCell  className="border border-black text-center"></TableCell>
-                            </TableRow>
-                        ))
-                    }
-                    <TableRow className="h-[36.8px]">
-                        <TableCell className="border-r border-black"></TableCell>
-                        <TableCell className="border-r border-black">
-                            <span className="text-red-600 font-bold">{specs[specs.length - 5]}</span>
-                        </TableCell>
-                        <TableCell colSpan={isDiscountGiven ? 4 : 2} className="border border-black text-center"></TableCell>
-                        <TableCell  className="border border-black text-center"></TableCell>
-                    </TableRow>
-                    <TableRow className="h-[36.8px]">
-                        <TableCell className="border-r border-black"></TableCell>
-                        <TableCell className="border-r border-black">
-                            <span className="text-red-600 font-bold">{specs[specs.length - 4]}</span>
-                        </TableCell>
-                        <TableCell colSpan={isDiscountGiven ? 4 : 2} className="border border-black text-center">  </TableCell>
-                        <TableCell className="border border-black text-center"></TableCell>
+                        <TableCell className="border border-black text-center">{quotation.sub_total}</TableCell>
                     </TableRow>
                     <TableRow>
                         <TableCell className="border-r border-black"></TableCell>
                         <TableCell className="border-r border-black">
-                            <span className="text-red-600 font-bold">{specs[specs.length - 3]}</span>
+                            <span className="text-red-600 font-bold">{specs[1]}</span>
                         </TableCell>
                         <TableCell colSpan={isDiscountGiven ? 4 : 2} className="border border-black text-center">GST {quotation.gst}%</TableCell>
-                        <TableCell  className="border border-black text-center">{(quotation.sub_total * quotation.gst / 100).toFixed(2)}</TableCell>
+                        <TableCell className="border border-black text-center">{(quotation.sub_total * quotation.gst / 100).toFixed(2)}</TableCell>
                     </TableRow>
                     <TableRow>
                         <TableCell className="border-r border-black"></TableCell>
                         <TableCell className="border-r border-black">
-                            <span className="text-red-600 font-bold">{specs[specs.length - 2]}</span>
+                            <span className="text-red-600 font-bold">{specs[2]}</span>
                         </TableCell>
                         <TableCell colSpan={isDiscountGiven ? 4 : 2} className="border border-black text-center">Round Off</TableCell>
                         <TableCell className="border border-black text-center">{quotation.round_off}</TableCell>
@@ -104,11 +78,21 @@ const QuotationItemsTable = ({ quotation, name, setName }: { quotation: GetQuota
                     <TableRow>
                         <TableCell className="border-r border-black"></TableCell>
                         <TableCell className="border-r border-black">
-                            <span className="text-red-600 font-bold">{specs[specs.length - 1]}</span>
+                            <span className="text-red-600 font-bold">{specs[3]}</span>
                         </TableCell>
                         <TableCell colSpan={isDiscountGiven ? 4 : 2} className="border border-black text-center">Grand Total</TableCell>
                         <TableCell className="border border-black text-center">{quotation.grand_total}</TableCell>
                     </TableRow>
+                    {rowsToPrint > 0 &&
+                        Array.from({ length: rowsToPrint }).map((_, index) => (
+                            <TableRow key={index}>
+                                <TableCell className="border-r border-black"></TableCell>
+                                <TableCell className="border-r border-black" colSpan={isDiscountGiven ? 5 : 4}>
+                                    <span className="text-red-600 font-bold"> {specs[index + 4]} </span>
+                                </TableCell>
+                            </TableRow>
+                        ))
+                    }
                 </TableBody>
             </Table>
             {quotation.note &&

@@ -8,7 +8,6 @@ import { Button } from "@/shared/components/ui/button"
 import { useEffect } from "react"
 import { useQuotation } from "@/context/QuotationContext"
 import type { AddQuotation } from "zs-crm-common"
-import { capitalize } from "@/utils/formatData"
 import { Textarea } from "@/shared/components/ui/textarea"
 
 const QuotationSummary = ({ form, handlePrev, isSubmitting, type }: { form: UseFormReturn<AddQuotation>, handlePrev: () => void, isSubmitting: boolean, type: "add" | "edit" }) => {
@@ -113,7 +112,7 @@ const QuotationSummary = ({ form, handlePrev, isSubmitting, type }: { form: UseF
         Previous
       </Button>
       <Button type="submit" disabled={isSubmitting}>
-        {capitalize(type)} Quotation
+       {type === "add" ? "Add Quotation" : "Save Changes"}
       </Button>
     </CardFooter>
   </Card>
