@@ -69,8 +69,10 @@ export const getQuotationController = async (req: Request, res: Response<ErrorRe
     const endDate = req.query.endDate as string;
     const employees = req.query.employeeID as string | undefined;
     const employeeId = employees ? employees.split(",").filter(Boolean) : [];
+    const sortBy = req.query.sortBy as string;
+    const sortOrder = req.query.sortOrder as string;
     try {
-        const {convertedQuotation, totalQuotations} = await getQuotationService(user, page, search, employeeId, rows, startDate, endDate);
+        const {convertedQuotation, totalQuotations} = await getQuotationService(user, page, search, employeeId, rows, startDate, endDate, sortBy, sortOrder);
         return res.status(200).json({
             message: `Quotations fetched  successfully`,
             convertedQuotation,

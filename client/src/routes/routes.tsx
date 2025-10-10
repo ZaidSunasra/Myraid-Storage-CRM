@@ -47,8 +47,8 @@ const Router = () => {
 			</Route>
 			<Route element={<ProtectedRoute permissionKey="view_quotation" />} >
 				<Route element={<ProtectedRoute checkOwnership type="deal" />}>
-				<Route path="/quotation/print/:id/:quotation_id" element={< QuotationPrint />} />
-			</Route>
+					<Route path="/quotation/print/:id/:quotation_id" element={< QuotationPrint />} />
+				</Route>
 			</Route>
 			<Route element={<ProtectedRoute allowedDepartment={[DEPARTMENTS[0], DEPARTMENTS[1]]} />}>
 				<Route path="/lead" element={<LeadsPage />} />

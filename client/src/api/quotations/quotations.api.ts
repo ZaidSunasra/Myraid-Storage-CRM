@@ -16,15 +16,19 @@ export const getQuotationByDeal = async (deal_id: string): Promise<GetQuotationB
     return response.data;
 };
 
-export const getQuotation = async ({ page = 1, search, employeeIDs, rows, startDate, endDate }: {
-    page: number;
-    search: string;
-    employeeIDs: string[];
-    rows: number;
-    startDate: string;
-    endDate: string;
-}): Promise<GetAllQuotationSuccessResponse> => {
-    const response = await axiosInstance.get(`/quotations/get-all?page=${page}&rows=${rows}&search=${search}&employeeID=${employeeIDs}&startDate=${startDate}&endDate=${endDate}`);
+export const getQuotation = async ({ page = 1, search, employeeIDs, rows, startDate, endDate, sortBy, sortOrder, }: { page: number; search: string; employeeIDs: string[]; rows: number; startDate: string; endDate: string; sortBy: string; sortOrder: string; }): Promise<GetAllQuotationSuccessResponse> => {
+    const response = await axiosInstance.get(`/quotations/get-all`, {
+        params: {
+            page,
+            rows,
+            search,
+            employeeID: employeeIDs,
+            startDate,
+            endDate,
+            sortBy,
+            sortOrder,
+        },
+    });
     return response.data;
 };
 
@@ -38,8 +42,8 @@ export const editQuotation = async ({ data, deal_id, id }: { data: AddQuotation,
     return response.data
 }
 
-export const copyQuotation = async ({id, data} :{id: string, data: {deal_id: string}}) : Promise<SuccessResponse> => {
-    const response =  await axiosInstance.post(`/quotations/import/${id}`, data);
+export const copyQuotation = async ({ id, data }: { id: string, data: { deal_id: string } }): Promise<SuccessResponse> => {
+    const response = await axiosInstance.post(`/quotations/import/${id}`, data);
     return response.data;
 }
 

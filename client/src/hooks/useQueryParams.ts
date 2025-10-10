@@ -1,5 +1,5 @@
 import { useSearchParams } from "react-router";
-import {formatDate} from "@/utils/formatDate";
+import { formatDate } from "@/utils/formatDate";
 
 const useQueryParams = () => {
   const [params, setSearchParams] = useSearchParams();
@@ -11,6 +11,20 @@ const useQueryParams = () => {
   const sources = params.get("sources")?.split(",").filter(Boolean) || [];
   const startDate = params.get("startDate") || "";
   const endDate = params.get("endDate") || "";
+  const sortBy = params.get("sortBy") || "created_at";
+  const sortOrder = params.get("sortOrder") || "desc";
+
+  const setSort = (by: string | null, order?: "asc" | "desc") => {
+    updateParams((params) => {
+      if (!by) {
+        params.set("sortBy", "created_at");
+        params.set("sortOrder", "desc");
+      } else {
+        params.set("sortBy", by);
+        params.set("sortOrder", order || "asc");
+      }
+    });
+  };
 
   const updateParams = (updater: (params: URLSearchParams) => void) => {
     setSearchParams((prev) => {
@@ -79,7 +93,7 @@ const useQueryParams = () => {
     });
   };
 
-  return { page, rows, search, employeeIDs, sources, startDate, endDate, toggleEmployee, toggleSource, setPage, setDate, setSearch, setRows, clearFilter, setSearchParams };
+  return { page, rows, sortBy, sortOrder, search, employeeIDs, sources, startDate, endDate, toggleEmployee, toggleSource, setPage, setDate, setSearch, setRows, clearFilter, setSearchParams, setSort };
 };
 
 export default useQueryParams;

@@ -106,7 +106,7 @@ export const getQuotationByDealService = async (deal_id: string): Promise<GetQuo
     }));
 }
 
-export const getQuotationService = async (user: any, page: number, search: string, employeeId: string[], rows: number, startDate: string, endDate: string,): Promise<GetAllQuotationOutput> => {
+export const getQuotationService = async (user: any, page: number, search: string, employeeId: string[], rows: number, startDate: string, endDate: string, sortBy: string, sortOrder: string): Promise<GetAllQuotationOutput> => {
     const isAdmin = user.department === DEPARTMENTS[1];
     const quotation = await prisma.quotation.findMany({
         take: rows,
@@ -187,7 +187,7 @@ export const getQuotationService = async (user: any, page: number, search: strin
             }
         },
         orderBy: {
-            created_at: "desc"
+            [sortBy]: sortOrder
         }
     });
 
