@@ -1,6 +1,8 @@
 import { Request, Response } from "express";
-import { addQuotationService, copyQuotationDataService, deleteQuotationService, editQuotationService, getQuotationByDealService, getQuotationByIdService, getQuotationProductsService, getQuotationService } from "./quotation.service";
+import { addQuotationService, copyQuotationDataService, deleteQuotationService, editQuotationService, getCompactorDetailsService, getQuotationByDealService, getQuotationByIdService, getQuotationProductsService, getQuotationService } from "./quotation.service";
 import { addQuotationSchema, copyQuotationschema, ErrorResponse, GetAllQuotationSuccessResponse, GetQuotationByDealSuccessResponse, GetQuotationByIdSuccessResponse, QuotationBaseProductSuccessResponse, SuccessResponse } from "zs-crm-common";
+import { tryCatch } from "bullmq";
+import { Prisma } from "@prisma/client";
 
 export const getQuotationProductsController = async (req: Request, res: Response<ErrorResponse | QuotationBaseProductSuccessResponse>): Promise<any> => {
     const { product_type, bay, compartment } = req.body;
@@ -43,6 +45,22 @@ export const addQuotationController = async (req: Request, res: Response<ErrorRe
     }
 }
 
+export const getCompactorDetailsController = async (req: Request, res: Response): Promise<any> => {
+    try {
+        const compactors = await getCompactorDetailsService();
+        return res.status(200).json({
+            message: `Compactor details fetched successfully`,
+            compactors
+        })
+    } catch (error) {
+        console.log(`Error in fetching compactor details`, error);
+        return res.status(500).send({
+            message: "Internal server error",
+            error: error
+        });
+    }
+}
+
 export const getQuotationByDealController = async (req: Request, res: Response<ErrorResponse | GetQuotationByDealSuccessResponse>): Promise<any> => {
     const deal_id = req.params.deal_id;
     try {
@@ -72,7 +90,7 @@ export const getQuotationController = async (req: Request, res: Response<ErrorRe
     const sortBy = req.query.sortBy as string;
     const sortOrder = req.query.sortOrder as string;
     try {
-        const {convertedQuotation, totalQuotations} = await getQuotationService(user, page, search, employeeId, rows, startDate, endDate, sortBy, sortOrder);
+        const { convertedQuotation, totalQuotations } = await getQuotationService(user, page, search, employeeId, rows, startDate, endDate, sortBy, sortOrder);
         return res.status(200).json({
             message: `Quotations fetched  successfully`,
             convertedQuotation,
@@ -146,10 +164,16 @@ export const importQuotationController = async (req: Request, res: Response<Succ
             message: `Quotation imported successfully`,
         })
     } catch (error) {
-        console.log(`Error in importing quotation`, error);
-        return res.status(500).send({
+        if (error instanceof Prisma.PrismaClientKnownRequestError) {
+            if (error.code === "P2002") {
+                return res.status(400).json({
+                    message: `Quotation no. already exists. Please use a different quotation no.`,
+                });
+            }
+        }
+        console.error("Error creating quotation:", error);
+        return res.status(500).json({
             message: "Internal server error",
-            error: error
         });
     }
 }

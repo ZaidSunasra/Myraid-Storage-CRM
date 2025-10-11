@@ -201,6 +201,8 @@ model Quotation {
   deal               Deal                @relation(fields: [deal_id], references: [id])
   order              Order[]
   quotation_products QuotationProducts[]
+
+  @@unique([quotation_no])
 }
 
 model QuotationProducts {

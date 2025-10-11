@@ -1,12 +1,13 @@
 import express from "express";
 import authMiddleware from "../../middlewares/auth.middleware";
 import checkDepartment from "../../middlewares/department.middleware";
-import { addQuotationController, deleteQuotationController, editQuotationController, getQuotationByDealController, getQuotationByIdController, getQuotationController, getQuotationProductsController, importQuotationController } from "./quotation.controller";
+import { addQuotationController, deleteQuotationController, editQuotationController, getCompactorDetailsController, getQuotationByDealController, getQuotationByIdController, getQuotationController, getQuotationProductsController, importQuotationController } from "./quotation.controller";
 
 const quotationRouter = express.Router();
 
 quotationRouter.post("/get-products", authMiddleware, checkDepartment(undefined, "add_quotation"), getQuotationProductsController);
 quotationRouter.post("/add/:deal_id", authMiddleware, checkDepartment(undefined, "add_quotation"), addQuotationController);
+quotationRouter.get("/compactor", authMiddleware, checkDepartment(undefined, "add_quotation"), getCompactorDetailsController)
 quotationRouter.get("/get-by/:deal_id", authMiddleware, checkDepartment(undefined, "view_deal_quotation"), getQuotationByDealController);
 quotationRouter.get("/get-all", authMiddleware, checkDepartment(["admin", "sales"]), getQuotationController);
 quotationRouter.get("/get/:id", authMiddleware, checkDepartment(["admin", "sales"]), getQuotationByIdController);

@@ -11,6 +11,11 @@ export const addQuotation = async ({ data, deal_id }: { data: AddQuotation, deal
     return response.data;
 };
 
+export const getCompactorDetails = async (): Promise<any> => {
+    const response = await axiosInstance.get("/quotations/compactor");
+    return response.data;
+};
+
 export const getQuotationByDeal = async (deal_id: string): Promise<GetQuotationByDealSuccessResponse> => {
     const response = await axiosInstance.get(`/quotations/get-by/${deal_id}`);
     return response.data;

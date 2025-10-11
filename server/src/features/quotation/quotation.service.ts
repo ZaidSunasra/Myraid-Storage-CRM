@@ -87,6 +87,20 @@ export const addQuotationService = async ({ quotation_template, quotation_item, 
     });
 }
 
+export const getCompactorDetailsService = async () : Promise<any> => {
+    const compactors = await prisma.baseProduct.findMany({
+        where: {
+            product_type: "compactor"
+        },
+        select: {
+            name: true,
+            code: true,
+            product_type: true
+        }
+    });
+    return compactors;
+}
+
 export const getQuotationByDealService = async (deal_id: string): Promise<GetQuotationByDealOutput[]> => {
     const quotation = await prisma.quotation.findMany({
         where: {
@@ -369,7 +383,7 @@ export const copyQuotationDataService = async (quotation: GetQuotationOutput | n
         const quotation_id = await tx.quotation.create({
             data: {
                 deal_id: deal_id,
-                quotation_no: quotation_no,
+                quotation_no: quotation_no.toUpperCase(),
                 quotation_template: quotation?.quotation_template,
                 gst: quotation.gst,
                 round_off: quotation.round_off,

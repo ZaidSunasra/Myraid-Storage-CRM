@@ -5,10 +5,16 @@ import { Plus, Trash2, X } from "lucide-react"
 import { Button } from "@/shared/components/ui/button"
 import { Card, CardContent, CardFooter } from "@/shared/components/ui/card"
 import { Textarea } from "@/shared/components/ui/textarea"
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/shared/components/ui/select"
+import { FetchCompactorDetails } from "@/api/quotations/quotation.queries"
+import { Skeleton } from "@/shared/components/ui/skeleton"
 
 const QuotationProducts = ({ handleNext }: { handleNext: () => void }) => {
 
   const { products, updateItem, softDeleteItem, restoreItem, removeProduct, addItem } = useQuotation();
+  const { data, isPending } = FetchCompactorDetails();
+
+  if(isPending) return <Skeleton className="w-full h-96" />
 
   return <Card>
     <CardContent>
@@ -21,14 +27,14 @@ const QuotationProducts = ({ handleNext }: { handleNext: () => void }) => {
                 <div className="flex justify-between">
                   <h2 className="text-lg font-semibold mb-4">{product.name}</h2>
                   <div className="flex flex-row gap-8">
-                     <Button
-                     type="button"
-                     className="bg-green-600 hover:bg-green-700"
+                    <Button
+                      type="button"
+                      className="bg-green-600 hover:bg-green-700"
                       onClick={() => addItem(product.id)}
                     >
                       <Plus size={18} />
                     </Button>
-                     <Button
+                    <Button
                       variant="destructive"
                       onClick={() => removeProduct(product.id)}
                     >
@@ -71,7 +77,30 @@ const QuotationProducts = ({ handleNext }: { handleNext: () => void }) => {
                               placeholder="Enter product name"
                             />
                           }
-                          {isCompactor && item.name}
+                          {isCompactor &&
+                            <Select
+                              disabled={isPending}
+                              value={item.name}
+                              onValueChange={(value) => {
+                                const selected = data.compactors.find((opt: any) => opt.name === value);
+                                updateItem(product.id, item.id, {
+                                  name: selected?.name ?? "",
+                                  code: selected?.code ?? "",
+                                });
+                              }}
+                            >
+                              <SelectTrigger>
+                                <SelectValue placeholder="Select Compactor" />
+                              </SelectTrigger>
+                              <SelectContent className="w-full">
+                                {data.compactors.map((opt: any) => (
+                                  <SelectItem key={opt.name} value={opt.name}>
+                                    {opt.name}
+                                  </SelectItem>
+                                ))}
+                              </SelectContent>
+                            </Select>
+                          }
                         </TableCell>
                         {!isCompactor &&
                           <TableCell className="min-w-[300px] max-w-[400px]">
