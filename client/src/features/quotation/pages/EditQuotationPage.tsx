@@ -13,13 +13,13 @@ import { useQuotation } from "@/context/QuotationContext"
 import { addQuotationSchema, type AddQuotation } from "zs-crm-common"
 import PreviewQuotationPage from "./PreviewQuotationPage"
 import { FetchQuotationById } from "@/api/quotations/quotation.queries"
-import DetailedPageLoader from "@/shared/components/loaders/DetailedPageLoader"
 import ErrorDisplay from "@/shared/components/ErrorPage"
 import QuotationProducts from "../component/QuotationProducts"
 import QuotationProductSelector from "../component/QuotationProductSelector"
 import { useEditQuotation } from "@/api/quotations/quotations.mutation"
 import { toast } from "sonner"
 import { Dialog, DialogClose, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle, DialogTrigger } from "@/shared/components/ui/dialog"
+import EditPageLoader from "@/shared/components/loaders/EditPageLoader"
 
 const EditQuotationPage = () => {
 
@@ -110,7 +110,7 @@ const EditQuotationPage = () => {
         }
     }
 
-    if (isPending) return <DetailedPageLoader />
+    if (isPending) return <EditPageLoader showSidebar={false}/>
     if (isError) return <ErrorDisplay fullPage />
 
     return (
@@ -190,7 +190,7 @@ const EditQuotationPage = () => {
                     </DialogHeader>
                     <DialogFooter>
                         <DialogClose asChild>
-                            <Button variant="outline" onClick={() => navigate(`/quotation/${id}/${quotation_id}`)}>
+                            <Button variant="outline" onClick={() => {clearAll(), navigate(`/quotation/${id}/${quotation_id}`)}}>
                                 Discard Changes
                             </Button>
                         </DialogClose>
