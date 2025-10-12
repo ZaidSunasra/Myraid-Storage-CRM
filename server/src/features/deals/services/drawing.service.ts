@@ -1,4 +1,4 @@
-import { DEPARTMENTS, GetDrawingOutput, UploadDrawing } from "zs-crm-common";
+import { Assignee, DEPARTMENTS, drawing_status, GetDrawingOutput, UploadDrawing } from "zs-crm-common";
 import { prisma } from "../../../libs/prisma";;
 import { DeleteObjectCommand, GetObjectCommand, PutObjectCommand } from "@aws-sdk/client-s3";
 import { getSignedUrl } from "@aws-sdk/s3-request-presigner";
@@ -23,13 +23,14 @@ export const uploadDrawingService = async ({ drawing_url, title, version, deal_i
         });
         await tx.drawing.create({
             data: {
-                drawing_url: drawing_url,
+                file_url: drawing_url,
                 title: title,
                 version: version,
                 deal_id: deal_id,
                 file_size: file_size,
                 file_type: file_type,
                 uploaded_by: author.id,
+                upload_type: "drawing"
             }
         });
         const notification = await tx.notification.create({
@@ -86,12 +87,12 @@ export const getDrawingByIdService = async (id: string): Promise<string | null> 
             id: parseInt(id)
         },
         select: {
-            drawing_url: true
+            file_url: true
         }
     });
     const command = new GetObjectCommand({
         Bucket: process.env.S3_BUCKET_NAME,
-        Key: drawing?.drawing_url,
+        Key: drawing?.file_url,
     });
     const viewUrl = await getSignedUrl(s3Client, command, { expiresIn: 300 })
     return viewUrl;
@@ -104,14 +105,14 @@ export const deleteDrawingService = async (id: string): Promise<void> => {
                 id: parseInt(id)
             },
             select: {
-                drawing_url: true
+                file_url: true
             }
         });
-        if (drawing?.drawing_url) {
+        if (drawing?.file_url) {
             await s3Client.send(
                 new DeleteObjectCommand({
                     Bucket: process.env.S3_BUCKET_NAME,
-                    Key: drawing.drawing_url,
+                    Key: drawing.file_url,
                 })
             );
         }
@@ -138,7 +139,7 @@ export const approveDrawingService = async (id: string, author: any): Promise<vo
             }
         });
         const deal = await tx.deal.findUnique({
-            where: { id: drawing.deal_id },
+            where: { id: drawing.deal_id ?? ""},
             select: {
                 assigned_to: { select: { user_id: true } }
             }

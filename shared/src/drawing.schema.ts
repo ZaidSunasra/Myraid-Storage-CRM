@@ -42,11 +42,13 @@ export type GetUploadUrlSuccessResponse = SuccessResponse & {
 }
 
 export type Drawing = {
-    version: string;
+    version: string | null;
     id: number;
-    drawing_url: string;
+    file_url: string;
+    upload_type: "po" | "pi" | "drawing" | "general"
     title: string;
-    deal_id: string;
+    deal_id: string | null;
+    order_id: number | null;
     file_size: number;
     file_type: string;
     status: drawing_status;
@@ -54,6 +56,7 @@ export type Drawing = {
     approved_at: Date | null;
     note: string | null;
     uploaded_by: number;
+    show_in_order: boolean
 }
 
 export type GetDrawingOutput = {
