@@ -167,29 +167,34 @@ model Deal {
   lead_id       Int?
   user          User           @relation(fields: [updated_by], references: [id])
   updated_by    Int
+  order         Order?
 }
 
 model Drawing {
-  id          Int            @id @default(autoincrement())
-  drawing_url String         @unique
-  title       String
-  version     String
-  file_type   String
-  file_size   Int
-  status      Drawing_Status @default(pending)
-  uploaded_at DateTime       @default(now())
-  approved_at DateTime?
-  note        String?
-  deal_id     String
-  deal        Deal           @relation(fields: [deal_id], references: [id])
-  user        User           @relation(fields: [uploaded_by], references: [id])
-  uploaded_by Int
+  id            Int            @id @default(autoincrement())
+  file_url      String         @unique
+  title         String
+  upload_type   Upload_Type
+  file_type     String
+  file_size     Int
+  version       String?
+  status        Drawing_Status @default(pending)
+  uploaded_at   DateTime       @default(now())
+  approved_at   DateTime?
+  note          String?
+  deal_id       String? 
+  deal          Deal?          @relation(fields: [deal_id], references: [id])
+  order_id      Int? 
+  order         Order?         @relation(fields: [order_id], references: [id])
+  uploaded_by   Int
+  user          User           @relation(fields: [uploaded_by], references: [id])
+  show_in_order Boolean        @default(false)
 }
 
 model Quotation {
   id                 Int                 @id @default(autoincrement())
   created_at         DateTime            @default(now())
-  quotation_no String   
+  quotation_no       String
   deal_id            String
   quotation_template Quotation_Template
   gst                Decimal             @default(0)
@@ -199,7 +204,6 @@ model Quotation {
   show_body_table    Boolean             @default(true)
   note               String?
   deal               Deal                @relation(fields: [deal_id], references: [id])
-  order              Order[]
   quotation_products QuotationProducts[]
 
   @@unique([quotation_no])
@@ -217,7 +221,7 @@ model QuotationProducts {
 model QuotationItem {
   id                   Int               @id @default(autoincrement())
   item_name            String
-  description String?
+  description          String?
   item_code            String?
   height               Int
   width                Int
@@ -252,30 +256,33 @@ model QuotationWorking {
 }
 
 model BaseProduct {
-  id             Int          @id @default(autoincrement())
-  product_type   String 
+  id             Int     @id @default(autoincrement())
+  product_type   String
   name           String
   code           String?
-  default_height Int          @default(0)
-  default_width  Int          @default(0)
-  default_depth  Int          @default(0)
+  default_height Int     @default(0)
+  default_width  Int     @default(0)
+  default_depth  Int     @default(0)
   per_bay_qty    Int
   compartment    Int
 }
 
 model Order {
-  id           Int       @id @default(autoincrement())
-  order_number String    @unique
-  created_at   DateTime  @default(now())
+  id           Int          @id @default(autoincrement())
+  order_number String       @unique
+  created_at   DateTime     @default(now())
+  dispatch_at  DateTime
+  status       Order_Status
   po_number    String?
   pi_number    String?
   colour       String
   balance      Int
   height       Int
   total_body   Int
-  quotation_id Int
-  quotation    Quotation @relation(fields: [quotation_id], references: [id])
   advance      Advance[]
+  drawing      Drawing[]
+  deal_id      String       @unique
+  deal         Deal         @relation(fields: [deal_id], references: [id])
 }
 
 model Advance {
@@ -287,9 +294,22 @@ model Advance {
 }
 
 model Permission {
-  id Int @id @default(autoincrement())
+  id             Int          @id @default(autoincrement())
   permission_key String
-  allowed_dept Department[]
+  allowed_dept   Department[]
+}
+
+enum Upload_Type {
+  drawing
+  po
+  pi
+  general
+}
+
+enum Order_Status {
+  pending
+  in_progress
+  dispatched
 }
 
 enum Notification_Type {
