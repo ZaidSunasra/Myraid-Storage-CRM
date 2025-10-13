@@ -1,5 +1,5 @@
 import { prisma } from "../../libs/prisma"
-import { AddQuotation, DEPARTMENTS, GetAllQuotationOutput, GetQuotationBaseProduct, GetQuotationByDealOutput, GetQuotationOutput, } from "zs-crm-common";
+import { AddQuotation, DEPARTMENTS, GetAllQuotationOutput, GetCompactorDetailOutput, GetDetailByQuotationNumberOutput, GetQuotationBaseProduct, GetQuotationByDealOutput, GetQuotationOutput, } from "zs-crm-common";
 
 export const getQuotationProductsService = async (product_type: string, bay: number, compartment: number): Promise<GetQuotationBaseProduct[]> => {
     const products = await prisma.baseProduct.findMany({
@@ -87,7 +87,7 @@ export const addQuotationService = async ({ quotation_template, quotation_item, 
     });
 }
 
-export const getCompactorDetailsService = async () : Promise<any> => {
+export const getCompactorDetailsService = async (): Promise<GetCompactorDetailOutput[]> => {
     const compactors = await prisma.baseProduct.findMany({
         where: {
             product_type: "compactor"
@@ -450,4 +450,48 @@ export const deleteQuotationService = async (id: string): Promise<void> => {
             id: parseInt(id)
         }
     })
+}
+
+export const getDetailByQuotationNumberService = async (quotation_no: string): Promise<GetDetailByQuotationNumberOutput> => {
+    const quotation = await prisma.quotation.findUnique({
+        where: {
+            quotation_no: quotation_no
+        },
+        select: {
+            grand_total: true,
+            quotation_products: {
+                select: {
+                    quotation_working: {
+                        select: {
+                            total_body: true,
+                        }
+                    },
+                    quotation_item: {
+                        select: {
+                            height: true
+                        }
+                    }
+                }
+            }
+        }
+    });
+
+    const totalBody = quotation?.quotation_products.reduce((sum, product) => {
+        return sum + (product.quotation_working?.[0]?.total_body || 0);
+    }, 0);
+
+    const allHeights = new Set(
+        quotation?.quotation_products.flatMap((product) =>
+            product.quotation_item
+                .map((item) => item.height)
+                .filter((h) => h > 0)
+        )
+    );
+
+    const result = {
+        grand_total: Number(quotation?.grand_total),
+        total_body: totalBody,
+        height: [...allHeights]?.join("/")
+    };
+    return result;
 }

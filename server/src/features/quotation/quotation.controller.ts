@@ -1,7 +1,6 @@
 import { Request, Response } from "express";
-import { addQuotationService, copyQuotationDataService, deleteQuotationService, editQuotationService, getCompactorDetailsService, getQuotationByDealService, getQuotationByIdService, getQuotationProductsService, getQuotationService } from "./quotation.service";
-import { addQuotationSchema, copyQuotationschema, ErrorResponse, GetAllQuotationSuccessResponse, GetQuotationByDealSuccessResponse, GetQuotationByIdSuccessResponse, QuotationBaseProductSuccessResponse, SuccessResponse } from "zs-crm-common";
-import { tryCatch } from "bullmq";
+import { addQuotationService, copyQuotationDataService, deleteQuotationService, editQuotationService, getCompactorDetailsService, getDetailByQuotationNumberService, getQuotationByDealService, getQuotationByIdService, getQuotationProductsService, getQuotationService } from "./quotation.service";
+import { addQuotationSchema, copyQuotationschema, ErrorResponse, GetAllQuotationSuccessResponse, GetCompactorDetailSuccessResponse, GetDetailByQuotationNumberSuccessResponse, GetQuotationByDealSuccessResponse, GetQuotationByIdSuccessResponse, QuotationBaseProductSuccessResponse, SuccessResponse } from "zs-crm-common";
 import { Prisma } from "@prisma/client";
 
 export const getQuotationProductsController = async (req: Request, res: Response<ErrorResponse | QuotationBaseProductSuccessResponse>): Promise<any> => {
@@ -45,7 +44,7 @@ export const addQuotationController = async (req: Request, res: Response<ErrorRe
     }
 }
 
-export const getCompactorDetailsController = async (req: Request, res: Response): Promise<any> => {
+export const getCompactorDetailsController = async (req: Request, res: Response<GetCompactorDetailSuccessResponse | ErrorResponse>): Promise<any> => {
     try {
         const compactors = await getCompactorDetailsService();
         return res.status(200).json({
@@ -194,3 +193,20 @@ export const deleteQuotationController = async (req: Request, res: Response<Succ
         });
     }
 }
+
+export const getDetailByQuotationNumberController = async (req: Request, res: Response<GetDetailByQuotationNumberSuccessResponse | ErrorResponse>) : Promise<any> => {
+    const quotation_no = req.params.quotation_no
+    try {
+        const quotation = await getDetailByQuotationNumberService(quotation_no);
+         return res.status(200).json({
+            message: `Quotation details fetched successfully`,
+            quotation
+        })
+    } catch (error) {
+        console.log(`Error in fetching quotation details by quotation number`, error);
+        return res.status(500).send({
+            message: "Internal server error",
+            error: error
+        });
+    }
+} 

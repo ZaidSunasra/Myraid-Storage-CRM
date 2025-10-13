@@ -1,5 +1,5 @@
 import { keepPreviousData, useQuery } from "@tanstack/react-query";
-import { getCompactorDetails, getQuotation, getQuotationByDeal, getQuotationById } from "./quotations.api";
+import { getCompactorDetails, getQuotation, getQuotationByDeal, getQuotationById, getDetailByQuotationNumber } from "./quotations.api";
 
 export const FetchCompactorDetails = () => {
     return useQuery({
@@ -28,5 +28,13 @@ export const FetchQuotationById = (id: string) => {
     return useQuery({
         queryKey: ["quotationById", id],
         queryFn: () => getQuotationById(id)
+    });
+};
+
+export const FetchDetailByQuotationNumber = (quotation_no: string) => {
+    return useQuery({
+        queryKey: ["detailByQuotationNo", quotation_no],
+        queryFn: () => getDetailByQuotationNumber(quotation_no),
+        enabled: false
     });
 };
