@@ -1,9 +1,9 @@
 import { FetchPermissions } from "@/api/permissions/permissions.queries";
 import { createContext, useContext, type ReactNode } from "react";
-import type { department } from "zs-crm-common";
+import type { department, GetPermissionOutput } from "zs-crm-common";
 
 type PermissionContextType = {
-    permissions: any;
+    permissions: GetPermissionOutput[];
     isLoading: boolean,
    canView: (userDept: department, permissionKey: string) => boolean;
 };
@@ -14,7 +14,7 @@ export const PermissionProvider = ({ children }: { children: ReactNode }) => {
     const { data, isLoading } = FetchPermissions();
     const permissions = data?.permissions ?? [];
     const canView = (userDept: department, permissionKey: string) => {
-        const permission = permissions.find((p: any) => p.permission_key === permissionKey);
+        const permission = permissions.find((p: GetPermissionOutput) => p.permission_key === permissionKey);
         if (!permission) return false;
         return permission.allowed_dept.includes(userDept);
     };

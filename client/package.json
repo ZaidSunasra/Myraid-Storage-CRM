@@ -45,7 +45,7 @@
 		"tailwind-merge": "^3.3.1",
 		"tailwindcss": "^4.1.8",
 		"zod": "^3.25.67",
-		"zs-crm-common": "^1.0.98"
+		"zs-crm-common": "^1.0.99"
 	},
 	"devDependencies": {
 		"@eslint/js": "^9.25.0",

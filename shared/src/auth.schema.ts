@@ -1,6 +1,6 @@
 import { z } from "zod/v4"; 
 
-export const DEPARTMENTS = ["sales", "admin", "factory", "drawing"] as const;
+export const DEPARTMENTS = ["sales", "admin", "factory", "drawing", "accounts"] as const;
 export type department = typeof DEPARTMENTS[number]; 
 
 export const loginSchema = z.object({

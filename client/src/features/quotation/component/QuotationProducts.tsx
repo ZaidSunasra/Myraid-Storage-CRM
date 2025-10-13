@@ -82,7 +82,7 @@ const QuotationProducts = ({ handleNext }: { handleNext: () => void }) => {
                               disabled={isPending}
                               value={item.name}
                               onValueChange={(value) => {
-                                const selected = data.compactors.find((opt: any) => opt.name === value);
+                                const selected = data?.compactors.find((opt) => opt.name === value);
                                 updateItem(product.id, item.id, {
                                   name: selected?.name ?? "",
                                   code: selected?.code ?? "",
@@ -93,7 +93,7 @@ const QuotationProducts = ({ handleNext }: { handleNext: () => void }) => {
                                 <SelectValue placeholder="Select Compactor" />
                               </SelectTrigger>
                               <SelectContent className="w-full">
-                                {data.compactors.map((opt: any) => (
+                                {data?.compactors.map((opt) => (
                                   <SelectItem key={opt.name} value={opt.name}>
                                     {opt.name}
                                   </SelectItem>

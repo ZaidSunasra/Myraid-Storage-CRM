@@ -163,6 +163,26 @@ export type GetQuotationBaseProduct = {
     removed: boolean
 }
 
+export type GetCompactorDetailOutput = {
+    name: string,
+    code: string | null,
+    product_type: string
+}
+
+export type GetDetailByQuotationNumberOutput = {
+    grand_total: number,
+    total_body: number | undefined,
+    height: string
+}
+
+export type GetCompactorDetailSuccessResponse = SuccessResponse & {
+    compactors: GetCompactorDetailOutput[]
+}
+
+export type GetDetailByQuotationNumberSuccessResponse = SuccessResponse & {
+    quotation: GetDetailByQuotationNumberOutput
+}
+
 export type QuotationBaseProductSuccessResponse = SuccessResponse & {
     products: GetQuotationBaseProduct[]
 }

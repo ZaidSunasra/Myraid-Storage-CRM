@@ -15,12 +15,12 @@ import { zodResolver } from "@hookform/resolvers/zod"
 import { Pencil } from "lucide-react"
 import { useEffect, useState } from "react"
 import { useForm } from "react-hook-form"
-import { DEPARTMENTS, editPermissionSchema, type EditPermission } from "zs-crm-common"
+import { DEPARTMENTS, editPermissionSchema, type EditPermission, type GetPermissionOutput } from "zs-crm-common"
 
 const RoleSettings = () => {
 
   const { data, isPending, isError } = FetchPermissions();
-  const [dialogData, setDialogData] = useState<{ open: boolean, data: any, action: "edit" | null }>({ open: false, data: null, action: null });
+  const [dialogData, setDialogData] = useState<{ open: boolean, data: GetPermissionOutput | null, action: "edit" | null }>({ open: false, data: null, action: null });
   const editPermission = useEditPermission();
 
   const form = useForm<EditPermission>({
@@ -39,7 +39,7 @@ const RoleSettings = () => {
   }, [dialogData, form]);
 
   const onSubmit = (data: EditPermission) => {
-    editPermission.mutate({ data, id: dialogData.data.id }, {
+    editPermission.mutate({ data, id: String(dialogData.data?.id)}, {
       onSuccess: () => setDialogData({ open: false, data: null, action: null })
     })
   };
@@ -57,14 +57,14 @@ const RoleSettings = () => {
       </div>
       <Separator />
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-        {data.permissions.map((permission: any) => (
+        {data.permissions.map((permission) => (
           <Card
             key={permission.id}
             className="shadow-sm hover:shadow-md rounded-xl transition-all border border-border hover:-translate-y-1"
           >
             <CardHeader>
               <CardTitle className="capitalize">
-                {permission.permission_key.replaceAll("_", " ")}
+                {permission.permission_key.replace(/_/g, " ")}
               </CardTitle>
               <CardDescription>
                 Configure departments allowed to access this feature
@@ -112,7 +112,7 @@ const RoleSettings = () => {
                 <DialogHeader className="mb-4">
                   <DialogTitle>Edit Access for:
                     <span className="capitalize font-semibold ml-1">
-                      {dialogData.data.permission_key.replaceAll("_", " ")}
+                      {dialogData?.data?.permission_key.replace(/_/g, " ")}
                     </span>
                   </DialogTitle>
                   <DialogDescription>
