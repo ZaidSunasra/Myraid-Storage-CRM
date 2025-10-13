@@ -182,9 +182,9 @@ model Drawing {
   uploaded_at   DateTime       @default(now())
   approved_at   DateTime?
   note          String?
-  deal_id       String? 
+  deal_id       String?
   deal          Deal?          @relation(fields: [deal_id], references: [id])
-  order_id      Int? 
+  order_id      Int?
   order         Order?         @relation(fields: [order_id], references: [id])
   uploaded_by   Int
   user          User           @relation(fields: [uploaded_by], references: [id])
@@ -205,6 +205,7 @@ model Quotation {
   note               String?
   deal               Deal                @relation(fields: [deal_id], references: [id])
   quotation_products QuotationProducts[]
+  order              Order?
 
   @@unique([quotation_no])
 }
@@ -269,7 +270,7 @@ model BaseProduct {
 
 model Order {
   id           Int          @id @default(autoincrement())
-  order_number String       @unique
+  order_number Int       @unique
   created_at   DateTime     @default(now())
   dispatch_at  DateTime
   status       Order_Status
@@ -277,12 +278,14 @@ model Order {
   pi_number    String?
   colour       String
   balance      Int
-  height       Int
+  height       String
   total_body   Int
   advance      Advance[]
   drawing      Drawing[]
   deal_id      String       @unique
   deal         Deal         @relation(fields: [deal_id], references: [id])
+  quotation_id Int       @unique
+  quotation    Quotation    @relation(fields: [quotation_id], references: [id])
 }
 
 model Advance {
