@@ -27,7 +27,7 @@ const DetailedDealPage = () => {
     const tab = searchParams.get("tab") || "info";
     const { data: dealData, isPending: dealPending, isError: dealError } = FetchDealById(id as string);
     const { user } = useUser();
-      const {canView} = usePermissions();
+    const { canView } = usePermissions();
     const navigate = useNavigate();
 
     if (dealPending) return <DetailedPageLoader />
@@ -95,13 +95,16 @@ const DetailedDealPage = () => {
                 <div className="lg:col-span-1">
                     {user?.department && canView(user.department, "add_quotation") &&
                         <div className="w-full">
-                            <Button className="mb-8 text-white flex gap-2 px-6 py-2 rounded-xl shadow-md transition w-full bg-blue-600 hover:bg-blue-700"
-                                onClick={() => navigate(`/add/quotation/${id}`)}
+                            <Button className="mb-8 text-white flex gap-2 px-6 py-2 shadow-md transition w-full bg-blue-600 hover:bg-blue-700"
+                                onClick={() => navigate(`/quotation/add/${id}`)}
                             >
                                 <ReceiptIndianRupee className="w-4 h-4" />
                                 Create Quotation
                             </Button>
                         </div>
+                    }
+                    {user?.department && canView(user.department, "add_order") &&
+                        <Button className="mb-4 w-full" onClick={() => navigate(`/order/add/${id}`)}>Convert to Order</Button>
                     }
                     {user?.department && canView(user.department, "view_deal_quotation") &&
                         <DealQuotation deal_id={id as string} />

@@ -9,6 +9,7 @@ import DetailedLeadPage from "@/features/leads/pages/DetailedLeadPage";
 import EditLeadPage from "@/features/leads/pages/EditLeadPage";
 import LeadsPage from "@/features/leads/pages/LeadsPage";
 import NotificationPage from "@/features/notifications/pages/NotificationPage";
+import AddOrderPage from "@/features/orders/pages/AddOrderPage";
 import AddQuotationPage from "@/features/quotation/pages/AddQuotationPage";
 import DetailedQuotationPage from "@/features/quotation/pages/DetailedQuotationPage";
 import EditQuotationPage from "@/features/quotation/pages/EditQuotationPage";
@@ -40,9 +41,14 @@ const Router = () => {
 				</Route>
 			</Route>
 			<Route element={<ProtectedRoute permissionKey="add_quotation" />} >
-				<Route path="/add/quotation/:id" element={<AddQuotationPage />} />
+				<Route path="/quotation/add/:id" element={<AddQuotationPage />} />
 				<Route element={<ProtectedRoute checkOwnership type="deal" />}>
 					<Route path="/quotation/edit/:id/:quotation_id" element={< EditQuotationPage />} />
+				</Route>
+			</Route>
+			<Route element={<ProtectedRoute permissionKey="add_order" />} >
+				<Route element={<ProtectedRoute checkOwnership type="deal" />}>
+					<Route path="/order/add/:id" element={<AddOrderPage />} />
 				</Route>
 			</Route>
 			<Route element={<ProtectedRoute permissionKey="view_quotation" />} >

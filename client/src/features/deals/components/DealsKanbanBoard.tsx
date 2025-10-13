@@ -61,14 +61,14 @@ const KanbanBoard = ({ data }: { data: GetAllDealSuccessResponse }) => {
                                                         <div className="flex items-center space-x-2">
                                                             <span className="text-xs font-medium text-foreground">{deal.id.replace(/-/g, "/").replace(/_/g, "-")}</span>
                                                         </div>
-                                                       {user?.department && canView(user.department, "edit_deal_status") &&<DropdownMenu>
+                                                       {user?.department && canView(user.department, "edit_deal_status") && deal.deal_status !== "order_confirmed" && <DropdownMenu>
                                                             <DropdownMenuTrigger asChild>
                                                                 <Button variant="ghost" size="icon" className="h-5 w-5">
                                                                     <MoreHorizontal className="h-3 w-3" />
                                                                 </Button>
                                                             </DropdownMenuTrigger>
                                                             <DropdownMenuContent align="end">
-                                                                {DEAL_STATUS.filter((s) => s !== deal.deal_status).map((status) => (
+                                                                {DEAL_STATUS.filter((s) => s !== deal.deal_status && s !== "order_confirmed").map((status) => (
                                                                     <DropdownMenuItem key={status} onClick={(e) => { e.stopPropagation(), handleStatus({ id: deal.id, status }) }} disabled={editStatus.isPending}>Move to {toTitleCase(status)}</DropdownMenuItem>
                                                                 ))}
                                                             </DropdownMenuContent>

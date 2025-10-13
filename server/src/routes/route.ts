@@ -11,6 +11,7 @@ import reminderRouter from "../features/reminders/reminder.routes";
 import companyRouter from "../features/company/company.routes";
 import quotationRouter from "../features/quotation/quotation.routes";
 import permissionRouter from "../features/permissions/permission.routes";
+import orderRouter from "../features/orders/orders.route";
 
 export const mainRouter = express.Router();
 
@@ -26,3 +27,4 @@ mainRouter.use("/reminders", reminderRouter);
 mainRouter.use("/company", companyRouter);
 mainRouter.use("/quotations", quotationRouter);
 mainRouter.use("/permissions", permissionRouter);
+mainRouter.use("/orders", orderRouter);
