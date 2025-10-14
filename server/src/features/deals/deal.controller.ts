@@ -1,5 +1,5 @@
 import { Request, Response } from "express";
-import { addDealService, getDealIdService, convertLeadToDealService, editDealService, editDealStatusService, getDealByCompanyService, getDealByIdService, getDealService } from "../services/deal.service";
+import { addDealService, getDealIdService, convertLeadToDealService, editDealService, editDealStatusService, getDealByCompanyService, getDealByIdService, getDealService } from "./deal.service";
 import { GetAllDealSuccessResponse, GetDealByIdSuccessResponse, GetDealByompanySuccessResponse, ErrorResponse, SuccessResponse, editStatusSchema, DEAL_STATUS, dealSchema, GetOnlyDealSuccessResponse } from "zs-crm-common";
 
 export const getDealController = async (req: Request, res: Response<ErrorResponse | GetAllDealSuccessResponse>): Promise<any> => {

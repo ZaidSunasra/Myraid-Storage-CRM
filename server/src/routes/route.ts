@@ -1,7 +1,7 @@
 import express from "express";
 import leadRouter from "../features/leads/lead.routes";
 import authRouter from "../features/auth/auth.routes";
-import dealRouter from "../features/deals/routes/deal.routes";
+import dealRouter from "../features/deals/deal.routes";
 import notificationRouter from "../features/notifications/notification.routes";
 import employeeRouter from "../features/employees/employee.routes";
 import productRouter from "../features/products/product.routes";
@@ -12,6 +12,7 @@ import companyRouter from "../features/company/company.routes";
 import quotationRouter from "../features/quotation/quotation.routes";
 import permissionRouter from "../features/permissions/permission.routes";
 import orderRouter from "../features/orders/orders.route";
+import uploadRouter from "../features/uploads/upload.routes";
 
 export const mainRouter = express.Router();
 
@@ -28,3 +29,4 @@ mainRouter.use("/company", companyRouter);
 mainRouter.use("/quotations", quotationRouter);
 mainRouter.use("/permissions", permissionRouter);
 mainRouter.use("/orders", orderRouter);
+mainRouter.use("/drawings", uploadRouter);

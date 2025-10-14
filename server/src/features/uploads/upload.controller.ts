@@ -1,10 +1,10 @@
 import { Request, Response } from "express";
-import { ErrorResponse, GetDrawingByIdSuccessResponse, GetDrawingSuccessResponse, getUploadUrlSchema, GetUploadUrlSuccessResponse, SuccessResponse, uploadDrawingSchema } from "zs-crm-common";
-import { approveDrawingService, deleteDrawingService, getDrawingByIdService, getDrawingsService, getUploadUrlService, rejectDrawingService, uploadDrawingService } from "../services/drawing.service";
+import { ErrorResponse, GetDrawingByIdSuccessResponse, GetDrawingSuccessResponse, SuccessResponse, getUploadUrlSchema, GetUploadUrlSuccessResponse, uploadDrawingSchema } from "zs-crm-common";
+import { approveDrawingService, deleteDrawingService, getDrawingByIdService, getDrawingsService, getUploadUrlService, rejectDrawingService, showDrawingInOrderService, uploadDrawingService } from "./upload.service";
 
 export const getUploadUrlController = async (req: Request, res: Response<ErrorResponse | GetUploadUrlSuccessResponse>): Promise<any> => {
-    const { fileName, fileType } = req.body;
-    const fileKey = `${Date.now()}-${fileName}`;
+    const { fileName, fileType, upload_type } = req.body;
+    const fileKey = `${upload_type}/${Date.now()}-${fileName}`;
     const validation = getUploadUrlSchema.safeParse(req.body);
     if (!validation.success) {
         return res.status(400).json({
@@ -29,7 +29,7 @@ export const getUploadUrlController = async (req: Request, res: Response<ErrorRe
 }
 
 export const uploadDrawingController = async (req: Request, res: Response<SuccessResponse | ErrorResponse>): Promise<any> => {
-    const { drawing_url, title, version, deal_id, file_size, file_type } = req.body;
+    const { drawing_url, title, version, deal_id, file_size, file_type, context, upload_type, order_id } = req.body;
     const author = res.locals.user;
     const validation = uploadDrawingSchema.safeParse(req.body);
     if (!validation.success) {
@@ -39,7 +39,7 @@ export const uploadDrawingController = async (req: Request, res: Response<Succes
         })
     }
     try {
-        await uploadDrawingService({ drawing_url, title, version, deal_id, file_size, file_type }, author);
+        await uploadDrawingService({ drawing_url, title, version, deal_id, file_size, file_type, context, upload_type, order_id }, author);
         return res.status(200).json({
             message: "Drawing uploaded successfully"
         });
@@ -53,10 +53,11 @@ export const uploadDrawingController = async (req: Request, res: Response<Succes
 }
 
 export const getDrawingsController = async (req: Request, res: Response<ErrorResponse | GetDrawingSuccessResponse>): Promise<any> => {
-    const deal_id = req.params.deal_id;
+    const id = req.params.ref_id;
+    const context = req.query.context as "deal" | "order"
     const author = res.locals.user;
     try {
-        const { drawings, totalDrawing } = await getDrawingsService(deal_id, author);
+        const { drawings, totalDrawing } = await getDrawingsService(id, author, context);
         return res.status(200).json({
             message: "Drawing fetched successfully",
             drawings,
@@ -121,7 +122,6 @@ export const approveDrawingController = async (req: Request, res: Response<Succe
     }
 }
 
-
 export const rejectDrawingController = async (req: Request, res: Response<SuccessResponse | ErrorResponse>): Promise<any> => {
     const id = req.params.id;
     const author = res.locals.user;
@@ -139,3 +139,20 @@ export const rejectDrawingController = async (req: Request, res: Response<Succes
         });
     }
 }
+
+export const showDrawingInOrderController = async (req: Request, res: Response<SuccessResponse | ErrorResponse>): Promise<any> => {
+    const id = req.params.id;
+    try {
+        await showDrawingInOrderService(id);
+        return res.status(200).json({
+            message: "Drawing moved to order successfully",
+        });
+    } catch (error) {
+        console.log(`Error in showing drawing to order`, error);
+        return res.status(500).send({
+            message: "Internal server error",
+            error: error
+        });
+    }
+}
+

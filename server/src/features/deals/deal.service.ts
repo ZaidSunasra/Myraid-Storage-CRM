@@ -1,8 +1,8 @@
 import { Deal_Status, Notification_Type } from "@prisma/client";
-import { prisma } from "../../../libs/prisma"
+import { prisma } from "../../libs/prisma"
 import { AddDeal, DEPARTMENTS, Deal, GetAllDealOutput, GetDealOutput, GetOnlyDealIdOutput } from "zs-crm-common";
-import { Include } from "../constants";
-import { convertAssignIdsIntoArray } from "../../leads/lead.service";
+import { Include } from "./constants";
+import { convertAssignIdsIntoArray } from "../leads/lead.service";
 
 export const generateDealId = async (quotation_code: string): Promise<string> => {
     const today = new Date();

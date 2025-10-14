@@ -1,4 +1,4 @@
-import type { AddDeal, deal_status, GetAllDealSuccessResponse, GetDealByIdSuccessResponse, GetDrawingByIdSuccessResponse, GetDrawingSuccessResponse, GetOnlyDealSuccessResponse, GetUploadUrl, GetUploadUrlSuccessResponse, SuccessResponse, UploadDrawing } from "zs-crm-common";
+import {  type AddDeal, type deal_status, type GetAllDealSuccessResponse, type GetDealByIdSuccessResponse, type GetOnlyDealSuccessResponse, type SuccessResponse } from "zs-crm-common";
 import axiosInstance from "../axiosInstance"
 
 export const convertLeadToDeal = async ({ id, quotation_code }: { id: string, quotation_code: string }): Promise<SuccessResponse> => {
@@ -28,41 +28,6 @@ export const addDeal = async (data: AddDeal): Promise<SuccessResponse> => {
 
 export const editDeal = async ({data, id} : {data: AddDeal, id: string}) : Promise<SuccessResponse> => {
      const response = await axiosInstance.put(`/deals/edit/${id}`, data);
-    return response.data;
-}
-
-export const getUploadUrl = async (data: GetUploadUrl): Promise<GetUploadUrlSuccessResponse> => {
-    const response = await axiosInstance.post(`/deals/drawing/get-uploadUrl`, data);
-    return response.data;
-}
-
-export const uploadDrawing = async (data: UploadDrawing): Promise<SuccessResponse> => {
-    const response = await axiosInstance.post("deals/drawing/upload", data);
-    return response.data;
-}
-
-export const getDrawings = async (id: string): Promise<GetDrawingSuccessResponse> => {
-    const resposne = await axiosInstance.get(`deals/drawing/get/${id}`);
-    return resposne.data;
-}
-
-export const getDrawingById = async (id: string): Promise<GetDrawingByIdSuccessResponse> => {
-    const response = await axiosInstance.post(`deals/drawing/get/${id}`);
-    return response.data;
-}
-
-export const deleteDrawing = async (id: string): Promise<SuccessResponse> => {
-    const response = await axiosInstance.delete(`deals/drawing/delete/${id}`);
-    return response.data;
-}
-
-export const approveDrawing = async (id: string): Promise<SuccessResponse> => {
-    const response = await axiosInstance.post(`deals/drawing/approve/${id}`);
-    return response.data;
-}
-
-export const rejectDrawing = async ({ note, id }: { note?: string, id: string }): Promise<SuccessResponse> => {
-    const response = await axiosInstance.post(`deals/drawing/reject/${id}`, { note });
     return response.data;
 }
 
