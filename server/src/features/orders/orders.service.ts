@@ -1,7 +1,6 @@
-import { AddOrder, Assignee, Company, DEPARTMENTS, order_status } from "zs-crm-common";
+import { AddOrder, DEPARTMENTS, GetOrderOutput, Order, AddPayment } from "zs-crm-common";
 import { prisma } from "../../libs/prisma";
 import Include from "./constants";
-import { AddPayment } from "./orders.controller";
 
 export const generateOrderNumber = async (): Promise<number> => {
     const today = new Date();
@@ -56,38 +55,6 @@ export const addOrderService = async ({ quotation_no, height, total, total_body,
             })
         }
     })
-}
-
-export type Advance = {
-    id: number;
-    order_id: number;
-    advance_amount: number;
-    advance_date: Date;
-}
-export type Order = {
-    id: number;
-    deal_id: string;
-    created_at: Date;
-    status: order_status;
-    height: string;
-    total_body: number;
-    pi_number: string | null;
-    po_number: string | null;
-    dispatch_at: Date;
-    colour: string;
-    order_number: number;
-    balance: number;
-    quotation_id: number;
-    advance: Advance[];
-    deal : {
-        assigned_to : Assignee[]
-        company : Pick<Company, "name">
-    }
-}
-
-export type GetOrderOutput = {
-    orders: Order[],
-    totalOrders: number
 }
 
 export const getOrderService = async (user: any, rows: number, page: number, search: string, startDate: string, endDate: string, employeeId: string[]): Promise<GetOrderOutput> => {

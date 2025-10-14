@@ -1,45 +1,5 @@
-import type { AddOrder, Assignee, Company, order_status, SuccessResponse } from "zs-crm-common";
+import type { AddOrder, AddPayment, GetOrderByIdSuccessResponse, GetOrderSuccessResponse, SuccessResponse } from "zs-crm-common";
 import axiosInstance from "../axiosInstance";
-import type { addPaymentSchema } from "@/features/orders/components/AddPayment";
-import type z from "zod/v4";
-
-export type Advance = {
-    id: number;
-    order_id: number;
-    advance_amount: number;
-    advance_date: Date;
-}
-export type Order = {
-    id: number;
-    deal_id: string;
-    created_at: Date;
-    status: order_status;
-    height: string;
-    total_body: number;
-    pi_number: string | null;
-    po_number: string | null;
-    dispatch_at: Date;
-    colour: string;
-    order_number: number;
-    balance: number;
-    quotation_id: number;
-    advance: Advance[];
-    deal : {
-        assigned_to : Assignee[]
-        company : Pick<Company, "name">
-    }
-}
-export type GetOrderOutput = {
-    orders: Order[],
-    totalOrders: number
-}
-
-type AddPayment = z.infer<typeof addPaymentSchema>;
-export type GetOrderSuccessResponse = SuccessResponse & GetOrderOutput
-
-export type GetOrderByIdSuccessResponse = SuccessResponse & {
-    order: Order | null
-}
 
 export const addOrder = async ({ data }: { data: AddOrder }): Promise<SuccessResponse> => {
     const response = await axiosInstance.post(`/orders/add`, data);
