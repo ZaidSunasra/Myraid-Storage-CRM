@@ -6,9 +6,9 @@ export const getNavigationLink = (notification: Notification) => {
 		mentioned: notification.deal_id ? `/deal/${notification.deal_id}` : `/lead/${notification.lead_id}`,
 		lead_assigned: notification.deal_id ? `/deal/${notification.deal_id}` : `/lead/${notification.lead_id}`,
 		deal_assigned: `/deal/${notification.deal_id}`,
-		drawing_uploaded: `/deal/${notification.deal_id}?tab=drawing`,
-		drawing_approved: `/deal/${notification.deal_id}?tab=drawing`,
-		drawing_rejected: `/deal/${notification.deal_id}?tab=drawing`,
+		drawing_uploaded: notification.order_id ? `/order/${notification.deal_id}/${notification.order_id}?tab=drawing` : `/deal/${notification.deal_id}?tab=drawing`,
+		drawing_approved: notification.order_id ? `/order/${notification.deal_id}/${notification.order_id}?tab=drawing` : `/deal/${notification.deal_id}?tab=drawing`,
+		drawing_rejected: notification.order_id ? `/order/${notification.deal_id}/${notification.order_id}?tab=drawing` : `/deal/${notification.deal_id}?tab=drawing`,
 		color_changed: `/lead/${notification.lead_id}`
 	};
 	return navLink[notification.type as reminder_type];
@@ -35,6 +35,9 @@ export const navItems : Record<department, {url: string, title: string}[]>= {
 		{ title: "Deals", url: "/deal" }
 	],
 	factory: [
+		{ title: "Orders", url: "/order" }
+	],
+	accounts: [
 		{ title: "Orders", url: "/order" }
 	]
 } as const;
