@@ -1,5 +1,3 @@
-import { useApproveDrawing, useDeleteDrawing, useViewDrawing } from "@/api/deals/deal.mutation";
-import { FetchDrawings } from "@/api/deals/deal.queries"
 import { useUser } from "@/context/UserContext";
 import { Badge } from "@/shared/components/ui/badge";
 import { Button } from "@/shared/components/ui/button";
@@ -13,16 +11,21 @@ import RejectDrawingDialog from "./RejectDrawingDialog";
 import DivLoader from "@/shared/components/loaders/DivLoader";
 import ErrorDisplay from "@/shared/components/ErrorPage";
 import { usePermissions } from "@/context/PermissionContext";
+import { useParams } from "react-router";
+import { FetchDrawings } from "@/api/uploads/upload.queries";
+import { useApproveDrawing, useDeleteDrawing, useShowDrawingInOrder, useViewDrawing } from "@/api/uploads/upload.mutation";
 
-const DrawingList = ({ id }: { id: string }) => {
+const DrawingList = ({ context }: { context: "deal" | "order" }) => {
 
+    const { id, order_id } = useParams()
     const [dialog, setDialog] = useState<{ open: boolean; data: number | null; action: "approve" | "disapprove" | null }>({ open: false, data: null, action: null });
-    const { data, isPending, isError } = FetchDrawings(id);
+    const { data, isPending, isError } = FetchDrawings(context === "deal" ? id as string : order_id as string, context);
     const { user } = useUser();
-    const {canView} = usePermissions()
+    const { canView } = usePermissions()
     const viewDrawing = useViewDrawing();
     const deleteDrawing = useDeleteDrawing();
     const approveDrawing = useApproveDrawing();
+    const showDrawingInOrder = useShowDrawingInOrder();
 
     const handleView = async (id: string): Promise<void> => {
         const { viewUrl } = await viewDrawing.mutateAsync(id);
@@ -31,6 +34,10 @@ const DrawingList = ({ id }: { id: string }) => {
         } else {
             console.error("View URL not found");
         };
+    }
+
+    const handleShowInOrder = (id: string) => {
+        showDrawingInOrder.mutate(id)
     }
 
     const handleDelete = (id: string) => {
@@ -112,6 +119,10 @@ const DrawingList = ({ id }: { id: string }) => {
                                                         {drawing.user.first_name} {drawing.user.last_name}
                                                     </span>
                                                 </div>
+                                                <div className="flex items-center space-x-1 uppercase">
+                                                    <FileText className="h-3 w-3" />
+                                                    <span>{drawing.upload_type}</span>
+                                                </div>
                                             </div>
                                             <div className="flex items-center space-x-2">
                                                 <Button
@@ -153,6 +164,26 @@ const DrawingList = ({ id }: { id: string }) => {
                                                     <Trash className="h-3 w-3 mr-1" />
                                                     Delete
                                                 </Button>
+                                                }
+                                                {drawing.status === "approved" && drawing.upload_type === "drawing" && drawing.show_in_order === false && context === "deal" &&
+                                                    <Button
+                                                        variant="outline"
+                                                        size="sm"
+                                                        className="h-8 px-3 text-xs bg-blue-50 hover:bg-blue-100 border-blue-200 text-blue-700 flex-1"
+                                                        onClick={() => handleShowInOrder(String(drawing.id))}
+                                                    >
+                                                        Show in order
+                                                    </Button>
+                                                }
+                                                {drawing.status === "approved" && drawing.upload_type === "drawing" && drawing.show_in_order === true && context === "deal" &&
+                                                    <Button
+                                                        variant="outline"
+                                                        size="sm"
+                                                        className="h-8 px-3 text-xs bg-red-50 hover:bg-red-100 border-red-200 text-red-700 flex-1"
+                                                        onClick={() => handleShowInOrder(String(drawing.id))}
+                                                    >
+                                                        Don't show in order
+                                                    </Button>
                                                 }
                                             </div>
                                         </CardContent>

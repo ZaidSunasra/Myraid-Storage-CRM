@@ -1,4 +1,6 @@
-import { useUploadDrawing, useUploadUrl } from "@/api/deals/deal.mutation";
+import { useUploadDrawing, useUploadUrl } from "@/api/uploads/upload.mutation";
+import { usePermissions } from "@/context/PermissionContext";
+import { useUser } from "@/context/UserContext";
 import { Button } from "@/shared/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/shared/components/ui/card";
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/shared/components/ui/form"
@@ -11,13 +13,15 @@ import { Upload } from "lucide-react";
 import { useRef } from "react";
 import { useForm } from "react-hook-form"
 import { useParams } from "react-router";
-import { uploadDrawingFormSchema, type UploadDrawingForm } from "zs-crm-common";
+import { uploadDrawingFormSchema, type upload_type, type UploadDrawingForm } from "zs-crm-common";
 
-const DrawingUploads = () => {
+const DrawingUploads = ({ context }: { context: "deal" | "order" }) => {
 
     const uploadURL = useUploadUrl();
     const uploadDrawing = useUploadDrawing();
-    const { id } = useParams();
+    const { id, order_id } = useParams();
+    const { user } = useUser();
+    const { canView } = usePermissions();
     const fileRef = useRef<HTMLInputElement>(null);
 
     const form = useForm<UploadDrawingForm>({
@@ -25,7 +29,8 @@ const DrawingUploads = () => {
         defaultValues: ({
             title: "",
             version: "A",
-            file: null
+            file: null,
+            upload_type: context === "deal" ? "drawing" : undefined
         })
     });
 
@@ -37,9 +42,11 @@ const DrawingUploads = () => {
     };
 
     const handleUploadDrawing = async (data: UploadDrawingForm) => {
+
         const uploadUrlResponse = await uploadURL.mutateAsync({
             fileName: data.file?.name as string,
-            fileType: data.file?.type as string
+            fileType: data.file?.type as string,
+            upload_type: context === "order" ? data.upload_type : "drawing",
         })
 
         await axios.put(uploadUrlResponse.uploadUrl, data.file, {
@@ -51,14 +58,27 @@ const DrawingUploads = () => {
         await uploadDrawing.mutateAsync({
             drawing_url: uploadUrlResponse.fileKey,
             title: data.title,
-            version: data.version,
+            version: context === "deal" ? data.version : "A",
             deal_id: id as string,
+            order_id: context === "order" ? order_id as string : "",
             file_size: data.file?.size as number,
-            file_type: data.file?.type as string
+            file_type: data.file?.type as string,
+            upload_type: context === "order" ? data.upload_type : "drawing",
+            context: context
         });
 
         handleReset();
     }
+
+    const allowedUploads: { key: upload_type; label: string }[] = [];
+
+    if (user?.department && canView(user.department, "upload_pi"))
+        allowedUploads.push({ key: "pi", label: "PI" });
+    if (user?.department && canView(user.department, "upload_po"))
+        allowedUploads.push({ key: "po", label: "PO" });
+    if (user?.department && canView(user.department, "upload_general"))
+        allowedUploads.push({ key: "general", label: "General" });
+
 
     return <Form {...form}>
         <Card className=" backdrop-blur-sm border-0 shadow-lg bg-background">
@@ -69,7 +89,7 @@ const DrawingUploads = () => {
                 </CardTitle>
             </CardHeader>
             <CardContent>
-                <form className="space-y-6" onSubmit={form.handleSubmit(handleUploadDrawing)}>
+                <form className="space-y-6" onSubmit={form.handleSubmit(handleUploadDrawing, (errors) => console.log(errors))}>
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                         <div className="space-y-2">
                             <FormField
@@ -89,28 +109,58 @@ const DrawingUploads = () => {
                             />
                         </div>
                         <div className="space-y-2">
-                            <FormField
-                                control={form.control}
-                                name="version"
-                                render={({ field }) => (
-                                    <FormItem>
-                                        <FormLabel>Version*</FormLabel>
-                                        <Select defaultValue={field.value}>
-                                            <FormControl>
-                                                <SelectTrigger className="w-full">
-                                                    <SelectValue placeholder="Select version" />
-                                                </SelectTrigger>
-                                            </FormControl>
-                                            <SelectContent>
-                                                {["A", "B", "C", "D", "E", "F", "G", "H", "I", "J", "K", "L", "M", "N", "O", "P", "Q", "R", "S", "t", "U", "V", "W", "X", "Y", "Z"].map((val) => (
-                                                    <SelectItem key={val} value={val}>{val}</SelectItem>
-                                                ))}
-                                            </SelectContent>
-                                        </Select>
-                                        <FormMessage />
-                                    </FormItem>
-                                )}
-                            />
+                            {context === "deal" ?
+                                <FormField
+                                    control={form.control}
+                                    name="version"
+                                    render={({ field }) => (
+                                        <FormItem>
+                                            <FormLabel>Version*</FormLabel>
+                                            <Select onValueChange={field.onChange}
+                                                value={field.value}>
+                                                <FormControl>
+                                                    <SelectTrigger className="w-full">
+                                                        <SelectValue placeholder="Select version" />
+                                                    </SelectTrigger>
+                                                </FormControl>
+                                                <SelectContent>
+                                                    {["A", "B", "C", "D", "E", "F", "G", "H", "I", "J", "K", "L", "M", "N", "O", "P", "Q", "R", "S", "t", "U", "V", "W", "X", "Y", "Z"].map((val) => (
+                                                        <SelectItem key={val} value={val}>{val}</SelectItem>
+                                                    ))}
+                                                </SelectContent>
+                                            </Select>
+                                            <FormMessage />
+                                        </FormItem>
+                                    )}
+                                /> :
+                                <FormField
+                                    control={form.control}
+                                    name="upload_type"
+                                    render={({ field }) => (
+                                        <FormItem>
+                                            <FormLabel>Upload Type*</FormLabel>
+                                            <Select
+                                                onValueChange={field.onChange}
+                                                value={field.value ?? ""}
+                                            >
+                                                <FormControl>
+                                                    <SelectTrigger className="w-full">
+                                                        <SelectValue placeholder="Select upload document type" />
+                                                    </SelectTrigger>
+                                                </FormControl>
+                                                <SelectContent>
+                                                    {allowedUploads.map(({ key, label }) => (
+                                                        <SelectItem key={key} value={key}>
+                                                            {label}
+                                                        </SelectItem>
+                                                    ))}
+                                                </SelectContent>
+                                            </Select>
+                                            <FormMessage />
+                                        </FormItem>
+                                    )}
+                                />
+                            }
                         </div>
                     </div>
                     <div className="space-y-2">

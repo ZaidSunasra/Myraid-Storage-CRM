@@ -1,4 +1,4 @@
-import { useRejectDrawing } from "@/api/deals/deal.mutation";
+import { useRejectDrawing } from "@/api/uploads/upload.mutation";
 import { Button } from "@/shared/components/ui/button";
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/shared/components/ui/form"
 import { Textarea } from "@/shared/components/ui/textarea";
