@@ -23,7 +23,7 @@ const SearchFilterBar = ({ searchInput, setSearchInput }: { searchInput: string;
         <div className="flex-1 relative w-full md:w-[270px]">
             <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-accent-foreground h-4 w-4" />
             <Input
-                placeholder="Search leads by name or company"
+                placeholder="Search by name or company"
                 value={searchInput}
                 onChange={(e) => setSearchInput(e.target.value)}
                 className="pl-10 text-accent-foreground"

@@ -103,9 +103,10 @@ const DetailedDealPage = () => {
                             </Button>
                         </div>
                     }
-                    {user?.department && canView(user.department, "add_order") &&
+                    {user?.department && canView(user.department, "add_order") && dealData.deal?.deal_status !== "order_confirmed" &&
                         <Button className="mb-4 w-full" onClick={() => navigate(`/order/add/${id}`)}>Convert to Order</Button>
                     }
+                    {dealData.deal?.deal_status === "order_confirmed" && <p className="font-medium my-2 text-center">Order has been created for this deal</p>}
                     {user?.department && canView(user.department, "view_deal_quotation") &&
                         <DealQuotation deal_id={id as string} />
                     }
