@@ -12,9 +12,9 @@ import { DEAL_STATUS_META } from "@/utils/customStyle";
 import Description from "@/shared/components/Description";
 import MeetScheduling from "@/shared/components/MeetScheduling";
 import ScheduledMeeting from "@/shared/components/ScheduledMeeting";
-import DrawingUploads from "../components/DrawingUploads";
+import DrawingUploads from "../../../shared/components/DrawingUploads";
 import { useUser } from "@/context/UserContext";
-import DrawingList from "../components/DrawingList";
+import DrawingList from "../../../shared/components/DrawingList";
 import DetailedPageLoader from "@/shared/components/loaders/DetailedPageLoader";
 import ErrorDisplay from "@/shared/components/ErrorPage";
 import DealQuotation from "../components/DealQuotation";
@@ -87,8 +87,8 @@ const DetailedDealPage = () => {
                             </TabsContent>
                         }
                         <TabsContent value="drawing" className="space-y-6">
-                            {user?.department && canView(user?.department, "upload_drawing") && <DrawingUploads />}
-                            <DrawingList id={id as string} />
+                            <DrawingUploads context="deal" />
+                            <DrawingList context="deal" />
                         </TabsContent>
                     </Tabs>
                 </div>

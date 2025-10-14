@@ -21,7 +21,7 @@ const AddOrderPage = () => {
             height: "",
             total: 0,
             total_body: 0,
-            pi_number: "",
+            pi_number: false,
             po_number: "",
             dispatch_at: undefined, 
             status: "pending",

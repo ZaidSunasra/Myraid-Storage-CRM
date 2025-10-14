@@ -1,8 +1,8 @@
 import { FetchOrderById } from "@/api/orders/orders.queries"
 import { usePermissions } from "@/context/PermissionContext"
 import { useUser } from "@/context/UserContext"
-import DrawingList from "@/features/deals/components/DrawingList"
-import DrawingUploads from "@/features/deals/components/DrawingUploads"
+import DrawingList from "@/shared/components/DrawingList"
+import DrawingUploads from "@/shared/components/DrawingUploads"
 import ErrorDisplay from "@/shared/components/ErrorPage"
 import DetailedPageLoader from "@/shared/components/loaders/DetailedPageLoader"
 import Navbar from "@/shared/components/Navbar"
@@ -14,11 +14,11 @@ import OrderPaymentDetail from "../components/OrderPaymentDetail"
 import AddPayment from "../components/AddPayment"
 import { capitalize } from "@/utils/formatData"
 import OrderDetails from "../components/OrderDetails"
-import type { Order } from "@/api/orders/orders.api"
+import type { Order } from "zs-crm-common"
 
 const DetailedOrderPage = () => {
 
-    const { id, order_id } = useParams();
+    const { order_id } = useParams();
     const [searchParams] = useSearchParams();
     const tab = searchParams.get("tab") || "info";
     const { data, isPending, isError } = FetchOrderById(order_id as string);
@@ -68,8 +68,8 @@ const DetailedOrderPage = () => {
                             <OrderDetails data={data.order as Order} />
                         </TabsContent>
                         <TabsContent value="drawing" className="space-y-6">
-                            {user?.department && canView(user?.department, "upload_drawing") && <DrawingUploads />}
-                            <DrawingList id={id as string} />
+                            <DrawingUploads context="order" />
+                            <DrawingList context="order" />
                         </TabsContent>
                         <TabsContent value="payment" className="space-y-6">
                             <AddPayment />

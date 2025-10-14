@@ -7,20 +7,13 @@ import { Popover, PopoverContent, PopoverTrigger } from "@/shared/components/ui/
 import {format, isAfter, startOfDay } from "date-fns";
 import { CalendarIcon } from "lucide-react";
 import { Calendar } from "@/shared/components/ui/calendar";
-import { z } from "zod/v4";
 import { cn } from "@/shared/lib/utils";
 import { Input } from "@/shared/components/ui/input";
 import { useAddPayment } from "@/api/orders/orders.mutation";
 import { useParams } from "react-router";
+import { addPaymentSchema, type AddPayment} from "zs-crm-common";
 
-export const addPaymentSchema = z.object({
-    amount: z.number().min(1, "Amount is required"),
-    date: z.date("Date is required")
-});
-
-export type AddPayment = z.infer<typeof addPaymentSchema>
-
-const AddPayment = () => {
+const AddPaymentForm = () => {
 
     const {order_id} = useParams();
     const addPayment = useAddPayment(order_id as string);
@@ -100,4 +93,4 @@ const AddPayment = () => {
     </Card>
 }
 
-export default AddPayment
+export default AddPaymentForm
