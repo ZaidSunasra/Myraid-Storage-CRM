@@ -5,8 +5,8 @@ import { getAllEmployeeController, getAssignedEmployeeController, getSalesEmploy
 
 const employeeRouter = express.Router();
 
-employeeRouter.get("/get-sales", authMiddleware, checkDepartment(["admin", "sales", "drawing"]), getSalesEmployeeController);
-employeeRouter.get("/get-all", authMiddleware, checkDepartment(["admin", "sales", "drawing"]), getAllEmployeeController);
-employeeRouter.get("/get-assigned/:id", authMiddleware,checkDepartment(["admin", "sales", "drawing"]), getAssignedEmployeeController)
+employeeRouter.get("/get-sales", authMiddleware, getSalesEmployeeController);
+employeeRouter.get("/get-all", authMiddleware, getAllEmployeeController);
+employeeRouter.get("/get-assigned/:id",  getAssignedEmployeeController)
 
 export default employeeRouter;

@@ -8,7 +8,7 @@ const quotationRouter = express.Router();
 quotationRouter.post("/get-products", authMiddleware, checkDepartment(undefined, "add_quotation"), getQuotationProductsController);
 quotationRouter.post("/add/:deal_id", authMiddleware, checkDepartment(undefined, "add_quotation"), addQuotationController);
 quotationRouter.get("/compactor", authMiddleware, checkDepartment(undefined, "add_quotation"), getCompactorDetailsController)
-quotationRouter.get("/get-by/:deal_id", authMiddleware, checkDepartment(undefined, "view_deal_quotation"), getQuotationByDealController);
+quotationRouter.get("/get-by/:deal_id", authMiddleware, checkDepartment(undefined, ["view_deal_quotation", "add_order"]), getQuotationByDealController);
 quotationRouter.get("/get-all", authMiddleware, checkDepartment(["admin", "sales"]), getQuotationController);
 quotationRouter.get("/get/:id", authMiddleware, checkDepartment(["admin", "sales"]), getQuotationByIdController);
 quotationRouter.put("/edit/:deal_id/:id", authMiddleware, checkDepartment(undefined, "add_quotation"), editQuotationController);
