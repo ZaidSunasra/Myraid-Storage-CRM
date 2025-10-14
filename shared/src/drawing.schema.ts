@@ -7,24 +7,32 @@ export type drawing_version = typeof DRAWING_VERSION[number];
 export const DRAWING_STATUS = ["pending", "approved", "rejected"] as const;
 export type drawing_status = typeof DRAWING_STATUS[number];
 
+export const UPLOAD_TYPE = ["pi", "po", "drawing", "general"] as const;
+export type upload_type = typeof UPLOAD_TYPE[number];
+
 export const uploadDrawingFormSchema = z.object({
     title: z.string().min(1, "Title is required"),
     version: z.enum(DRAWING_VERSION),
     file: z.instanceof(File, { message: "File is required" }).nullable().refine(f => f !== null, { message: "File is required", }),
+    upload_type: z.enum(UPLOAD_TYPE),
 });
 
 export const getUploadUrlSchema = z.object({
     fileName: z.string().min(1, "File Name is required"),
-    fileType: z.string().min(1, "Type is required")
+    fileType: z.string().min(1, "Type is required"),
+    upload_type: z.enum(UPLOAD_TYPE),
 });
 
 export const uploadDrawingSchema = z.object({
     drawing_url: z.string().min(1, "URL is required"),
     title: z.string().min(1, "Title is required"),
     version: z.enum(DRAWING_VERSION),
-    deal_id: z.string().min(1, "Deal Id is required"),
+    upload_type: z.enum(UPLOAD_TYPE),
+    deal_id: z.string(),
+    order_id: z.string(),
     file_size: z.coerce.number(),
-    file_type: z.string().min(1, "File type is required")
+    file_type: z.string().min(1, "File type is required"),
+    context: z.enum(["deal", "order"])
 });
 
 export const rejectDrawingSchema = z.object({

@@ -48,6 +48,7 @@ export type Notification = {
 	id: number;
 	lead_id: number | null;
 	deal_id: string | null;
+    order_id: number | null;
 	created_at: Date;
 	message: string | null;
 	title: string;
