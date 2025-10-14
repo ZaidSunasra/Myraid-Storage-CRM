@@ -276,6 +276,7 @@ model Order {
   status       Order_Status
   po_number    String?
   pi_number    String?
+  bill_number String?
   colour       String
   balance      Int
   height       String
@@ -352,4 +353,5 @@ enum Department {
   admin
   factory
   drawing
+  accounts
 }
