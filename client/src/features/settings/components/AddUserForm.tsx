@@ -24,6 +24,7 @@ const AddUserForm = ({ userData, info, reset }: { userData: AddUser | EditUser |
             email: userData?.email,
             quotation_code: userData?.quotation_code ?? undefined,
             department: userData?.department,
+            password: ""
         }),
     });
 

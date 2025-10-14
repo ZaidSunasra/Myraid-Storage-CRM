@@ -6,21 +6,14 @@ import { Popover, PopoverContent, PopoverTrigger } from "@/shared/components/ui/
 import { format, isAfter, startOfDay } from "date-fns";
 import { CalendarIcon } from "lucide-react";
 import { Calendar } from "@/shared/components/ui/calendar";
-import { z } from "zod/v4";
 import { cn } from "@/shared/lib/utils";
 import { Input } from "@/shared/components/ui/input";
 import { useEditPayment } from "@/api/orders/orders.mutation";
 import { useParams } from "react-router";
 import type { Dispatch, SetStateAction } from "react";
+import { addPaymentSchema, type AddPayment, type Advance } from "zs-crm-common";
 
-export const addPaymentSchema = z.object({
-    amount: z.number().min(1, "Amount is required"),
-    date: z.date("Date is required")
-});
-
-export type AddPayment = z.infer<typeof addPaymentSchema>
-
-const EditPayment = ({ data, setDialog }: { data: any, setDialog: Dispatch<SetStateAction<{ open: boolean, data: any, action: "edit" | "delete" | null }>> }) => {
+const EditPayment = ({ data, setDialog }: { data: Advance, setDialog: Dispatch<SetStateAction<{ open: boolean, data: any, action: "edit" | "delete" | null }>> }) => {
 
     const orderId = data.id;
     const { order_id } = useParams();
@@ -29,12 +22,12 @@ const EditPayment = ({ data, setDialog }: { data: any, setDialog: Dispatch<SetSt
         resolver: zodResolver(addPaymentSchema),
         defaultValues: {
             amount: data.advance_amount,
-            date: data.advance_date,
+           date: data.advance_date ? new Date(data.advance_date) : undefined,
         }
     });
 
     const onSubmit = (data: AddPayment) => {
-        editPayment.mutate({ data, id: orderId }, {
+        editPayment.mutate({ data, id: String(orderId) }, {
             onSuccess: () => setDialog({open: false, action: null, data: null})
         })
     };
@@ -76,7 +69,7 @@ const EditPayment = ({ data, setDialog }: { data: any, setDialog: Dispatch<SetSt
                                             </FormControl>
                                         </PopoverTrigger>
                                         <PopoverContent className="w-auto p-0" align="start">
-                                            <Calendar mode="single" selected={field.value as Date | undefined} onSelect={field.onChange}
+                                            <Calendar mode="single" selected={field.value as Date | undefined} onSelect={(val) => field.onChange(val)}
                                                 captionLayout="dropdown"
                                                 disabled={(date) => isAfter(date, startOfDay(new Date()))}
                                             />
