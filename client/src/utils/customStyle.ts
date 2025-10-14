@@ -26,4 +26,5 @@ export const ROLE_COLORS: Record<string, string> = {
   sales: "bg-green-100 text-green-800",
   drawing: "bg-yellow-100 text-yellow-800",
   factory: "bg-orange-100 text-orange-800",
+  accounts: "bg-red-100 text-red-800"
 };
