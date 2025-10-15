@@ -14,9 +14,10 @@ import { useEffect } from "react"
 import { format, isBefore, startOfDay } from "date-fns"
 import { Calendar } from "@/shared/components/ui/calendar"
 import { cn } from "@/shared/lib/utils"
-import type { AddOrder } from "zs-crm-common"
+import { ORDER_STATUS, type AddOrder } from "zs-crm-common"
+import { toTitleCase } from "@/utils/formatData"
 
-const AddOrderDetails = ({ form }: { form: UseFormReturn<AddOrder> }) => {
+const AddOrderDetails = ({ form, context }: { form: UseFormReturn<AddOrder>; context:  "edit" | "add" }) => {
 
     const { id } = useParams();
     const { data, isPending, isError } = FetchQuotationByDeal(id as string);
@@ -36,10 +37,14 @@ const AddOrderDetails = ({ form }: { form: UseFormReturn<AddOrder> }) => {
                 quotation_no: form.getValues("quotation_no"),
                 status: "pending",
                 deal_id: id ? String(id) : "",
-                colour: ""
+                colour: "",
+                pi_number: false,
+                po_number: "",
+                fitted_by: "",
+                bill_number: ""
             });
         }
-    }, [quotationData, form]);
+    }, [quotationData]);
 
 
     if (isPending) return <Skeleton className="h-4/5 w-3xs bg-background" />
@@ -86,7 +91,7 @@ const AddOrderDetails = ({ form }: { form: UseFormReturn<AddOrder> }) => {
                 </div>
             </CardContent>
         </Card >
-        {quotationData &&
+        {quotationData && context == "add" || context == "edit" &&
             <Card>
                 <CardHeader>
                     <CardTitle className="flex items-center gap-2 text-xl">
@@ -189,11 +194,43 @@ const AddOrderDetails = ({ form }: { form: UseFormReturn<AddOrder> }) => {
                                 render={({ field }) => (
                                     <FormItem>
                                         <FormLabel>PI Number</FormLabel>
-                                        <Input
-                                            value={field.value ?? ""}
-                                            placeholder="Enter PI number"
-                                            onChange={(e) => field.onChange(e.target.value)}
-                                        />
+                                        <Select value={String(field.value)} onValueChange={(val) => field.onChange(val === "true")}>
+                                            <FormControl>
+                                                <SelectTrigger className="w-full">
+                                                    <SelectValue placeholder="Select yes/no" />
+                                                </SelectTrigger>
+                                            </FormControl>
+                                            <SelectContent>
+                                                <SelectItem value="true">Yes</SelectItem>
+                                                <SelectItem value="false">No</SelectItem>
+                                            </SelectContent>
+                                        </Select>
+                                        <FormMessage />
+                                    </FormItem>
+                                )}
+                            />
+                        </div>
+                         <div className="space-y-2">
+                            <FormField
+                                control={form.control}
+                                name="status"
+                                render={({ field }) => (
+                                    <FormItem>
+                                        <FormLabel>Status</FormLabel>
+                                        <Select value={String(field.value)} onValueChange={(val) => field.onChange(val)}>
+                                            <FormControl>
+                                                <SelectTrigger className="w-full">
+                                                    <SelectValue placeholder="Select yes/no" />
+                                                </SelectTrigger>
+                                            </FormControl>
+                                            <SelectContent>
+                                                {ORDER_STATUS.map((status) => (
+                                                    <SelectItem key={status} value={status}>
+                                                        {toTitleCase(status)}
+                                                    </SelectItem>
+                                                ))}
+                                            </SelectContent>
+                                        </Select>
                                         <FormMessage />
                                     </FormItem>
                                 )}
@@ -248,9 +285,43 @@ const AddOrderDetails = ({ form }: { form: UseFormReturn<AddOrder> }) => {
                                 )}
                             />
                         </div>
+                        <div className="space-y-2">
+                            <FormField
+                                control={form.control}
+                                name="bill_number"
+                                render={({ field }) => (
+                                    <FormItem>
+                                        <FormLabel>Bill Number</FormLabel>
+                                        <Input
+                                            value={field.value ?? ""}
+                                            placeholder="Enter bill number"
+                                            onChange={(e) => field.onChange(e.target.value)}
+                                        />
+                                        <FormMessage />
+                                    </FormItem>
+                                )}
+                            />
+                        </div>
+                        <div className="space-y-2">
+                            <FormField
+                                control={form.control}
+                                name="fitted_by"
+                                render={({ field }) => (
+                                    <FormItem>
+                                        <FormLabel>Fiited By</FormLabel>
+                                        <Input
+                                            value={field.value ?? ""}
+                                            placeholder="Enter name"
+                                            onChange={(e) => field.onChange(e.target.value)}
+                                        />
+                                        <FormMessage />
+                                    </FormItem>
+                                )}
+                            />
+                        </div>
                     </div>
                     <div className="flex justify-end mt-4">
-                        <Button type="submit">Add Order</Button>
+                        <Button type="submit">{context == "edit" ? "Save Changes" : "Add Order"}</Button>
                     </div>
                 </CardContent>
             </Card>
