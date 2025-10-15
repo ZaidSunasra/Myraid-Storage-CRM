@@ -6,6 +6,7 @@ import { calculatePerKgPreview } from "../../utils/calculateTotal";
 const MultipleProductCosting = () => {
 
     const { products, getProductItems, overallTotal } = useQuotation();
+    const { totalCost, difference, perKg } = calculatePerKgPreview(products, overallTotal)
 
     return (
         <React.Fragment >
@@ -122,16 +123,43 @@ const MultipleProductCosting = () => {
                                 </TableRow>
                             ))}
                         </TableBody>
+                        <TableFooter>
+                            <TableRow>
+                                <TableCell>Total</TableCell>
+                                <TableCell></TableCell>
+                                <TableCell>{product.total_provided_rate}</TableCell>
+                                <TableCell></TableCell>
+                                <TableCell>{product.total_market_rate}</TableCell>
+                            </TableRow>
+                            <TableRow>
+                                <TableCell>Set</TableCell>
+                                <TableCell>{product.set}</TableCell>
+                                <TableCell>{product.set * product.total_provided_rate}</TableCell>
+                                <TableCell>{product.set}</TableCell>
+                                <TableCell>{product.set * product.total_market_rate}</TableCell>
+                            </TableRow>
+                        </TableFooter>
                     </Table>
                 )
             })}
-            <Table className="border-2 border-black ">
-                <TableFooter>
+            <Table className="border border-black">
+                <TableBody>
                     <TableRow>
-                        <TableCell>Per KG</TableCell>
-                        <TableCell>{calculatePerKgPreview(products, overallTotal)}</TableCell>
+                        <TableCell className="border border-black">Total Cost</TableCell>
+                        <TableCell className="border border-black"></TableCell>
+                        <TableCell className="border border-black"> {totalCost} </TableCell>
                     </TableRow>
-                </TableFooter>
+                    <TableRow>
+                        <TableCell className="border border-black">Grand Total - Total Cost</TableCell>
+                        <TableCell className="border border-black">{overallTotal} - {totalCost}</TableCell>
+                        <TableCell className="border border-black">{difference}</TableCell>
+                    </TableRow>
+                    <TableRow>
+                        <TableCell className="border border-black">Per Kg</TableCell>
+                        <TableCell className="border border-black"></TableCell>
+                        <TableCell className="border border-black">{perKg.toFixed(2)}</TableCell>
+                    </TableRow>
+                </TableBody>
             </Table>
         </React.Fragment>
     )

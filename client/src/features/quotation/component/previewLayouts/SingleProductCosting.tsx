@@ -1,7 +1,7 @@
 import { useQuotation } from "@/context/QuotationContext"
 import { Table, TableBody, TableCell, TableFooter, TableHead, TableHeader, TableRow, } from "@/shared/components/ui/table"
 import React from "react";
-import { calculatePerKgPreview, calculatePreviewProductTotal } from "../../utils/calculateTotal";
+import { calculatePerKgPreview } from "../../utils/calculateTotal";
 
 const SingleProductCosting = () => {
 
@@ -10,7 +10,7 @@ const SingleProductCosting = () => {
     return (
         <>
             {products.map((product) => {
-                const { setWiseTotal, setWiseProfit, profitPercent } = calculatePreviewProductTotal(product)
+                const {totalCost, difference, perKg} = calculatePerKgPreview(products, overallTotal)
                 const items = getProductItems(product.id)
                 return <React.Fragment key={product.id}>
                     <Table className="border border-black">
@@ -25,13 +25,15 @@ const SingleProductCosting = () => {
                                 <TableCell className="border border-black">Material</TableCell>
                                 <TableCell className="border border-black">{product.ss_material}</TableCell>
                                 <TableCell className="border border-black">{product.trolley_material}</TableCell>
-                                <TableCell className="border border-black">{Number(product.ss_material) + Number(product.trolley_material)}</TableCell>
+                                <TableCell className="border border-black">
+                                    {Number(product.ss_material) + Number(product.trolley_material)} * {product.set} = {product.set * (product.ss_material + product.trolley_material)}
+                                    </TableCell>
                             </TableRow>
                             <TableRow>
                                 <TableCell className="border border-black">Total Weight</TableCell>
-                                <TableCell className="border border-black"></TableCell>
-                                <TableCell className="border border-black"></TableCell>
                                 <TableCell className="border border-black">{product.total_weight}</TableCell>
+                                <TableCell className="border border-black">{product.set}</TableCell>
+                                <TableCell className="border border-black">{product.total_weight * product.set}</TableCell>
                             </TableRow>
                             <TableRow>
                                 <TableCell className="border border-black">Powder Coating</TableCell>
@@ -62,13 +64,31 @@ const SingleProductCosting = () => {
                                 </TableRow>
                             ))}
                         </TableBody>
+                        <TableFooter>
+                            <TableRow>
+                                <TableCell>Total</TableCell>
+                                <TableCell></TableCell>
+                                <TableCell>{product.total_provided_rate}</TableCell>
+                                <TableCell></TableCell>
+                                <TableCell>{product.total_market_rate}</TableCell>
+                            </TableRow>
+                             <TableRow>
+                                <TableCell>Set</TableCell>
+                                <TableCell>{product.set}</TableCell>
+                                <TableCell>{product.set * product.total_provided_rate}</TableCell>
+                                <TableCell>{product.set}</TableCell>
+                                <TableCell>{product.set * product.total_market_rate}</TableCell>
+                            </TableRow>
+                        </TableFooter>
                     </Table>
                     <Table className="border border-black">
                         <TableBody>
                             <TableRow>
                                 <TableCell className="border border-black">Installation</TableCell>
                                 <TableCell className="border border-black">{product.installation}</TableCell>
-                                <TableCell className="border border-black">{Number(product.installation) * Number(product.total_body)}</TableCell>
+                                <TableCell className="border border-black">
+                                    {Number(product.installation) * Number(product.total_body)} * {product.set} = {product.set * product.installation * product.total_body}
+                                </TableCell>
                             </TableRow>
                             <TableRow>
                                 <TableCell className="border border-black">Accomodation</TableCell>
@@ -85,32 +105,24 @@ const SingleProductCosting = () => {
                     <Table className="border border-black">
                         <TableBody>
                             <TableRow>
-                                <TableCell className="border border-black">Total</TableCell>
+                                <TableCell className="border border-black">Total Cost</TableCell>
                                 <TableCell className="border border-black"></TableCell>
-                                <TableCell className="border border-black"> {setWiseTotal} </TableCell>
+                                <TableCell className="border border-black"> {totalCost} </TableCell>
                             </TableRow>
                             <TableRow>
-                                <TableCell className="border border-black">Profit (%)</TableCell>
-                                <TableCell className="border border-black">{product.profit_percent}</TableCell>
-                                <TableCell className="border border-black">{(profitPercent * setWiseTotal).toFixed(2)}</TableCell>
+                                <TableCell className="border border-black">Grand Total - Total Cost</TableCell>
+                                <TableCell className="border border-black">{overallTotal} - {totalCost}</TableCell>
+                                <TableCell className="border border-black">{difference}</TableCell>
                             </TableRow>
                             <TableRow>
-                                <TableCell className="border border-black">Set</TableCell>
-                                <TableCell className="border border-black">{product.set}</TableCell>
-                                <TableCell className="border border-black">{Number(setWiseProfit.toFixed(2)) * Number(product.set) * Number(1 - product.discount / 100)}</TableCell>
+                                <TableCell className="border border-black">Per Kg</TableCell>
+                                <TableCell className="border border-black"></TableCell>
+                                <TableCell className="border border-black">{perKg.toFixed(2)}</TableCell>
                             </TableRow>
                         </TableBody>
                     </Table>
                 </React.Fragment>
             })}
-            <Table className="border-2 border-black ">
-                <TableFooter>
-                    <TableRow>
-                        <TableCell>Per KG</TableCell>
-                        <TableCell>{calculatePerKgPreview(products, overallTotal)}</TableCell>
-                    </TableRow>
-                </TableFooter>
-            </Table>
         </>
     )
 }
