@@ -4,7 +4,6 @@ import { addOrderService, addPaymentService, deletePaymentService, editOrderServ
 
 export const addOrderController = async (req: Request, res: Response<ErrorResponse | SuccessResponse>): Promise<any> => {
     const { quotation_no, height, total, total_body, pi_number, po_number, dispatch_at, status, colour, deal_id, fitted_by, bill_number } = req.body;
-    console.log(req.body)
     const validation = addOrderSchema.safeParse({ ...req.body, dispatch_at: new Date(dispatch_at) });
     if (!validation.success) {
         return res.status(400).json({

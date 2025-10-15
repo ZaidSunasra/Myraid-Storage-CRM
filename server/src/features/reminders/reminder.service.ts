@@ -210,6 +210,5 @@ export const getReminderByDateService = async (user: any, month: string): Promis
     groupLeads(leads, grouped);
     groupDeals(deals, grouped);
 
-    console.log(remindersByDay, grouped);
     return { remindersByDay, grouped };
 };
