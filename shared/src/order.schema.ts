@@ -10,7 +10,7 @@ export const addOrderSchema = z.object({
     total: z.number().min(1, "Total is required"),
     total_body: z.number().min(1, "Total is required"),
     pi_number: z.boolean(),
-    fiited_by: z.string().optional().nullable(),
+    fitted_by: z.string().optional().nullable(),
     bill_number: z.string().optional().nullable(),
     po_number: z.string().optional().nullable(),
     dispatch_at: z.date({ error: "Dispatch date is required" }),
@@ -49,7 +49,11 @@ export type Order = {
     fitted_by: string | null
     order_number: number;
     balance: number;
+    bill_number: string | null
     quotation_id: number;
+    quotation: {
+        quotation_no: string
+    }
     advance: Advance[];
     deal : {
         assigned_to : Assignee[]
