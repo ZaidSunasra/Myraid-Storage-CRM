@@ -8,7 +8,7 @@ import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigge
 import { ScrollArea } from "@/shared/components/ui/scroll-area";
 import { DEAL_STATUS_META } from "@/utils/customStyle";
 import { toTitleCase } from "@/utils/formatData";
-import { Building2, DollarSign, FileText, MoreHorizontal } from "lucide-react";
+import { Building2, FileText, MoreHorizontal } from "lucide-react";
 import { useNavigate } from "react-router";
 import { DEAL_STATUS, type deal_status, type GetAllDealSuccessResponse, type GetDealOutput } from "zs-crm-common";
 
@@ -78,12 +78,6 @@ const KanbanBoard = ({ data }: { data: GetAllDealSuccessResponse }) => {
                                                         <Building2 className="h-3 w-3 text-muted-foreground" />
                                                         <span className="text-xs text-muted-foreground">
                                                             {toTitleCase(deal.company.name)}
-                                                        </span>
-                                                    </div>
-                                                    <div className="flex items-center space-x-2">
-                                                        <DollarSign className="h-3 w-3 text-muted-foreground" />
-                                                        <span className="text-xs text-muted-foreground">
-                                                            Amount
                                                         </span>
                                                     </div>
                                                 </div>
