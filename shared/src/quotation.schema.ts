@@ -71,6 +71,7 @@ export type AddQuotation = z.infer<typeof addQuotationSchema>;
 
 export type Quotation = {
     created_at: Date
+    created_by: number
     deal_id: string
     grand_total: number
     quotation_no: string

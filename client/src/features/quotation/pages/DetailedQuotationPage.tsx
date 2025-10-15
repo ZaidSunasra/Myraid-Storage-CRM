@@ -10,7 +10,7 @@ import { ArrowLeft, Copy, Edit, FileText, Trash2 } from "lucide-react";
 import { NavLink, useNavigate, useParams } from "react-router"
 import QuotationDetails from "../component/QuotationDetails";
 import QuotationWorkingDetails from "../component/QuotationWorkingDetails";
-import type { GetQuotationOutput } from "zs-crm-common";
+import { DEPARTMENTS, type GetQuotationOutput } from "zs-crm-common";
 import { Dialog, DialogClose, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle, DialogTrigger } from "@/shared/components/ui/dialog";
 import { useState } from "react";
 import CopyQuotationForm from "../component/CopyQuotationForm";
@@ -53,11 +53,14 @@ const DetailedQuotationPage = () => {
                             <p className="text-gray-600">{toTitleCase(data.quotation?.deal.company.name as string)}</p>
                         </div>
                     </div>
-                    {user?.department && canView(user?.department, "add_quotation") &&
-                        <Button onClick={() => navigate(`/quotation/edit/${id}/${quotation_id}`)}>
+                    {user?.department && canView(user?.department, "add_quotation") && <>
+                        {(data.quotation?.created_by == user.id || user.department === DEPARTMENTS[1]) &&
+                            <Button onClick={() => navigate(`/quotation/edit/${id}/${quotation_id}`)}>
                             <Edit className="h-4 w-4 mr-2" />
                             Edit Quotation
-                        </Button>
+                        </Button>}
+                    </>
+
                     }
                 </div>
             </div>
@@ -100,7 +103,7 @@ const DetailedQuotationPage = () => {
                                 </Button>
                             </div>
                         }
-                     {user?.department && canView(user.department, "view_quotation") && <div className="w-full">
+                        {user?.department && canView(user.department, "view_quotation") && <div className="w-full">
                             <Button className=" text-white flex gap-2 px-6 py-2 rounded-xl shadow-md transition w-full bg-blue-600 hover:bg-blue-700"
                                 onClick={() => window.open(`/quotation/print/${id}/${quotation_id}`, "_blank")}
                             >

@@ -1,5 +1,6 @@
 import { prisma } from "../../libs/prisma"
 import { AddQuotation, DEPARTMENTS, GetAllQuotationOutput, GetCompactorDetailOutput, GetDetailByQuotationNumberOutput, GetQuotationBaseProduct, GetQuotationByDealOutput, GetQuotationOutput, } from "zs-crm-common";
+import { convertQuotation, convertQuotationArray } from "./utils";
 
 export const getQuotationProductsService = async (product_type: string, bay: number, compartment: number): Promise<GetQuotationBaseProduct[]> => {
     const products = await prisma.baseProduct.findMany({
@@ -23,7 +24,7 @@ export const getQuotationProductsService = async (product_type: string, bay: num
 }
 
 export const addQuotationService = async ({ quotation_template, quotation_item, total, grandTotal, gst, round_off, show_body_table, note, quotation_no }: AddQuotation,
-    deal_id: string): Promise<any> => {
+    deal_id: string, author: any): Promise<any> => {
     await prisma.$transaction(async (tx) => {
         const quotation = await tx.quotation.create({
             data: {
@@ -35,7 +36,8 @@ export const addQuotationService = async ({ quotation_template, quotation_item, 
                 grand_total: grandTotal,
                 show_body_table: show_body_table,
                 note: note,
-                quotation_no: quotation_no
+                quotation_no: quotation_no,
+                created_by: author.id
             },
             select: { id: true },
         });
@@ -207,35 +209,7 @@ export const getQuotationService = async (user: any, page: number, search: strin
 
     const totalQuotations = await prisma.quotation.count();
 
-    const convertedQuotation = quotation.map((q) => ({
-        ...q,
-        grand_total: q.grand_total.toNumber(),
-        gst: q.gst.toNumber(),
-        round_off: q.round_off.toNumber(),
-        sub_total: q.sub_total.toNumber(),
-        quotation_products: q.quotation_products.map((qp) => ({
-            ...qp,
-            quotation_item: qp.quotation_item.map((item) => ({
-                ...item,
-                market_rate: item.market_rate.toNumber(),
-                provided_rate: item.provided_rate.toNumber(),
-            })),
-            quotation_working: qp.quotation_working.map((work) => ({
-                ...work,
-                accomodation: work.accomodation.toNumber(),
-                installation: work.installation.toNumber(),
-                labour_cost: work.labour_cost.toNumber(),
-                market_total_cost: work.market_total_cost.toNumber(),
-                powder_coating: work.powder_coating.toNumber(),
-                provided_total_cost: work.provided_total_cost.toNumber(),
-                total_weight: work.total_weight.toNumber(),
-                transport: work.transport.toNumber(),
-                ss_material: work.ss_material.toNumber(),
-                trolley_material: work.trolley_material.toNumber(),
-                discount: work.discount.toNumber()
-            })),
-        })),
-    }));
+    const convertedQuotation = convertQuotationArray(quotation)
 
     return { convertedQuotation, totalQuotations }
 }
@@ -270,41 +244,13 @@ export const getQuotationByIdService = async (id: string): Promise<GetQuotationO
 
     if (!quotation) return null;
 
-    const convertedQuotation = {
-        ...quotation,
-        grand_total: quotation.grand_total.toNumber(),
-        gst: quotation.gst.toNumber(),
-        round_off: quotation.round_off.toNumber(),
-        sub_total: quotation.sub_total.toNumber(),
-        quotation_products: quotation.quotation_products.map((qp) => ({
-            ...qp,
-            quotation_item: qp.quotation_item.map((item) => ({
-                ...item,
-                market_rate: item.market_rate.toNumber(),
-                provided_rate: item.provided_rate.toNumber(),
-            })),
-            quotation_working: qp.quotation_working.map((work) => ({
-                ...work,
-                accomodation: work.accomodation.toNumber(),
-                installation: work.installation.toNumber(),
-                labour_cost: work.labour_cost.toNumber(),
-                market_total_cost: work.market_total_cost.toNumber(),
-                powder_coating: work.powder_coating.toNumber(),
-                provided_total_cost: work.provided_total_cost.toNumber(),
-                total_weight: work.total_weight.toNumber(),
-                transport: work.transport.toNumber(),
-                ss_material: work.ss_material.toNumber(),
-                trolley_material: work.trolley_material.toNumber(),
-                discount: work.discount.toNumber(),
-            })),
-        })),
-    };
+    const convertedQuotation= convertQuotation(quotation)
 
     return convertedQuotation;
 }
 
 export const editQuotationService = async ({ quotation_template, quotation_item, total, grandTotal, gst, round_off, show_body_table, note, quotation_no }: AddQuotation,
-    deal_id: string, id: string): Promise<any> => {
+    deal_id: string, id: string, author: any): Promise<any> => {
     await prisma.$transaction(async (tx) => {
         const quotation = await tx.quotation.update({
             where: {
@@ -320,7 +266,8 @@ export const editQuotationService = async ({ quotation_template, quotation_item,
                 grand_total: grandTotal,
                 show_body_table: show_body_table,
                 note: note,
-                created_at: new Date(Date.now())
+                created_at: new Date(Date.now()),
+                created_by: author.id
             },
             select: { id: true },
         });
@@ -377,7 +324,7 @@ export const editQuotationService = async ({ quotation_template, quotation_item,
     });
 }
 
-export const copyQuotationDataService = async (quotation: GetQuotationOutput | null, deal_id: string, quotation_no: string): Promise<void> => {
+export const copyQuotationDataService = async (quotation: GetQuotationOutput | null, deal_id: string, quotation_no: string, author: any): Promise<void> => {
     if (!quotation) return;
     await prisma.$transaction(async (tx) => {
         const quotation_id = await tx.quotation.create({
@@ -390,7 +337,8 @@ export const copyQuotationDataService = async (quotation: GetQuotationOutput | n
                 sub_total: quotation.sub_total,
                 grand_total: quotation.grand_total,
                 show_body_table: quotation.show_body_table,
-                note: quotation.note
+                note: quotation.note,
+                created_by: author.id
             },
             select: {
                 id: true

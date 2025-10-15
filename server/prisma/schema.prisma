@@ -21,6 +21,7 @@ model User {
   description    Description[]
   deal           Deal[]
   drawing        Drawing[]
+  quotation      Quotation[]
 }
 
 model Company {
@@ -132,7 +133,7 @@ model Notification {
   description    Description?      @relation(fields: [description_id], references: [id], onDelete: Cascade)
   description_id Int?
   order          Order?            @relation(fields: [order_id], references: [id])
-  order_id        Int?
+  order_id       Int?
 }
 
 model Recipient {
@@ -208,6 +209,8 @@ model Quotation {
   deal               Deal                @relation(fields: [deal_id], references: [id])
   quotation_products QuotationProducts[]
   order              Order?
+  user               User              @relation(fields: [created_by], references: [id])
+  created_by             Int
 
   @@unique([quotation_no])
 }
@@ -277,9 +280,9 @@ model Order {
   dispatch_at  DateTime
   status       Order_Status
   po_number    String?
-  pi_number    Boolean @default(false)
+  pi_number    Boolean        @default(false)
   bill_number  String?
-  fitted_by String?
+  fitted_by    String?
   colour       String
   balance      Int
   height       String

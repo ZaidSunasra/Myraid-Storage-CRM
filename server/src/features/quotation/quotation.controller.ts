@@ -23,6 +23,7 @@ export const getQuotationProductsController = async (req: Request, res: Response
 export const addQuotationController = async (req: Request, res: Response<ErrorResponse | SuccessResponse>): Promise<any> => {
     const { quotation_template, quotation_item, total, grandTotal, gst, round_off, show_body_table, note, quotation_no } = req.body;
     const deal_id = req.params.deal_id;
+    const author = res.locals.user;
     const validation = addQuotationSchema.safeParse(req.body);
     if (!validation.success) {
         return res.status(400).json({
@@ -31,7 +32,7 @@ export const addQuotationController = async (req: Request, res: Response<ErrorRe
         })
     }
     try {
-        await addQuotationService({ quotation_template, quotation_item, total, grandTotal, gst, round_off, show_body_table, note, quotation_no }, deal_id);
+        await addQuotationService({ quotation_template, quotation_item, total, grandTotal, gst, round_off, show_body_table, note, quotation_no }, deal_id, author);
         return res.status(200).json({
             message: `Quotation added  successfully`,
         })
@@ -125,6 +126,7 @@ export const editQuotationController = async (req: Request, res: Response<ErrorR
     const { quotation_template, quotation_item, total, grandTotal, gst, round_off, show_body_table, note, quotation_no } = req.body;
     const deal_id = req.params.deal_id;
     const id = req.params.id;
+    const author = res.locals.user;
     const validation = addQuotationSchema.safeParse(req.body);
     if (!validation.success) {
         return res.status(400).json({
@@ -133,7 +135,7 @@ export const editQuotationController = async (req: Request, res: Response<ErrorR
         })
     }
     try {
-        await editQuotationService({ quotation_template, quotation_item, total, grandTotal, gst, round_off, show_body_table, note, quotation_no }, deal_id, id);
+        await editQuotationService({ quotation_template, quotation_item, total, grandTotal, gst, round_off, show_body_table, note, quotation_no }, deal_id, id, author);
         return res.status(200).json({
             message: `Quotation edited  successfully`,
         })
@@ -149,6 +151,7 @@ export const editQuotationController = async (req: Request, res: Response<ErrorR
 export const importQuotationController = async (req: Request, res: Response<SuccessResponse | ErrorResponse>): Promise<any> => {
     const { deal_id, quotation_no } = req.body;
     const quotation_id = req.params.id;
+    const author = res.locals.user;
     const validation = copyQuotationschema.safeParse(req.body);
     if (!validation.success) {
         return res.status(400).json({
@@ -158,7 +161,7 @@ export const importQuotationController = async (req: Request, res: Response<Succ
     }
     try {
         const quotation = await getQuotationByIdService(quotation_id);
-        await copyQuotationDataService(quotation, deal_id, quotation_no);
+        await copyQuotationDataService(quotation, deal_id, quotation_no, author);
         return res.status(200).json({
             message: `Quotation imported successfully`,
         })
