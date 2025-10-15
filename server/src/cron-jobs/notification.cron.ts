@@ -29,12 +29,12 @@ const notificationReminderCron = () => {
           where: { id: recipient.id },
           data: { is_ready: true, ready_at: new Date() },
         });
-        await emailQueue.add('sendEmail', {
-          recipientId: recipient.id,
-          userEmail: recipient.user.email,
-          title: notification.title,
-          message: notification.message,
-        });
+        // await emailQueue.add('sendEmail', {
+        //   recipientId: recipient.id,
+        //   userEmail: recipient.user.email,
+        //   title: notification.title,
+        //   message: notification.message,
+        // });
       });
       await Promise.all(recipientPromises);
     }
