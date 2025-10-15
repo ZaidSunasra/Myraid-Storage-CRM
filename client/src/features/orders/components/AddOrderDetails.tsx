@@ -17,7 +17,7 @@ import { cn } from "@/shared/lib/utils"
 import { ORDER_STATUS, type AddOrder } from "zs-crm-common"
 import { toTitleCase } from "@/utils/formatData"
 
-const AddOrderDetails = ({ form, context }: { form: UseFormReturn<AddOrder>; context:  "edit" | "add" }) => {
+const AddOrderDetails = ({ form, context, isSubmitting}: { form: UseFormReturn<AddOrder>; context:  "edit" | "add", isSubmitting: boolean}) => {
 
     const { id } = useParams();
     const { data, isPending, isError } = FetchQuotationByDeal(id as string);
@@ -91,7 +91,7 @@ const AddOrderDetails = ({ form, context }: { form: UseFormReturn<AddOrder>; con
                 </div>
             </CardContent>
         </Card >
-        {quotationData && context == "add" || context == "edit" &&
+        {(((context === "add" && quotationData) || context === "edit")) &&
             <Card>
                 <CardHeader>
                     <CardTitle className="flex items-center gap-2 text-xl">
@@ -321,7 +321,7 @@ const AddOrderDetails = ({ form, context }: { form: UseFormReturn<AddOrder>; con
                         </div>
                     </div>
                     <div className="flex justify-end mt-4">
-                        <Button type="submit">{context == "edit" ? "Save Changes" : "Add Order"}</Button>
+                        <Button type="submit" disabled={isSubmitting}>{context == "edit" ? "Save Changes" : "Add Order"}</Button>
                     </div>
                 </CardContent>
             </Card>

@@ -14,7 +14,7 @@ import { Calendar } from "@/shared/components/ui/calendar";
 import PaginationControls from "@/shared/components/PaginationControl";
 import { capitalize, toTitleCase } from "@/utils/formatData";
 import { format } from "date-fns";
-import { calculateRemainingBalance, calculateTotalBody } from "../utils";
+import { calculateRemainingBalance, calculateTotalAmount, calculateTotalBody } from "../utils";
 import { useNavigate } from "react-router";
 
 const OrdersTable = () => {
@@ -91,7 +91,7 @@ const OrdersTable = () => {
                     {data.orders.map((order: any) => {
                         const { remainingBalance } = calculateRemainingBalance(order)
                         return (
-                            <TableRow key={order.id} onClick={() => navigate(`/order/${order.deal_id}/${order.id}`)} className={`${order.status == "dispatched" ? "bg-green-600" : ""}`}>
+                            <TableRow key={order.id} onClick={() => navigate(`/order/${order.deal_id}/${order.id}`)} className={`${order.status == "dispatched" ? "bg-green-300 hover:bg-300" : ""}`}>
                                 <TableCell className="font-medium">
                                     {order.order_number}
                                 </TableCell>
@@ -123,7 +123,7 @@ const OrdersTable = () => {
                                     {capitalize(order.colour)}
                                 </TableCell>
                                 <TableCell>
-                                    {order.fitted_b}
+                                    {toTitleCase(order.fitted_by)}
                                 </TableCell>
                             </TableRow>
                         )
@@ -136,7 +136,7 @@ const OrdersTable = () => {
                         <TableCell></TableCell>
                         <TableCell></TableCell>
                         <TableCell></TableCell>
-                        <TableCell></TableCell>
+                        <TableCell>{calculateTotalAmount(data)}</TableCell>
                         <TableCell></TableCell>
                         <TableCell></TableCell>
                         <TableCell></TableCell>

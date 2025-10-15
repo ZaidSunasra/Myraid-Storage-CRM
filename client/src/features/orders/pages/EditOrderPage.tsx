@@ -77,13 +77,13 @@ const EditOrderPage = () => {
                         </Button>
                     </NavLink>
                     <div>
-                        <h1 className="text-2xl font-bold text-foreground">Add New Order</h1>
-                        <p className="text-muted-foreground">Create a new order in your CRM system</p>
+                        <h1 className="text-2xl font-bold text-foreground">Edit New Order</h1>
+                        <p className="text-muted-foreground">Edit an exisiting order in your CRM system</p>
                     </div>
                 </div>
                 <Form {...form}>
                     <form onSubmit={form.handleSubmit(onSubmit, (errors) => console.log(errors))} className="space-y-8">
-                        <AddOrderDetails form={form} context="edit"/>
+                        <AddOrderDetails form={form} context="edit" isSubmitting={editOrder.isPending}/>
                     </form>
                 </Form>
             </div>

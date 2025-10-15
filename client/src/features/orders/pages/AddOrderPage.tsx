@@ -54,7 +54,7 @@ const AddOrderPage = () => {
                 </div>
                 <Form {...form}>
                     <form onSubmit={form.handleSubmit(onSubmit, (errors) => console.log(errors))} className="space-y-8">
-                        <AddOrderDetails form={form} context="add"/>
+                        <AddOrderDetails form={form} context="add" isSubmitting={addOrder.isPending}/>
                     </form>
                 </Form>
             </div>

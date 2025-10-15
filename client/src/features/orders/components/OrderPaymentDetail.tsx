@@ -9,8 +9,8 @@ import { CalendarIcon, CreditCard, DollarSign, Edit, Trash2, TrendingUp, Wallet 
 import { useState } from "react";
 import { useParams } from "react-router";
 import EditPayment from "./EditPayment";
-import type { Order } from "@/api/orders/orders.api";
 import { calculateRemainingBalance } from "../utils";
+import type { Order } from "zs-crm-common";
 
 const OrderPaymentDetail = ({ data }: { data: Order }) => {
 
@@ -93,7 +93,7 @@ const OrderPaymentDetail = ({ data }: { data: Order }) => {
                     <Wallet className="h-4 w-4 text-blue-600" />
                     <span>
                         <span className="text-foreground font-semibold">Total:</span>{" "}
-                        ₹{data.balance.toLocaleString()}
+                        ₹{data.balance}
                     </span>
                 </div>
                 <div className="flex items-center gap-2 text-sm sm:text-base font-medium text-muted-foreground">
@@ -107,7 +107,7 @@ const OrderPaymentDetail = ({ data }: { data: Order }) => {
                     <Wallet className="h-4 w-4 text-blue-600" />
                     <span>
                         <span className="text-foreground font-semibold">Remaining:</span>{" "}
-                        ₹{remainingBalance.toLocaleString()}
+                        ₹{remainingBalance}
                     </span>
                 </div>
             </CardFooter>

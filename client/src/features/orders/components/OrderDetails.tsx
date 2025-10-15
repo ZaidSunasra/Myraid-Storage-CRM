@@ -18,7 +18,7 @@ const OrderDetails = ({ data }: { data: Order }) => {
                 </div>
                 <div className="space-y-2">
                     <Label>Bill No</Label>
-                    <span>{" "}</span>
+                    <span>{data.bill_number}</span>
                 </div>
                 <div className="space-y-2">
                     <Label>Status</Label>
@@ -33,7 +33,7 @@ const OrderDetails = ({ data }: { data: Order }) => {
                 <div className="space-y-2">
                     <Label>PI Number</Label>
                     <div className="space-y-1">
-                        {data.pi_number ?? "PI Number not provided"}
+                        {data.pi_number ? "True" : "False"}
                     </div>
                 </div>
                 <div className="space-y-2">
