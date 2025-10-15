@@ -9,7 +9,7 @@ import Navbar from "@/shared/components/Navbar"
 import { Button } from "@/shared/components/ui/button"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/shared/components/ui/tabs"
 import { ArrowLeft, Edit } from "lucide-react"
-import { NavLink, useParams, useSearchParams } from "react-router"
+import { NavLink, useNavigate, useParams, useSearchParams } from "react-router"
 import OrderPaymentDetail from "../components/OrderPaymentDetail"
 import AddPayment from "../components/AddPayment"
 import { capitalize } from "@/utils/formatData"
@@ -18,11 +18,12 @@ import type { Order } from "zs-crm-common"
 
 const DetailedOrderPage = () => {
 
-    const { order_id } = useParams();
+    const { order_id, id } = useParams();
     const [searchParams] = useSearchParams();
     const tab = searchParams.get("tab") || "info";
     const { data, isPending, isError } = FetchOrderById(order_id as string);
     const { user } = useUser();
+    const navigate = useNavigate();
     const { canView } = usePermissions();
 
     if (isPending) return <DetailedPageLoader />
@@ -49,7 +50,7 @@ const DetailedOrderPage = () => {
                         </div>
                     </div>
                     {user?.department && canView(user?.department, "add_order") &&
-                        <Button>
+                        <Button onClick={() => navigate(`/order/edit/${id}/${order_id}`)}>
                             <Edit className="h-4 w-4 mr-2" />
                             Edit Order
                         </Button>
@@ -77,15 +78,7 @@ const DetailedOrderPage = () => {
                         </TabsContent>
                     </Tabs>
                 </div>
-                <div className="lg:col-span-1">
-                    {user?.department && canView(user.department, "add_order") &&
-                        <div className="w-full">
-                            <Button className="mb-8 text-white flex gap-2 px-6 py-2 shadow-md transition w-full bg-blue-600 hover:bg-blue-700">
-                                Change Status
-                            </Button>
-                        </div>
-                    }
-                </div>
+                <div className="lg:col-span-1"></div>
             </div>
         </div>
     </div>

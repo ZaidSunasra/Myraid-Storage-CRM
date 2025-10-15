@@ -78,32 +78,35 @@ const OrdersTable = () => {
                         <TableHead>Dispatch</TableHead>
                         <TableHead>PO Number</TableHead>
                         <TableHead>Deal Number</TableHead>
-                        <TableHead>Balance</TableHead>
+                        <TableHead>Amount</TableHead>
                         <TableHead>Bill No</TableHead>
                         <TableHead>Company</TableHead>
                         <TableHead>Height</TableHead>
-                        <TableHead>Total Body</TableHead>
+                        <TableHead>Body</TableHead>
                         <TableHead>Colour</TableHead>
+                        <TableHead>Fittted By</TableHead>
                     </TableRow>
                 </TableHeader>
                 <TableBody>
                     {data.orders.map((order: any) => {
-                        const {remainingBalance} = calculateRemainingBalance(order)
+                        const { remainingBalance } = calculateRemainingBalance(order)
                         return (
-                            <TableRow key={order.id} onClick={() => navigate(`/order/${order.deal_id}/${order.id}`)}>
+                            <TableRow key={order.id} onClick={() => navigate(`/order/${order.deal_id}/${order.id}`)} className={`${order.status == "dispatched" ? "bg-green-600" : ""}`}>
                                 <TableCell className="font-medium">
                                     {order.order_number}
                                 </TableCell>
                                 <TableCell>{format(order.created_at, "dd/MM/yyyy")}</TableCell>
                                 <TableCell>{format(order.dispatch_at, "dd/MM/yyyy")}</TableCell>
-                                <TableCell>{order.po_number}</TableCell>
+                                <TableCell className={`${order.pi_number && order.status !== "dispatched" ? "bg-purple-400" : ""}`}>
+                                    {order.po_number}
+                                </TableCell>
                                 <TableCell>
                                     {order.deal_id.replace(/-/g, "/").replace(/_/g, "-")}
                                 </TableCell>
                                 <TableCell>
                                     {remainingBalance}
                                 </TableCell>
-                                <TableCell></TableCell>
+                                <TableCell>{order.bill_number}</TableCell>
                                 <TableCell>
                                     <div className="flex items-center">
                                         <Building2 className="h-4 w-4 mr-2 " />
@@ -118,6 +121,9 @@ const OrdersTable = () => {
                                 </TableCell>
                                 <TableCell>
                                     {capitalize(order.colour)}
+                                </TableCell>
+                                <TableCell>
+                                    {order.fitted_b}
                                 </TableCell>
                             </TableRow>
                         )
@@ -135,6 +141,7 @@ const OrdersTable = () => {
                         <TableCell></TableCell>
                         <TableCell></TableCell>
                         <TableCell>{calculateTotalBody(data)}</TableCell>
+                        <TableCell></TableCell>
                         <TableCell></TableCell>
                     </TableRow>
                 </TableFooter>

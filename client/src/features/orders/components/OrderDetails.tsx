@@ -1,10 +1,9 @@
-import type { Order } from "@/api/orders/orders.api"
 import { Card, CardContent, CardHeader, CardTitle } from "@/shared/components/ui/card"
 import { Label } from "@/shared/components/ui/label"
 import { toTitleCase } from "@/utils/formatData"
 import { format } from "date-fns"
 import { User } from "lucide-react"
-import type { Assignee } from "zs-crm-common"
+import type { Assignee, Order } from "zs-crm-common"
 
 const OrderDetails = ({ data }: { data: Order }) => {
     return <Card className="bg-background">
@@ -68,6 +67,10 @@ const OrderDetails = ({ data }: { data: Order }) => {
                 <div className="space-y-2">
                     <Label>Created At</Label>
                     <span>{format(data.created_at, "dd/MM/yyyy")}</span>
+                </div>
+                <div className="space-y-2">
+                    <Label>Quotation No</Label>
+                    <span>{data.quotation.quotation_no}</span>
                 </div>
                 <div className="space-y-2">
                     <Label>Assigned To</Label>

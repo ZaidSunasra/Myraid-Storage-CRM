@@ -106,7 +106,9 @@ const DetailedDealPage = () => {
                     {user?.department && canView(user.department, "add_order") && dealData.deal?.deal_status !== "order_confirmed" &&
                         <Button className="mb-4 w-full" onClick={() => navigate(`/order/add/${id}`)}>Convert to Order</Button>
                     }
-                    {dealData.deal?.deal_status === "order_confirmed" && <p className="font-medium my-2 text-center">Order has been created for this deal</p>}
+                    {dealData.deal?.deal_status === "order_confirmed" && 
+                    <Badge className="font-medium mb-4 text-center w-full text-sm p-2">Order has been created for this deal</Badge>
+                    }
                     {user?.department && canView(user.department, "view_deal_quotation") &&
                         <DealQuotation deal_id={id as string} />
                     }
