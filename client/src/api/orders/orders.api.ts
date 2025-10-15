@@ -16,6 +16,11 @@ export const getOrderById = async (id: string) : Promise<GetOrderByIdSuccessResp
     return response.data;
 }
 
+export const editOrder = async ({ data, id }: { data: AddOrder, id : string}): Promise<SuccessResponse> => {
+    const response = await axiosInstance.put(`/orders/edit/${id}`, data);
+    return response.data;
+};
+
 export const addPayment = async ({data, order_id} : {data: AddPayment, order_id : string}) : Promise<SuccessResponse> => {
     const response = await axiosInstance.post(`/orders/add/payment/${order_id}`, data);
     return response.data;

@@ -19,6 +19,11 @@ const Include = {
             }
         }
     },
+    quotation: {
+        select: {
+            quotation_no: true
+        }
+    },
     advance: true
 }
 

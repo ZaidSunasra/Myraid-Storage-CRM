@@ -1,4 +1,4 @@
-import { AddOrder, DEPARTMENTS, GetOrderOutput, Order, AddPayment } from "zs-crm-common";
+import { AddOrder, DEPARTMENTS,   AddPayment, Assignee, Company, Advance, order_status, GetOrderOutput, Order } from "zs-crm-common";
 import { prisma } from "../../libs/prisma";
 import Include from "./constants";
 
@@ -18,7 +18,7 @@ export const generateOrderNumber = async (): Promise<number> => {
     return orderLength + 1;
 }
 
-export const addOrderService = async ({ quotation_no, height, total, total_body, pi_number, po_number, dispatch_at, status, colour, deal_id }: AddOrder): Promise<void> => {
+export const addOrderService = async ({ quotation_no, height, total, total_body, pi_number, po_number, dispatch_at, status, colour, deal_id, fitted_by, bill_number }: AddOrder): Promise<void> => {
     const orderNumber = await generateOrderNumber();
     await prisma.$transaction(async (tx) => {
         const quotation_id = await tx.quotation.findUnique({
@@ -50,7 +50,9 @@ export const addOrderService = async ({ quotation_no, height, total, total_body,
                     status: status,
                     colour: colour,
                     quotation_id: quotation_id?.id,
-                    order_number: orderNumber
+                    order_number: orderNumber,
+                    fitted_by: fitted_by,
+                    bill_number: bill_number
                 }
             })
         }
@@ -115,8 +117,49 @@ export const getOrderByIdService = async (id: string): Promise<Order | null> => 
         },
         include: Include
     });
-    if(!order) return null;
+    if (!order) return null;
     return order;
+}
+
+export const editOrderService = async ({ quotation_no, height, total, total_body, pi_number, po_number, dispatch_at, status, colour, deal_id, fitted_by, bill_number }: AddOrder, id: string): Promise<void> => {
+    await prisma.$transaction(async (tx) => {
+        if (quotation_no) {
+            const quotation_id = await tx.quotation.findUnique({
+                where: {
+                    quotation_no: quotation_no
+                },
+                select: {
+                    id: true
+                }
+            });
+            await tx.order.update({
+                where: {
+                    id: parseInt(id)
+                },
+                data: {
+                    quotation_id: quotation_id?.id
+                }
+            })
+        }
+        await tx.order.update({
+            where: {
+                id: parseInt(id)
+            },
+            data: {
+                deal_id: deal_id,
+                dispatch_at: dispatch_at,
+                height: height,
+                total_body: total_body,
+                balance: total,
+                pi_number: pi_number,
+                po_number: po_number,
+                status: status,
+                colour: colour,
+                fitted_by: fitted_by,
+                bill_number: bill_number
+            }
+        })
+    })
 }
 
 export const addPaymentService = async ({ amount, date }: AddPayment, order_id: string): Promise<void> => {

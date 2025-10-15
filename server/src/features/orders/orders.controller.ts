@@ -1,10 +1,9 @@
 import { Request, Response } from "express"
 import { addOrderSchema, addPaymentSchema, ErrorResponse, GetOrderByIdSuccessResponse, GetOrderSuccessResponse, SuccessResponse } from "zs-crm-common";
-import { addOrderService, addPaymentService, deletePaymentService, editPaymentService, getOrderByIdService, getOrderService } from "./orders.service";
-import z from "zod/v4";
+import { addOrderService, addPaymentService, deletePaymentService, editOrderService, editPaymentService, getOrderByIdService, getOrderService } from "./orders.service";
 
 export const addOrderController = async (req: Request, res: Response<ErrorResponse | SuccessResponse>): Promise<any> => {
-    const { quotation_no, height, total, total_body, pi_number, po_number, dispatch_at, status, colour, deal_id } = req.body;
+    const { quotation_no, height, total, total_body, pi_number, po_number, dispatch_at, status, colour, deal_id, fitted_by, bill_number } = req.body;
     console.log(req.body)
     const validation = addOrderSchema.safeParse({ ...req.body, dispatch_at: new Date(dispatch_at) });
     if (!validation.success) {
@@ -14,7 +13,7 @@ export const addOrderController = async (req: Request, res: Response<ErrorRespon
         })
     }
     try {
-        await addOrderService({ quotation_no, height, total, total_body, pi_number, po_number, dispatch_at, status, colour, deal_id });
+        await addOrderService({ quotation_no, height, total, total_body, pi_number, po_number, dispatch_at, status, colour, deal_id, fitted_by, bill_number });
         return res.status(200).json({
             message: `Order added  successfully`,
         })
@@ -63,6 +62,30 @@ export const getOrderByIdController = async (req: Request, res: Response<GetOrde
         })
     } catch (error) {
         console.log(`Error in fetching order by Id:${id}`, error);
+        return res.status(500).send({
+            message: "Internal server error",
+            error: error
+        });
+    }
+}
+
+export const editOrderController = async (req: Request, res: Response<ErrorResponse | SuccessResponse>): Promise<any> => {
+    const { quotation_no, height, total, total_body, pi_number, po_number, dispatch_at, status, colour, deal_id, fitted_by, bill_number } = req.body;
+    const id = req.params.id;
+    const validation = addOrderSchema.safeParse({ ...req.body, dispatch_at: new Date(dispatch_at) });
+    if (!validation.success) {
+        return res.status(400).json({
+            message: "Input validation error",
+            error: validation.error.issues
+        })
+    }
+    try {
+        await editOrderService({ quotation_no, height, total, total_body, pi_number, po_number, dispatch_at, status, colour, deal_id, fitted_by, bill_number }, id);
+        return res.status(200).json({
+            message: `Order edited  successfully`,
+        })
+    } catch (error) {
+        console.log(`Error in editing order`, error);
         return res.status(500).send({
             message: "Internal server error",
             error: error
