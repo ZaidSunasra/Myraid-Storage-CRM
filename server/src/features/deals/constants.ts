@@ -28,5 +28,14 @@ export const Include = {
                 }
             }
         }
+    },
+    quotation: {
+        select: {
+            quotation_products: {
+                select: {
+                    name: true
+                }
+            }
+        }
     }
 }

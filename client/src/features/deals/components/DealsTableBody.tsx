@@ -107,7 +107,13 @@ const DealsTableBody = ({ data }: { data: GetAllDealSuccessResponse }) => {
                             </div>
                         </TableCell>
                         <TableCell>
-                            Bay 2 Compartment 7
+                            {deal.quotation && deal.quotation.length > 0 && deal.quotation[0].quotation_products.length > 0 ? (
+                                <span className="bg-blue-100 text-blue-800 text-sm px-2 py-1 rounded-full">
+                                    {deal.quotation[0].quotation_products[0].name}
+                                </span>
+                            ) : (
+                                <span className="text-gray-400 italic">No subject provided</span>
+                            )}
                         </TableCell>
                         <TableCell>
                             <Badge className={`${bg} w-4/5`}>

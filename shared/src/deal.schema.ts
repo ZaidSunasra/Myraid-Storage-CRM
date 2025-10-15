@@ -37,7 +37,12 @@ export type GetDealOutput = Deal & {
     assigned_to: Assignee[];
     product: Product;
     source: Source;
-    client_detail: Client_Details
+    client_detail: Client_Details;
+    quotation : {
+        quotation_products: {
+            name: string
+        }[]
+    }[]
 }
 
 export type GetAllDealOutput = {

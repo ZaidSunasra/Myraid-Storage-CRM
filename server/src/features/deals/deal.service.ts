@@ -1,4 +1,4 @@
-import { Deal_Status, Notification_Type } from "@prisma/client";
+import { Deal_Status } from "@prisma/client";
 import { prisma } from "../../libs/prisma"
 import { AddDeal, DEPARTMENTS, Deal, GetAllDealOutput, GetDealOutput, GetOnlyDealIdOutput } from "zs-crm-common";
 import { Include } from "./constants";
@@ -344,7 +344,8 @@ export const editDealService = async ({ company_id, employee_id, source_id, prod
             }
             await tx.notification.updateMany({ where: { deal_id }, data: { deal_id: newDealId } });
             await tx.drawing.updateMany({ where: { deal_id }, data: { deal_id: newDealId } });
-            await tx.quotation.updateMany({ where: { deal_id }, data: { deal_id: newDealId } });
+            await tx.quotation.updateMany({ where: { deal_id }, data: { deal_id: newDealId, quotation_no: newDealId } });
+            await tx.order.updateMany({ where: { deal_id }, data: { deal_id: newDealId } });
             await tx.description.updateMany({ where: { deal_id }, data: { deal_id: newDealId } });
             await tx.deal.delete({ where: { id: deal_id } })
         }
