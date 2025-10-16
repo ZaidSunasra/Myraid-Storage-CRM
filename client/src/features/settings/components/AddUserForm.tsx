@@ -6,7 +6,7 @@ import { Input } from "@/shared/components/ui/input"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/shared/components/ui/select"
 import { toTitleCase } from "@/utils/formatData"
 import { zodResolver } from "@hookform/resolvers/zod"
-import { User } from "lucide-react"
+import { User, X } from "lucide-react"
 import { useForm } from "react-hook-form"
 import { type AddUser, DEPARTMENTS, type EditUser, editUserSchema, signupSchema } from "zs-crm-common"
 
@@ -41,12 +41,24 @@ const AddUserForm = ({ userData, info, reset }: { userData: AddUser | EditUser |
     }
 
     return <Card>
-        <CardHeader>
-            <CardTitle className="flex items-center space-x-2">
-                <User className="h-5 w-5" />
-                <span>Lead Details</span>
-            </CardTitle>
-            <CardDescription>Enter the contact person and product information</CardDescription>
+        <CardHeader className="flex flex-col sm:flex-row justify-between items-start sm:items-center">
+            <div>
+                <CardTitle className="flex items-center space-x-2">
+                    <User className="h-5 w-5 text-blue-600" />
+                    <span>User Details</span>
+                </CardTitle>
+                <CardDescription>
+                    Enter the person information
+                </CardDescription>
+            </div>
+            <Button
+                variant="ghost"
+                size="icon"
+                onClick={() => reset()}
+                className="mt-2 sm:mt-0 text-gray-600 hover:text-red-600 hover:bg-red-50 transition-colors"
+            >
+                <X className="h-5 w-5" />
+            </Button>
         </CardHeader>
         <CardContent className="space-y-6">
             <Form {...form}>
