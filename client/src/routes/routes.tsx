@@ -1,4 +1,5 @@
 import LandingPage from "@/features/auth/pages/LandingPage";
+import ProfilePage from "@/features/auth/pages/ProfilePage";
 import CalenderPage from "@/features/calender/pages/CalenderPage";
 import AddDealPage from "@/features/deals/pages/AddDealPage";
 import DealsPage from "@/features/deals/pages/DealsPage";
@@ -29,6 +30,7 @@ const Router = () => {
 		<Routes>
 			<Route path="/" element={<LandingPage />} />
 			<Route path="/notifications" element={<NotificationPage />} />
+			<Route path="/profile" element={<ProfilePage />} />
 			<Route path="/unauthorized-page" element={<UnauthorizedPage />} />
 			<Route element={<ProtectedRoute permissionKey="add_lead" />} >
 				<Route path="/lead/add" element={<AddLeadPage />} />

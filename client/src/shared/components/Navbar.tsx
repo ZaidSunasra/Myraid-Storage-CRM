@@ -2,7 +2,7 @@ import { useState } from "react";
 import { NavLink, useNavigate } from "react-router";
 import { Avatar } from "@/shared/components/ui/avatar";
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuLabel, DropdownMenuSeparator, DropdownMenuTrigger } from "@/shared/components/ui/dropdown-menu";
-import { BellIcon, Menu, User, X } from "lucide-react";
+import { BellIcon, LogOutIcon, Menu, User, X } from "lucide-react";
 import { useLogout } from "@/api/auth/auth.mutation";
 import { useNotifications } from "@/context/NotificationContext";
 import { useUser } from "@/context/UserContext";
@@ -10,7 +10,7 @@ import { navItems } from "@/utils/getNavigationLink";
 
 const Navbar = () => {
 
-	const {user} = useUser();
+	const { user } = useUser();
 	const department = user?.department;
 
 	const [menuOpen, setMenuOpen] = useState(false);
@@ -59,7 +59,14 @@ const Navbar = () => {
 							<DropdownMenuContent align="end">
 								<DropdownMenuLabel>My Account</DropdownMenuLabel>
 								<DropdownMenuSeparator />
-								<DropdownMenuItem onClick={onSubmit}>Sign out</DropdownMenuItem>
+								<DropdownMenuItem onClick={() => navigate("/profile")}>
+									<User className="h-5 w-5" />
+									<span>Profile</span>
+								</DropdownMenuItem>
+								<DropdownMenuItem onClick={onSubmit}>
+									<LogOutIcon className="h-5 w-5" />
+									<span>Sign Out</span>
+								</DropdownMenuItem>
 							</DropdownMenuContent>
 						</DropdownMenu>
 						<div className="lg:hidden h-8 w-8 flex items-center">
