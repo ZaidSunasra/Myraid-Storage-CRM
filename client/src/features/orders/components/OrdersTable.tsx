@@ -16,6 +16,8 @@ import { capitalize, toTitleCase } from "@/utils/formatData";
 import { format } from "date-fns";
 import { calculateRemainingBalance, calculateTotalAmount, calculateTotalBody } from "../utils";
 import { useNavigate } from "react-router";
+import { useUser } from "@/context/UserContext";
+import { DEPARTMENTS } from "zs-crm-common";
 
 const OrdersTable = () => {
 
@@ -26,6 +28,7 @@ const OrdersTable = () => {
     const debouncedSearch = useDebounce(searchInput, 500);
     const lastPage = Math.ceil((data?.totalOrders || 0) / rows) == 0 ? 1 : Math.ceil((data?.totalOrders || 0) / rows);
     const navigate = useNavigate();
+    const { user } = useUser();
 
     useEffect(() => {
         setSearch(debouncedSearch, search);
@@ -76,15 +79,15 @@ const OrdersTable = () => {
                             </div>
                         </TableHead>
                         <TableHead>Dispatch</TableHead>
-                        <TableHead>PO Number</TableHead>
-                        <TableHead>Deal Number</TableHead>
-                        <TableHead>Amount</TableHead>
-                        <TableHead>Bill No</TableHead>
-                        <TableHead>Company</TableHead>
+                        {user?.department && user.department !== DEPARTMENTS[2] && <TableHead>PO Number</TableHead>}
+                        {user?.department && user.department !== DEPARTMENTS[2] && <TableHead>Deal Number</TableHead>}
+                        {user?.department && user.department !== DEPARTMENTS[2] && <TableHead>Amount</TableHead>}
+                        {user?.department && user.department !== DEPARTMENTS[2] && <TableHead>Bill No</TableHead>}
+                        {user?.department && user.department !== DEPARTMENTS[2] && <TableHead>Company</TableHead>}
                         <TableHead>Height</TableHead>
                         <TableHead>Body</TableHead>
                         <TableHead>Colour</TableHead>
-                        <TableHead>Fittted By</TableHead>
+                        {user?.department && user.department !== DEPARTMENTS[2] && <TableHead>Fittted By</TableHead>}
                     </TableRow>
                 </TableHeader>
                 <TableBody>
@@ -97,22 +100,22 @@ const OrdersTable = () => {
                                 </TableCell>
                                 <TableCell>{format(order.created_at, "dd/MM/yyyy")}</TableCell>
                                 <TableCell>{format(order.dispatch_at, "dd/MM/yyyy")}</TableCell>
-                                <TableCell className={`${order.pi_number && order.status !== "dispatched" ? "bg-purple-400" : ""}`}>
+                                {user?.department && user.department !== DEPARTMENTS[2] && <TableCell className={`${order.pi_number && order.status !== "dispatched" ? "bg-purple-400" : ""}`}>
                                     {order.po_number}
-                                </TableCell>
-                                <TableCell>
+                                </TableCell>}
+                                {user?.department && user.department !== DEPARTMENTS[2] && <TableCell>
                                     {order.deal_id.replace(/-/g, "/").replace(/_/g, "-")}
-                                </TableCell>
-                                <TableCell>
+                                </TableCell>}
+                                {user?.department && user.department !== DEPARTMENTS[2] && <TableCell>
                                     {remainingBalance}
-                                </TableCell>
-                                <TableCell>{order.bill_number}</TableCell>
-                                <TableCell>
+                                </TableCell>}
+                                {user?.department && user.department !== DEPARTMENTS[2] && <TableCell>{order.bill_number}</TableCell>}
+                                {user?.department && user.department !== DEPARTMENTS[2] && <TableCell>
                                     <div className="flex items-center">
                                         <Building2 className="h-4 w-4 mr-2 " />
                                         {toTitleCase(order.deal.company.name)}
                                     </div>
-                                </TableCell>
+                                </TableCell>}
                                 <TableCell>
                                     {order.height}
                                 </TableCell>
@@ -122,14 +125,14 @@ const OrdersTable = () => {
                                 <TableCell>
                                     {capitalize(order.colour)}
                                 </TableCell>
-                                <TableCell>
+                                {user?.department && user.department !== DEPARTMENTS[2] && <TableCell>
                                     {toTitleCase(order.fitted_by)}
-                                </TableCell>
+                                </TableCell>}
                             </TableRow>
                         )
                     })}
                 </TableBody>
-                <TableFooter>
+                {user?.department && user.department !== DEPARTMENTS[2] && <TableFooter>
                     <TableRow>
                         <TableCell>Total</TableCell>
                         <TableCell></TableCell>
@@ -144,7 +147,7 @@ const OrdersTable = () => {
                         <TableCell></TableCell>
                         <TableCell></TableCell>
                     </TableRow>
-                </TableFooter>
+                </TableFooter>}
             </Table>
             <PaginationControls lastPage={lastPage} />
         </CardContent>
