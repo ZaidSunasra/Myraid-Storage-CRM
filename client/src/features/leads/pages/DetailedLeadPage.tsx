@@ -133,7 +133,7 @@ const DetailedLeadPage = () => {
 								</DialogContent>
 							</Dialog>}
 						</div>
-						<LeadSideBar />
+						{/* <LeadSideBar /> */}
 					</div>
 				</div>
 			</div>
