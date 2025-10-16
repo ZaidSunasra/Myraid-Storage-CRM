@@ -22,6 +22,10 @@ model User {
   deal           Deal[]
   drawing        Drawing[]
   quotation      Quotation[]
+
+  @@index([email])
+  @@index([phone])
+  @@index([department])
 }
 
 model Company {
@@ -33,6 +37,9 @@ model Company {
   client_details Client[]
   lead           Lead[]
   deal           Deal[]
+
+  @@index([name])
+  @@index([gst_no])
 }
 
 model Lead {
@@ -51,6 +58,11 @@ model Lead {
   client_detail Client         @relation(fields: [client_id], references: [id])
   source        Source         @relation(fields: [source_id], references: [id])
   product       Product        @relation(fields: [product_id], references: [id])
+
+  @@index([created_at])
+  @@index([source_id])
+  @@index([product_id])
+  @@index([is_converted])
 }
 
 model Description {
@@ -65,6 +77,9 @@ model Description {
   notification Notification[]
   deal         Deal?          @relation(fields: [deal_id], references: [id])
   deal_id      String?
+
+  @@index([lead_id])
+  @@index([deal_id])
 }
 
 model Source {
@@ -89,6 +104,10 @@ model Asignee {
   user_id Int
   deal    Deal?   @relation(fields: [deal_id], references: [id])
   deal_id String?
+
+  @@index([user_id])
+  @@index([lead_id])
+  @@index([deal_id])
 }
 
 model Client {
@@ -101,6 +120,8 @@ model Client {
   emails     Email[]
   phones     Phone[]
   deal       Deal[]
+
+  @@index([company_id])
 }
 
 model Email {
@@ -108,6 +129,8 @@ model Email {
   email     String?
   client    Client  @relation(fields: [client_id], references: [id], onDelete: Cascade)
   client_id Int
+
+  @@index([client_id])
 }
 
 model Phone {
@@ -115,6 +138,8 @@ model Phone {
   phone     String
   client    Client @relation(fields: [client_id], references: [id], onDelete: Cascade)
   client_id Int
+
+  @@index([client_id])
 }
 
 model Notification {
@@ -134,6 +159,13 @@ model Notification {
   description_id Int?
   order          Order?            @relation(fields: [order_id], references: [id])
   order_id       Int?
+
+  @@index([type])
+  @@index([is_sent])
+  @@index([created_at])
+  @@index([lead_id])
+  @@index([deal_id])
+  @@index([order_id])
 }
 
 model Recipient {
@@ -146,6 +178,10 @@ model Recipient {
   ready_at        DateTime?
   notification    Notification @relation(fields: [notification_id], references: [id], onDelete: Cascade)
   user            User         @relation(fields: [user_id], references: [id])
+
+  @@index([user_id])
+  @@index([notification_id])
+  @@index([is_read])
 }
 
 model Deal {
@@ -171,6 +207,13 @@ model Deal {
   user          User           @relation(fields: [updated_by], references: [id])
   updated_by    Int
   order         Order?
+
+  @@index([company_id])
+  @@index([client_id])
+  @@index([source_id])
+  @@index([product_id])
+  @@index([lead_id])
+  @@index([deal_status])
 }
 
 model Drawing {
@@ -192,6 +235,10 @@ model Drawing {
   uploaded_by   Int
   user          User           @relation(fields: [uploaded_by], references: [id])
   show_in_order Boolean        @default(false)
+
+  @@index([deal_id])
+  @@index([order_id])
+  @@index([status])
 }
 
 model Quotation {
@@ -209,10 +256,12 @@ model Quotation {
   deal               Deal                @relation(fields: [deal_id], references: [id])
   quotation_products QuotationProducts[]
   order              Order?
-  user               User              @relation(fields: [created_by], references: [id])
-  created_by             Int
+  user               User                @relation(fields: [created_by], references: [id])
+  created_by         Int
 
   @@unique([quotation_no])
+  @@index([deal_id])
+  @@index([created_by])
 }
 
 model QuotationProducts {
@@ -222,6 +271,8 @@ model QuotationProducts {
   quotation_item    QuotationItem[]
   quotation         Quotation          @relation(fields: [quotation_id], references: [id], onDelete: Cascade)
   quotation_working QuotationWorking[]
+
+  @@index([quotation_id])
 }
 
 model QuotationItem {
@@ -238,6 +289,8 @@ model QuotationItem {
   per_bay_qty          Int
   quotation_products   QuotationProducts @relation(fields: [quotation_product_id], references: [id], onDelete: Cascade)
   quotation_product_id Int
+
+  @@index([quotation_product_id])
 }
 
 model QuotationWorking {
@@ -259,6 +312,8 @@ model QuotationWorking {
   discount             Decimal           @default(0)
   quotation_products   QuotationProducts @relation(fields: [quotation_product_id], references: [id], onDelete: Cascade)
   quotation_product_id Int
+
+  @@index([quotation_product_id])
 }
 
 model BaseProduct {
@@ -271,6 +326,8 @@ model BaseProduct {
   default_depth  Int     @default(0)
   per_bay_qty    Int
   compartment    Int
+
+  @@index([product_type])
 }
 
 model Order {
@@ -294,6 +351,11 @@ model Order {
   deal         Deal           @relation(fields: [deal_id], references: [id])
   quotation_id Int            @unique
   quotation    Quotation      @relation(fields: [quotation_id], references: [id])
+
+  @@index([deal_id])
+  @@index([quotation_id])
+  @@index([status])
+  @@index([order_number])
 }
 
 model Advance {
@@ -302,12 +364,16 @@ model Advance {
   advance_date   DateTime
   order_id       Int
   order          Order    @relation(fields: [order_id], references: [id])
+
+  @@index([order_id])
 }
 
 model Permission {
   id             Int          @id @default(autoincrement())
   permission_key String
   allowed_dept   Department[]
+
+  @@index([permission_key])
 }
 
 enum Upload_Type {
