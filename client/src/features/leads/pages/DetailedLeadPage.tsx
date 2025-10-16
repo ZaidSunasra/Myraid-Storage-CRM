@@ -6,7 +6,6 @@ import { Button } from "@/shared/components/ui/button";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/shared/components/ui/tabs";
 import { ArrowLeft, ArrowRightLeft, Edit } from "lucide-react";
 import Description from "@/shared/components/Description";
-import LeadSideBar from "../components/LeadSidebar";
 import Navbar from "@/shared/components/Navbar";
 import { type GetEmployeeOutput, type GetLeadOutput } from "zs-crm-common";
 import DetailedPageLoader from "@/shared/components/loaders/DetailedPageLoader";

@@ -1,6 +1,5 @@
 import Navbar from "@/shared/components/Navbar";
 import { Skeleton } from "@/shared/components/ui/skeleton";
-import LeadSideBar from "../../../features/leads/components/LeadSidebar";
 
 const DetailedPageLoader = () => {
 	return (
