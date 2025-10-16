@@ -1,24 +1,5 @@
-import type { AddUser, department, EditUser, LoginSuccessResponse, LoginUser, SuccessResponse } from "zs-crm-common";
+import type { AddUser, ChangePassword, EditUser, GetUserDetailSuccessResponse, LoginSuccessResponse, LoginUser, SuccessResponse } from "zs-crm-common";
 import axiosInstance from "../axiosInstance";
-import z from "zod/v4";
-
-export const changePasswordSchema = z.object({
-	new_password: z.string().min(6, "Password should be 6 characters long at least"),
-	old_password: z.string().min(6, "Password should be 6 characters long at least"),
-})
-export type ChangePassword = z.infer<typeof changePasswordSchema>;
-
-export type GetUserDetailOutput = {
-	first_name: string,
-	last_name: string,
-	email: string,
-	phone: string,
-	department: department,
-	quotation_code: string | null,
-	id: number
-}
-
-export type GetUserDetailSuccessResponse = SuccessResponse & { detail: GetUserDetailOutput | null }
 
 export const login = async (data: LoginUser): Promise<LoginSuccessResponse> => {
 	const response = await axiosInstance.post("/auth/login", data);

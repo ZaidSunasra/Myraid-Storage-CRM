@@ -1,9 +1,8 @@
 import { Request, Response } from "express";
 import jwt from "jsonwebtoken";
-import { loginSchema, signupSchema, LoginSuccessResponse, SignupResponse, ErrorResponse, SuccessResponse, editUserSchema, department } from "zs-crm-common";
+import { loginSchema, signupSchema, LoginSuccessResponse, SignupResponse, ErrorResponse, SuccessResponse, editUserSchema, department, changePasswordSchema, GetUserDetailSuccessResponse } from "zs-crm-common";
 import { addUser, changePasswordService, comparePassword, editUserService, findExistingEmail, findExistingPhone, getUserDetailService, hashPassword, resetPasswordService } from "./auth.service";
 import { cookieOptions } from "../../utils/constant";
-import z from "zod/v4";
 
 export const loginController = async (req: Request, res: Response<LoginSuccessResponse | ErrorResponse>): Promise<any> => {
 
@@ -136,11 +135,6 @@ export const editUserController = async (req: Request, res: Response<SignupRespo
     }
 }
 
-export const changePasswordSchema = z.object({
-    new_password: z.string().min(6, "Password should be 6 characters long at least"),
-    old_password: z.string().min(6, "Password should be 6 characters long at least"),
-})
-
 export const changePasswordController = async (req: Request, res: Response<SuccessResponse | ErrorResponse>): Promise<any> => {
     const { old_password, new_password } = req.body;
     const user = res.locals.user;
@@ -193,18 +187,6 @@ export const resetPasswordController = async (req: Request, res: Response<Succes
         });
     }
 }
-
-export type GetUserDetailOutput = {
-    first_name: string,
-    last_name: string,
-    email: string,
-    phone: string,
-    department: department,
-    quotation_code: string | null,
-    id: number
-}
-
-export type GetUserDetailSuccessResponse = SuccessResponse & { detail: GetUserDetailOutput | null }
 
 export const getUserDetailController = async (req: Request, res: Response<ErrorResponse | GetUserDetailSuccessResponse>): Promise<any> => {
     const user = res.locals.user;

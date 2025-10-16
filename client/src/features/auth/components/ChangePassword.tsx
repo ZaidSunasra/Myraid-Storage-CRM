@@ -4,8 +4,8 @@ import { Button } from "@/shared/components/ui/button";
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/shared/components/ui/form";
 import { Input } from "@/shared/components/ui/input";
 import { type Dispatch, type SetStateAction } from "react";
-import { changePasswordSchema, type ChangePassword } from "@/api/auth/auth.api";
 import { useChangePassword } from "@/api/auth/auth.mutation";
+import { changePasswordSchema, type ChangePassword } from "zs-crm-common";
 
 const ChangePasswordForm = ({ setDialog }: { setDialog: Dispatch<SetStateAction<boolean>> }) => {
     

@@ -1,7 +1,8 @@
-import { z } from "zod/v4"; 
+import { z } from "zod/v4";
+import { SuccessResponse } from "./common.schema";
 
 export const DEPARTMENTS = ["sales", "admin", "factory", "drawing", "accounts"] as const;
-export type department = typeof DEPARTMENTS[number]; 
+export type department = typeof DEPARTMENTS[number];
 
 export const loginSchema = z.object({
     email: z.email("Invalid email address"),
@@ -9,8 +10,8 @@ export const loginSchema = z.object({
 });
 
 export const signupSchema = z.object({
-    first_name: z.string().min(1,"First name required"),
-    last_name: z.string().min(1,"Last name required"),
+    first_name: z.string().min(1, "First name required"),
+    last_name: z.string().min(1, "Last name required"),
     email: z.email("Invalid email address"),
     phone: z.string().max(15, "Invalid phone number"),
     password: z.string().min(6, "Password should be atleast 6 characters long"),
@@ -41,3 +42,24 @@ export type SignupResponse = {
 export type AddUser = z.infer<typeof signupSchema>;
 export type EditUser = z.infer<typeof editUserSchema>;
 export type LoginUser = z.infer<typeof loginSchema>;
+
+export const changePasswordSchema = z.object({
+    new_password: z.string().min(6, "Password should be 6 characters long at least"),
+    old_password: z.string().min(6, "Password should be 6 characters long at least"),
+})
+
+export type ChangePassword = z.infer<typeof changePasswordSchema>;
+
+export type GetUserDetailOutput = {
+    first_name: string,
+    last_name: string,
+    email: string,
+    phone: string,
+    department: department,
+    quotation_code: string | null,
+    id: number
+}
+
+export type GetUserDetailSuccessResponse = SuccessResponse & {
+    detail: GetUserDetailOutput | null
+}
