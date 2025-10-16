@@ -2,6 +2,7 @@ import bcrypt from "bcryptjs"
 import { prisma } from "../../libs/prisma"
 import { AddUser, EditUser } from "zs-crm-common"
 import { User } from "@prisma/client";
+import { GetUserDetailOutput } from "./auth.controller";
 
 export const findExistingEmail = async (email: string, user_id?: number): Promise<User | null> => {
 
@@ -63,4 +64,44 @@ export const editUserService = async ({ first_name, last_name, email, phone, quo
             department: department
         }
     });
+}
+
+export const changePasswordService = async (new_password: string, user: any) : Promise<void> => {
+    await prisma.user.update({
+        where: {
+            id: user.id
+        },
+        data: {
+            password: new_password
+        }
+    });
+}
+
+export const resetPasswordService = async (new_password: string, user_id: string) : Promise<void> => {
+    await prisma.user.update({
+        where: {
+            id: parseInt(user_id)
+        },
+        data: {
+            password: new_password
+        }
+    });
+}
+
+export const getUserDetailService = async (user: any) : Promise<GetUserDetailOutput | null> => {
+    const detail = await prisma.user.findUnique({
+        where: {
+            id: user.id
+        },
+        select: {
+            last_name: true,
+            first_name: true,
+            email: true,
+            phone: true,
+            department: true,
+            quotation_code: true,
+            id: true
+        }
+    });
+    return detail;
 }
