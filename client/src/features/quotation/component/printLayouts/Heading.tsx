@@ -49,7 +49,8 @@ const Heading = ({ quotation, name, setName }: { quotation: GetQuotationOutput, 
                 <p>Buyer</p>
                 <br />
                 <br />
-                <br />
+                <p>Name: {quotation.deal.company.name}</p>
+                <p>GST: {quotation.deal.company.gst_no ? quotation.deal.company.gst_no : "No GST provided"}</p>
                 <p>Email: {quotation.deal.client_detail.emails.length > 0 ? quotation.deal.client_detail.emails[0].email : ""}</p>
                 <p>Phone: {quotation.deal.client_detail.phones[0]?.phone}</p>
                 <p>Kind Attach: Mr. {capitalize(quotation.deal.client_detail.first_name)} {capitalize(quotation.deal.client_detail.last_name)}</p>
