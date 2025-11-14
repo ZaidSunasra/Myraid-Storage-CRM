@@ -1,5 +1,4 @@
 import { type Dispatch, type SetStateAction } from "react"
-import { useParams } from "react-router"
 import Logo from "@/assets/logo.png"
 import { format } from "date-fns"
 import { capitalize } from "@/utils/formatData"
@@ -7,8 +6,6 @@ import { Input } from "@/shared/components/ui/input"
 import type { GetQuotationOutput } from "zs-crm-common"
 
 const Heading = ({ quotation, name, setName }: { quotation: GetQuotationOutput, name: string[], setName: Dispatch<SetStateAction<string[]>> }) => {
-
-    const { id } = useParams();
 
     return (
         <div>
@@ -30,7 +27,7 @@ const Heading = ({ quotation, name, setName }: { quotation: GetQuotationOutput, 
             <p>Factory Address: Gala No 5, Vakan Compound, Near Dynamic Co, Vakan Pada Raod, Vasai Phata, Vasai East, Dis. Palghar 401208. </p>
             <hr />
             <div className="mb-6 font-bold">
-                <p>Quotation No: {id}</p>
+                <p>Quotation No: {quotation.quotation_no}</p>
                 {quotation.quotation_products.length == 1 &&
                     <>
                         <Input
@@ -45,15 +42,44 @@ const Heading = ({ quotation, name, setName }: { quotation: GetQuotationOutput, 
                         {name[0] !== "" && <p> {name[0]} </p>}
                     </>
                 }
-                <p>Date: {format(quotation.created_at, "dd-MM-yyyy")}</p>
-                <p>Buyer</p>
-                <br />
-                <br />
-                <p>Name: {quotation.deal.company.name}</p>
-                <p>GST: {quotation.deal.company.gst_no ? quotation.deal.company.gst_no : "No GST provided"}</p>
-                <p>Email: {quotation.deal.client_detail.emails.length > 0 ? quotation.deal.client_detail.emails[0].email : ""}</p>
-                <p>Phone: {quotation.deal.client_detail.phones[0]?.phone}</p>
-                <p>Kind Attach: Mr. {capitalize(quotation.deal.client_detail.first_name)} {capitalize(quotation.deal.client_detail.last_name)}</p>
+                <div className=" text-sm leading-relaxed tracking-wide text-gray-800 print:text-black">
+                    <p className="font-semibold text-gray-900">
+                        Date: <span className="font-bold">{format(quotation.created_at, "dd-MM-yyyy")}</span>
+                    </p>
+                    <p className="text-lg font-bold text-gray-900 underline underline-offset-4">
+                        Buyer
+                    </p>
+                    <p className="uppercase font-semibold text-base tracking-wider">
+                        {quotation.deal.company.name}
+                    </p>
+                    <p className="w-2/5 break-words text-gray-700 leading-snug">
+                        {quotation.deal.company.address
+                            ? quotation.deal.company.address
+                            : "Address not provided"}
+                    </p>
+                    <p className="text-gray-800">
+                        <span className="font-semibold">GST:</span>{" "}
+                        {quotation.deal.company.gst_no
+                            ? quotation.deal.company.gst_no
+                            : "No GST provided"}
+                    </p>
+                    <p className="text-gray-800">
+                        <span className="font-semibold">Email:</span>{" "}
+                        {quotation.deal.client_detail.emails.length > 0
+                            ? quotation.deal.client_detail.emails[0].email
+                            : ""}
+                    </p>
+                    <p className="text-gray-800">
+                        <span className="font-semibold">Phone:</span>{" "}
+                        {quotation.deal.client_detail.phones[0]?.phone}
+                    </p>
+                    <p className="text-gray-800">
+                        <span className="font-semibold">Kind Attn:</span>{" "}
+                        Mr.{" "}
+                        {capitalize(quotation.deal.client_detail.first_name)}{" "}
+                        {capitalize(quotation.deal.client_detail.last_name)}
+                    </p>
+                </div>
             </div>
         </div>
     )
