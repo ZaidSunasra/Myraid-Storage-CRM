@@ -51,7 +51,7 @@ const OrderDetails = ({ data }: { data: Order }) => {
                 <div className="space-y-2">
                     <Label>Total Body</Label>
                     <div className="space-y-1">
-                        {data.height}
+                        {data.total_body}
                     </div>
                 </div>
                 <div className="space-y-2">

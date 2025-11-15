@@ -18,6 +18,7 @@ import { calculateRemainingBalance, calculateTotalAmount, calculateTotalBody } f
 import { useNavigate } from "react-router";
 import { useUser } from "@/context/UserContext";
 import { DEPARTMENTS } from "zs-crm-common";
+import { usePermissions } from "@/context/PermissionContext";
 
 const OrdersTable = () => {
 
@@ -29,6 +30,7 @@ const OrdersTable = () => {
     const lastPage = Math.ceil((data?.totalOrders || 0) / rows) == 0 ? 1 : Math.ceil((data?.totalOrders || 0) / rows);
     const navigate = useNavigate();
     const { user } = useUser();
+    const {canView} = usePermissions();
 
     useEffect(() => {
         setSearch(debouncedSearch, search);
@@ -132,7 +134,7 @@ const OrdersTable = () => {
                         )
                     })}
                 </TableBody>
-                {user?.department && user.department !== DEPARTMENTS[2] && <TableFooter>
+                {user?.department && canView(user?.department, "total_order_row") &&<TableFooter>
                     <TableRow>
                         <TableCell>Total</TableCell>
                         <TableCell></TableCell>
