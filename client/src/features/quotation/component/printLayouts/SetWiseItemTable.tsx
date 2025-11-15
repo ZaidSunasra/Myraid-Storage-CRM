@@ -6,14 +6,19 @@ import { calculatePrintMultiProductTotals, calculatePrintProductTotal } from "..
 
 const SetWiseItemTable = ({ quotation, name, setName, isDiscountGiven }: { quotation: GetQuotationOutput, name: string[], setName: Dispatch<SetStateAction<string[]>>, isDiscountGiven: boolean }) => {
 
+    let nonCompactorIndex = 1;
+
     return <>
         {
             quotation.quotation_products.map((product, index: number) => {
+                const isCompactor = product.name.startsWith("Compactor");
                 return (
                     <TableBody key={product.id}>
                         {quotation?.quotation_products && quotation?.quotation_products.length > 1 &&
                             <TableRow>
-                                <TableCell className="border border-black font-bold bg-gray-100 text-center">{String.fromCharCode(65 + index)}</TableCell>
+                                <TableCell className="border border-black font-bold bg-gray-100 text-center">
+                                    {isCompactor ? String.fromCharCode(65 + index) : nonCompactorIndex++}
+                                </TableCell>
                                 <TableCell colSpan={isDiscountGiven ? 6 : 4} className="border border-black font-bold bg-gray-100 text-center">
                                     <Input
                                         className="print:hidden"
@@ -29,7 +34,7 @@ const SetWiseItemTable = ({ quotation, name, setName, isDiscountGiven }: { quota
                             </TableRow>
                         }
                         {product.quotation_item.map((item, index: number) => {
-                            const compartment = product.name[6];
+                            const compartment = product.name.split(" ")[4];
                             const { setWiseProfit } = quotation.quotation_products.length == 1 ? calculatePrintProductTotal(product, item) : calculatePrintMultiProductTotals(quotation.quotation_products, item, product);
                             const discountRate = Number(((1 - product.quotation_working[0].discount / 100) * Number(setWiseProfit.toFixed(2))).toFixed(2));
                             return (
@@ -41,9 +46,10 @@ const SetWiseItemTable = ({ quotation, name, setName, isDiscountGiven }: { quota
                                         <div>
                                             {item.item_name}{" "}
                                             {item.item_code ? `(${item.item_code})` : ""}{" "}
+                                            {isCompactor ? `(QTY ${item.quantity})` : ``}
                                         </div>
                                         <div className="text-xs text-muted-foreground whitespace-pre-line">
-                                            {product.name.startsWith("Compactor") ? (
+                                            {isCompactor ? (
                                                 <>
                                                     {item.item_name !== "DOOR" && (
                                                         <>
@@ -60,7 +66,7 @@ const SetWiseItemTable = ({ quotation, name, setName, isDiscountGiven }: { quota
                                     {index === 0 &&
                                         <>
                                             <TableCell rowSpan={product.quotation_item.length} className="border border-black text-center border-t-0">
-                                                {product.quotation_working[0].set} SET
+                                                {isCompactor ? `${product.quotation_working[0].set} SET` : `${item.quantity}`}
                                             </TableCell>
                                             <TableCell rowSpan={product.quotation_item.length} className="border border-black text-center border-t-0">
                                                 {setWiseProfit.toFixed(2)}
@@ -68,7 +74,7 @@ const SetWiseItemTable = ({ quotation, name, setName, isDiscountGiven }: { quota
                                             {isDiscountGiven &&
                                                 <>
                                                     <TableCell rowSpan={product.quotation_item.length} className="border border-black text-center">
-                                                        {product.quotation_working[0].discount}
+                                                        {product.quotation_working[0].discount} %
                                                     </TableCell>
                                                     <TableCell rowSpan={product.quotation_item.length} className="border border-black text-center">
                                                         {discountRate.toFixed(2)}

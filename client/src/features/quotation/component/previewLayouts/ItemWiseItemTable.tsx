@@ -5,16 +5,20 @@ import { calculatePreviewMultiProductTotals, calculatePreviewProductTotal } from
 const ItemWiseItemTable = ({ isDiscountGiven }: { isDiscountGiven: boolean }) => {
 
     const { products, getProductItems } = useQuotation();
+    let nonCompactorIndex = 1;
 
     return (
         <>
             {products.map((product, index: number) => {
-                const items = getProductItems(product.id)
+                const items = getProductItems(product.id);
+                const isCompactor = product.name.startsWith("Compactor");
                 return (
                     <TableBody key={product.id}>
                         {products.length > 1 &&
                             <TableRow>
-                                <TableCell className="border border-black font-bold bg-gray-100 text-center">{String.fromCharCode(65 + index)}</TableCell>
+                                <TableCell className="border border-black font-bold bg-gray-100 text-center">
+                                    {isCompactor ? String.fromCharCode(65 + index) : nonCompactorIndex++}
+                                </TableCell>
                                 <TableCell colSpan={isDiscountGiven ? 6 : 4} className="border border-black font-bold bg-gray-100 text-center">
                                     {product.name}
                                 </TableCell>
@@ -35,7 +39,7 @@ const ItemWiseItemTable = ({ isDiscountGiven }: { isDiscountGiven: boolean }) =>
                                             {item.code ? `(${item.code})` : ""}{" "}
                                         </div>
                                         <div className="text-xs text-muted-foreground whitespace-pre-line">
-                                            {product.name.startsWith("Compactor") ? (
+                                            {isCompactor ? (
                                                 <>
                                                     {item.name !== "DOOR" && (
                                                         <>

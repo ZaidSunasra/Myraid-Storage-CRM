@@ -1,20 +1,25 @@
 import { type Dispatch, type SetStateAction } from "react"
-import {  TableBody, TableCell,  TableRow } from "@/shared/components/ui/table"
+import { TableBody, TableCell, TableRow } from "@/shared/components/ui/table"
 import { Input } from "@/shared/components/ui/input"
 import type { GetQuotationOutput } from "zs-crm-common"
 import { calculatePrintMultiProductTotals, calculatePrintProductTotal } from "../../utils/calculateTotal"
 
 const ItemWiseItemTable = ({ quotation, name, setName, isDiscountGiven }: { quotation: GetQuotationOutput, name: string[], setName: Dispatch<SetStateAction<string[]>>, isDiscountGiven: boolean }) => {
 
+    let nonCompactorIndex = 1;
+
     return <>
         {
             quotation.quotation_products.map((product, index: number) => {
+                const isCompactor = product.name.startsWith("Compactor");
                 return (
                     <TableBody key={product.id}>
                         {quotation.quotation_products && quotation.quotation_products.length > 1 &&
                             <TableRow>
-                                <TableCell className="border border-black font-bold bg-gray-100 text-center">{String.fromCharCode(65 + index)}</TableCell>
-                                <TableCell colSpan={isDiscountGiven ? 6: 4} className="border border-black font-bold bg-gray-100 text-center">
+                                <TableCell className="border border-black font-bold bg-gray-100 text-center">
+                                     {isCompactor ? String.fromCharCode(65 + index) : nonCompactorIndex++}
+                                    </TableCell>
+                                <TableCell colSpan={isDiscountGiven ? 6 : 4} className="border border-black font-bold bg-gray-100 text-center">
                                     <Input
                                         value={name[index] ?? ""}
                                         onChange={(e) =>
@@ -41,7 +46,7 @@ const ItemWiseItemTable = ({ quotation, name, setName, isDiscountGiven }: { quot
                                             {item.item_code ? `(${item.item_code})` : ""}{" "}
                                         </div>
                                         <div className="text-xs text-muted-foreground whitespace-pre-line">
-                                            {product.name.startsWith("Compactor") ? (
+                                            {isCompactor ? (
                                                 <>
                                                     {item.item_name !== "DOOR" && (
                                                         <>
@@ -64,7 +69,7 @@ const ItemWiseItemTable = ({ quotation, name, setName, isDiscountGiven }: { quot
                                     {isDiscountGiven &&
                                         <>
                                             <TableCell className="border border-black text-center">
-                                                {product.quotation_working[0].discount.toFixed(2)}
+                                                {product.quotation_working[0].discount} %
                                             </TableCell>
                                             <TableCell className="border border-black text-center">
                                                 {discountRate.toFixed(2)}

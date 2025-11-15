@@ -5,23 +5,27 @@ import { calculatePreviewMultiProductTotals, calculatePreviewProductTotal } from
 const SetWiseItemTable = ({ isDiscountGiven }: { isDiscountGiven: boolean }) => {
 
     const { products, getProductItems } = useQuotation();
+    let nonCompactorIndex = 1;
 
     return (
         <>
             {products.map((product, index: number) => {
-                const items = getProductItems(product.id)
+                const items = getProductItems(product.id);
+                const isCompactor = product.name.startsWith("Compactor");
                 return (
                     <TableBody key={product.id}>
                         {products.length > 1 &&
                             <TableRow>
-                                <TableCell className="border border-black font-bold bg-gray-100 text-center">{String.fromCharCode(65 + index)}</TableCell>
+                                <TableCell className="border border-black font-bold bg-gray-100 text-center">
+                                    {isCompactor ? String.fromCharCode(65 + index) : nonCompactorIndex++}
+                                </TableCell>
                                 <TableCell colSpan={isDiscountGiven ? 6 : 4} className="border border-black font-bold bg-gray-100 text-center">
                                     {product.name}
                                 </TableCell>
                             </TableRow>
                         }
                         {items.map((item, index: number) => {
-                            const compartment = product.name[6];
+                            const compartment = product.name.split(" ")[4];
                             const { setWiseProfit } = products.length == 1 ? calculatePreviewProductTotal(product, item) : calculatePreviewMultiProductTotals(products, item, product)
                             const discountRate = Number(setWiseProfit.toFixed(2)) * (1 - product.discount / 100);
                             return (
@@ -33,9 +37,10 @@ const SetWiseItemTable = ({ isDiscountGiven }: { isDiscountGiven: boolean }) => 
                                         <div>
                                             {item.name}{" "}
                                             {item.code ? `(${item.code})` : ""}{" "}
+                                            {isCompactor ? `(QTY ${item.quantity})` : ``}
                                         </div>
                                         <div className="text-xs text-muted-foreground whitespace-pre-line">
-                                            {product.name.startsWith("Compactor") ? (
+                                            {isCompactor ? (
                                                 <>
                                                     {item.name !== "DOOR" && (
                                                         <>
@@ -52,7 +57,7 @@ const SetWiseItemTable = ({ isDiscountGiven }: { isDiscountGiven: boolean }) => 
                                     {index === 0 &&
                                         <>
                                             <TableCell rowSpan={product.items.length} className="border border-black text-center">
-                                                {product.set} SET
+                                                {isCompactor ? `${product.set} SET` : `${item.quantity}`}
                                             </TableCell>
                                             <TableCell rowSpan={product.items.length} className="border border-black text-center">
                                                 {setWiseProfit.toFixed(2)}

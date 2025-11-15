@@ -13,7 +13,7 @@ import Heading from "../component/printLayouts/Heading"
 
 const QuotationPrint = () => {
 
-  const { quotation_id, id } = useParams();
+  const { quotation_id,  } = useParams();
   const { data, isPending, isError } = FetchQuotationById(quotation_id as string);
   const printRef = useRef<HTMLDivElement>(null)
 
@@ -26,7 +26,7 @@ const QuotationPrint = () => {
 
   const handlePrint = useReactToPrint({
     contentRef: printRef,
-    documentTitle: `Quotation ${id}`
+    documentTitle: `Quotation ${data?.quotation?.quotation_no}`
   })
 
   if (isPending) return <Skeleton className="h-screen w-screen bg-accent" />
