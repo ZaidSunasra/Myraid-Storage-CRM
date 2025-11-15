@@ -43,9 +43,11 @@ const DetailedOrderPage = () => {
                             </Button>
                         </NavLink>
                         <div>
-                            <h1 className="text-2xl font-bold ">
-                                {capitalize(data?.order?.deal.company.name as string)}
-                            </h1>
+                            {user?.department !== "factory" &&
+                                <h1 className="text-2xl font-bold ">
+                                    {capitalize(data?.order?.deal.company.name as string)}
+                                </h1>
+                            }
                             <p className="text-gray-600">{data?.order?.deal_id}</p>
                         </div>
                     </div>
@@ -63,7 +65,9 @@ const DetailedOrderPage = () => {
                         <TabsList className="grid w-full grid-cols-3 bg-background">
                             <TabsTrigger value="info"> Deal Information</TabsTrigger>
                             <TabsTrigger value="drawing">Drawings</TabsTrigger>
-                            <TabsTrigger value="payment">Payment</TabsTrigger>
+                            {user?.department && canView(user.department, "view_payment_information") &&
+                                <TabsTrigger value="payment">Payment</TabsTrigger>
+                            }
                         </TabsList>
                         <TabsContent value="info" className="space-y-6">
                             <OrderDetails data={data.order as Order} />
@@ -72,10 +76,12 @@ const DetailedOrderPage = () => {
                             <DrawingUploads context="order" />
                             <DrawingList context="order" />
                         </TabsContent>
-                        <TabsContent value="payment" className="space-y-6">
-                            <AddPayment />
-                            <OrderPaymentDetail data={data?.order as Order} />
-                        </TabsContent>
+                        {user?.department && canView(user.department, "view_payment_information") &&
+                            <TabsContent value="payment" className="space-y-6">
+                                <AddPayment />
+                                <OrderPaymentDetail data={data?.order as Order} />
+                            </TabsContent>
+                        }
                     </Tabs>
                 </div>
                 <div className="lg:col-span-1"></div>
