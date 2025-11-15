@@ -1,12 +1,17 @@
+import { usePermissions } from "@/context/PermissionContext"
+import { useUser } from "@/context/UserContext"
 import { Card, CardContent, CardHeader, CardTitle } from "@/shared/components/ui/card"
 import { Label } from "@/shared/components/ui/label"
 import { capitalize, toTitleCase } from "@/utils/formatData"
 import { format } from "date-fns"
-import {  Building2, Mail, MapPin, Phone, User } from "lucide-react"
+import { Building2, Mail, MapPin, Phone, User } from "lucide-react"
 import type { Assignee, GetDealOutput } from "zs-crm-common"
 
 
 const DealDetails = ({ data }: { data: GetDealOutput }) => {
+
+    const { user } = useUser();
+    const { canView } = usePermissions();
 
     return <>
         <Card className="bg-background">
@@ -26,51 +31,55 @@ const DealDetails = ({ data }: { data: GetDealOutput }) => {
                         </div>
                     </div>
                     <div className="space-y-2">
-                        <Label>GST No.</Label>
-                        <span>{data.company.gst_no == "" ? "No GST provided" : data.company.gst_no?.toUpperCase()} </span>
-                    </div>
-                    <div className="space-y-2">
                         <Label>Company</Label>
                         <div className="flex items-center space-x-2">
                             <Building2 className="h-4 w-4 text-gray-400" />
                             <span>{toTitleCase(data.company.name)}</span>
                         </div>
                     </div>
-                    <div className="space-y-2">
-                        <Label>Email</Label>
-                        <div className="flex flex-col space-y-2">
-                            {data.client_detail.emails.length === 0
-                                ? "No email provided"
-                                : data.client_detail.emails.map((e) =>
-                                    e.email ? (
-                                        <div key={e.email} className="flex items-center gap-x-2">
-                                            <Mail className="h-4 w-4 text-gray-400" />
-                                            <span>{e.email}</span>
-                                        </div>
-                                    ) : null
-                                )}
-                        </div>
-                    </div>
-                    <div className="space-y-2">
-                        <Label>Phone</Label>
-                        <div className="flex flex-col space-y-2">
-                            {data.client_detail.phones.length == 0
-                                ? "No phone provided"
-                                : data.client_detail.phones.map((p: { phone: string }) => (
-                                    <div key={p.phone} className="flex items-center gap-x-2">
-                                        <Phone className="h-4 w-4 text-gray-400" />
-                                        <span>{p.phone}</span>
-                                    </div>
-                                ))}
-                        </div>
-                    </div>
-                    <div className="space-y-2">
-                        <Label>Address</Label>
-                        <div className="flex items-center space-x-2">
-                            <MapPin className="h-4 w-4 text-gray-400" />
-                            <span>{toTitleCase(data.company.address)}</span>
-                        </div>
-                    </div>
+                    {user?.department && canView(user.department, "deal_information") &&
+                        <>
+                            <div className="space-y-2">
+                                <Label>GST No.</Label>
+                                <span>{data.company.gst_no == "" ? "No GST provided" : data.company.gst_no?.toUpperCase()} </span>
+                            </div>
+                            <div className="space-y-2">
+                                <Label>Email</Label>
+                                <div className="flex flex-col space-y-2">
+                                    {data.client_detail.emails.length === 0
+                                        ? "No email provided"
+                                        : data.client_detail.emails.map((e) =>
+                                            e.email ? (
+                                                <div key={e.email} className="flex items-center gap-x-2">
+                                                    <Mail className="h-4 w-4 text-gray-400" />
+                                                    <span>{e.email}</span>
+                                                </div>
+                                            ) : null
+                                        )}
+                                </div>
+                            </div>
+                            <div className="space-y-2">
+                                <Label>Phone</Label>
+                                <div className="flex flex-col space-y-2">
+                                    {data.client_detail.phones.length == 0
+                                        ? "No phone provided"
+                                        : data.client_detail.phones.map((p: { phone: string }) => (
+                                            <div key={p.phone} className="flex items-center gap-x-2">
+                                                <Phone className="h-4 w-4 text-gray-400" />
+                                                <span>{p.phone}</span>
+                                            </div>
+                                        ))}
+                                </div>
+                            </div>
+                            <div className="space-y-2">
+                                <Label>Address</Label>
+                                <div className="flex items-center space-x-2">
+                                    <MapPin className="h-4 w-4 text-gray-400" />
+                                    <span>{toTitleCase(data.company.address)}</span>
+                                </div>
+                            </div>
+                        </>
+                    }
                 </div>
             </CardContent>
         </Card>

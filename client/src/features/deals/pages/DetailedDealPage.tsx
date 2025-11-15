@@ -47,7 +47,7 @@ const DetailedDealPage = () => {
                         </NavLink>
                         <div>
                             <h1 className="text-2xl font-bold ">
-                                {capitalize(dealData?.deal?.client_detail.first_name as string)} {capitalize(dealData?.deal?.client_detail.last_name as string)}
+                                {dealData.deal?.id}
                             </h1>
                             <p className="text-gray-600">{toTitleCase(dealData?.deal?.company.name as string)}</p>
                         </div>
