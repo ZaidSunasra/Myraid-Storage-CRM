@@ -37,7 +37,7 @@ const DetailedQuotationPage = () => {
 
     return <div className="min-h-screen bg-accent">
         <Navbar />
-        <div className="max-w-7xl mx-auto py-6 sm:px-6 lg:px-8">
+        <div className="mx-auto py-6 sm:px-6 lg:px-8">
             <div className="px-0 py-6">
                 <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between sm:mb-6 p-2 sm:p-0 gap-4">
                     <div className="flex items-center">
