@@ -3,18 +3,22 @@ import { useCopyQuotation } from '@/api/quotations/quotations.mutation';
 import { Button } from '@/shared/components/ui/button';
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '@/shared/components/ui/form';
 import { Input } from '@/shared/components/ui/input';
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/shared/components/ui/select';
+import { Popover, PopoverContent, PopoverTrigger } from "@/shared/components/ui/popover";
+import { Command, CommandEmpty, CommandGroup, CommandInput, CommandItem, CommandList } from "@/shared/components/ui/command";
 import { Skeleton } from '@/shared/components/ui/skeleton';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useForm } from 'react-hook-form';
 import { useParams } from 'react-router'
 import { copyQuotationschema, type CopyQuotation } from 'zs-crm-common';
+import { Check } from 'lucide-react';
+import { useState } from 'react';
 
 const CopyQuotationForm = () => {
 
     const { quotation_id } = useParams();
     const { data, isLoading } = FetchOnlyDealId();
-    const copyQuotation = useCopyQuotation()
+    const copyQuotation = useCopyQuotation();
+    const [open, setOpen] = useState<boolean>(false);
 
     const form = useForm<CopyQuotation>({
         resolver: zodResolver(copyQuotationschema),
@@ -39,22 +43,56 @@ const CopyQuotationForm = () => {
                         control={form.control}
                         name="deal_id"
                         render={({ field }) => (
-                            <FormItem>
+                            <FormItem className="flex flex-col">
                                 <FormLabel>Deal Id*</FormLabel>
-                                <Select value={field.value ? field.value : ""} onValueChange={(val) => {field.onChange(val), form.setValue("quotation_no", val, { shouldValidate: true });}}>
-                                    <FormControl>
-                                        <SelectTrigger className="w-full">
-                                            <SelectValue placeholder="Select Quotation Template" />
-                                        </SelectTrigger>
-                                    </FormControl>
-                                    <SelectContent>
-                                        {data?.dealIds.map((id: { id: string }) => (
-                                            <SelectItem key={id.id} value={id.id} className='font-medium'>
-                                                {id.id.replace(/-/g, "/").replace(/_/g, "-")}
-                                            </SelectItem>
-                                        ))}
-                                    </SelectContent>
-                                </Select>
+                                <Popover open={open} onOpenChange={setOpen} modal>
+                                    <PopoverTrigger asChild>
+                                        <FormControl>
+                                            <Button
+                                                variant="outline"
+                                                role="combobox"
+                                                className="justify-between w-full"
+                                            >
+                                                {field.value
+                                                    ? field.value.replace(/-/g, "/").replace(/_/g, "-")
+                                                    : "Search Deal ID..."}
+                                            </Button>
+                                        </FormControl>
+                                    </PopoverTrigger>
+                                    <PopoverContent className="p-0 w-[350px]">
+                                        <Command>
+                                            <CommandInput placeholder="Search deal ID..." className="h-9" />
+                                            <CommandList>
+                                                <CommandEmpty>No results found.</CommandEmpty>
+                                                <CommandGroup heading="Deal IDs">
+                                                    {data?.dealIds.map((item) => {
+                                                        const formatted = item.id
+                                                            .replace(/-/g, "/")
+                                                            .replace(/_/g, "-");
+                                                        return (
+                                                            <CommandItem
+                                                                key={item.id}
+                                                                value={item.id}
+                                                                onSelect={() => {
+                                                                    field.onChange(item.id);
+                                                                    form.setValue("quotation_no", item.id, {
+                                                                        shouldValidate: true,
+                                                                    });
+                                                                    setOpen(false);
+                                                                }}
+                                                            >
+                                                                {formatted}
+                                                                {field.value === item.id && (
+                                                                    <Check className="ml-auto h-4 w-4" />
+                                                                )}
+                                                            </CommandItem>
+                                                        );
+                                                    })}
+                                                </CommandGroup>
+                                            </CommandList>
+                                        </Command>
+                                    </PopoverContent>
+                                </Popover>
                                 <FormMessage />
                             </FormItem>
                         )}

@@ -52,7 +52,8 @@ const LeadsTable = () => {
 							<TableHead>Contact</TableHead>
 							<TableHead className="flex justify-between items-center">
 								Source
-								{!sourceError && <Popover>
+								{!sourceError &&
+								 <Popover>
 									<PopoverTrigger asChild>
 										<Button variant="ghost" className="ml-2" size="icon">
 											<ChevronsUpDown className="h-4 w-4" />
@@ -74,7 +75,8 @@ const LeadsTable = () => {
 											</CommandList>
 										</Command>
 									</PopoverContent>
-								</Popover>}
+								</Popover>
+								}
 							</TableHead>
 							<TableHead>Assigned To</TableHead>
 							<TableHead>Product</TableHead>
