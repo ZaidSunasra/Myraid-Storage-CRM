@@ -32,7 +32,7 @@ const ItemWiseItemTable = ({ quotation, name, setName, isDiscountGiven }: { quot
                             </TableRow>
                         }
                         {product.quotation_item.map((item, index: number) => {
-                            const compartment = product.name[6];
+                            const compartment = product.name.split(" ")[4];
                             const { itemWiseProfit } = quotation.quotation_products.length == 1 ? calculatePrintProductTotal(product, item) : calculatePrintMultiProductTotals(quotation.quotation_products, item, product);
                             const discountRate = (1 - product.quotation_working[0].discount / 100) * Number(itemWiseProfit.toFixed(2));
                             return (

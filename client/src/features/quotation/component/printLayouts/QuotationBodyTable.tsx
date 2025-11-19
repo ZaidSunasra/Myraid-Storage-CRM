@@ -28,7 +28,7 @@ const QuotationBodyTable = ({ product, isSetWise }: { product: Quotation_Product
                         <TableRow key={item.id}>
                             <TableCell className="border border-black text-center">{index + 1}</TableCell>
                             <TableCell className="border border-black">
-                                <div>  {item.item_code} {product.name.split(" ")[4]} Bay </div>
+                                <div>  {item.item_code} {product.name.split(" ")[2]} Bay </div>
                                 <div> Body in {item.item_code}</div>
                             </TableCell>
                             <TableCell className="border border-black text-center">{item.per_bay_qty}</TableCell>

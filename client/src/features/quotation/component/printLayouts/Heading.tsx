@@ -1,7 +1,7 @@
 import { type Dispatch, type SetStateAction } from "react"
 import Logo from "@/assets/logo.png"
 import { format } from "date-fns"
-import { capitalize } from "@/utils/formatData"
+import { capitalize, toTitleCase } from "@/utils/formatData"
 import { Input } from "@/shared/components/ui/input"
 import type { GetQuotationOutput } from "zs-crm-common"
 
@@ -54,13 +54,13 @@ const Heading = ({ quotation, name, setName }: { quotation: GetQuotationOutput, 
                     </p>
                     <p className="w-2/5 break-words text-gray-700 leading-snug">
                         {quotation.deal.company.address
-                            ? quotation.deal.company.address
+                            ? toTitleCase(quotation.deal.company.address)
                             : "Address not provided"}
                     </p>
                     <p className="text-gray-800">
                         <span className="font-semibold">GST:</span>{" "}
                         {quotation.deal.company.gst_no
-                            ? quotation.deal.company.gst_no
+                            ? quotation.deal.company.gst_no.toUpperCase()
                             : "No GST provided"}
                     </p>
                     <p className="text-gray-800">
