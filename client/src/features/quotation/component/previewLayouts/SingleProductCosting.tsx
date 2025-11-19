@@ -10,7 +10,7 @@ const SingleProductCosting = () => {
     return (
         <>
             {products.map((product) => {
-                const {totalCost, difference, perKg} = calculatePerKgPreview(products, overallTotal)
+                const { totalCost, difference, perKg } = calculatePerKgPreview(products, overallTotal)
                 const items = getProductItems(product.id)
                 return <React.Fragment key={product.id}>
                     <Table className="border border-black">
@@ -27,7 +27,7 @@ const SingleProductCosting = () => {
                                 <TableCell className="border border-black">{product.trolley_material}</TableCell>
                                 <TableCell className="border border-black">
                                     {Number(product.ss_material) + Number(product.trolley_material)} * {product.set} = {product.set * (product.ss_material + product.trolley_material)}
-                                    </TableCell>
+                                </TableCell>
                             </TableRow>
                             <TableRow>
                                 <TableCell className="border border-black">Total Weight</TableCell>
@@ -72,12 +72,12 @@ const SingleProductCosting = () => {
                                 <TableCell></TableCell>
                                 <TableCell>{product.total_market_rate}</TableCell>
                             </TableRow>
-                             <TableRow>
+                            <TableRow>
                                 <TableCell>Set</TableCell>
                                 <TableCell>{product.set}</TableCell>
-                                <TableCell>{product.set * product.total_provided_rate}</TableCell>
+                                <TableCell>{(product.set * product.total_provided_rate).toFixed(2)}</TableCell>
                                 <TableCell>{product.set}</TableCell>
-                                <TableCell>{product.set * product.total_market_rate}</TableCell>
+                                <TableCell>{(product.set * product.total_market_rate).toFixed(2)}</TableCell>
                             </TableRow>
                         </TableFooter>
                     </Table>
@@ -87,18 +87,22 @@ const SingleProductCosting = () => {
                                 <TableCell className="border border-black">Installation</TableCell>
                                 <TableCell className="border border-black">{product.installation}</TableCell>
                                 <TableCell className="border border-black">
-                                    {Number(product.installation) * Number(product.total_body)} * {product.set} = {product.set * product.installation * product.total_body}
+                                    {product.installation * product.total_body} * {product.set} = {product.set * product.installation * product.total_body}
                                 </TableCell>
                             </TableRow>
                             <TableRow>
                                 <TableCell className="border border-black">Accomodation</TableCell>
                                 <TableCell className="border border-black"></TableCell>
-                                <TableCell className="border border-black">{product.accomodation}</TableCell>
+                                <TableCell className="border border-black">
+                                    {product.accomodation} * {product.set} = {product.set * product.accomodation}
+                                </TableCell>
                             </TableRow>
                             <TableRow>
                                 <TableCell className="border border-black">Transport</TableCell>
                                 <TableCell className="border border-black"></TableCell>
-                                <TableCell className="border border-black">{product.transport}</TableCell>
+                                <TableCell className="border border-black">
+                                    {product.transport} * {product.set} = {product.set * product.transport}
+                                </TableCell>
                             </TableRow>
                         </TableBody>
                     </Table>
@@ -107,12 +111,12 @@ const SingleProductCosting = () => {
                             <TableRow>
                                 <TableCell className="border border-black">Total Cost</TableCell>
                                 <TableCell className="border border-black"></TableCell>
-                                <TableCell className="border border-black"> {totalCost} </TableCell>
+                                <TableCell className="border border-black"> {totalCost.toFixed(2)} </TableCell>
                             </TableRow>
                             <TableRow>
                                 <TableCell className="border border-black">Grand Total - Total Cost</TableCell>
-                                <TableCell className="border border-black">{overallTotal} - {totalCost}</TableCell>
-                                <TableCell className="border border-black">{difference}</TableCell>
+                                <TableCell className="border border-black">{overallTotal.toFixed(2)} - {totalCost.toFixed(2)}</TableCell>
+                                <TableCell className="border border-black">{difference.toFixed(2)}</TableCell>
                             </TableRow>
                             <TableRow>
                                 <TableCell className="border border-black">Per Kg</TableCell>

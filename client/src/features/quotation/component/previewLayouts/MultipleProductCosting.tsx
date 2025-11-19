@@ -19,7 +19,7 @@ const MultipleProductCosting = () => {
                         <TableHead>Trolley</TableHead>
                         <TableHead>Total</TableHead>
                         <TableHead>Weight</TableHead>
-                        <TableHead>Powder Coating</TableHead>
+                        <TableHead>PC</TableHead>
                     </TableRow>
                 </TableHeader>
                 <TableBody>
@@ -41,22 +41,22 @@ const MultipleProductCosting = () => {
                     <TableRow className="font-bold">
                         <TableCell>Total</TableCell>
                         <TableCell>
-                            {products.reduce((sum, p) => sum + p.labour_cost, 0)}
+                            {products.reduce((sum, p) => sum + p.labour_cost, 0).toFixed(2)}
                         </TableCell>
                         <TableCell>
-                            {products.reduce((sum, p) => sum + p.ss_material, 0)}
+                            {products.reduce((sum, p) => sum + p.ss_material, 0).toFixed(2)}
                         </TableCell>
                         <TableCell>
-                            {products.reduce((sum, p) => sum + p.trolley_material, 0)}
+                            {products.reduce((sum, p) => sum + p.trolley_material, 0).toFixed(2)}
                         </TableCell>
                         <TableCell>
-                            {products.reduce((sum, p) => sum + (p.ss_material + p.trolley_material), 0)}
+                            {products.reduce((sum, p) => sum + (p.ss_material + p.trolley_material), 0).toFixed(2)}
                         </TableCell>
                         <TableCell>
-                            {products.reduce((sum, p) => sum + p.total_weight, 0)}
+                            {products.reduce((sum, p) => sum + p.total_weight, 0).toFixed(2)}
                         </TableCell>
                         <TableCell>
-                            {products.reduce((sum, p) => sum + p.powder_coating, 0)}
+                            {products.reduce((sum, p) => sum + p.powder_coating, 0).toFixed(2)}
                         </TableCell>
                     </TableRow>
                 </TableFooter>
@@ -88,13 +88,13 @@ const MultipleProductCosting = () => {
                     <TableRow className="font-bold">
                         <TableCell colSpan={2}>Total</TableCell>
                         <TableCell>
-                            {products.reduce((sum, p) => sum + p.installation * p.total_body, 0)}
+                            {products.reduce((sum, p) => sum + p.installation * p.total_body, 0).toFixed(2)}
                         </TableCell>
                         <TableCell>
-                            {products.reduce((sum, p) => sum + p.accomodation, 0)}
+                            {products.reduce((sum, p) => sum + p.accomodation, 0).toFixed(2)}
                         </TableCell>
                         <TableCell>
-                            {products.reduce((sum, p) => sum + (p.transport), 0)}
+                            {products.reduce((sum, p) => sum + (p.transport), 0).toFixed(2)}
                         </TableCell>
                     </TableRow>
                 </TableFooter>
@@ -127,16 +127,16 @@ const MultipleProductCosting = () => {
                             <TableRow>
                                 <TableCell>Total</TableCell>
                                 <TableCell></TableCell>
-                                <TableCell>{product.total_provided_rate}</TableCell>
+                                <TableCell>{product.total_provided_rate.toFixed(2)}</TableCell>
                                 <TableCell></TableCell>
-                                <TableCell>{product.total_market_rate}</TableCell>
+                                <TableCell>{product.total_market_rate.toFixed(2)}</TableCell>
                             </TableRow>
                             <TableRow>
                                 <TableCell>Set</TableCell>
                                 <TableCell>{product.set}</TableCell>
-                                <TableCell>{product.set * product.total_provided_rate}</TableCell>
+                                <TableCell>{(product.set * product.total_provided_rate).toFixed(2)}</TableCell>
                                 <TableCell>{product.set}</TableCell>
-                                <TableCell>{product.set * product.total_market_rate}</TableCell>
+                                <TableCell>{(product.set * product.total_market_rate).toFixed(2)}</TableCell>
                             </TableRow>
                         </TableFooter>
                     </Table>
@@ -147,12 +147,12 @@ const MultipleProductCosting = () => {
                     <TableRow>
                         <TableCell className="border border-black">Total Cost</TableCell>
                         <TableCell className="border border-black"></TableCell>
-                        <TableCell className="border border-black"> {totalCost} </TableCell>
+                        <TableCell className="border border-black"> {totalCost.toFixed(2)} </TableCell>
                     </TableRow>
                     <TableRow>
                         <TableCell className="border border-black">Grand Total - Total Cost</TableCell>
-                        <TableCell className="border border-black">{overallTotal} - {totalCost}</TableCell>
-                        <TableCell className="border border-black">{difference}</TableCell>
+                        <TableCell className="border border-black">{overallTotal.toFixed(2)} - {totalCost.toFixed(2)}</TableCell>
+                        <TableCell className="border border-black">{difference.toFixed(2)}</TableCell>
                     </TableRow>
                     <TableRow>
                         <TableCell className="border border-black">Per Kg</TableCell>
