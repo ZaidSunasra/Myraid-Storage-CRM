@@ -102,7 +102,7 @@ export const calculatePerKgPreview = (products: QuotationProduct[], overallTotal
     const marketTotal = products.reduce((sum, p) => sum + p.total_market_rate * p.set, 0)
     const grandTotal = overallTotal;
     const totalInstallationCost = products.reduce((sum, p) => sum + p.installation * p.total_body * p.set, 0);
-    const transportAccomodationCost = products.reduce((sum, p) => sum + (p.transport + p.accomodation), 0);
+    const transportAccomodationCost = products.reduce((sum, p) => sum + p.transport * p.set + p.accomodation * p.set, 0);
     const totalLabourCost = products.reduce((sum, p) => sum + p.labour_cost * p.set, 0)
     const totalMaterial = products.reduce((sum, p) => sum + (p.ss_material + p.trolley_material) * p.set, 0);
     const totalCost = marketTotal + totalInstallationCost + transportAccomodationCost;
