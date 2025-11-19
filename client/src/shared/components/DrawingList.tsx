@@ -121,7 +121,7 @@ const DrawingList = ({ context }: { context: "deal" | "order" }) => {
                                                 </div>
                                                 <div className="flex items-center space-x-1 uppercase">
                                                     <FileText className="h-3 w-3" />
-                                                    <span>{drawing.upload_type}</span>
+                                                    <span className="font-extrabold">{drawing.upload_type}</span>
                                                 </div>
                                             </div>
                                             <div className="flex items-center space-x-2">
