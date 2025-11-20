@@ -6,7 +6,7 @@ import { calculatePerKgPreview } from "../../utils/calculateTotal";
 const MultipleProductCosting = () => {
 
     const { products, getProductItems, overallTotal } = useQuotation();
-    const { totalCost, difference, perKg } = calculatePerKgPreview(products, overallTotal)
+    const { totalCost, difference, perKg, totalLabourCost } = calculatePerKgPreview(products, overallTotal)
 
     return (
         <React.Fragment >
@@ -153,6 +153,11 @@ const MultipleProductCosting = () => {
                         <TableCell className="border border-black">Grand Total - Total Cost</TableCell>
                         <TableCell className="border border-black">{overallTotal.toFixed(2)} - {totalCost.toFixed(2)}</TableCell>
                         <TableCell className="border border-black">{difference.toFixed(2)}</TableCell>
+                    </TableRow>
+                    <TableRow>
+                        <TableCell className="border border-black">Profit + Labour Cost</TableCell>
+                        <TableCell className="border border-black">{difference.toFixed(2)} + {totalLabourCost.toFixed(2)}</TableCell>
+                        <TableCell className="border border-black">{(difference + totalLabourCost).toFixed(2)}</TableCell>
                     </TableRow>
                     <TableRow>
                         <TableCell className="border border-black">Per Kg</TableCell>

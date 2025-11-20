@@ -108,5 +108,5 @@ export const calculatePerKgPreview = (products: QuotationProduct[], overallTotal
     const totalCost = marketTotal + totalInstallationCost + transportAccomodationCost;
     const difference = grandTotal - totalCost;
     const perKg = (difference + totalLabourCost ) / totalMaterial;
-    return {perKg, difference, totalCost}
+    return {perKg, difference, totalCost, totalLabourCost}
 }
