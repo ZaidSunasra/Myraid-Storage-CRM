@@ -11,11 +11,13 @@ import FormSideBar from "@/shared/components/FormSideBar"
 import { useState } from "react"
 import AddDealDetails from "../components/AddDealDetails"
 import { useAddDeal } from "@/api/deals/deal.mutation"
+import { useUser } from "@/context/UserContext"
 
 const AddDealPage = () => {
 
     const [currentStep, setCurrentStep] = useState<1 | 2>(1);
     const addDeal = useAddDeal();
+    const {user} = useUser();
 
     const handleNext = () => {
         setCurrentStep(2);
@@ -37,7 +39,7 @@ const AddDealPage = () => {
             source_id: undefined,
             product_id: undefined,
             deal_status: "pending",
-            assigned_to: [],
+            assigned_to: [{id: user?.id}],
         }),
     });
 

@@ -124,7 +124,7 @@ const AddDealDetails = ({ form, handlePrev, isLoading}: { form: UseFormReturn<Ad
                             render={({ field }) => (
                                 <FormItem className="flex items-center">
                                     <FormControl>
-                                        <Select onValueChange={(val) => field.onChange(Number(val))} disabled={salesEmployeePending}>
+                                        <Select onValueChange={(val) => field.onChange(Number(val))} value={field.value ? String(field.value) : ""} disabled={salesEmployeePending}>
                                             <SelectTrigger className="w-full">
                                                 <SelectValue placeholder={salesEmployeePending ? "Loading user..." : "Select user to assign"} />
                                             </SelectTrigger>
