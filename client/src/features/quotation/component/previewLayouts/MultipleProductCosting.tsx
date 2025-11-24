@@ -24,15 +24,17 @@ const MultipleProductCosting = () => {
                 </TableHeader>
                 <TableBody>
                     {products.map((product, index) => {
+                        const isCompactor = product.name.startsWith("Compactor");
+                        if (!isCompactor) return null;
                         return (
                             <TableRow key={product.id} >
                                 <TableCell>{String.fromCharCode(65 + index)}</TableCell>
-                                <TableCell>{product.labour_cost}</TableCell>
-                                <TableCell>{product.ss_material}</TableCell>
-                                <TableCell>{product.trolley_material}</TableCell>
-                                <TableCell>{product.ss_material + product.trolley_material}</TableCell>
-                                <TableCell>{product.total_weight}</TableCell>
-                                <TableCell>{product.powder_coating}</TableCell>
+                                <TableCell>{product.labour_cost} * {product.set} = {product.labour_cost * product.set}</TableCell>
+                                <TableCell>{product.ss_material} * {product.set} = {product.ss_material * product.set}</TableCell>
+                                <TableCell>{product.trolley_material} * {product.set} = {product.trolley_material * product.set}</TableCell>
+                                <TableCell>{product.ss_material + product.trolley_material} * {product.set} = {(product.trolley_material + product.ss_material) * product.set}</TableCell>
+                                <TableCell>{product.total_weight} * {product.set} = {product.total_weight * product.set}</TableCell>
+                                <TableCell>{product.powder_coating} * {product.set} = {product.powder_coating * product.set}</TableCell>
                             </TableRow>
                         )
                     })}
@@ -41,22 +43,22 @@ const MultipleProductCosting = () => {
                     <TableRow className="font-bold">
                         <TableCell>Total</TableCell>
                         <TableCell>
-                            {products.reduce((sum, p) => sum + p.labour_cost, 0).toFixed(2)}
+                            {products.reduce((sum, p) => sum + p.labour_cost * p.set, 0).toFixed(2)}
                         </TableCell>
                         <TableCell>
-                            {products.reduce((sum, p) => sum + p.ss_material, 0).toFixed(2)}
+                            {products.reduce((sum, p) => sum + p.ss_material * p.set, 0).toFixed(2)}
                         </TableCell>
                         <TableCell>
-                            {products.reduce((sum, p) => sum + p.trolley_material, 0).toFixed(2)}
+                            {products.reduce((sum, p) => sum + p.trolley_material * p.set, 0).toFixed(2)}
                         </TableCell>
                         <TableCell>
-                            {products.reduce((sum, p) => sum + (p.ss_material + p.trolley_material), 0).toFixed(2)}
+                            {products.reduce((sum, p) => sum + (p.ss_material + p.trolley_material) * p.set, 0).toFixed(2)}
                         </TableCell>
                         <TableCell>
-                            {products.reduce((sum, p) => sum + p.total_weight, 0).toFixed(2)}
+                            {products.reduce((sum, p) => sum + p.total_weight * p.set, 0).toFixed(2)}
                         </TableCell>
                         <TableCell>
-                            {products.reduce((sum, p) => sum + p.powder_coating, 0).toFixed(2)}
+                            {products.reduce((sum, p) => sum + p.powder_coating * p.set, 0).toFixed(2)}
                         </TableCell>
                     </TableRow>
                 </TableFooter>
@@ -73,13 +75,15 @@ const MultipleProductCosting = () => {
                 </TableHeader>
                 <TableBody>
                     {products.map((product, index) => {
+                        const isCompactor = product.name.startsWith("Compactor");
+                        if (!isCompactor) return null;
                         return (
                             <TableRow key={product.id} >
                                 <TableCell>{String.fromCharCode(65 + index)}</TableCell>
                                 <TableCell>{product.installation}</TableCell>
-                                <TableCell>{product.installation * product.set * product.total_body}</TableCell>
-                                <TableCell>{product.accomodation}</TableCell>
-                                <TableCell>{product.transport}</TableCell>
+                                <TableCell>{product.installation * product.set * product.total_body}  * {product.set} = {product.installation * product.total_body * product.set}</TableCell>
+                                <TableCell>{product.accomodation} * {product.set} = {product.accomodation * product.set}</TableCell>
+                                <TableCell>{product.transport} * {product.set} = {product.transport * product.set}</TableCell>
                             </TableRow>
                         )
                     })}
