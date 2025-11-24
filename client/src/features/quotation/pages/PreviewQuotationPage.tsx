@@ -17,12 +17,12 @@ const PreviewQuotationPage = ({ data }: { data: AddQuotation }) => {
   );
 
   return (
-    <div className="grid grid-cols-1 sm:grid-cols-5 gap-4">
+    <div className="grid grid-cols-1 sm:grid-cols-6 gap-4">
       <div className="space-y-6 sm:col-span-3">
         <PreviewItemTable isDiscountGiven={isDiscountGiven} data={data} />
         <PreviewBodyTable data={data} />
       </div>
-      {user?.department && canView(user.department, "view_quotation_preview_details") && <div className="space-y-6 sm:col-span-2">
+      {user?.department && canView(user.department, "view_quotation_preview_details") && <div className="space-y-6 sm:col-span-3">
         {products.length <= 1 ?
           <SingleProductCosting /> :
           <MultipleProductCosting />
