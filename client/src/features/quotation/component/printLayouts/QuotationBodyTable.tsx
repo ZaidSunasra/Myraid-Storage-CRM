@@ -4,7 +4,7 @@ import type { Quotation_Product } from "zs-crm-common"
 
 const QuotationBodyTable = ({ product, isSetWise }: { product: Quotation_Product, isSetWise: boolean }) => {
 
-    const isCompactor = product.name.toLowerCase().includes("compactor");
+    const isCompactor = product.name.startsWith("Compactor");
 
     if(!isCompactor) return <></>
 
