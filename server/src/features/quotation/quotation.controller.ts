@@ -151,7 +151,6 @@ export const editQuotationController = async (req: Request, res: Response<ErrorR
 export const importQuotationController = async (req: Request, res: Response<SuccessResponse | ErrorResponse>): Promise<any> => {
     const { deal_id, quotation_no } = req.body;
     const quotation_id = req.params.id;
-    const author = res.locals.user;
     const validation = copyQuotationschema.safeParse(req.body);
     if (!validation.success) {
         return res.status(400).json({
@@ -161,7 +160,7 @@ export const importQuotationController = async (req: Request, res: Response<Succ
     }
     try {
         const quotation = await getQuotationByIdService(quotation_id);
-        await copyQuotationDataService(quotation, deal_id, quotation_no, author);
+        await copyQuotationDataService(quotation, deal_id, quotation_no);
         return res.status(200).json({
             message: `Quotation imported successfully`,
         })

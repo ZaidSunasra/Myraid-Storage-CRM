@@ -324,7 +324,7 @@ export const editQuotationService = async ({ quotation_template, quotation_item,
     });
 }
 
-export const copyQuotationDataService = async (quotation: GetQuotationOutput | null, deal_id: string, quotation_no: string, author: any): Promise<void> => {
+export const copyQuotationDataService = async (quotation: GetQuotationOutput | null, deal_id: string, quotation_no: string): Promise<void> => {
     if (!quotation) return;
     await prisma.$transaction(async (tx) => {
         const quotation_id = await tx.quotation.create({
@@ -338,7 +338,7 @@ export const copyQuotationDataService = async (quotation: GetQuotationOutput | n
                 grand_total: quotation.grand_total,
                 show_body_table: quotation.show_body_table,
                 note: quotation.note,
-                created_by: author.id
+                created_by: quotation.created_by
             },
             select: {
                 id: true
