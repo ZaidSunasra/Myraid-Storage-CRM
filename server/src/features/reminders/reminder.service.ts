@@ -3,14 +3,6 @@ import { prisma } from "../../libs/prisma";
 import { endOfMonth, format, startOfMonth } from "date-fns";
 
 export const addReminderService = async ({ title, send_at, message, reminder_type, type }: AddReminder, author_id: number, id: string): Promise<void> => {
-    const admins = await prisma.user.findMany({
-        where: {
-            department: DEPARTMENTS[1]
-        },
-        select: {
-            id: true
-        }
-    });
     const asignees = await prisma.asignee.findMany({
         where: {
             lead_id: type === "lead" ? parseInt(id) : null,
@@ -21,13 +13,12 @@ export const addReminderService = async ({ title, send_at, message, reminder_typ
         }
     });
     const recipientIds = new Set<number>();
-    admins.forEach(a => recipientIds.add(a.id));
     asignees.forEach(a => recipientIds.add(a.user_id));
     recipientIds.add(author_id);
     await prisma.$transaction(async (tx) => {
         const notification = await tx.notification.create({
             data: {
-                message: message?.toLowerCase(),
+                message: message?.toLowerCase() ? `${message.toLowerCase()}` : "Client Meeting",
                 title: title.toLowerCase(),
                 send_at: new Date(send_at),
                 lead_id: type === "lead" ? parseInt(id) : null,
