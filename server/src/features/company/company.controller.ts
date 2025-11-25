@@ -4,8 +4,9 @@ import { editClientSchema, editCompanyDetailSchema, ErrorResponse, GetCompanySuc
 
 export const getCompaniesController = async (req: Request, res: Response<ErrorResponse | GetCompanySuccessResponse>): Promise<any> => {
     const name = req.query.name;
+    const author = res.locals.user;
     try {
-        const companies = await getCompaniesService(name as string);
+        const companies = await getCompaniesService(name as string, author);
         return res.status(200).json({
             message: `Companies fetched successfully`,
             companies

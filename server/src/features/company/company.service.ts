@@ -1,17 +1,46 @@
-import { Client_Details, Company , EditClient, EditCompany} from "zs-crm-common";
+import { Client_Details, Company, DEPARTMENTS, EditClient, EditCompany } from "zs-crm-common";
 import { prisma } from "../../libs/prisma"
 import { convertEmailIntoArray, convertPhoneIntoArray } from "../../utils/dataFormatter";
 
-export const getCompaniesService = async (name: string): Promise<Company[]> => {
+export const getCompaniesService = async (name: string, author: any): Promise<Company[]> => {
+    const isAdmin = author.department === DEPARTMENTS[1];
     const companies = await prisma.company.findMany({
-        where: name
-            ? {
-                name: {
-                    contains: name,
-                    mode: "insensitive",
-                },
-            }
-            : {},
+        where: {
+            AND: [
+                name ? {
+                    name: {
+                        contains: name,
+                        mode: "insensitive",
+                    },
+                } : {},
+                !isAdmin ? {
+                    OR: [
+                        {
+                            lead: {
+                                some: {
+                                    assigned_to: {
+                                        some: {
+                                            user_id: author.id
+                                        }
+                                    }
+                                }
+                            }
+                        },
+                        {
+                            deal: {
+                                some: {
+                                    assigned_to: {
+                                        some: {
+                                            user_id: author.id
+                                        }
+                                    }
+                                }
+                            }
+                        },
+                    ]
+                } : {}
+            ]
+        }
     });
     return companies;
 }
