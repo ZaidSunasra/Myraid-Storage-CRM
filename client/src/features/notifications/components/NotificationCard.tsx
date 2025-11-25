@@ -1,7 +1,9 @@
 import { useMarkNotification } from "@/api/notifications/notification.mutation";
 import { Button } from "@/shared/components/ui/button";
 import { Card, CardContent } from "@/shared/components/ui/card";
+import { toTitleCase } from "@/utils/formatData";
 import { getNavigationLink } from "@/utils/getNavigationLink";
+import { format } from "date-fns";
 import { Check } from "lucide-react";
 import { useNavigate } from "react-router";
 import type { GetNotificationOutput } from "zs-crm-common";
@@ -17,11 +19,11 @@ const NotificationCard = ({ notification }: { notification: GetNotificationOutpu
 				<div className="flex-1 space-y-2" onClick={() => navigate(path)}>
 					<div className="flex items-center space-x-2">
 						{!notification.is_read && <div className="w-2 h-2 bg-blue-500 rounded-full"></div>}
-						<h4 className="font-semibold text-sm">{notification.notification.title}</h4>
+						<h4 className="font-semibold text-sm">{toTitleCase(notification.notification.title)}</h4>
 					</div>
-					{notification.notification.message && <p className="text-muted-foreground text-sm">{notification.notification.message}</p>}
+					{notification.notification.message && <p className="text-muted-foreground text-sm">{toTitleCase(notification.notification.message)}</p>}
 					<div className="flex items-center justify-between">
-						<span className="text-xs text-muted-foreground">{new Date(notification.notification.created_at).toLocaleString()}</span>
+						<span className="text-xs text-muted-foreground">{format(notification.notification.created_at, "dd-MM-yyyy hh:mm a")}</span>
 						<Button
 							variant="outline"
 							size="sm"
