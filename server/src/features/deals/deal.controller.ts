@@ -155,8 +155,9 @@ export const editDealController = async (req: Request, res: Response<SuccessResp
 }
 
 export const getDealIdController = async (req: Request, res: Response<ErrorResponse | GetOnlyDealSuccessResponse>): Promise<any> => {
+    const author = res.locals.user;
     try {
-        const dealIds = await getDealIdService();
+        const dealIds = await getDealIdService(author);
         return res.status(200).json({
             message: `Deal Ids  fetched succesfully`,
             dealIds
