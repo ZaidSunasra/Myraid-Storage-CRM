@@ -38,7 +38,7 @@ export const uploadDrawingService = async ({ drawing_url, title, version, deal_i
         if (upload_type !== "general") {
             const notification = await tx.notification.create({
                 data: {
-                    message: `Drawing uploaded by ${author.name}. Kindly review and approve when you have a moment.`,
+                    message: `Drawing No: ${title} Version: ${version} for ${context == "deal" ? `DEAL No: ${deal_id}` : `Order No: ${order_id}`} has been uploaded by ${author.name}. Kindly review and approve when you have a moment.`,
                     title: "Drawing uploaded",
                     type: "drawing_uploaded",
                     deal_id: deal_id ?? null,
@@ -175,7 +175,7 @@ export const approveDrawingService = async (id: string, author: any): Promise<vo
             const notification = await tx.notification.create({
                 data: {
                     title: "Drawing approved",
-                    message: `Drawing has been approved by ${author.name}`,
+                    message: `Drawing for ${drawing.deal_id ? `DEAL No: ${drawing.deal_id}` : `Order No: ${drawing.order_id}`}  has been approved by ${author.name}`,
                     send_at: null,
                     deal_id: drawing.deal_id,
                     order_id: drawing.order_id,
@@ -214,7 +214,7 @@ export const rejectDrawingService = async (id: string, author: any, note?: strin
         const notification = await tx.notification.create({
             data: {
                 title: "Drawing rejected",
-                message: `Drawing has been rejected by ${author.name}`,
+                message: `Drawing for ${drawing.deal_id ? `DEAL No: ${drawing.deal_id}` : `Order No: ${drawing.order_id}`} has been rejected by ${author.name}`,
                 type: "drawing_rejected",
                 send_at: null,
                 deal_id: drawing.deal_id,
