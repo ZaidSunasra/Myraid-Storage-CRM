@@ -29,7 +29,7 @@ export const useSignup = () => {
 		mutationFn: signup,
 		onSuccess: (data: SuccessResponse) => {
 			toast.success(data.message);
-			queryClient.invalidateQueries({ queryKey: ["all-employee", "user-detail"] })
+			queryClient.invalidateQueries({ queryKey: ["all-employee"] })
 		},
 		onError: (error: AxiosError<ErrorResponse>) => {
 			toast.error(error.response?.data.message);
