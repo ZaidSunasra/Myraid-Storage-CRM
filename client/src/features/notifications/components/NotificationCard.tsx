@@ -21,7 +21,7 @@ const NotificationCard = ({ notification }: { notification: GetNotificationOutpu
 						{!notification.is_read && <div className="w-2 h-2 bg-blue-500 rounded-full"></div>}
 						<h4 className="font-semibold text-sm">{toTitleCase(notification.notification.title)}</h4>
 					</div>
-					{notification.notification.message && <p className="text-muted-foreground text-sm">{toTitleCase(notification.notification.message)}</p>}
+					{notification.notification.message && <p className="text-muted-foreground text-sm">{notification.notification.message}</p>}
 					<div className="flex items-center justify-between">
 						<span className="text-xs text-muted-foreground">{format(notification.notification.created_at, "dd-MM-yyyy hh:mm a")}</span>
 						<Button
