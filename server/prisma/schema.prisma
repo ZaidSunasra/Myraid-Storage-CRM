@@ -1,10 +1,10 @@
 generator client {
-  provider = "prisma-client-js"
+  provider = "prisma-client"
+  output   = "./generated"
 }
 
 datasource db {
   provider = "postgresql"
-  url      = env("DATABASE_URL")
 }
 
 model User {
@@ -398,6 +398,7 @@ enum Notification_Type {
   mentioned
   lead_assigned
   deal_assigned
+  add_quotation
 }
 
 enum Quotation_Template {
