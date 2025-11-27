@@ -36,7 +36,8 @@ export const Notification_Type = {
   client_meeting: 'client_meeting',
   mentioned: 'mentioned',
   lead_assigned: 'lead_assigned',
-  deal_assigned: 'deal_assigned'
+  deal_assigned: 'deal_assigned',
+  add_quotation: 'add_quotation'
 } as const
 
 export type Notification_Type = (typeof Notification_Type)[keyof typeof Notification_Type]

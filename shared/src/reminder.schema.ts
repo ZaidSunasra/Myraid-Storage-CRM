@@ -1,7 +1,6 @@
 import { z } from "zod/v4";
-import { Assignee, Company } from "./common.schema";
 
-export const NOTIFICATION_TYPE = ["color_changed", "drawing_uploaded", "drawing_approved", "drawing_rejected", "client_meeting", "mentioned", "lead_assigned", "deal_assigned"] as const;
+export const NOTIFICATION_TYPE = ["color_changed", "drawing_uploaded", "drawing_approved", "drawing_rejected", "client_meeting", "mentioned", "lead_assigned", "deal_assigned", "add_quotation"] as const;
 
 export type reminder_type = typeof NOTIFICATION_TYPE[number];
 
