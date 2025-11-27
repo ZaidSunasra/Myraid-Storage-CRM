@@ -39,3 +39,17 @@ export const markNotificationService = async (recipient_id: string): Promise<voi
         }
     })
 }
+
+export const markAllNotificationService = async (author : any): Promise<void> => {
+    await prisma.recipient.updateMany({
+        where: {
+            user_id: author.id,
+            is_read: false,
+            is_ready: true
+        },
+        data: {
+            is_read: true,
+            read_at: new Date()
+        }
+    })
+}

@@ -15,3 +15,8 @@ export const markNotification = async (id: string): Promise<SuccessResponse> => 
 	const response = await axiosInstance.post(`/notifications/mark-read/${id}`);
 	return response.data;
 };
+
+export const markAllNotification = async (): Promise<SuccessResponse> => {
+	const response = await axiosInstance.post(`/notifications/mark-all-read`);
+	return response.data;
+};

@@ -13,12 +13,18 @@ import { navItems } from "@/utils/getNavigationLink";
 import { useUser } from "@/context/UserContext";
 import NotificationPageLoader from "../components/NotificationPageLoader";
 import ErrorDisplay from "@/shared/components/ErrorPage";
+import { useMarkAllNotification } from "@/api/notifications/notification.mutation";
 
 const NotificationPage = () => {
 	const { user } = useUser();
 	const { isLoading, notifications, unreadCount } = useNotifications();
 	const { data: readNotificationData, isLoading: readNotificationLoading, isError: readNotificationErro} = FetchReadNotifications();
+	const markAllRead = useMarkAllNotification();
 	const navigate = useNavigate();
+
+	const onSubmit = () => {
+		markAllRead.mutate();
+	}
 
 	if (isLoading || readNotificationLoading) return <NotificationPageLoader />;
 	if(readNotificationErro) return <ErrorDisplay fullPage />
@@ -46,12 +52,12 @@ const NotificationPage = () => {
 								<p className="text-muted-foreground">Stay updated with your CRM activities</p>
 							</div>
 						</div>
-						{/* {unreadCount > 0 && (
-							<Button className="bg-blue-600 hover:bg-blue-700">
+						{unreadCount > 0 && (
+							<Button className="bg-blue-600 hover:bg-blue-700" onClick={() => onSubmit()}>
 								<CheckCheck className="h-4 w-4 mr-2" />
 								Mark All as Read
 							</Button>
-						)} */}
+						)}
 					</div>
 				</div>
 			</div>

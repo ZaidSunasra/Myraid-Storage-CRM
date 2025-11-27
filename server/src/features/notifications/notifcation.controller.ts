@@ -1,5 +1,5 @@
 import { Response, Request } from "express";
-import { getReadNotificationsService, getUnreadNotificationsService, markNotificationService } from "./notification.service";
+import { getReadNotificationsService, getUnreadNotificationsService, markAllNotificationService, markNotificationService } from "./notification.service";
 import { ErrorResponse, GetNotificationSuccessResponse, SuccessResponse } from "zs-crm-common";
 
 export const getUnreadNotificationsController = async (req: Request, res: Response<ErrorResponse | GetNotificationSuccessResponse>): Promise<any> => {
@@ -45,6 +45,22 @@ export const markNotificationController = async (req: Request, res: Response<Err
         })
     } catch (error) {
         console.log(`Error in marking notification as read`, error);
+        return res.status(500).send({
+            message: "Internal server error",
+            error: error
+        });
+    }
+}
+
+export const markAllReadNotificationController = async (req: Request, res: Response<ErrorResponse | SuccessResponse>): Promise<any> => {
+    const author = res.locals.user;
+    try {
+        await markAllNotificationService(author)
+        return res.status(200).json({
+            message: `All notifications marked as read.`,
+        })
+    } catch (error) {
+        console.log(`Error in marking all notification as read`, error);
         return res.status(500).send({
             message: "Internal server error",
             error: error
