@@ -1,5 +1,5 @@
 import bcrypt from "bcryptjs"
-import { prisma } from "../../libs/prisma"
+import { prisma } from "../../libs/prisma.js"
 import { AddUser, EditUser, GetUserDetailOutput} from "zs-crm-common"
 import { User } from "@prisma/client";
 

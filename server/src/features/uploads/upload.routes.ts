@@ -1,7 +1,7 @@
 import express from "express";
-import authMiddleware from "../../middlewares/auth.middleware";
-import checkDepartment from "../../middlewares/department.middleware";
-import { approveDrawingController, deleteDrawingController, getDrawingByIdController, getDrawingsController, getUploadUrlController, rejectDrawingController, showDrawingInOrderController, uploadDrawingController } from "./upload.controller";
+import authMiddleware from "../../middlewares/auth.middleware.js";
+import checkDepartment from "../../middlewares/department.middleware.js";
+import { approveDrawingController, deleteDrawingController, getDrawingByIdController, getDrawingsController, getUploadUrlController, rejectDrawingController, showDrawingInOrderController, uploadDrawingController } from "./upload.controller.js";
 
 const uploadRouter = express.Router();
 

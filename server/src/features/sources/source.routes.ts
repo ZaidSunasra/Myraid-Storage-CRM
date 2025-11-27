@@ -1,7 +1,7 @@
 import express from "express";
-import authMiddleware from "../../middlewares/auth.middleware";
-import checkDepartment from "../../middlewares/department.middleware";
-import { addSourceController, editSourceController, getSourcesController } from "./source.controller";
+import authMiddleware from "../../middlewares/auth.middleware.js";
+import checkDepartment from "../../middlewares/department.middleware.js";
+import { addSourceController, editSourceController, getSourcesController } from "./source.controller.js";
 
 const sourceRouter = express.Router();
 

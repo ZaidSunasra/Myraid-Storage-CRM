@@ -1,9 +1,9 @@
 import  express from "express";
 import cookieparser from "cookie-parser";
 import cors from "cors";
-import { PORT, URL } from "./utils/constant";
-import { mainRouter } from "./routes/route";
-import registerCrons from "./cron-jobs/index.cron";
+import { PORT, URL } from "./utils/constant.js";
+import { mainRouter } from "./routes/route.js";
+import registerCrons from "./cron-jobs/index.cron.js";
 
 const app = express();
 

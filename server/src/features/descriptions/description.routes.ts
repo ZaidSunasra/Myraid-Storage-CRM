@@ -1,7 +1,7 @@
 import express from "express";
-import authMiddleware from "../../middlewares/auth.middleware";
-import checkDepartment from "../../middlewares/department.middleware";
-import { getDescriptionsController, getDescriptionByIdController, addDescriptionController, editDescriptionController, deleteDescriptionController } from "./description.controller";
+import authMiddleware from "../../middlewares/auth.middleware.js";
+import checkDepartment from "../../middlewares/department.middleware.js";
+import { getDescriptionsController, getDescriptionByIdController, addDescriptionController, editDescriptionController, deleteDescriptionController } from "./description.controller.js";
 
 const descriptionRouter = express.Router();
 

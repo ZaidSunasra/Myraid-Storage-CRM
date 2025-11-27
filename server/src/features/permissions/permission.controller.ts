@@ -1,5 +1,5 @@
 import { Request, Response } from "express";
-import { editPermissionService, getPermissionsService } from "./permission.service";
+import { editPermissionService, getPermissionsService } from "./permission.service.js";
 import { ErrorResponse, GetPermissionSuccessResponse, SuccessResponse } from "zs-crm-common";
 
 export const getPermissionsController = async (req: Request, res: Response<ErrorResponse | GetPermissionSuccessResponse>): Promise<any> => {

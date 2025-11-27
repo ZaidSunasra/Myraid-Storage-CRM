@@ -1,5 +1,5 @@
 import { Request, Response } from "express";
-import { getDescriptionsService, getDescriptionByIdService, addDescriptionService, editDescriptionService, deleteDescriptionService } from "./description.service";
+import { getDescriptionsService, getDescriptionByIdService, addDescriptionService, editDescriptionService, deleteDescriptionService } from "./description.service.js";
 import { ErrorResponse, SuccessResponse, GetDescriptionSuccessResponse, GetDescriptionByIdSuccessResponse } from "zs-crm-common";
 
 export const getDescriptionsController = async (req: Request, res: Response<ErrorResponse | GetDescriptionSuccessResponse>): Promise<any> => {

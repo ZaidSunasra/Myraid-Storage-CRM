@@ -1,7 +1,6 @@
 import express from "express";
-import authMiddleware from "../../middlewares/auth.middleware";
-import checkDepartment from "../../middlewares/department.middleware";
-import { getReadNotificationsController, getUnreadNotificationsController, markAllReadNotificationController, markNotificationController } from "./notifcation.controller";
+import authMiddleware from "../../middlewares/auth.middleware.js";
+import { getReadNotificationsController, getUnreadNotificationsController, markAllReadNotificationController, markNotificationController } from "./notifcation.controller.js";
 
 const notificationRouter = express.Router();
 

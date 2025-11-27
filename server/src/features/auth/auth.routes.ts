@@ -1,7 +1,7 @@
 import express from "express";
-import { changePasswordController, editUserController, getUserDetailController, loginController, logoutController, resetPasswordController, signupController } from "./auth.controller";
-import authMiddleware from "../../middlewares/auth.middleware";
-import checkDepartment from "../../middlewares/department.middleware";
+import { changePasswordController, editUserController, getUserDetailController, loginController, logoutController, resetPasswordController, signupController } from "./auth.controller.js";
+import authMiddleware from "../../middlewares/auth.middleware.js";
+import checkDepartment from "../../middlewares/department.middleware.js";
 
 const authRouter = express.Router();
 

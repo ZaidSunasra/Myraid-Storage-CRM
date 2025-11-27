@@ -1,5 +1,5 @@
 import { Response, Request } from "express";
-import { getReadNotificationsService, getUnreadNotificationsService, markAllNotificationService, markNotificationService } from "./notification.service";
+import { getReadNotificationsService, getUnreadNotificationsService, markAllNotificationService, markNotificationService } from "./notification.service.js";
 import { ErrorResponse, GetNotificationSuccessResponse, SuccessResponse } from "zs-crm-common";
 
 export const getUnreadNotificationsController = async (req: Request, res: Response<ErrorResponse | GetNotificationSuccessResponse>): Promise<any> => {

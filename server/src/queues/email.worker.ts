@@ -1,6 +1,6 @@
 import { Worker } from 'bullmq';
 import IORedis from 'ioredis';
-import { transporter } from '../libs/mailer';
+import { transporter } from '../libs/mailer.js';
 
 const connection = new IORedis({
     host: '127.0.0.1',

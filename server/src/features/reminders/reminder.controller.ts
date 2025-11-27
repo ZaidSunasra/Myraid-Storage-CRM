@@ -1,6 +1,6 @@
 import { Request, Response } from "express";
 import { addReminderSchema, ErrorResponse, GetDataByMonth, GetReminderSuccessResponse, SuccessResponse } from "zs-crm-common";
-import { addReminderService, deleteReminderService, editReminderService, getReminderByDateService, getRemindersService } from "./reminder.service";
+import { addReminderService, deleteReminderService, editReminderService, getReminderByDateService, getRemindersService } from "./reminder.service.js";
 
 export const fetchRemindersController = async (req: Request, res: Response<GetReminderSuccessResponse | ErrorResponse>): Promise<any> => {
     const ref_id = req.params.id;

@@ -1,6 +1,6 @@
 import cron from 'node-cron';
-import { prisma } from '../libs/prisma';
-import { emailQueue } from '../queues/email.queue';
+import { prisma } from '../libs/prisma.js';
+//import { emailQueue } from '../queues/email.queue';
 
 const notificationReminderCron = () => {
   cron.schedule('* * * * *', async () => {

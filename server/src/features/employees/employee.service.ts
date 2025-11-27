@@ -1,5 +1,5 @@
 import { DEPARTMENTS, GetAllEmployeeOutput, GetEmployeeOutput } from "zs-crm-common";
-import { prisma } from "../../libs/prisma";
+import { prisma } from "../../libs/prisma.js";
 
 export const getSalesEmployeeService = async (): Promise<GetEmployeeOutput[]> => {
     const employees = await prisma.user.findMany({

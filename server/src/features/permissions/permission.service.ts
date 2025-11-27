@@ -1,5 +1,5 @@
 import { department, GetPermissionOutput } from "zs-crm-common";
-import { prisma } from "../../libs/prisma"
+import { prisma } from "../../libs/prisma.js"
 
 export const getPermissionsService = async () : Promise<GetPermissionOutput[]> => {
     const permissions = await prisma.permission.findMany({

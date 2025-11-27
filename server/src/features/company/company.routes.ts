@@ -1,7 +1,7 @@
 import express from "express";
-import authMiddleware from "../../middlewares/auth.middleware";
-import checkDepartment from "../../middlewares/department.middleware";
-import { addClientController, editClientController, editCompanyDetailsController, getCompaniesController, getCompanyEmployeeController } from "./company.controller";
+import authMiddleware from "../../middlewares/auth.middleware.js";
+import checkDepartment from "../../middlewares/department.middleware.js";
+import { addClientController, editClientController, editCompanyDetailsController, getCompaniesController, getCompanyEmployeeController } from "./company.controller.js";
 
 const companyRouter = express.Router();
 

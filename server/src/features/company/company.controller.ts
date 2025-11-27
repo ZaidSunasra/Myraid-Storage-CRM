@@ -1,5 +1,5 @@
 import { Request, Response } from "express";
-import { addClientService, editClientService, editCompanyDetailService, getCompaniesService, getCompanyEmployeeService } from "./company.service";
+import { addClientService, editClientService, editCompanyDetailService, getCompaniesService, getCompanyEmployeeService } from "./company.service.js";
 import { editClientSchema, editCompanyDetailSchema, ErrorResponse, GetCompanySuccessResponse, GetEmployeeByCompanySuccessResponse, SuccessResponse } from "zs-crm-common";
 
 export const getCompaniesController = async (req: Request, res: Response<ErrorResponse | GetCompanySuccessResponse>): Promise<any> => {

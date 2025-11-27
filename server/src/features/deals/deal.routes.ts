@@ -1,7 +1,7 @@
 import express from "express"
-import authMiddleware from "../../middlewares/auth.middleware";
-import checkDepartment from "../../middlewares/department.middleware";
-import { addDealController, convertLeadToDealController, editDealController, editDealStatusController, getDealByCompanyController, getDealByIdController, getDealController, getDealIdController } from "./deal.controller";
+import authMiddleware from "../../middlewares/auth.middleware.js";
+import checkDepartment from "../../middlewares/department.middleware.js";
+import { addDealController, convertLeadToDealController, editDealController, editDealStatusController, getDealByCompanyController, getDealByIdController, getDealController, getDealIdController } from "./deal.controller.js";
 
 const dealRouter = express.Router();
 

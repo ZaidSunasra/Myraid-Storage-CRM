@@ -1,7 +1,7 @@
 import express from "express";
-import authMiddleware from "../../middlewares/auth.middleware";
-import checkDepartment from "../../middlewares/department.middleware";
-import { addReminderController, deleteReminderController, editReminderController, fetchRemindersByMonthController, fetchRemindersController } from "./reminder.controller";
+import authMiddleware from "../../middlewares/auth.middleware.js";
+import checkDepartment from "../../middlewares/department.middleware.js";
+import { addReminderController, deleteReminderController, editReminderController, fetchRemindersByMonthController, fetchRemindersController } from "./reminder.controller.js";
 
 const reminderRouter = express.Router();
 

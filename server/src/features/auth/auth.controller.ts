@@ -1,8 +1,8 @@
 import { Request, Response } from "express";
 import jwt from "jsonwebtoken";
-import { loginSchema, signupSchema, LoginSuccessResponse, SignupResponse, ErrorResponse, SuccessResponse, editUserSchema, department, changePasswordSchema, GetUserDetailSuccessResponse } from "zs-crm-common";
-import { addUser, changePasswordService, comparePassword, editUserService, findExistingEmail, findExistingPhone, getUserDetailService, hashPassword, resetPasswordService } from "./auth.service";
-import { cookieOptions } from "../../utils/constant";
+import { loginSchema, signupSchema, LoginSuccessResponse, SignupResponse, ErrorResponse, SuccessResponse, editUserSchema, changePasswordSchema, GetUserDetailSuccessResponse } from "zs-crm-common";
+import { addUser, changePasswordService, comparePassword, editUserService, findExistingEmail, findExistingPhone, getUserDetailService, hashPassword, resetPasswordService } from "./auth.service.js";
+import { cookieOptions } from "../../utils/constant.js";
 
 export const loginController = async (req: Request, res: Response<LoginSuccessResponse | ErrorResponse>): Promise<any> => {
 

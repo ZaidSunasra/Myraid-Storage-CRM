@@ -1,8 +1,8 @@
 import {  DEPARTMENTS,  GetDrawingOutput, UploadDrawing } from "zs-crm-common";
-import { prisma } from "../../libs/prisma";;
+import { prisma } from "../../libs/prisma.js";
 import { DeleteObjectCommand, GetObjectCommand, PutObjectCommand } from "@aws-sdk/client-s3";
 import { getSignedUrl } from "@aws-sdk/s3-request-presigner";
-import s3Client from "../../libs/awsS3Client";
+import s3Client from "../../libs/awsS3Client.js";
 
 export const getUploadUrlService = async (fileKey: string, fileType: string): Promise<string> => {
     const command = new PutObjectCommand({

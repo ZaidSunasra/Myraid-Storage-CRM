@@ -1,7 +1,7 @@
 import express from "express";
-import authMiddleware from "../../middlewares/auth.middleware";
-import checkDepartment from "../../middlewares/department.middleware";
-import { addOrderController, addPaymentController, deletePaymentController, editOrderController, editPaymentController, getOrderByIdController, getOrderController } from "./orders.controller";
+import authMiddleware from "../../middlewares/auth.middleware.js";
+import checkDepartment from "../../middlewares/department.middleware.js";
+import { addOrderController, addPaymentController, deletePaymentController, editOrderController, editPaymentController, getOrderByIdController, getOrderController } from "./orders.controller.js";
 
 const orderRouter = express.Router();
 

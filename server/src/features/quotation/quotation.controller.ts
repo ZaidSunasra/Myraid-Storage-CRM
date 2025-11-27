@@ -1,5 +1,5 @@
 import { Request, Response } from "express";
-import { addQuotationService, copyQuotationDataService, deleteQuotationService, editQuotationService, getCompactorDetailsService, getDetailByQuotationNumberService, getQuotationByDealService, getQuotationByIdService, getQuotationProductsService, getQuotationService } from "./quotation.service";
+import { addQuotationService, copyQuotationDataService, deleteQuotationService, editQuotationService, getCompactorDetailsService, getDetailByQuotationNumberService, getQuotationByDealService, getQuotationByIdService, getQuotationProductsService, getQuotationService } from "./quotation.service.js";
 import { addQuotationSchema, copyQuotationschema, ErrorResponse, GetAllQuotationSuccessResponse, GetCompactorDetailSuccessResponse, GetDetailByQuotationNumberSuccessResponse, GetQuotationByDealSuccessResponse, GetQuotationByIdSuccessResponse, QuotationBaseProductSuccessResponse, SuccessResponse } from "zs-crm-common";
 import { Prisma } from "@prisma/client";
 

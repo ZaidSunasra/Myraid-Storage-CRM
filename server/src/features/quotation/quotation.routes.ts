@@ -1,7 +1,7 @@
 import express from "express";
-import authMiddleware from "../../middlewares/auth.middleware";
-import checkDepartment from "../../middlewares/department.middleware";
-import { addQuotationController, deleteQuotationController, editQuotationController, getCompactorDetailsController, getDetailByQuotationNumberController, getQuotationByDealController, getQuotationByIdController, getQuotationController, getQuotationProductsController, importQuotationController } from "./quotation.controller";
+import authMiddleware from "../../middlewares/auth.middleware.js";
+import checkDepartment from "../../middlewares/department.middleware.js";
+import { addQuotationController, deleteQuotationController, editQuotationController, getCompactorDetailsController, getDetailByQuotationNumberController, getQuotationByDealController, getQuotationByIdController, getQuotationController, getQuotationProductsController, importQuotationController } from "./quotation.controller.js";
 
 const quotationRouter = express.Router();
 

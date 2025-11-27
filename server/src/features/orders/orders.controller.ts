@@ -1,6 +1,6 @@
 import { Request, Response } from "express"
 import { addOrderSchema, addPaymentSchema, ErrorResponse, GetOrderByIdSuccessResponse, GetOrderSuccessResponse, SuccessResponse } from "zs-crm-common";
-import { addOrderService, addPaymentService, deletePaymentService, editOrderService, editPaymentService, getOrderByIdService, getOrderService } from "./orders.service";
+import { addOrderService, addPaymentService, deletePaymentService, editOrderService, editPaymentService, getOrderByIdService, getOrderService } from "./orders.service.js";
 
 export const addOrderController = async (req: Request, res: Response<ErrorResponse | SuccessResponse>): Promise<any> => {
     const { quotation_no, height, total, total_body, pi_number, po_number, dispatch_at, status, colour, deal_id, fitted_by, bill_number } = req.body;

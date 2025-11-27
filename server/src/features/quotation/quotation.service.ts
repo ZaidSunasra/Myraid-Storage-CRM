@@ -1,6 +1,6 @@
-import { prisma } from "../../libs/prisma"
+import { prisma } from "../../libs/prisma.js"
 import { AddQuotation, DEPARTMENTS, GetAllQuotationOutput, GetCompactorDetailOutput, GetDetailByQuotationNumberOutput, GetQuotationBaseProduct, GetQuotationByDealOutput, GetQuotationOutput, } from "zs-crm-common";
-import { convertQuotation, convertQuotationArray } from "./utils";
+import { convertQuotation, convertQuotationArray } from "./utils.js";
 
 export const getQuotationProductsService = async (product_type: string, bay: number, compartment: number): Promise<GetQuotationBaseProduct[]> => {
     const products = await prisma.baseProduct.findMany({

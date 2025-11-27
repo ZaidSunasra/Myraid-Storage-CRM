@@ -1,4 +1,4 @@
-import { prisma } from "../../libs/prisma";
+import { prisma } from "../../libs/prisma.js";
 import { GetNotificationOutput } from "zs-crm-common";
 
 export const getUnreadNotificationsService = async (id: string): Promise<GetNotificationOutput[]> => {

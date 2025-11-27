@@ -1,5 +1,5 @@
 import { Request, Response } from "express";
-import { addProductService, editProductService, getProductsService } from "./product.service";
+import { addProductService, editProductService, getProductsService } from "./product.service.js";
 import { GetProductSuccessResponse, ErrorResponse, SuccessResponse } from "zs-crm-common";
 
 export const getProductsController = async (req: Request, res: Response<ErrorResponse | GetProductSuccessResponse>): Promise<any> => {

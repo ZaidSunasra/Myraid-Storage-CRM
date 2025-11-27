@@ -1,6 +1,6 @@
-import { AddOrder, DEPARTMENTS,   AddPayment, Assignee, Company, Advance, order_status, GetOrderOutput, Order } from "zs-crm-common";
-import { prisma } from "../../libs/prisma";
-import Include from "./constants";
+import { AddOrder, DEPARTMENTS,   AddPayment, GetOrderOutput, Order } from "zs-crm-common";
+import { prisma } from "../../libs/prisma.js";
+import Include from "./constants.js";
 
 export const generateOrderNumber = async (): Promise<number> => {
     const today = new Date();

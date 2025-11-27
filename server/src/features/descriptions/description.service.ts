@@ -1,5 +1,5 @@
 import { GetDescriptionByIdOutput, GetDescriptionOutput } from "zs-crm-common";
-import { prisma } from "../../libs/prisma";
+import { prisma } from "../../libs/prisma.js";
 
 export const getDescriptionsService = async (id: string, type: "lead" | "deal"): Promise<GetDescriptionOutput[]> => {
     const descriptions = await prisma.description.findMany({

@@ -1,6 +1,6 @@
 import { Request, Response } from "express";
 import { ErrorResponse, GetDrawingByIdSuccessResponse, GetDrawingSuccessResponse, SuccessResponse, getUploadUrlSchema, GetUploadUrlSuccessResponse, uploadDrawingSchema } from "zs-crm-common";
-import { approveDrawingService, deleteDrawingService, getDrawingByIdService, getDrawingsService, getUploadUrlService, rejectDrawingService, showDrawingInOrderService, uploadDrawingService } from "./upload.service";
+import { approveDrawingService, deleteDrawingService, getDrawingByIdService, getDrawingsService, getUploadUrlService, rejectDrawingService, showDrawingInOrderService, uploadDrawingService } from "./upload.service.js";
 
 export const getUploadUrlController = async (req: Request, res: Response<ErrorResponse | GetUploadUrlSuccessResponse>): Promise<any> => {
     const { fileName, fileType, upload_type } = req.body;

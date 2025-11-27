@@ -1,18 +1,18 @@
 import express from "express";
-import leadRouter from "../features/leads/lead.routes";
-import authRouter from "../features/auth/auth.routes";
-import dealRouter from "../features/deals/deal.routes";
-import notificationRouter from "../features/notifications/notification.routes";
-import employeeRouter from "../features/employees/employee.routes";
-import productRouter from "../features/products/product.routes";
-import sourceRouter from "../features/sources/source.routes";
-import descriptionRouter from "../features/descriptions/description.routes";
-import reminderRouter from "../features/reminders/reminder.routes";
-import companyRouter from "../features/company/company.routes";
-import quotationRouter from "../features/quotation/quotation.routes";
-import permissionRouter from "../features/permissions/permission.routes";
-import orderRouter from "../features/orders/orders.route";
-import uploadRouter from "../features/uploads/upload.routes";
+import leadRouter from "../features/leads/lead.routes.js";
+import authRouter from "../features/auth/auth.routes.js";
+import dealRouter from "../features/deals/deal.routes.js";
+import notificationRouter from "../features/notifications/notification.routes.js";
+import employeeRouter from "../features/employees/employee.routes.js";
+import productRouter from "../features/products/product.routes.js";
+import sourceRouter from "../features/sources/source.routes.js";
+import descriptionRouter from "../features/descriptions/description.routes.js";
+import reminderRouter from "../features/reminders/reminder.routes.js";
+import companyRouter from "../features/company/company.routes.js";
+import quotationRouter from "../features/quotation/quotation.routes.js";
+import permissionRouter from "../features/permissions/permission.routes.js";
+import orderRouter from "../features/orders/orders.route.js";
+import uploadRouter from "../features/uploads/upload.routes.js";
 
 export const mainRouter = express.Router();
 

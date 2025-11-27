@@ -1,6 +1,6 @@
 import { Client_Details, Company, DEPARTMENTS, EditClient, EditCompany } from "zs-crm-common";
-import { prisma } from "../../libs/prisma"
-import { convertEmailIntoArray, convertPhoneIntoArray } from "../../utils/dataFormatter";
+import { prisma } from "../../libs/prisma.js"
+import { convertEmailIntoArray, convertPhoneIntoArray } from "../../utils/dataFormatter.js";
 
 export const getCompaniesService = async (name: string, author: any): Promise<Company[]> => {
     const isAdmin = author.department === DEPARTMENTS[1];

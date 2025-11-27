@@ -1,6 +1,6 @@
-import { prisma } from "../../libs/prisma";
+import { prisma } from "../../libs/prisma.js";
 import { AddLead, EditLead, DEPARTMENTS, GetLeadOutput, GetLeadSuccessResponse, GetLeadByDuration } from "zs-crm-common"
-import { convertEmailIntoArray, convertPhoneIntoArray } from "../../utils/dataFormatter";
+import { convertEmailIntoArray, convertPhoneIntoArray } from "../../utils/dataFormatter.js";
 
 export const convertAssignIdsIntoArray = (assigned_to: { id: number }[]): number[] => {
     const idStrings = assigned_to?.map((e: any) => e.id).filter((e: any): e is number => !!e) ?? [];

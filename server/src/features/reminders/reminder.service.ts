@@ -1,5 +1,5 @@
-import { AddReminder, DEPARTMENTS, GetDataByMonth, LeadByDay, reminder_type, ReminderMonth, Reminders } from "zs-crm-common";
-import { prisma } from "../../libs/prisma";
+import { AddReminder, DEPARTMENTS, GetDataByMonth, reminder_type, ReminderMonth, Reminders } from "zs-crm-common";
+import { prisma } from "../../libs/prisma.js";
 import { endOfMonth, format, startOfMonth } from "date-fns";
 
 export const addReminderService = async ({ title, send_at, message, reminder_type, type }: AddReminder, author_id: number, id: string): Promise<void> => {

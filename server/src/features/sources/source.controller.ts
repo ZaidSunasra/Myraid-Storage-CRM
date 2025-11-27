@@ -1,5 +1,5 @@
 import { GetSourceSuccessResponse, ErrorResponse, SuccessResponse } from "zs-crm-common";
-import { addSourceService, editSourceService, getSourcesService } from "./source.service";
+import { addSourceService, editSourceService, getSourcesService } from "./source.service.js";
 import { Request, Response } from "express";
 
 export const getSourcesController = async (req: Request, res: Response<ErrorResponse | GetSourceSuccessResponse>): Promise<any> => {

@@ -1,4 +1,4 @@
-import notificationReminderCron from "./notification.cron";
+import notificationReminderCron from "./notification.cron.js";
 
 const  registerCrons = ()  => {
     notificationReminderCron();

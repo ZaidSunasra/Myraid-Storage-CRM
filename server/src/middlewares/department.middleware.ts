@@ -1,5 +1,5 @@
 import { NextFunction, Request, RequestHandler, Response } from "express";
-import { prisma } from "../libs/prisma";
+import { prisma } from "../libs/prisma.js";
 
 const checkDepartment = (allowedDepartment?: string[], permissionKey?: string | string[]): RequestHandler => {
   return async (req: Request, res: Response, next: NextFunction): Promise<any> => {
