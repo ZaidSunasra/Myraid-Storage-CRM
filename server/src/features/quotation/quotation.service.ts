@@ -39,7 +39,18 @@ export const addQuotationService = async ({ quotation_template, quotation_item, 
                 quotation_no: quotation_no,
                 created_by: author.id
             },
-            select: { id: true },
+            select: {
+                id: true,
+                deal: {
+                    select: {
+                        assigned_to: {
+                            select: {
+                                user_id: true
+                            }
+                        }
+                    }
+                }
+            },
         });
         for (const product of quotation_item ?? []) {
             const createdProduct = await tx.quotationProducts.create({
@@ -86,6 +97,28 @@ export const addQuotationService = async ({ quotation_template, quotation_item, 
                 },
             });
         }
+        const notification = await tx.notification.create({
+            data: {
+                deal_id: deal_id,
+                is_sent: false,
+                description_id: null,
+                lead_id: null,
+                message: `Quotation with Quotation No: ${quotation_no.toUpperCase()} added for Deal Id: ${deal_id.toUpperCase()} by ${author.name}`,
+                title: "New quotation created",
+                send_at: null,
+                order_id: null,
+                type: "add_quotation"
+            },
+            select: {
+                id: true
+            }
+        })
+        await tx.recipient.createMany({
+            data: quotation.deal.assigned_to.map((u) => ({
+                notification_id: notification.id,
+                user_id: u.user_id,
+            })),
+        });
     });
 }
 
@@ -244,7 +277,7 @@ export const getQuotationByIdService = async (id: string): Promise<GetQuotationO
 
     if (!quotation) return null;
 
-    const convertedQuotation= convertQuotation(quotation)
+    const convertedQuotation = convertQuotation(quotation)
 
     return convertedQuotation;
 }
@@ -324,7 +357,7 @@ export const editQuotationService = async ({ quotation_template, quotation_item,
     });
 }
 
-export const copyQuotationDataService = async (quotation: GetQuotationOutput | null, deal_id: string, quotation_no: string): Promise<void> => {
+export const copyQuotationDataService = async (quotation: GetQuotationOutput | null, deal_id: string, quotation_no: string, author: any): Promise<void> => {
     if (!quotation) return;
     await prisma.$transaction(async (tx) => {
         const quotation_id = await tx.quotation.create({
@@ -341,8 +374,17 @@ export const copyQuotationDataService = async (quotation: GetQuotationOutput | n
                 created_by: quotation.created_by
             },
             select: {
-                id: true
-            }
+                id: true,
+                deal: {
+                    select: {
+                        assigned_to: {
+                            select: {
+                                user_id: true
+                            }
+                        }
+                    }
+                }
+            },
         });
         for (const product of quotation.quotation_products) {
             const createdProduct = await tx.quotationProducts.create({
@@ -389,6 +431,28 @@ export const copyQuotationDataService = async (quotation: GetQuotationOutput | n
                 },
             });
         }
+        const notification = await tx.notification.create({
+            data: {
+                deal_id: deal_id,
+                is_sent: false,
+                description_id: null,
+                lead_id: null,
+                message: `Quotation with Quotation No: ${quotation_no.toUpperCase()} copied for Deal Id: ${deal_id.toUpperCase()} by ${author.name}`,
+                title: "New quotation created",
+                send_at: null,
+                order_id: null,
+                type: "add_quotation"
+            },
+            select: {
+                id: true
+            }
+        })
+        await tx.recipient.createMany({
+            data: quotation_id.deal.assigned_to.map((u) => ({
+                notification_id: notification.id,
+                user_id: u.user_id,
+            })),
+        });
     })
 }
 
