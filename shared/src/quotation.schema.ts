@@ -57,6 +57,8 @@ export const addQuotationSchema = z.object({
     round_off: z.number(),
     show_body_table: z.boolean(),
     note: z.string().trim().optional().nullable(),
+    specifications: z.string(),
+    terms_and_condition: z.string(),
 })
 
 export const copyQuotationschema = z.object({
@@ -82,6 +84,8 @@ export type Quotation = {
     show_body_table: boolean
     sub_total: number
     note: string | null
+    specifications: string
+    terms_and_condition: string
     quotation_products: Quotation_Product[]
 }
 

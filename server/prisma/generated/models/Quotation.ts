@@ -56,6 +56,8 @@ export type QuotationMinAggregateOutputType = {
   grand_total: runtime.Decimal | null
   show_body_table: boolean | null
   note: string | null
+  terms_and_condition: string | null
+  specifications: string | null
   created_by: number | null
 }
 
@@ -71,6 +73,8 @@ export type QuotationMaxAggregateOutputType = {
   grand_total: runtime.Decimal | null
   show_body_table: boolean | null
   note: string | null
+  terms_and_condition: string | null
+  specifications: string | null
   created_by: number | null
 }
 
@@ -86,6 +90,8 @@ export type QuotationCountAggregateOutputType = {
   grand_total: number
   show_body_table: number
   note: number
+  terms_and_condition: number
+  specifications: number
   created_by: number
   _all: number
 }
@@ -121,6 +127,8 @@ export type QuotationMinAggregateInputType = {
   grand_total?: true
   show_body_table?: true
   note?: true
+  terms_and_condition?: true
+  specifications?: true
   created_by?: true
 }
 
@@ -136,6 +144,8 @@ export type QuotationMaxAggregateInputType = {
   grand_total?: true
   show_body_table?: true
   note?: true
+  terms_and_condition?: true
+  specifications?: true
   created_by?: true
 }
 
@@ -151,6 +161,8 @@ export type QuotationCountAggregateInputType = {
   grand_total?: true
   show_body_table?: true
   note?: true
+  terms_and_condition?: true
+  specifications?: true
   created_by?: true
   _all?: true
 }
@@ -253,6 +265,8 @@ export type QuotationGroupByOutputType = {
   grand_total: runtime.Decimal
   show_body_table: boolean
   note: string | null
+  terms_and_condition: string | null
+  specifications: string | null
   created_by: number
   _count: QuotationCountAggregateOutputType | null
   _avg: QuotationAvgAggregateOutputType | null
@@ -291,6 +305,8 @@ export type QuotationWhereInput = {
   grand_total?: Prisma.DecimalFilter<"Quotation"> | runtime.Decimal | runtime.DecimalJsLike | number | string
   show_body_table?: Prisma.BoolFilter<"Quotation"> | boolean
   note?: Prisma.StringNullableFilter<"Quotation"> | string | null
+  terms_and_condition?: Prisma.StringNullableFilter<"Quotation"> | string | null
+  specifications?: Prisma.StringNullableFilter<"Quotation"> | string | null
   created_by?: Prisma.IntFilter<"Quotation"> | number
   deal?: Prisma.XOR<Prisma.DealScalarRelationFilter, Prisma.DealWhereInput>
   quotation_products?: Prisma.QuotationProductsListRelationFilter
@@ -310,6 +326,8 @@ export type QuotationOrderByWithRelationInput = {
   grand_total?: Prisma.SortOrder
   show_body_table?: Prisma.SortOrder
   note?: Prisma.SortOrderInput | Prisma.SortOrder
+  terms_and_condition?: Prisma.SortOrderInput | Prisma.SortOrder
+  specifications?: Prisma.SortOrderInput | Prisma.SortOrder
   created_by?: Prisma.SortOrder
   deal?: Prisma.DealOrderByWithRelationInput
   quotation_products?: Prisma.QuotationProductsOrderByRelationAggregateInput
@@ -332,6 +350,8 @@ export type QuotationWhereUniqueInput = Prisma.AtLeast<{
   grand_total?: Prisma.DecimalFilter<"Quotation"> | runtime.Decimal | runtime.DecimalJsLike | number | string
   show_body_table?: Prisma.BoolFilter<"Quotation"> | boolean
   note?: Prisma.StringNullableFilter<"Quotation"> | string | null
+  terms_and_condition?: Prisma.StringNullableFilter<"Quotation"> | string | null
+  specifications?: Prisma.StringNullableFilter<"Quotation"> | string | null
   created_by?: Prisma.IntFilter<"Quotation"> | number
   deal?: Prisma.XOR<Prisma.DealScalarRelationFilter, Prisma.DealWhereInput>
   quotation_products?: Prisma.QuotationProductsListRelationFilter
@@ -351,6 +371,8 @@ export type QuotationOrderByWithAggregationInput = {
   grand_total?: Prisma.SortOrder
   show_body_table?: Prisma.SortOrder
   note?: Prisma.SortOrderInput | Prisma.SortOrder
+  terms_and_condition?: Prisma.SortOrderInput | Prisma.SortOrder
+  specifications?: Prisma.SortOrderInput | Prisma.SortOrder
   created_by?: Prisma.SortOrder
   _count?: Prisma.QuotationCountOrderByAggregateInput
   _avg?: Prisma.QuotationAvgOrderByAggregateInput
@@ -374,6 +396,8 @@ export type QuotationScalarWhereWithAggregatesInput = {
   grand_total?: Prisma.DecimalWithAggregatesFilter<"Quotation"> | runtime.Decimal | runtime.DecimalJsLike | number | string
   show_body_table?: Prisma.BoolWithAggregatesFilter<"Quotation"> | boolean
   note?: Prisma.StringNullableWithAggregatesFilter<"Quotation"> | string | null
+  terms_and_condition?: Prisma.StringNullableWithAggregatesFilter<"Quotation"> | string | null
+  specifications?: Prisma.StringNullableWithAggregatesFilter<"Quotation"> | string | null
   created_by?: Prisma.IntWithAggregatesFilter<"Quotation"> | number
 }
 
@@ -387,6 +411,8 @@ export type QuotationCreateInput = {
   grand_total?: runtime.Decimal | runtime.DecimalJsLike | number | string
   show_body_table?: boolean
   note?: string | null
+  terms_and_condition?: string | null
+  specifications?: string | null
   deal: Prisma.DealCreateNestedOneWithoutQuotationInput
   quotation_products?: Prisma.QuotationProductsCreateNestedManyWithoutQuotationInput
   order?: Prisma.OrderCreateNestedOneWithoutQuotationInput
@@ -405,6 +431,8 @@ export type QuotationUncheckedCreateInput = {
   grand_total?: runtime.Decimal | runtime.DecimalJsLike | number | string
   show_body_table?: boolean
   note?: string | null
+  terms_and_condition?: string | null
+  specifications?: string | null
   created_by: number
   quotation_products?: Prisma.QuotationProductsUncheckedCreateNestedManyWithoutQuotationInput
   order?: Prisma.OrderUncheckedCreateNestedOneWithoutQuotationInput
@@ -420,6 +448,8 @@ export type QuotationUpdateInput = {
   grand_total?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
   show_body_table?: Prisma.BoolFieldUpdateOperationsInput | boolean
   note?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  terms_and_condition?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  specifications?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   deal?: Prisma.DealUpdateOneRequiredWithoutQuotationNestedInput
   quotation_products?: Prisma.QuotationProductsUpdateManyWithoutQuotationNestedInput
   order?: Prisma.OrderUpdateOneWithoutQuotationNestedInput
@@ -438,6 +468,8 @@ export type QuotationUncheckedUpdateInput = {
   grand_total?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
   show_body_table?: Prisma.BoolFieldUpdateOperationsInput | boolean
   note?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  terms_and_condition?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  specifications?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   created_by?: Prisma.IntFieldUpdateOperationsInput | number
   quotation_products?: Prisma.QuotationProductsUncheckedUpdateManyWithoutQuotationNestedInput
   order?: Prisma.OrderUncheckedUpdateOneWithoutQuotationNestedInput
@@ -455,6 +487,8 @@ export type QuotationCreateManyInput = {
   grand_total?: runtime.Decimal | runtime.DecimalJsLike | number | string
   show_body_table?: boolean
   note?: string | null
+  terms_and_condition?: string | null
+  specifications?: string | null
   created_by: number
 }
 
@@ -468,6 +502,8 @@ export type QuotationUpdateManyMutationInput = {
   grand_total?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
   show_body_table?: Prisma.BoolFieldUpdateOperationsInput | boolean
   note?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  terms_and_condition?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  specifications?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
 }
 
 export type QuotationUncheckedUpdateManyInput = {
@@ -482,6 +518,8 @@ export type QuotationUncheckedUpdateManyInput = {
   grand_total?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
   show_body_table?: Prisma.BoolFieldUpdateOperationsInput | boolean
   note?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  terms_and_condition?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  specifications?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   created_by?: Prisma.IntFieldUpdateOperationsInput | number
 }
 
@@ -507,6 +545,8 @@ export type QuotationCountOrderByAggregateInput = {
   grand_total?: Prisma.SortOrder
   show_body_table?: Prisma.SortOrder
   note?: Prisma.SortOrder
+  terms_and_condition?: Prisma.SortOrder
+  specifications?: Prisma.SortOrder
   created_by?: Prisma.SortOrder
 }
 
@@ -531,6 +571,8 @@ export type QuotationMaxOrderByAggregateInput = {
   grand_total?: Prisma.SortOrder
   show_body_table?: Prisma.SortOrder
   note?: Prisma.SortOrder
+  terms_and_condition?: Prisma.SortOrder
+  specifications?: Prisma.SortOrder
   created_by?: Prisma.SortOrder
 }
 
@@ -546,6 +588,8 @@ export type QuotationMinOrderByAggregateInput = {
   grand_total?: Prisma.SortOrder
   show_body_table?: Prisma.SortOrder
   note?: Prisma.SortOrder
+  terms_and_condition?: Prisma.SortOrder
+  specifications?: Prisma.SortOrder
   created_by?: Prisma.SortOrder
 }
 
@@ -697,6 +741,8 @@ export type QuotationCreateWithoutUserInput = {
   grand_total?: runtime.Decimal | runtime.DecimalJsLike | number | string
   show_body_table?: boolean
   note?: string | null
+  terms_and_condition?: string | null
+  specifications?: string | null
   deal: Prisma.DealCreateNestedOneWithoutQuotationInput
   quotation_products?: Prisma.QuotationProductsCreateNestedManyWithoutQuotationInput
   order?: Prisma.OrderCreateNestedOneWithoutQuotationInput
@@ -714,6 +760,8 @@ export type QuotationUncheckedCreateWithoutUserInput = {
   grand_total?: runtime.Decimal | runtime.DecimalJsLike | number | string
   show_body_table?: boolean
   note?: string | null
+  terms_and_condition?: string | null
+  specifications?: string | null
   quotation_products?: Prisma.QuotationProductsUncheckedCreateNestedManyWithoutQuotationInput
   order?: Prisma.OrderUncheckedCreateNestedOneWithoutQuotationInput
 }
@@ -759,6 +807,8 @@ export type QuotationScalarWhereInput = {
   grand_total?: Prisma.DecimalFilter<"Quotation"> | runtime.Decimal | runtime.DecimalJsLike | number | string
   show_body_table?: Prisma.BoolFilter<"Quotation"> | boolean
   note?: Prisma.StringNullableFilter<"Quotation"> | string | null
+  terms_and_condition?: Prisma.StringNullableFilter<"Quotation"> | string | null
+  specifications?: Prisma.StringNullableFilter<"Quotation"> | string | null
   created_by?: Prisma.IntFilter<"Quotation"> | number
 }
 
@@ -772,6 +822,8 @@ export type QuotationCreateWithoutDealInput = {
   grand_total?: runtime.Decimal | runtime.DecimalJsLike | number | string
   show_body_table?: boolean
   note?: string | null
+  terms_and_condition?: string | null
+  specifications?: string | null
   quotation_products?: Prisma.QuotationProductsCreateNestedManyWithoutQuotationInput
   order?: Prisma.OrderCreateNestedOneWithoutQuotationInput
   user: Prisma.UserCreateNestedOneWithoutQuotationInput
@@ -788,6 +840,8 @@ export type QuotationUncheckedCreateWithoutDealInput = {
   grand_total?: runtime.Decimal | runtime.DecimalJsLike | number | string
   show_body_table?: boolean
   note?: string | null
+  terms_and_condition?: string | null
+  specifications?: string | null
   created_by: number
   quotation_products?: Prisma.QuotationProductsUncheckedCreateNestedManyWithoutQuotationInput
   order?: Prisma.OrderUncheckedCreateNestedOneWithoutQuotationInput
@@ -829,6 +883,8 @@ export type QuotationCreateWithoutQuotation_productsInput = {
   grand_total?: runtime.Decimal | runtime.DecimalJsLike | number | string
   show_body_table?: boolean
   note?: string | null
+  terms_and_condition?: string | null
+  specifications?: string | null
   deal: Prisma.DealCreateNestedOneWithoutQuotationInput
   order?: Prisma.OrderCreateNestedOneWithoutQuotationInput
   user: Prisma.UserCreateNestedOneWithoutQuotationInput
@@ -846,6 +902,8 @@ export type QuotationUncheckedCreateWithoutQuotation_productsInput = {
   grand_total?: runtime.Decimal | runtime.DecimalJsLike | number | string
   show_body_table?: boolean
   note?: string | null
+  terms_and_condition?: string | null
+  specifications?: string | null
   created_by: number
   order?: Prisma.OrderUncheckedCreateNestedOneWithoutQuotationInput
 }
@@ -876,6 +934,8 @@ export type QuotationUpdateWithoutQuotation_productsInput = {
   grand_total?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
   show_body_table?: Prisma.BoolFieldUpdateOperationsInput | boolean
   note?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  terms_and_condition?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  specifications?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   deal?: Prisma.DealUpdateOneRequiredWithoutQuotationNestedInput
   order?: Prisma.OrderUpdateOneWithoutQuotationNestedInput
   user?: Prisma.UserUpdateOneRequiredWithoutQuotationNestedInput
@@ -893,6 +953,8 @@ export type QuotationUncheckedUpdateWithoutQuotation_productsInput = {
   grand_total?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
   show_body_table?: Prisma.BoolFieldUpdateOperationsInput | boolean
   note?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  terms_and_condition?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  specifications?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   created_by?: Prisma.IntFieldUpdateOperationsInput | number
   order?: Prisma.OrderUncheckedUpdateOneWithoutQuotationNestedInput
 }
@@ -907,6 +969,8 @@ export type QuotationCreateWithoutOrderInput = {
   grand_total?: runtime.Decimal | runtime.DecimalJsLike | number | string
   show_body_table?: boolean
   note?: string | null
+  terms_and_condition?: string | null
+  specifications?: string | null
   deal: Prisma.DealCreateNestedOneWithoutQuotationInput
   quotation_products?: Prisma.QuotationProductsCreateNestedManyWithoutQuotationInput
   user: Prisma.UserCreateNestedOneWithoutQuotationInput
@@ -924,6 +988,8 @@ export type QuotationUncheckedCreateWithoutOrderInput = {
   grand_total?: runtime.Decimal | runtime.DecimalJsLike | number | string
   show_body_table?: boolean
   note?: string | null
+  terms_and_condition?: string | null
+  specifications?: string | null
   created_by: number
   quotation_products?: Prisma.QuotationProductsUncheckedCreateNestedManyWithoutQuotationInput
 }
@@ -954,6 +1020,8 @@ export type QuotationUpdateWithoutOrderInput = {
   grand_total?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
   show_body_table?: Prisma.BoolFieldUpdateOperationsInput | boolean
   note?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  terms_and_condition?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  specifications?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   deal?: Prisma.DealUpdateOneRequiredWithoutQuotationNestedInput
   quotation_products?: Prisma.QuotationProductsUpdateManyWithoutQuotationNestedInput
   user?: Prisma.UserUpdateOneRequiredWithoutQuotationNestedInput
@@ -971,6 +1039,8 @@ export type QuotationUncheckedUpdateWithoutOrderInput = {
   grand_total?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
   show_body_table?: Prisma.BoolFieldUpdateOperationsInput | boolean
   note?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  terms_and_condition?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  specifications?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   created_by?: Prisma.IntFieldUpdateOperationsInput | number
   quotation_products?: Prisma.QuotationProductsUncheckedUpdateManyWithoutQuotationNestedInput
 }
@@ -987,6 +1057,8 @@ export type QuotationCreateManyUserInput = {
   grand_total?: runtime.Decimal | runtime.DecimalJsLike | number | string
   show_body_table?: boolean
   note?: string | null
+  terms_and_condition?: string | null
+  specifications?: string | null
 }
 
 export type QuotationUpdateWithoutUserInput = {
@@ -999,6 +1071,8 @@ export type QuotationUpdateWithoutUserInput = {
   grand_total?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
   show_body_table?: Prisma.BoolFieldUpdateOperationsInput | boolean
   note?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  terms_and_condition?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  specifications?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   deal?: Prisma.DealUpdateOneRequiredWithoutQuotationNestedInput
   quotation_products?: Prisma.QuotationProductsUpdateManyWithoutQuotationNestedInput
   order?: Prisma.OrderUpdateOneWithoutQuotationNestedInput
@@ -1016,6 +1090,8 @@ export type QuotationUncheckedUpdateWithoutUserInput = {
   grand_total?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
   show_body_table?: Prisma.BoolFieldUpdateOperationsInput | boolean
   note?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  terms_and_condition?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  specifications?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   quotation_products?: Prisma.QuotationProductsUncheckedUpdateManyWithoutQuotationNestedInput
   order?: Prisma.OrderUncheckedUpdateOneWithoutQuotationNestedInput
 }
@@ -1032,6 +1108,8 @@ export type QuotationUncheckedUpdateManyWithoutUserInput = {
   grand_total?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
   show_body_table?: Prisma.BoolFieldUpdateOperationsInput | boolean
   note?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  terms_and_condition?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  specifications?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
 }
 
 export type QuotationCreateManyDealInput = {
@@ -1045,6 +1123,8 @@ export type QuotationCreateManyDealInput = {
   grand_total?: runtime.Decimal | runtime.DecimalJsLike | number | string
   show_body_table?: boolean
   note?: string | null
+  terms_and_condition?: string | null
+  specifications?: string | null
   created_by: number
 }
 
@@ -1058,6 +1138,8 @@ export type QuotationUpdateWithoutDealInput = {
   grand_total?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
   show_body_table?: Prisma.BoolFieldUpdateOperationsInput | boolean
   note?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  terms_and_condition?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  specifications?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   quotation_products?: Prisma.QuotationProductsUpdateManyWithoutQuotationNestedInput
   order?: Prisma.OrderUpdateOneWithoutQuotationNestedInput
   user?: Prisma.UserUpdateOneRequiredWithoutQuotationNestedInput
@@ -1074,6 +1156,8 @@ export type QuotationUncheckedUpdateWithoutDealInput = {
   grand_total?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
   show_body_table?: Prisma.BoolFieldUpdateOperationsInput | boolean
   note?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  terms_and_condition?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  specifications?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   created_by?: Prisma.IntFieldUpdateOperationsInput | number
   quotation_products?: Prisma.QuotationProductsUncheckedUpdateManyWithoutQuotationNestedInput
   order?: Prisma.OrderUncheckedUpdateOneWithoutQuotationNestedInput
@@ -1090,6 +1174,8 @@ export type QuotationUncheckedUpdateManyWithoutDealInput = {
   grand_total?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
   show_body_table?: Prisma.BoolFieldUpdateOperationsInput | boolean
   note?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  terms_and_condition?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  specifications?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   created_by?: Prisma.IntFieldUpdateOperationsInput | number
 }
 
@@ -1136,6 +1222,8 @@ export type QuotationSelect<ExtArgs extends runtime.Types.Extensions.InternalArg
   grand_total?: boolean
   show_body_table?: boolean
   note?: boolean
+  terms_and_condition?: boolean
+  specifications?: boolean
   created_by?: boolean
   deal?: boolean | Prisma.DealDefaultArgs<ExtArgs>
   quotation_products?: boolean | Prisma.Quotation$quotation_productsArgs<ExtArgs>
@@ -1156,6 +1244,8 @@ export type QuotationSelectCreateManyAndReturn<ExtArgs extends runtime.Types.Ext
   grand_total?: boolean
   show_body_table?: boolean
   note?: boolean
+  terms_and_condition?: boolean
+  specifications?: boolean
   created_by?: boolean
   deal?: boolean | Prisma.DealDefaultArgs<ExtArgs>
   user?: boolean | Prisma.UserDefaultArgs<ExtArgs>
@@ -1173,6 +1263,8 @@ export type QuotationSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.Ext
   grand_total?: boolean
   show_body_table?: boolean
   note?: boolean
+  terms_and_condition?: boolean
+  specifications?: boolean
   created_by?: boolean
   deal?: boolean | Prisma.DealDefaultArgs<ExtArgs>
   user?: boolean | Prisma.UserDefaultArgs<ExtArgs>
@@ -1190,10 +1282,12 @@ export type QuotationSelectScalar = {
   grand_total?: boolean
   show_body_table?: boolean
   note?: boolean
+  terms_and_condition?: boolean
+  specifications?: boolean
   created_by?: boolean
 }
 
-export type QuotationOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "created_at" | "quotation_no" | "deal_id" | "quotation_template" | "gst" | "round_off" | "sub_total" | "grand_total" | "show_body_table" | "note" | "created_by", ExtArgs["result"]["quotation"]>
+export type QuotationOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "created_at" | "quotation_no" | "deal_id" | "quotation_template" | "gst" | "round_off" | "sub_total" | "grand_total" | "show_body_table" | "note" | "terms_and_condition" | "specifications" | "created_by", ExtArgs["result"]["quotation"]>
 export type QuotationInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   deal?: boolean | Prisma.DealDefaultArgs<ExtArgs>
   quotation_products?: boolean | Prisma.Quotation$quotation_productsArgs<ExtArgs>
@@ -1230,6 +1324,8 @@ export type $QuotationPayload<ExtArgs extends runtime.Types.Extensions.InternalA
     grand_total: runtime.Decimal
     show_body_table: boolean
     note: string | null
+    terms_and_condition: string | null
+    specifications: string | null
     created_by: number
   }, ExtArgs["result"]["quotation"]>
   composites: {}
@@ -1669,6 +1765,8 @@ export interface QuotationFieldRefs {
   readonly grand_total: Prisma.FieldRef<"Quotation", 'Decimal'>
   readonly show_body_table: Prisma.FieldRef<"Quotation", 'Boolean'>
   readonly note: Prisma.FieldRef<"Quotation", 'String'>
+  readonly terms_and_condition: Prisma.FieldRef<"Quotation", 'String'>
+  readonly specifications: Prisma.FieldRef<"Quotation", 'String'>
   readonly created_by: Prisma.FieldRef<"Quotation", 'Int'>
 }
     

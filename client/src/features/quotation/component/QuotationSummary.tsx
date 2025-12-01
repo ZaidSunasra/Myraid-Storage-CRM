@@ -98,7 +98,43 @@ const QuotationSummary = ({ form, handlePrev, isSubmitting, type }: { form: UseF
                 rows={5}
                 placeholder="Enter special note to display on quotation"
                 value={field.value ?? ""}
-                onChange={(e) => field.onChange(e.target.value)} 
+                onChange={(e) => field.onChange(e.target.value)}
+              />
+              <FormMessage />
+            </FormItem>
+          )}
+        />
+      </div>
+      <div className="space-y-2">
+        <FormField
+          control={form.control}
+          name="terms_and_condition"
+          render={({ field }) => (
+            <FormItem>
+              <FormLabel>Terms and Condition*</FormLabel>
+              <Textarea
+                rows={5}
+                placeholder="Enter terms and condition"
+                value={field.value ?? ""}
+                onChange={(e) => field.onChange(e.target.value)}
+              />
+              <FormMessage />
+            </FormItem>
+          )}
+        />
+      </div>
+      <div className="space-y-2">
+        <FormField
+          control={form.control}
+          name="specifications"
+          render={({ field }) => (
+            <FormItem>
+              <FormLabel>Specifications*</FormLabel>
+              <Textarea
+                rows={5}
+                placeholder="Enter specifications"
+                value={field.value ?? ""}
+                onChange={(e) => field.onChange(e.target.value)}
               />
               <FormMessage />
             </FormItem>
@@ -112,7 +148,7 @@ const QuotationSummary = ({ form, handlePrev, isSubmitting, type }: { form: UseF
         Previous
       </Button>
       <Button type="submit" disabled={isSubmitting}>
-       {type === "add" ? "Add Quotation" : "Save Changes"}
+        {type === "add" ? "Add Quotation" : "Save Changes"}
       </Button>
     </CardFooter>
   </Card>

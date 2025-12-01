@@ -56,7 +56,7 @@ const QuotationPrint = () => {
             })}
           </div>
         }
-        <Terms />
+        <Terms terms={data.quotation.terms_and_condition}/>
       </div>
     </div>
   )

@@ -1,27 +1,13 @@
-import { useState, type Dispatch, type SetStateAction } from "react"
+import { type Dispatch, type SetStateAction } from "react"
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/shared/components/ui/table"
-import { Input } from "@/shared/components/ui/input"
-import { Plus, X } from "lucide-react"
-import { Card, CardContent, CardHeader, CardTitle } from "@/shared/components/ui/card"
+import { Card, CardContent } from "@/shared/components/ui/card"
 import SetWiseItemTable from "./SetWiseItemTable"
 import ItemWiseItemTable from "./ItemWiseItemTable"
 import type { GetQuotationOutput } from "zs-crm-common"
-import { Button } from "@/shared/components/ui/button"
 
 const QuotationItemsTable = ({ quotation, name, setName }: { quotation: GetQuotationOutput, name: string[], setName: Dispatch<SetStateAction<string[]>> }) => {
 
-    const [specs, setSpecs] = useState([
-        "2 TRACK",
-        "0.8 MM THICKNESS SUPERSTRUCTURE",
-        "2.5 MM TROLLY",
-        "POWDER COATED",
-        "HSN CODE: 9403",
-        "All dimensions are in MM",
-        "Mild Steel",
-        "Body 0.6 and Door 0,7 Thickness",
-        "Powder Coated with Epoxy Polyester"
-    ]);
-
+    const specs = quotation.specifications.split("\n").filter(spec => spec != "");
     const rowsToPrint = specs.length - 4;
 
     const isDiscountGiven = quotation.quotation_products.some(
@@ -102,46 +88,6 @@ const QuotationItemsTable = ({ quotation, name, setName }: { quotation: GetQuota
                     </CardContent>
                 </Card>
             }
-            <Card className="print:hidden mb-6 mt-6">
-                <CardHeader>
-                    <CardTitle className="flex justify-between items-center">
-                        <span>Specifications</span>
-                        <Button
-                            type="button"
-                            variant="default"
-                            className="bg-green-500 hover:bg-green-600"
-                            onClick={() => setSpecs((prev) => [...prev, ""])}
-                        >
-                            <Plus className="w-4 h-4 mr-1" />
-                            Add Spec
-                        </Button>
-                    </CardTitle>
-                </CardHeader>
-                <CardContent className="space-y-2">
-                    {specs.map((spec, index) => (
-                        <div key={index} className="flex gap-2 items-center">
-                            <Input
-                                value={spec}
-                                onChange={(e) =>
-                                    setSpecs((prev) =>
-                                        prev.map((val, i) => (i === index ? e.target.value : val))
-                                    )
-                                }
-                            />
-                            <Button
-                                type="button"
-                                size="icon"
-                                className="bg-red-500 hover:bg-red-600 text-white"
-                                onClick={() =>
-                                    setSpecs((prev) => prev.filter((_, i) => i !== index))
-                                }
-                            >
-                                <X className="w-4 h-4" />
-                            </Button>
-                        </div>
-                    ))}
-                </CardContent>
-            </Card>
         </>
     )
 }

@@ -253,6 +253,8 @@ model Quotation {
   grand_total        Decimal             @default(0)
   show_body_table    Boolean             @default(true)
   note               String?
+  terms_and_condition String?
+  specifications String?
   deal               Deal                @relation(fields: [deal_id], references: [id])
   quotation_products QuotationProducts[]
   order              Order?

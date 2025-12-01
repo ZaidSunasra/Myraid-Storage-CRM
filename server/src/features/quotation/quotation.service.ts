@@ -23,7 +23,7 @@ export const getQuotationProductsService = async (product_type: string, bay: num
     return enrichedProducts;
 }
 
-export const addQuotationService = async ({ quotation_template, quotation_item, total, grandTotal, gst, round_off, show_body_table, note, quotation_no }: AddQuotation,
+export const addQuotationService = async ({ quotation_template, quotation_item, total, grandTotal, gst, round_off, show_body_table, note, quotation_no, specifications, terms_and_condition}: AddQuotation,
     deal_id: string, author: any): Promise<any> => {
     await prisma.$transaction(async (tx) => {
         const quotation = await tx.quotation.create({
@@ -37,7 +37,9 @@ export const addQuotationService = async ({ quotation_template, quotation_item, 
                 show_body_table: show_body_table,
                 note: note,
                 quotation_no: quotation_no,
-                created_by: author.id
+                created_by: author.id,
+                specifications: specifications,
+                terms_and_condition: terms_and_condition
             },
             select: {
                 id: true,
@@ -292,7 +294,7 @@ export const getQuotationByIdService = async (id: string): Promise<GetQuotationO
     return convertedQuotation;
 }
 
-export const editQuotationService = async ({ quotation_template, quotation_item, total, grandTotal, gst, round_off, show_body_table, note, quotation_no }: AddQuotation,
+export const editQuotationService = async ({ quotation_template, quotation_item, total, grandTotal, gst, round_off, show_body_table, note, quotation_no, specifications, terms_and_condition}: AddQuotation,
     deal_id: string, id: string, author: any): Promise<any> => {
     await prisma.$transaction(async (tx) => {
         const quotation = await tx.quotation.update({
@@ -310,7 +312,9 @@ export const editQuotationService = async ({ quotation_template, quotation_item,
                 show_body_table: show_body_table,
                 note: note,
                 created_at: new Date(Date.now()),
-                created_by: author.id
+                created_by: author.id,
+                specifications: specifications,
+                terms_and_condition: terms_and_condition
             },
             select: { id: true },
         });
@@ -400,7 +404,9 @@ export const copyQuotationDataService = async (quotation: GetQuotationOutput | n
                 grand_total: quotation.grand_total,
                 show_body_table: quotation.show_body_table,
                 note: quotation.note,
-                created_by: quotation.created_by
+                created_by: quotation.created_by,
+                specifications: quotation.specifications,
+                terms_and_condition: quotation.terms_and_condition
             },
             select: {
                 id: true,

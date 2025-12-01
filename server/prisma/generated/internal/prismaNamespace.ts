@@ -2276,6 +2276,8 @@ export const QuotationScalarFieldEnum = {
   grand_total: 'grand_total',
   show_body_table: 'show_body_table',
   note: 'note',
+  terms_and_condition: 'terms_and_condition',
+  specifications: 'specifications',
   created_by: 'created_by'
 } as const
 

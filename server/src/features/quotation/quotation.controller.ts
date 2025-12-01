@@ -21,7 +21,7 @@ export const getQuotationProductsController = async (req: Request, res: Response
 }
 
 export const addQuotationController = async (req: Request, res: Response<ErrorResponse | SuccessResponse>): Promise<any> => {
-    const { quotation_template, quotation_item, total, grandTotal, gst, round_off, show_body_table, note, quotation_no } = req.body;
+    const { quotation_template, quotation_item, total, grandTotal, gst, round_off, show_body_table, note, quotation_no, terms_and_condition, specifications} = req.body;
     const deal_id = req.params.deal_id;
     const author = res.locals.user;
     const validation = addQuotationSchema.safeParse(req.body);
@@ -32,7 +32,7 @@ export const addQuotationController = async (req: Request, res: Response<ErrorRe
         })
     }
     try {
-        await addQuotationService({ quotation_template, quotation_item, total, grandTotal, gst, round_off, show_body_table, note, quotation_no }, deal_id, author);
+        await addQuotationService({ quotation_template, quotation_item, total, grandTotal, gst, round_off, show_body_table, note, quotation_no, terms_and_condition, specifications}, deal_id, author);
         return res.status(200).json({
             message: `Quotation added  successfully`,
         })
@@ -123,7 +123,7 @@ export const getQuotationByIdController = async (req: Request, res: Response<Get
 }
 
 export const editQuotationController = async (req: Request, res: Response<ErrorResponse | SuccessResponse>): Promise<any> => {
-    const { quotation_template, quotation_item, total, grandTotal, gst, round_off, show_body_table, note, quotation_no } = req.body;
+    const { quotation_template, quotation_item, total, grandTotal, gst, round_off, show_body_table, note, quotation_no, specifications, terms_and_condition} = req.body;
     const deal_id = req.params.deal_id;
     const id = req.params.id;
     const author = res.locals.user;
@@ -135,7 +135,7 @@ export const editQuotationController = async (req: Request, res: Response<ErrorR
         })
     }
     try {
-        await editQuotationService({ quotation_template, quotation_item, total, grandTotal, gst, round_off, show_body_table, note, quotation_no }, deal_id, id, author);
+        await editQuotationService({ quotation_template, quotation_item, total, grandTotal, gst, round_off, show_body_table, note, quotation_no, specifications, terms_and_condition }, deal_id, id, author);
         return res.status(200).json({
             message: `Quotation edited  successfully`,
         })

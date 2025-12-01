@@ -89,7 +89,9 @@ const EditQuotationPage = () => {
             note: data.quotation.note ?? null,
             quotation_item: quotation_item,
             quotation_no: data.quotation.quotation_no ?? id,
-            total: data.quotation.sub_total ?? 0
+            total: data.quotation.sub_total ?? 0,
+            terms_and_condition: data.quotation.terms_and_condition ?? "",
+            specifications: data.quotation.specifications ?? ""
         });
     }, [data, addProduct, clearAll, form]);
 
