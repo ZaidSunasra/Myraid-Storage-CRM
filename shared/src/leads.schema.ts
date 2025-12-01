@@ -3,7 +3,7 @@ import { Assignee, Client_Details, Company, Product, Source, SuccessResponse } f
 
 export const leadSchema = z.object({
     first_name: z.string().min(1, "First name required"),
-    last_name: z.string().min(1, "Last name required"),
+    last_name: z.string().optional().nullable(),
     phones: z.array(z.object({ number: z.string().min(5, "Phone number too short").max(15, "Phone number too long") })).min(1, "Atleast 1 phone number required"),
     emails: z.array(z.object({ email: z.email("Enter valid email address").optional() })).optional(),
     assigned_to: z.array(z.object({ id: z.number().min(1, "Enter valid Id") })).min(1, "Atleast 1 Id required"),

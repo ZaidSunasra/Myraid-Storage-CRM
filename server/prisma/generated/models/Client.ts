@@ -180,7 +180,7 @@ export type ClientGroupByArgs<ExtArgs extends runtime.Types.Extensions.InternalA
 export type ClientGroupByOutputType = {
   id: number
   first_name: string
-  last_name: string
+  last_name: string | null
   company_id: number
   _count: ClientCountAggregateOutputType | null
   _avg: ClientAvgAggregateOutputType | null
@@ -210,7 +210,7 @@ export type ClientWhereInput = {
   NOT?: Prisma.ClientWhereInput | Prisma.ClientWhereInput[]
   id?: Prisma.IntFilter<"Client"> | number
   first_name?: Prisma.StringFilter<"Client"> | string
-  last_name?: Prisma.StringFilter<"Client"> | string
+  last_name?: Prisma.StringNullableFilter<"Client"> | string | null
   company_id?: Prisma.IntFilter<"Client"> | number
   company?: Prisma.XOR<Prisma.CompanyScalarRelationFilter, Prisma.CompanyWhereInput>
   lead?: Prisma.LeadListRelationFilter
@@ -222,7 +222,7 @@ export type ClientWhereInput = {
 export type ClientOrderByWithRelationInput = {
   id?: Prisma.SortOrder
   first_name?: Prisma.SortOrder
-  last_name?: Prisma.SortOrder
+  last_name?: Prisma.SortOrderInput | Prisma.SortOrder
   company_id?: Prisma.SortOrder
   company?: Prisma.CompanyOrderByWithRelationInput
   lead?: Prisma.LeadOrderByRelationAggregateInput
@@ -237,7 +237,7 @@ export type ClientWhereUniqueInput = Prisma.AtLeast<{
   OR?: Prisma.ClientWhereInput[]
   NOT?: Prisma.ClientWhereInput | Prisma.ClientWhereInput[]
   first_name?: Prisma.StringFilter<"Client"> | string
-  last_name?: Prisma.StringFilter<"Client"> | string
+  last_name?: Prisma.StringNullableFilter<"Client"> | string | null
   company_id?: Prisma.IntFilter<"Client"> | number
   company?: Prisma.XOR<Prisma.CompanyScalarRelationFilter, Prisma.CompanyWhereInput>
   lead?: Prisma.LeadListRelationFilter
@@ -249,7 +249,7 @@ export type ClientWhereUniqueInput = Prisma.AtLeast<{
 export type ClientOrderByWithAggregationInput = {
   id?: Prisma.SortOrder
   first_name?: Prisma.SortOrder
-  last_name?: Prisma.SortOrder
+  last_name?: Prisma.SortOrderInput | Prisma.SortOrder
   company_id?: Prisma.SortOrder
   _count?: Prisma.ClientCountOrderByAggregateInput
   _avg?: Prisma.ClientAvgOrderByAggregateInput
@@ -264,13 +264,13 @@ export type ClientScalarWhereWithAggregatesInput = {
   NOT?: Prisma.ClientScalarWhereWithAggregatesInput | Prisma.ClientScalarWhereWithAggregatesInput[]
   id?: Prisma.IntWithAggregatesFilter<"Client"> | number
   first_name?: Prisma.StringWithAggregatesFilter<"Client"> | string
-  last_name?: Prisma.StringWithAggregatesFilter<"Client"> | string
+  last_name?: Prisma.StringNullableWithAggregatesFilter<"Client"> | string | null
   company_id?: Prisma.IntWithAggregatesFilter<"Client"> | number
 }
 
 export type ClientCreateInput = {
   first_name: string
-  last_name: string
+  last_name?: string | null
   company: Prisma.CompanyCreateNestedOneWithoutClient_detailsInput
   lead?: Prisma.LeadCreateNestedManyWithoutClient_detailInput
   emails?: Prisma.EmailCreateNestedManyWithoutClientInput
@@ -281,7 +281,7 @@ export type ClientCreateInput = {
 export type ClientUncheckedCreateInput = {
   id?: number
   first_name: string
-  last_name: string
+  last_name?: string | null
   company_id: number
   lead?: Prisma.LeadUncheckedCreateNestedManyWithoutClient_detailInput
   emails?: Prisma.EmailUncheckedCreateNestedManyWithoutClientInput
@@ -291,7 +291,7 @@ export type ClientUncheckedCreateInput = {
 
 export type ClientUpdateInput = {
   first_name?: Prisma.StringFieldUpdateOperationsInput | string
-  last_name?: Prisma.StringFieldUpdateOperationsInput | string
+  last_name?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   company?: Prisma.CompanyUpdateOneRequiredWithoutClient_detailsNestedInput
   lead?: Prisma.LeadUpdateManyWithoutClient_detailNestedInput
   emails?: Prisma.EmailUpdateManyWithoutClientNestedInput
@@ -302,7 +302,7 @@ export type ClientUpdateInput = {
 export type ClientUncheckedUpdateInput = {
   id?: Prisma.IntFieldUpdateOperationsInput | number
   first_name?: Prisma.StringFieldUpdateOperationsInput | string
-  last_name?: Prisma.StringFieldUpdateOperationsInput | string
+  last_name?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   company_id?: Prisma.IntFieldUpdateOperationsInput | number
   lead?: Prisma.LeadUncheckedUpdateManyWithoutClient_detailNestedInput
   emails?: Prisma.EmailUncheckedUpdateManyWithoutClientNestedInput
@@ -313,19 +313,19 @@ export type ClientUncheckedUpdateInput = {
 export type ClientCreateManyInput = {
   id?: number
   first_name: string
-  last_name: string
+  last_name?: string | null
   company_id: number
 }
 
 export type ClientUpdateManyMutationInput = {
   first_name?: Prisma.StringFieldUpdateOperationsInput | string
-  last_name?: Prisma.StringFieldUpdateOperationsInput | string
+  last_name?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
 }
 
 export type ClientUncheckedUpdateManyInput = {
   id?: Prisma.IntFieldUpdateOperationsInput | number
   first_name?: Prisma.StringFieldUpdateOperationsInput | string
-  last_name?: Prisma.StringFieldUpdateOperationsInput | string
+  last_name?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   company_id?: Prisma.IntFieldUpdateOperationsInput | number
 }
 
@@ -475,7 +475,7 @@ export type ClientUpdateOneRequiredWithoutDealNestedInput = {
 
 export type ClientCreateWithoutCompanyInput = {
   first_name: string
-  last_name: string
+  last_name?: string | null
   lead?: Prisma.LeadCreateNestedManyWithoutClient_detailInput
   emails?: Prisma.EmailCreateNestedManyWithoutClientInput
   phones?: Prisma.PhoneCreateNestedManyWithoutClientInput
@@ -485,7 +485,7 @@ export type ClientCreateWithoutCompanyInput = {
 export type ClientUncheckedCreateWithoutCompanyInput = {
   id?: number
   first_name: string
-  last_name: string
+  last_name?: string | null
   lead?: Prisma.LeadUncheckedCreateNestedManyWithoutClient_detailInput
   emails?: Prisma.EmailUncheckedCreateNestedManyWithoutClientInput
   phones?: Prisma.PhoneUncheckedCreateNestedManyWithoutClientInput
@@ -524,13 +524,13 @@ export type ClientScalarWhereInput = {
   NOT?: Prisma.ClientScalarWhereInput | Prisma.ClientScalarWhereInput[]
   id?: Prisma.IntFilter<"Client"> | number
   first_name?: Prisma.StringFilter<"Client"> | string
-  last_name?: Prisma.StringFilter<"Client"> | string
+  last_name?: Prisma.StringNullableFilter<"Client"> | string | null
   company_id?: Prisma.IntFilter<"Client"> | number
 }
 
 export type ClientCreateWithoutLeadInput = {
   first_name: string
-  last_name: string
+  last_name?: string | null
   company: Prisma.CompanyCreateNestedOneWithoutClient_detailsInput
   emails?: Prisma.EmailCreateNestedManyWithoutClientInput
   phones?: Prisma.PhoneCreateNestedManyWithoutClientInput
@@ -540,7 +540,7 @@ export type ClientCreateWithoutLeadInput = {
 export type ClientUncheckedCreateWithoutLeadInput = {
   id?: number
   first_name: string
-  last_name: string
+  last_name?: string | null
   company_id: number
   emails?: Prisma.EmailUncheckedCreateNestedManyWithoutClientInput
   phones?: Prisma.PhoneUncheckedCreateNestedManyWithoutClientInput
@@ -565,7 +565,7 @@ export type ClientUpdateToOneWithWhereWithoutLeadInput = {
 
 export type ClientUpdateWithoutLeadInput = {
   first_name?: Prisma.StringFieldUpdateOperationsInput | string
-  last_name?: Prisma.StringFieldUpdateOperationsInput | string
+  last_name?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   company?: Prisma.CompanyUpdateOneRequiredWithoutClient_detailsNestedInput
   emails?: Prisma.EmailUpdateManyWithoutClientNestedInput
   phones?: Prisma.PhoneUpdateManyWithoutClientNestedInput
@@ -575,7 +575,7 @@ export type ClientUpdateWithoutLeadInput = {
 export type ClientUncheckedUpdateWithoutLeadInput = {
   id?: Prisma.IntFieldUpdateOperationsInput | number
   first_name?: Prisma.StringFieldUpdateOperationsInput | string
-  last_name?: Prisma.StringFieldUpdateOperationsInput | string
+  last_name?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   company_id?: Prisma.IntFieldUpdateOperationsInput | number
   emails?: Prisma.EmailUncheckedUpdateManyWithoutClientNestedInput
   phones?: Prisma.PhoneUncheckedUpdateManyWithoutClientNestedInput
@@ -584,7 +584,7 @@ export type ClientUncheckedUpdateWithoutLeadInput = {
 
 export type ClientCreateWithoutEmailsInput = {
   first_name: string
-  last_name: string
+  last_name?: string | null
   company: Prisma.CompanyCreateNestedOneWithoutClient_detailsInput
   lead?: Prisma.LeadCreateNestedManyWithoutClient_detailInput
   phones?: Prisma.PhoneCreateNestedManyWithoutClientInput
@@ -594,7 +594,7 @@ export type ClientCreateWithoutEmailsInput = {
 export type ClientUncheckedCreateWithoutEmailsInput = {
   id?: number
   first_name: string
-  last_name: string
+  last_name?: string | null
   company_id: number
   lead?: Prisma.LeadUncheckedCreateNestedManyWithoutClient_detailInput
   phones?: Prisma.PhoneUncheckedCreateNestedManyWithoutClientInput
@@ -619,7 +619,7 @@ export type ClientUpdateToOneWithWhereWithoutEmailsInput = {
 
 export type ClientUpdateWithoutEmailsInput = {
   first_name?: Prisma.StringFieldUpdateOperationsInput | string
-  last_name?: Prisma.StringFieldUpdateOperationsInput | string
+  last_name?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   company?: Prisma.CompanyUpdateOneRequiredWithoutClient_detailsNestedInput
   lead?: Prisma.LeadUpdateManyWithoutClient_detailNestedInput
   phones?: Prisma.PhoneUpdateManyWithoutClientNestedInput
@@ -629,7 +629,7 @@ export type ClientUpdateWithoutEmailsInput = {
 export type ClientUncheckedUpdateWithoutEmailsInput = {
   id?: Prisma.IntFieldUpdateOperationsInput | number
   first_name?: Prisma.StringFieldUpdateOperationsInput | string
-  last_name?: Prisma.StringFieldUpdateOperationsInput | string
+  last_name?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   company_id?: Prisma.IntFieldUpdateOperationsInput | number
   lead?: Prisma.LeadUncheckedUpdateManyWithoutClient_detailNestedInput
   phones?: Prisma.PhoneUncheckedUpdateManyWithoutClientNestedInput
@@ -638,7 +638,7 @@ export type ClientUncheckedUpdateWithoutEmailsInput = {
 
 export type ClientCreateWithoutPhonesInput = {
   first_name: string
-  last_name: string
+  last_name?: string | null
   company: Prisma.CompanyCreateNestedOneWithoutClient_detailsInput
   lead?: Prisma.LeadCreateNestedManyWithoutClient_detailInput
   emails?: Prisma.EmailCreateNestedManyWithoutClientInput
@@ -648,7 +648,7 @@ export type ClientCreateWithoutPhonesInput = {
 export type ClientUncheckedCreateWithoutPhonesInput = {
   id?: number
   first_name: string
-  last_name: string
+  last_name?: string | null
   company_id: number
   lead?: Prisma.LeadUncheckedCreateNestedManyWithoutClient_detailInput
   emails?: Prisma.EmailUncheckedCreateNestedManyWithoutClientInput
@@ -673,7 +673,7 @@ export type ClientUpdateToOneWithWhereWithoutPhonesInput = {
 
 export type ClientUpdateWithoutPhonesInput = {
   first_name?: Prisma.StringFieldUpdateOperationsInput | string
-  last_name?: Prisma.StringFieldUpdateOperationsInput | string
+  last_name?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   company?: Prisma.CompanyUpdateOneRequiredWithoutClient_detailsNestedInput
   lead?: Prisma.LeadUpdateManyWithoutClient_detailNestedInput
   emails?: Prisma.EmailUpdateManyWithoutClientNestedInput
@@ -683,7 +683,7 @@ export type ClientUpdateWithoutPhonesInput = {
 export type ClientUncheckedUpdateWithoutPhonesInput = {
   id?: Prisma.IntFieldUpdateOperationsInput | number
   first_name?: Prisma.StringFieldUpdateOperationsInput | string
-  last_name?: Prisma.StringFieldUpdateOperationsInput | string
+  last_name?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   company_id?: Prisma.IntFieldUpdateOperationsInput | number
   lead?: Prisma.LeadUncheckedUpdateManyWithoutClient_detailNestedInput
   emails?: Prisma.EmailUncheckedUpdateManyWithoutClientNestedInput
@@ -692,7 +692,7 @@ export type ClientUncheckedUpdateWithoutPhonesInput = {
 
 export type ClientCreateWithoutDealInput = {
   first_name: string
-  last_name: string
+  last_name?: string | null
   company: Prisma.CompanyCreateNestedOneWithoutClient_detailsInput
   lead?: Prisma.LeadCreateNestedManyWithoutClient_detailInput
   emails?: Prisma.EmailCreateNestedManyWithoutClientInput
@@ -702,7 +702,7 @@ export type ClientCreateWithoutDealInput = {
 export type ClientUncheckedCreateWithoutDealInput = {
   id?: number
   first_name: string
-  last_name: string
+  last_name?: string | null
   company_id: number
   lead?: Prisma.LeadUncheckedCreateNestedManyWithoutClient_detailInput
   emails?: Prisma.EmailUncheckedCreateNestedManyWithoutClientInput
@@ -727,7 +727,7 @@ export type ClientUpdateToOneWithWhereWithoutDealInput = {
 
 export type ClientUpdateWithoutDealInput = {
   first_name?: Prisma.StringFieldUpdateOperationsInput | string
-  last_name?: Prisma.StringFieldUpdateOperationsInput | string
+  last_name?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   company?: Prisma.CompanyUpdateOneRequiredWithoutClient_detailsNestedInput
   lead?: Prisma.LeadUpdateManyWithoutClient_detailNestedInput
   emails?: Prisma.EmailUpdateManyWithoutClientNestedInput
@@ -737,7 +737,7 @@ export type ClientUpdateWithoutDealInput = {
 export type ClientUncheckedUpdateWithoutDealInput = {
   id?: Prisma.IntFieldUpdateOperationsInput | number
   first_name?: Prisma.StringFieldUpdateOperationsInput | string
-  last_name?: Prisma.StringFieldUpdateOperationsInput | string
+  last_name?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   company_id?: Prisma.IntFieldUpdateOperationsInput | number
   lead?: Prisma.LeadUncheckedUpdateManyWithoutClient_detailNestedInput
   emails?: Prisma.EmailUncheckedUpdateManyWithoutClientNestedInput
@@ -747,12 +747,12 @@ export type ClientUncheckedUpdateWithoutDealInput = {
 export type ClientCreateManyCompanyInput = {
   id?: number
   first_name: string
-  last_name: string
+  last_name?: string | null
 }
 
 export type ClientUpdateWithoutCompanyInput = {
   first_name?: Prisma.StringFieldUpdateOperationsInput | string
-  last_name?: Prisma.StringFieldUpdateOperationsInput | string
+  last_name?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   lead?: Prisma.LeadUpdateManyWithoutClient_detailNestedInput
   emails?: Prisma.EmailUpdateManyWithoutClientNestedInput
   phones?: Prisma.PhoneUpdateManyWithoutClientNestedInput
@@ -762,7 +762,7 @@ export type ClientUpdateWithoutCompanyInput = {
 export type ClientUncheckedUpdateWithoutCompanyInput = {
   id?: Prisma.IntFieldUpdateOperationsInput | number
   first_name?: Prisma.StringFieldUpdateOperationsInput | string
-  last_name?: Prisma.StringFieldUpdateOperationsInput | string
+  last_name?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   lead?: Prisma.LeadUncheckedUpdateManyWithoutClient_detailNestedInput
   emails?: Prisma.EmailUncheckedUpdateManyWithoutClientNestedInput
   phones?: Prisma.PhoneUncheckedUpdateManyWithoutClientNestedInput
@@ -772,7 +772,7 @@ export type ClientUncheckedUpdateWithoutCompanyInput = {
 export type ClientUncheckedUpdateManyWithoutCompanyInput = {
   id?: Prisma.IntFieldUpdateOperationsInput | number
   first_name?: Prisma.StringFieldUpdateOperationsInput | string
-  last_name?: Prisma.StringFieldUpdateOperationsInput | string
+  last_name?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
 }
 
 
@@ -897,7 +897,7 @@ export type $ClientPayload<ExtArgs extends runtime.Types.Extensions.InternalArgs
   scalars: runtime.Types.Extensions.GetPayloadResult<{
     id: number
     first_name: string
-    last_name: string
+    last_name: string | null
     company_id: number
   }, ExtArgs["result"]["client"]>
   composites: {}

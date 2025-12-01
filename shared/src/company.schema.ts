@@ -9,7 +9,7 @@ export const editCompanyDetailSchema = z.object({
 
 export const editClientSchema = z.object({
     first_name: z.string().min(1, "First name required"),
-    last_name: z.string().min(1, "Last name required"),
+    last_name: z.string().optional().nullable(),
     phones: z.array(z.object({ number: z.string().min(5, "Phone number too short").max(15, "Phone number too long") })).min(1, "Atleast 1 phone number required"),
     emails: z.array(z.object({ email: z.email("Enter valid email address").optional() })).optional(),
     id: z.string().optional(),

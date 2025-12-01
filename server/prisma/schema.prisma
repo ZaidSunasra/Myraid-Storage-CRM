@@ -113,7 +113,7 @@ model Asignee {
 model Client {
   id         Int     @id @default(autoincrement())
   first_name String
-  last_name  String
+  last_name  String?
   company    Company @relation(fields: [company_id], references: [id])
   company_id Int
   lead       Lead[]

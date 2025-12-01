@@ -82,9 +82,9 @@ const EditClientDetails = ({ employee, setSelectedEmployee}: { employee: Client_
                                 render={({ field }) => (
                                     <FormItem>
                                         <div className="space-y-2">
-                                            <FormLabel>Last Name*</FormLabel>
+                                            <FormLabel>Last Name</FormLabel>
                                             <FormControl>
-                                                <Input id="last_name" placeholder="Enter last name" {...field} />
+                                                <Input id="last_name" placeholder="Enter last name" {...field} value={field.value ?? ""} />
                                             </FormControl>
                                             <FormMessage />
                                         </div>
