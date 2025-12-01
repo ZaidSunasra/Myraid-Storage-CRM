@@ -4,7 +4,7 @@ import { Client_Details, Company, SuccessResponse } from "./common.schema";
 export const productSelectorSchema = z.object({
     product_type: z.string(),
     bay: z.number().gte(1),
-    compartment: z.number().gte(4),
+    compartment: z.number().gte(1),
 })
 export type ProductSelector = z.infer<typeof productSelectorSchema>
 
