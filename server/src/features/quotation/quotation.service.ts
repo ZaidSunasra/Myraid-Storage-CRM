@@ -119,6 +119,16 @@ export const addQuotationService = async ({ quotation_template, quotation_item, 
                 user_id: u.user_id,
             })),
         });
+        if (grandTotal > 500000) {
+            await tx.deal.update({
+                where: {
+                    id: deal_id
+                },
+                data: {
+                    deal_status: "high_order_value"
+                }
+            })
+        }
     });
 }
 
@@ -354,6 +364,25 @@ export const editQuotationService = async ({ quotation_template, quotation_item,
                 },
             });
         }
+        if (grandTotal >= 500000) {
+            await tx.deal.update({
+                where: {
+                    id: deal_id
+                },
+                data: {
+                    deal_status: "high_order_value"
+                }
+            })
+        } else {
+            await tx.deal.update({
+                where: {
+                    id: deal_id
+                },
+                data: {
+                    deal_status: "quotation"
+                }
+            })
+        }
     });
 }
 
@@ -453,6 +482,16 @@ export const copyQuotationDataService = async (quotation: GetQuotationOutput | n
                 user_id: u.user_id,
             })),
         });
+        if (quotation.grand_total > 500000) {
+            await tx.deal.update({
+                where: {
+                    id: deal_id
+                },
+                data: {
+                    deal_status: "high_order_value"
+                }
+            })
+        }
     })
 }
 
