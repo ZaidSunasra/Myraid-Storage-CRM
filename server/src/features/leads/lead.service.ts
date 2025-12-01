@@ -93,7 +93,7 @@ export const addLeadService = async ({ first_name, last_name, phones, emails, as
         const client = await tx.client.create({
             data: {
                 first_name: first_name.toLowerCase(),
-                last_name: last_name.toLowerCase(),
+                last_name: last_name?.toLowerCase(),
                 company_id: company.id
             }
         });
@@ -278,7 +278,7 @@ export const editLeadService = async ({ id, first_name, last_name, phones, email
             },
             data: {
                 first_name: first_name.toLowerCase(),
-                last_name: last_name.toLowerCase(),
+                last_name: last_name?.toLowerCase(),
             }
         });
         await tx.asignee.deleteMany({
