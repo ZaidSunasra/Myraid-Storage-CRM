@@ -1,5 +1,6 @@
 import z from "zod/v4";
 import { Client_Details, Company, SuccessResponse } from "./common.schema";
+import { department } from "./auth.schema";
 
 export const productSelectorSchema = z.object({
     product_type: z.string(),
@@ -135,6 +136,12 @@ export type GetQuotationOutput = Quotation & {
     deal: {
         client_detail: Client_Details,
         company: Company,
+        assigned_to: {
+            user: {
+                phone: string,
+                department: department
+            }
+        }[]
     },
 };
 

@@ -7,6 +7,8 @@ import type { GetQuotationOutput } from "zs-crm-common"
 
 const Heading = ({ quotation, name, setName }: { quotation: GetQuotationOutput, name: string[], setName: Dispatch<SetStateAction<string[]>> }) => {
 
+    const numbers = quotation.deal.assigned_to.map((users) => users.user.phone).filter(phone => phone != "9769370343");
+    
     return (
         <div>
             <div className="flex mb-4 gap-4 items-center">
@@ -16,7 +18,7 @@ const Heading = ({ quotation, name, setName }: { quotation: GetQuotationOutput, 
                 <div className="text-md font-medium">
                     <p> A/702, Al Husain Bldg, Momin Nagar, Jogeshwari (W), Mumbai 400102 </p>
                     <p>State  :  Maharashtra, Code : 27</p>
-                    <p>Contact: 9769370343 </p>
+                    <p>Contact: {numbers.splice(0, 2).join(" / ")} / 9769370343 </p>
                     <p>GST No: 27ABJFM1234A1Z5</p>
                     <p>info@myriadstoragesystem.com</p>
                     <p>sales@myriadstoragesystem.com</p>
@@ -77,7 +79,7 @@ const Heading = ({ quotation, name, setName }: { quotation: GetQuotationOutput, 
                         <span className="font-semibold">Kind Attn:</span>{" "}
                         Mr.{" "}
                         {capitalize(quotation.deal.client_detail.first_name)}{" "}
-                        {capitalize(quotation.deal.client_detail.last_name)}
+                        {capitalize(quotation.deal.client_detail.last_name ?? "")}
                     </p>
                 </div>
             </div>

@@ -273,6 +273,16 @@ export const getQuotationByIdService = async (id: string): Promise<GetQuotationO
                             emails: true,
                             phones: true
                         }
+                    },
+                    assigned_to: {
+                        select: {
+                            user: {
+                                select: {
+                                    phone: true,
+                                    department: true
+                                }
+                            }
+                        }
                     }
                 },
             },
