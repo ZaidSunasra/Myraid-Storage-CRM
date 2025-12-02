@@ -155,7 +155,7 @@ const DrawingList = ({ context }: { context: "deal" | "order" }) => {
                                                         </Button>
                                                     </>
                                                 )}
-                                                {drawing.status === "rejected" && <Button
+                                                {((drawing.status === "rejected") || (user?.department && canView(user?.department, "delete_drawing"))) && <Button
                                                     variant="outline"
                                                     size="sm"
                                                     className="h-8 px-3 text-xs bg-red-50 hover:bg-red-100 border-red-200 text-red-700 flex-1"
