@@ -1,4 +1,4 @@
-import {  DEPARTMENTS,  GetDrawingOutput, UploadDrawing } from "zs-crm-common";
+import { DEPARTMENTS, GetAllDrawingOutput, GetDrawingOutput, UploadDrawing } from "zs-crm-common";
 import { prisma } from "../../libs/prisma.js";
 import { DeleteObjectCommand, GetObjectCommand, PutObjectCommand } from "@aws-sdk/client-s3";
 import { getSignedUrl } from "@aws-sdk/s3-request-presigner";
@@ -32,10 +32,48 @@ export const uploadDrawingService = async ({ drawing_url, title, version, deal_i
                 file_type: file_type,
                 uploaded_by: author.id,
                 upload_type: upload_type,
-                status: upload_type === "general" ? "approved" : "pending",
+                status: upload_type === "general" ? "approved" : author.department === DEPARTMENTS[1] ? "approved" : "pending",
             }
         });
-        if (upload_type !== "general") {
+        if ((upload_type === "general") || (author.department === DEPARTMENTS[1])) {
+            const deal = await tx.deal.findUnique({
+                where: {
+                    id: deal_id
+                },
+                select: {
+                    assigned_to: {
+                        select: {
+                            user: {
+                                select: {
+                                    id: true
+                                }
+                            }
+                        }
+                    }
+                }
+            })
+            if (deal && deal?.assigned_to.length > 0) {
+                const notification = await tx.notification.create({
+                    data: {
+                        title: "Drawing approved",
+                        message: `Drawing for ${deal_id ? `DEAL No: ${deal_id} Version: ${version}` : `Order No: ${order_id}`}  has been approved by ${author.name}`,
+                        send_at: null,
+                        deal_id: deal_id,
+                        order_id: parseInt(order_id),
+                        type: "drawing_approved",
+                    },
+                    select: {
+                        id: true
+                    }
+                });
+                await tx.recipient.createMany({
+                    data: deal?.assigned_to.map((user) => ({
+                        user_id: user.user.id,
+                        notification_id: notification.id,
+                    }))
+                })
+            }
+        } else {
             const notification = await tx.notification.create({
                 data: {
                     message: `Drawing No: ${title} Version: ${version} for ${context == "deal" ? `DEAL No: ${deal_id}` : `Order No: ${order_id}`} has been uploaded by ${author.name}. Kindly review and approve when you have a moment.`,
@@ -163,6 +201,7 @@ export const approveDrawingService = async (id: string, author: any): Promise<vo
             select: {
                 deal_id: true,
                 order_id: true,
+                version: true
             }
         });
         const deal = await tx.deal.findUnique({
@@ -175,7 +214,7 @@ export const approveDrawingService = async (id: string, author: any): Promise<vo
             const notification = await tx.notification.create({
                 data: {
                     title: "Drawing approved",
-                    message: `Drawing for ${drawing.deal_id ? `DEAL No: ${drawing.deal_id}` : `Order No: ${drawing.order_id}`}  has been approved by ${author.name}`,
+                    message: `Drawing for ${drawing.deal_id ? `DEAL No: ${drawing.deal_id} Version: ${drawing.version}` : `Order No: ${drawing.order_id}`}  has been approved by ${author.name}`,
                     send_at: null,
                     deal_id: drawing.deal_id,
                     order_id: drawing.order_id,
@@ -208,13 +247,14 @@ export const rejectDrawingService = async (id: string, author: any, note?: strin
             select: {
                 uploaded_by: true,
                 deal_id: true,
-                order_id: true
+                order_id: true,
+                version: true
             }
         });
         const notification = await tx.notification.create({
             data: {
                 title: "Drawing rejected",
-                message: `Drawing for ${drawing.deal_id ? `DEAL No: ${drawing.deal_id}` : `Order No: ${drawing.order_id}`} has been rejected by ${author.name}`,
+                message: `Drawing for ${drawing.deal_id ? `DEAL No: ${drawing.deal_id} Version: ${drawing.version}` : `Order No: ${drawing.order_id}`} has been rejected by ${author.name}`,
                 type: "drawing_rejected",
                 send_at: null,
                 deal_id: drawing.deal_id,
@@ -274,4 +314,44 @@ export const showDrawingInOrderService = async (id: string): Promise<void> => {
             });
         }
     })
+}
+
+export const getAllDrawingsService = async (rows: number, page: number, search: string): Promise<GetAllDrawingOutput> => {
+    const drawings = await prisma.drawing.findMany({
+        where: {
+            AND: [
+                search ? {
+                    OR: [
+                        {
+                            deal_id: { contains: search, mode: 'insensitive' }
+                        },
+                        {
+                            title: { contains: search, mode: 'insensitive' }
+                        },
+                        !isNaN(Number(search))
+                            ? { order_id: { equals: Number(search) } }
+                            : {}
+                    ]
+                } : {},
+                { status: "approved" },
+            ]
+        },
+        take: rows,
+        skip: (page - 1) * rows,
+        select: {
+            id: true,
+            uploaded_at: true,
+            upload_type: true,
+            file_size: true,
+            title: true,
+            deal_id: true,
+            order_id: true,
+            version: true
+        },
+        orderBy: {
+            uploaded_at: "desc"
+        }
+    });
+    const totalDrawing = await prisma.drawing.count()
+    return { drawings, totalDrawing };
 }

@@ -72,6 +72,13 @@ export type GetDrawingOutput = {
     drawings: Record<drawing_status, (Assignee & Drawing)[]>
 }
 
+export type GetAllDrawingOutput = {
+    drawings: Pick<Drawing, 'id' | 'uploaded_at' | 'upload_type' | 'file_size' | 'title' | 'deal_id' | 'order_id' | 'version'>[],
+    totalDrawing : number
+}
+
+export type GetAllDrawingSuccessResponse = SuccessResponse & GetAllDrawingOutput
+
 export type GetDrawingSuccessResponse = SuccessResponse & GetDrawingOutput
 
 export type GetDrawingByIdSuccessResponse = SuccessResponse & {

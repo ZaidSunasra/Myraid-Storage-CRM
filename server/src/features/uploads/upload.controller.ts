@@ -1,6 +1,6 @@
 import { Request, Response } from "express";
-import { ErrorResponse, GetDrawingByIdSuccessResponse, GetDrawingSuccessResponse, SuccessResponse, getUploadUrlSchema, GetUploadUrlSuccessResponse, uploadDrawingSchema } from "zs-crm-common";
-import { approveDrawingService, deleteDrawingService, getDrawingByIdService, getDrawingsService, getUploadUrlService, rejectDrawingService, showDrawingInOrderService, uploadDrawingService } from "./upload.service.js";
+import { ErrorResponse, GetDrawingByIdSuccessResponse, GetDrawingSuccessResponse, SuccessResponse, getUploadUrlSchema, GetUploadUrlSuccessResponse, uploadDrawingSchema, GetAllDrawingSuccessResponse,  } from "zs-crm-common";
+import { approveDrawingService, deleteDrawingService, getAllDrawingsService, getDrawingByIdService, getDrawingsService, getUploadUrlService, rejectDrawingService, showDrawingInOrderService, uploadDrawingService } from "./upload.service.js";
 
 export const getUploadUrlController = async (req: Request, res: Response<ErrorResponse | GetUploadUrlSuccessResponse>): Promise<any> => {
     const { fileName, fileType, upload_type } = req.body;
@@ -156,3 +156,23 @@ export const showDrawingInOrderController = async (req: Request, res: Response<S
     }
 }
 
+export const getAllDrawingsController = async (req: Request, res: Response<ErrorResponse | GetAllDrawingSuccessResponse>): Promise<any> => {
+    const user = res.locals.user;
+    const rows = parseInt(req.query.rows as string);
+    const page = parseInt(req.query.page as string);
+    const search = req.query.search as string;
+    try {
+        const {drawings, totalDrawing} = await getAllDrawingsService(rows, page,search);
+        return res.status(200).json({
+            message: "All drawings fetched successfully",
+            drawings,
+            totalDrawing
+        });
+    } catch (error) {
+        console.log(`Error in fetching all drawings`, error);
+        return res.status(500).send({
+            message: "Internal server error",
+            error: error
+        });
+    }
+}

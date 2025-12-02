@@ -6,6 +6,7 @@ import SourceSettings from "../pages/SourceSettings"
 import RoleSettings from "../pages/RoleSettings"
 import UserSettings from "../pages/UserSettings"
 import CompanySettings from "../pages/CompanySettings"
+import DrawingSettings from "../pages/DrawingSettings"
 
 export interface MenuItem {
     id: string
@@ -56,6 +57,14 @@ export const menuItems: MenuItem[] = [
         description: "Manage sources",
         icon: FileText,
         component: SourceSettings,
+        roles: ["admin", "sales"]
+    },
+    {
+        id: "drawings",
+        name: "Drawings",
+        description: "Manage drawings",
+        icon: FileText,
+        component: DrawingSettings,
         roles: ["admin", "sales"]
     }
 ]

@@ -1,4 +1,4 @@
-import { type GetDrawingByIdSuccessResponse, type GetDrawingSuccessResponse, type GetUploadUrlSuccessResponse, type SuccessResponse,type GetUploadUrl, type UploadDrawing  } from "zs-crm-common";
+import { type GetDrawingByIdSuccessResponse, type GetDrawingSuccessResponse, type GetUploadUrlSuccessResponse, type SuccessResponse,type GetUploadUrl, type UploadDrawing, type GetAllDrawingSuccessResponse  } from "zs-crm-common";
 import axiosInstance from "../axiosInstance"
 
 export const getUploadUrl = async (data: GetUploadUrl): Promise<GetUploadUrlSuccessResponse> => {
@@ -38,5 +38,10 @@ export const rejectDrawing = async ({ note, id }: { note?: string, id: string })
 
 export const showDrawingInOrder = async (id: string): Promise<SuccessResponse> => {
     const response = await axiosInstance.patch(`drawings/show-in-order/${id}`);
+    return response.data;
+}
+
+export const getAllDrawings = async ({rows, page, search } : {rows: number, page: number,search: string, }): Promise<GetAllDrawingSuccessResponse> => {
+    const response = await axiosInstance.get(`drawings/get-all?rows=${rows}&page=${page}&search=${search}`);
     return response.data;
 }

@@ -43,6 +43,7 @@ export const useDeleteDrawing = () => {
         onSuccess: (data: SuccessResponse) => {
             (toast.success(data.message));
             queryClient.invalidateQueries({ queryKey: ['drawings'] })
+             queryClient.invalidateQueries({ queryKey: ['all-drawings'] })
         },
         onError: (error: AxiosError<ErrorResponse>) => {
             toast.error(error.response?.data.message);
