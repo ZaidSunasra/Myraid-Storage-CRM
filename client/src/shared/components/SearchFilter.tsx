@@ -11,7 +11,7 @@ import TableLoader from "@/shared/components/loaders/TableLoader";
 import { useUser } from "@/context/UserContext";
 import { DEPARTMENTS } from "zs-crm-common";
 
-const SearchFilterBar = ({ searchInput, setSearchInput }: { searchInput: string; setSearchInput: (val: string) => void; }) => {
+const SearchFilterBar = ({ searchInput, setSearchInput, showEmployee}: { searchInput: string; setSearchInput: (val: string) => void; showEmployee?: boolean}) => {
 
     const { toggleEmployee, setRows, rows, employeeIDs, clearFilter } = useQueryParams();
     const { data: employeeData, isError: employeeError, isPending: employeePending } = FetchSalesEmployee();
@@ -30,7 +30,7 @@ const SearchFilterBar = ({ searchInput, setSearchInput }: { searchInput: string;
             />
         </div>
 
-        {user?.department == DEPARTMENTS[1] && !employeeError &&(
+        {user?.department == DEPARTMENTS[1] && !employeeError && showEmployee && (
             <Popover>
                 <PopoverTrigger asChild>
                     <Button variant="outline" className="flex justify-between">
