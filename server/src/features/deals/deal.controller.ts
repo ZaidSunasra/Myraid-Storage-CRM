@@ -1,6 +1,6 @@
 import { Request, Response } from "express";
-import { addDealService, getDealIdService, convertLeadToDealService, editDealService, editDealStatusService, getDealByCompanyService, getDealByIdService, getDealService } from "./deal.service.js";
-import { GetAllDealSuccessResponse, GetDealByIdSuccessResponse, GetDealByompanySuccessResponse, ErrorResponse, SuccessResponse, editStatusSchema, dealSchema, GetOnlyDealSuccessResponse } from "zs-crm-common";
+import { addDealService, getDealIdService, convertLeadToDealService, editDealService, editDealStatusService, getDealByCompanyService, getDealByIdService, getDealService, getDealByDurationService } from "./deal.service.js";
+import { GetAllDealSuccessResponse, GetDealByIdSuccessResponse, GetDealByompanySuccessResponse, ErrorResponse, SuccessResponse, editStatusSchema, dealSchema, GetOnlyDealSuccessResponse, GetDealByDurationSuccessResponse } from "zs-crm-common";
 
 export const getDealController = async (req: Request, res: Response<ErrorResponse | GetAllDealSuccessResponse>): Promise<any> => {
     const user = res.locals.user;
@@ -164,6 +164,24 @@ export const getDealIdController = async (req: Request, res: Response<ErrorRespo
         });
     } catch (error) {
         console.log(`Error in fetching deal Ids`, error);
+        return res.status(500).send({
+            message: "Internal server error",
+            error: error
+        });
+    }
+}
+
+export const fetchDealsByDurationController = async (req: Request, res: Response<ErrorResponse | GetDealByDurationSuccessResponse>): Promise<any> => {
+    const duration = req.params.duration as "today" | "weekly" | "monthly" | "yearly" | "all";
+    try {
+        const { employeeDealCount, totalDeals } = await getDealByDurationService(duration);
+        return res.status(200).json({
+            message: `Deals by duration fetched successfully`,
+           employeeDealCount, 
+           totalDeals
+        })
+    } catch (error) {
+        console.log(`Error in fetching deals data by duration`, error);
         return res.status(500).send({
             message: "Internal server error",
             error: error

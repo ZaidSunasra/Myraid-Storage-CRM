@@ -54,6 +54,12 @@ export type GetOnlyDealIdOutput ={
     id: string
 }
 
+export type GetDealByDuration = {
+    totalDeals: number;
+    employeeDealCount: Record<string, number>;
+}
+
+export type GetDealByDurationSuccessResponse = SuccessResponse & GetDealByDuration;
 export type GetOnlyDealSuccessResponse = SuccessResponse & {dealIds: GetOnlyDealIdOutput[]}
 export type GetAllDealSuccessResponse = SuccessResponse & GetAllDealOutput;
 export type GetDealByIdSuccessResponse = SuccessResponse & { deal: GetDealOutput | null };

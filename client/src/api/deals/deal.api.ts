@@ -1,4 +1,4 @@
-import {  type AddDeal, type deal_status, type GetAllDealSuccessResponse, type GetDealByIdSuccessResponse, type GetOnlyDealSuccessResponse, type SuccessResponse } from "zs-crm-common";
+import {  type AddDeal, type deal_status, type GetAllDealSuccessResponse, type GetDealByDurationSuccessResponse, type GetDealByIdSuccessResponse, type GetOnlyDealSuccessResponse, type SuccessResponse } from "zs-crm-common";
 import axiosInstance from "../axiosInstance"
 
 export const convertLeadToDeal = async ({ id, quotation_code }: { id: string, quotation_code: string }): Promise<SuccessResponse> => {
@@ -32,6 +32,11 @@ export const editDeal = async ({data, id} : {data: AddDeal, id: string}) : Promi
 }
 
 export const getOnlyDealId = async (): Promise<GetOnlyDealSuccessResponse> => {
-    const response = await axiosInstance.get("deals/get-only-id");
+    const response = await axiosInstance.get("/deals/get-only-id");
     return response.data;
 }
+
+export const getDealByDuration = async (duration: "today" | "weekly" | "monthly" | "yearly" | "all"): Promise<GetDealByDurationSuccessResponse> => {
+    const response = await axiosInstance.get(`/deals/getBy/${duration}`);
+    return response.data;
+};

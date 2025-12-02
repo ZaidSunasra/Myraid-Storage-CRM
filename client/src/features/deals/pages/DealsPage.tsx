@@ -5,12 +5,13 @@ import DealsTable from "../components/DealsTable";
 import { useUser } from "@/context/UserContext";
 import { useNavigate } from "react-router";
 import { usePermissions } from "@/context/PermissionContext";
+import DealAnalytics from "../components/DealAnalytics";
 
 const DealsPage = () => {
 
     const { user } = useUser();
     const navigate = useNavigate();
-    const {canView} = usePermissions();
+    const { canView } = usePermissions();
 
     return <div className="bg-accent min-h-screen">
         <Navbar />
@@ -27,6 +28,9 @@ const DealsPage = () => {
                     </Button>
                 }
             </div>
+            {user?.department && canView(user?.department, "view_deal_analytics") &&
+                <DealAnalytics />
+            }
             <DealsTable />
         </div>
     </div>

@@ -1,6 +1,6 @@
 import { Deal_Status } from "@prisma/client";
 import { prisma } from "../../libs/prisma.js"
-import { AddDeal, DEPARTMENTS, Deal, GetAllDealOutput, GetDealOutput, GetOnlyDealIdOutput } from "zs-crm-common";
+import { AddDeal, DEPARTMENTS, Deal, GetAllDealOutput, GetDealByDuration, GetDealOutput, GetOnlyDealIdOutput } from "zs-crm-common";
 import { Include } from "./constants.js";
 import { convertAssignIdsIntoArray } from "../leads/lead.service.js";
 
@@ -366,4 +366,63 @@ export const getDealIdService = async (author: any): Promise<GetOnlyDealIdOutput
         }
     });
     return dealIds;
+}
+
+const getDate = (range: "today" | "weekly" | "monthly" | "yearly" | "all") => {
+    const now = new Date()
+    const dayOfWeek = now.getDay() || 7;
+    switch (range) {
+        case "today":
+            return {
+                gte: new Date(now.getFullYear(), now.getMonth(), now.getDate(), 0, 0, 0, 0),
+                lte: new Date(now.getFullYear(), now.getMonth(), now.getDate(), 23, 59, 59, 999)
+            }
+        case "weekly":
+            return {
+                gte: new Date(now.getFullYear(), now.getMonth(), now.getDate() - (dayOfWeek - 1), 0, 0, 0, 0),
+                lte: new Date(now.getFullYear(), now.getMonth(), now.getDate(), 23, 59, 59, 999)
+            }
+        case "monthly":
+            return {
+                gte: new Date(now.getFullYear(), now.getMonth(), 0, 0, 0, 0, 0),
+                lte: new Date(now)
+            }
+        case "weekly":
+            return {
+                gte: new Date(now.getFullYear(), 0, 0, 0, 0, 0, 0),
+                lte: new Date(now)
+            }
+        default:
+            return undefined;
+    }
+}
+
+export const getDealByDurationService = async (duration: "today" | "weekly" | "monthly" | "yearly" | "all"): Promise<GetDealByDuration> => {
+    const dateFilter = getDate(duration);
+    const whereClause = dateFilter ? { created_at: dateFilter } : {};
+    const deals = await prisma.deal.findMany({
+        where: whereClause,
+        select: {
+            assigned_to: {
+                select: {
+                    user: {
+                        select: {
+                            id: true,
+                            first_name: true,
+                            last_name: true
+                        }
+                    }
+                }
+            }
+        }
+    });
+    const totalDeals = deals.length;
+    const employeeDealCount: Record<string, number> = {};
+    for (const deal of deals) {
+        for (const asignee of deal.assigned_to) {
+            const fullName = `${asignee.user.first_name} ${asignee.user.last_name}`;
+            employeeDealCount[fullName] = (employeeDealCount[fullName] || 0) + 1
+        }
+    }
+    return { employeeDealCount, totalDeals }
 }

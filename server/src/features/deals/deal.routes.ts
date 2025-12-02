@@ -1,7 +1,7 @@
 import express from "express"
 import authMiddleware from "../../middlewares/auth.middleware.js";
 import checkDepartment from "../../middlewares/department.middleware.js";
-import { addDealController, convertLeadToDealController, editDealController, editDealStatusController, getDealByCompanyController, getDealByIdController, getDealController, getDealIdController } from "./deal.controller.js";
+import { addDealController, convertLeadToDealController, editDealController, editDealStatusController, fetchDealsByDurationController, getDealByCompanyController, getDealByIdController, getDealController, getDealIdController } from "./deal.controller.js";
 
 const dealRouter = express.Router();
 
@@ -12,6 +12,7 @@ dealRouter.post("/convert/:lead_id", authMiddleware, checkDepartment(["admin", "
 dealRouter.post("/add", authMiddleware, checkDepartment(undefined, "add_deal"), addDealController);
 dealRouter.put("/edit/:id", authMiddleware, checkDepartment(undefined, "add_deal"), editDealController);
 dealRouter.put("/edit/status/:id", authMiddleware, checkDepartment(undefined, "edit_deal_status"), editDealStatusController);
-dealRouter.get("/get-only-id", authMiddleware, checkDepartment(undefined, "copy_quotation"), getDealIdController)
+dealRouter.get("/get-only-id", authMiddleware, checkDepartment(undefined, "copy_quotation"), getDealIdController);
+dealRouter.get("/getBy/:duration", authMiddleware, checkDepartment(undefined, "view_deal_analytics"), fetchDealsByDurationController);
 
 export default dealRouter;
