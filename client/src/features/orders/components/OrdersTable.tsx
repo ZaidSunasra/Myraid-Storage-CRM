@@ -12,12 +12,12 @@ import { Button } from "@/shared/components/ui/button";
 import { Building2, CalendarIcon, X } from "lucide-react";
 import { Calendar } from "@/shared/components/ui/calendar";
 import PaginationControls from "@/shared/components/PaginationControl";
-import { capitalize, toTitleCase } from "@/utils/formatData";
+import { toTitleCase } from "@/utils/formatData";
 import { format } from "date-fns";
-import { calculateRemainingBalance, calculateTotalAmount, calculateTotalBody } from "../utils";
+import { calculateRemainingBalance, calculateTotalAmount, calculateTotalBody, getRowColor } from "../utils";
 import { useNavigate } from "react-router";
 import { useUser } from "@/context/UserContext";
-import { DEPARTMENTS } from "zs-crm-common";
+import { DEPARTMENTS, type Order } from "zs-crm-common";
 import { usePermissions } from "@/context/PermissionContext";
 
 const OrdersTable = () => {
@@ -30,7 +30,7 @@ const OrdersTable = () => {
     const lastPage = Math.ceil((data?.totalOrders || 0) / rows) == 0 ? 1 : Math.ceil((data?.totalOrders || 0) / rows);
     const navigate = useNavigate();
     const { user } = useUser();
-    const {canView} = usePermissions();
+    const { canView } = usePermissions();
 
     useEffect(() => {
         setSearch(debouncedSearch, search);
@@ -38,8 +38,6 @@ const OrdersTable = () => {
 
     if (isPending) return <TableLoader />
     if (isError) return <ErrorDisplay message="Failed to display data. Refresh or please try again later" />
-
-    console.log(data)
 
     return <Card className="mb-6 bg-background">
         <CardHeader>
@@ -50,6 +48,7 @@ const OrdersTable = () => {
                 <TableHeader >
                     <TableRow>
                         <TableHead>Order No</TableHead>
+                        <TableHead>Status</TableHead>
                         <TableHead >
                             <div className="flex justify-between items-center">
                                 Created
@@ -88,21 +87,23 @@ const OrdersTable = () => {
                         {user?.department && user.department !== DEPARTMENTS[2] && <TableHead>Company</TableHead>}
                         <TableHead>Height</TableHead>
                         <TableHead>Body</TableHead>
-                        <TableHead>Colour</TableHead>
                         {user?.department && user.department !== DEPARTMENTS[2] && <TableHead>Fittted By</TableHead>}
                     </TableRow>
                 </TableHeader>
                 <TableBody>
-                    {data.orders.map((order: any) => {
+                    {data.orders.map((order: Order) => {
                         const { remainingBalance } = calculateRemainingBalance(order)
                         return (
-                            <TableRow key={order.id} onClick={() => navigate(`/order/${order.deal_id}/${order.id}`)} className={`${order.status == "dispatched" ? "bg-green-300 hover:bg-300" : ""}`}>
-                                <TableCell className="font-medium">
+                            <TableRow key={order.id} onClick={() => navigate(`/order/${order.deal_id}/${order.id}`)} className={getRowColor(order.status)}>
+                                <TableCell className={`font-medium ${order.count_order ? "bg-yellow-300" : ""}`}>
                                     {order.order_number}
+                                </TableCell>
+                                <TableCell className={`font-medium ${order.powder_coating ? "bg-amber-800" : ""}`}>
+                                    {toTitleCase(order.status)}
                                 </TableCell>
                                 <TableCell>{format(order.created_at, "dd/MM/yyyy")}</TableCell>
                                 <TableCell>{format(order.dispatch_at, "dd/MM/yyyy")}</TableCell>
-                                {user?.department && user.department !== DEPARTMENTS[2] && <TableCell className={`${order.pi_number && order.status !== "dispatched" ? "bg-purple-400" : ""}`}>
+                                {user?.department && user.department !== DEPARTMENTS[2] && <TableCell className={`${order.pi_number ? "bg-purple-400" : ""}`}>
                                     {order.po_number}
                                 </TableCell>}
                                 {user?.department && user.department !== DEPARTMENTS[2] && <TableCell>
@@ -124,17 +125,14 @@ const OrdersTable = () => {
                                 <TableCell>
                                     {order.total_body}
                                 </TableCell>
-                                <TableCell>
-                                    {capitalize(order.colour)}
-                                </TableCell>
                                 {user?.department && user.department !== DEPARTMENTS[2] && <TableCell>
-                                    {toTitleCase(order.fitted_by)}
+                                    {toTitleCase(order.fitted_by ?? "")}
                                 </TableCell>}
                             </TableRow>
                         )
                     })}
                 </TableBody>
-                {user?.department && canView(user?.department, "total_order_row") &&<TableFooter>
+                {user?.department && canView(user?.department, "total_order_row") && <TableFooter>
                     <TableRow>
                         <TableCell>Total</TableCell>
                         <TableCell></TableCell>
