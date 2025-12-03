@@ -405,6 +405,7 @@ export const ModelName = {
   BaseProduct: 'BaseProduct',
   Order: 'Order',
   Advance: 'Advance',
+  ColourChange: 'ColourChange',
   Permission: 'Permission'
 } as const
 
@@ -421,7 +422,7 @@ export type TypeMap<ExtArgs extends runtime.Types.Extensions.InternalArgs = runt
     omit: GlobalOmitOptions
   }
   meta: {
-    modelProps: "user" | "company" | "lead" | "description" | "source" | "product" | "asignee" | "client" | "email" | "phone" | "notification" | "recipient" | "deal" | "drawing" | "quotation" | "quotationProducts" | "quotationItem" | "quotationWorking" | "baseProduct" | "order" | "advance" | "permission"
+    modelProps: "user" | "company" | "lead" | "description" | "source" | "product" | "asignee" | "client" | "email" | "phone" | "notification" | "recipient" | "deal" | "drawing" | "quotation" | "quotationProducts" | "quotationItem" | "quotationWorking" | "baseProduct" | "order" | "advance" | "colourChange" | "permission"
     txIsolationLevel: TransactionIsolationLevel
   }
   model: {
@@ -1979,6 +1980,80 @@ export type TypeMap<ExtArgs extends runtime.Types.Extensions.InternalArgs = runt
         }
       }
     }
+    ColourChange: {
+      payload: Prisma.$ColourChangePayload<ExtArgs>
+      fields: Prisma.ColourChangeFieldRefs
+      operations: {
+        findUnique: {
+          args: Prisma.ColourChangeFindUniqueArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ColourChangePayload> | null
+        }
+        findUniqueOrThrow: {
+          args: Prisma.ColourChangeFindUniqueOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ColourChangePayload>
+        }
+        findFirst: {
+          args: Prisma.ColourChangeFindFirstArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ColourChangePayload> | null
+        }
+        findFirstOrThrow: {
+          args: Prisma.ColourChangeFindFirstOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ColourChangePayload>
+        }
+        findMany: {
+          args: Prisma.ColourChangeFindManyArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ColourChangePayload>[]
+        }
+        create: {
+          args: Prisma.ColourChangeCreateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ColourChangePayload>
+        }
+        createMany: {
+          args: Prisma.ColourChangeCreateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        createManyAndReturn: {
+          args: Prisma.ColourChangeCreateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ColourChangePayload>[]
+        }
+        delete: {
+          args: Prisma.ColourChangeDeleteArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ColourChangePayload>
+        }
+        update: {
+          args: Prisma.ColourChangeUpdateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ColourChangePayload>
+        }
+        deleteMany: {
+          args: Prisma.ColourChangeDeleteManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateMany: {
+          args: Prisma.ColourChangeUpdateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateManyAndReturn: {
+          args: Prisma.ColourChangeUpdateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ColourChangePayload>[]
+        }
+        upsert: {
+          args: Prisma.ColourChangeUpsertArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ColourChangePayload>
+        }
+        aggregate: {
+          args: Prisma.ColourChangeAggregateArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.AggregateColourChange>
+        }
+        groupBy: {
+          args: Prisma.ColourChangeGroupByArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.ColourChangeGroupByOutputType>[]
+        }
+        count: {
+          args: Prisma.ColourChangeCountArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.ColourChangeCountAggregateOutputType> | number
+        }
+      }
+    }
     Permission: {
       payload: Prisma.$PermissionPayload<ExtArgs>
       fields: Prisma.PermissionFieldRefs
@@ -2359,7 +2434,8 @@ export const OrderScalarFieldEnum = {
   pi_number: 'pi_number',
   bill_number: 'bill_number',
   fitted_by: 'fitted_by',
-  colour: 'colour',
+  powder_coating: 'powder_coating',
+  count_order: 'count_order',
   balance: 'balance',
   height: 'height',
   total_body: 'total_body',
@@ -2378,6 +2454,17 @@ export const AdvanceScalarFieldEnum = {
 } as const
 
 export type AdvanceScalarFieldEnum = (typeof AdvanceScalarFieldEnum)[keyof typeof AdvanceScalarFieldEnum]
+
+
+export const ColourChangeScalarFieldEnum = {
+  id: 'id',
+  colour: 'colour',
+  changed_on: 'changed_on',
+  order_id: 'order_id',
+  user_id: 'user_id'
+} as const
+
+export type ColourChangeScalarFieldEnum = (typeof ColourChangeScalarFieldEnum)[keyof typeof ColourChangeScalarFieldEnum]
 
 
 export const PermissionScalarFieldEnum = {
@@ -2693,6 +2780,7 @@ export type GlobalOmitConfig = {
   baseProduct?: Prisma.BaseProductOmit
   order?: Prisma.OrderOmit
   advance?: Prisma.AdvanceOmit
+  colourChange?: Prisma.ColourChangeOmit
   permission?: Prisma.PermissionOmit
 }
 

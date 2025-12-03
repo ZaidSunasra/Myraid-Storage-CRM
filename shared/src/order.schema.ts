@@ -1,7 +1,7 @@
 import { z } from "zod/v4"
 import { Assignee, Company, SuccessResponse } from "./common.schema";
 
-export const ORDER_STATUS = ["pending", "in_progress", "dispatched"] as const;
+export const ORDER_STATUS = ["pending", "in_progress", "dispatched", "ready", "fabrication_ready"] as const;
 export type order_status = typeof ORDER_STATUS[number]; 
 
 export const addOrderSchema = z.object({
@@ -15,7 +15,8 @@ export const addOrderSchema = z.object({
     po_number: z.string().optional().nullable(),
     dispatch_at: z.date({ error: "Dispatch date is required" }),
     status: z.enum(ORDER_STATUS),
-    colour: z.string().min(1, "Colour is required"),
+    powder_coating: z.boolean(),
+    count_order: z.boolean(),
     deal_id: z.string()
 })
 
@@ -35,6 +36,14 @@ export type Advance = {
     advance_date: Date;
 }
 
+// export type ColourChange = {
+//     id: number
+//     colour: string
+//     changed_on: Date
+//     order_id: number
+//     user_id: number
+// }
+
 export type Order = {
     id: number;
     deal_id: string;
@@ -45,7 +54,8 @@ export type Order = {
     pi_number: boolean;
     po_number: string | null;
     dispatch_at: Date;
-    colour: string;
+    count_order: boolean
+    powder_coating: boolean
     fitted_by: string | null
     order_number: number;
     balance: number;

@@ -22,7 +22,9 @@ export type Upload_Type = (typeof Upload_Type)[keyof typeof Upload_Type]
 export const Order_Status = {
   pending: 'pending',
   in_progress: 'in_progress',
-  dispatched: 'dispatched'
+  dispatched: 'dispatched',
+  fabrication_ready: 'fabrication_ready',
+  ready: 'ready'
 } as const
 
 export type Order_Status = (typeof Order_Status)[keyof typeof Order_Status]

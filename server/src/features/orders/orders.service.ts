@@ -18,7 +18,7 @@ export const generateOrderNumber = async (): Promise<number> => {
     return orderLength + 1;
 }
 
-export const addOrderService = async ({ quotation_no, height, total, total_body, pi_number, po_number, dispatch_at, status, colour, deal_id, fitted_by, bill_number }: AddOrder): Promise<void> => {
+export const addOrderService = async ({ quotation_no, height, total, total_body, pi_number, po_number, dispatch_at, status, deal_id, fitted_by, bill_number, powder_coating, count_order}: AddOrder): Promise<void> => {
     const orderNumber = await generateOrderNumber();
     await prisma.$transaction(async (tx) => {
         const quotation_id = await tx.quotation.findUnique({
@@ -48,11 +48,12 @@ export const addOrderService = async ({ quotation_no, height, total, total_body,
                     pi_number: pi_number,
                     po_number: po_number,
                     status: status,
-                    colour: colour,
                     quotation_id: quotation_id?.id,
                     order_number: orderNumber,
                     fitted_by: fitted_by,
-                    bill_number: bill_number
+                    bill_number: bill_number,
+                    powder_coating: powder_coating,
+                    count_order: count_order
                 }
             })
         }
@@ -121,7 +122,7 @@ export const getOrderByIdService = async (id: string): Promise<Order | null> => 
     return order;
 }
 
-export const editOrderService = async ({ quotation_no, height, total, total_body, pi_number, po_number, dispatch_at, status, colour, deal_id, fitted_by, bill_number }: AddOrder, id: string): Promise<void> => {
+export const editOrderService = async ({ quotation_no, height, total, total_body, pi_number, po_number, dispatch_at, status, deal_id, fitted_by, bill_number, count_order, powder_coating}: AddOrder, id: string): Promise<void> => {
     await prisma.$transaction(async (tx) => {
         if (quotation_no) {
             const quotation_id = await tx.quotation.findUnique({
@@ -154,7 +155,8 @@ export const editOrderService = async ({ quotation_no, height, total, total_body
                 pi_number: pi_number,
                 po_number: po_number,
                 status: status,
-                colour: colour,
+                powder_coating: powder_coating,
+                count_order: count_order,
                 fitted_by: fitted_by,
                 bill_number: bill_number
             }

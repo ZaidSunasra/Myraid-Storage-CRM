@@ -52,7 +52,8 @@ export type OrderMinAggregateOutputType = {
   pi_number: boolean | null
   bill_number: string | null
   fitted_by: string | null
-  colour: string | null
+  powder_coating: boolean | null
+  count_order: boolean | null
   balance: number | null
   height: string | null
   total_body: number | null
@@ -70,7 +71,8 @@ export type OrderMaxAggregateOutputType = {
   pi_number: boolean | null
   bill_number: string | null
   fitted_by: string | null
-  colour: string | null
+  powder_coating: boolean | null
+  count_order: boolean | null
   balance: number | null
   height: string | null
   total_body: number | null
@@ -88,7 +90,8 @@ export type OrderCountAggregateOutputType = {
   pi_number: number
   bill_number: number
   fitted_by: number
-  colour: number
+  powder_coating: number
+  count_order: number
   balance: number
   height: number
   total_body: number
@@ -124,7 +127,8 @@ export type OrderMinAggregateInputType = {
   pi_number?: true
   bill_number?: true
   fitted_by?: true
-  colour?: true
+  powder_coating?: true
+  count_order?: true
   balance?: true
   height?: true
   total_body?: true
@@ -142,7 +146,8 @@ export type OrderMaxAggregateInputType = {
   pi_number?: true
   bill_number?: true
   fitted_by?: true
-  colour?: true
+  powder_coating?: true
+  count_order?: true
   balance?: true
   height?: true
   total_body?: true
@@ -160,7 +165,8 @@ export type OrderCountAggregateInputType = {
   pi_number?: true
   bill_number?: true
   fitted_by?: true
-  colour?: true
+  powder_coating?: true
+  count_order?: true
   balance?: true
   height?: true
   total_body?: true
@@ -265,7 +271,8 @@ export type OrderGroupByOutputType = {
   pi_number: boolean
   bill_number: string | null
   fitted_by: string | null
-  colour: string
+  powder_coating: boolean
+  count_order: boolean
   balance: number
   height: string
   total_body: number
@@ -306,12 +313,14 @@ export type OrderWhereInput = {
   pi_number?: Prisma.BoolFilter<"Order"> | boolean
   bill_number?: Prisma.StringNullableFilter<"Order"> | string | null
   fitted_by?: Prisma.StringNullableFilter<"Order"> | string | null
-  colour?: Prisma.StringFilter<"Order"> | string
+  powder_coating?: Prisma.BoolFilter<"Order"> | boolean
+  count_order?: Prisma.BoolFilter<"Order"> | boolean
   balance?: Prisma.IntFilter<"Order"> | number
   height?: Prisma.StringFilter<"Order"> | string
   total_body?: Prisma.IntFilter<"Order"> | number
   deal_id?: Prisma.StringFilter<"Order"> | string
   quotation_id?: Prisma.IntFilter<"Order"> | number
+  colour_change?: Prisma.ColourChangeListRelationFilter
   advance?: Prisma.AdvanceListRelationFilter
   drawing?: Prisma.DrawingListRelationFilter
   notification?: Prisma.NotificationListRelationFilter
@@ -329,12 +338,14 @@ export type OrderOrderByWithRelationInput = {
   pi_number?: Prisma.SortOrder
   bill_number?: Prisma.SortOrderInput | Prisma.SortOrder
   fitted_by?: Prisma.SortOrderInput | Prisma.SortOrder
-  colour?: Prisma.SortOrder
+  powder_coating?: Prisma.SortOrder
+  count_order?: Prisma.SortOrder
   balance?: Prisma.SortOrder
   height?: Prisma.SortOrder
   total_body?: Prisma.SortOrder
   deal_id?: Prisma.SortOrder
   quotation_id?: Prisma.SortOrder
+  colour_change?: Prisma.ColourChangeOrderByRelationAggregateInput
   advance?: Prisma.AdvanceOrderByRelationAggregateInput
   drawing?: Prisma.DrawingOrderByRelationAggregateInput
   notification?: Prisma.NotificationOrderByRelationAggregateInput
@@ -357,10 +368,12 @@ export type OrderWhereUniqueInput = Prisma.AtLeast<{
   pi_number?: Prisma.BoolFilter<"Order"> | boolean
   bill_number?: Prisma.StringNullableFilter<"Order"> | string | null
   fitted_by?: Prisma.StringNullableFilter<"Order"> | string | null
-  colour?: Prisma.StringFilter<"Order"> | string
+  powder_coating?: Prisma.BoolFilter<"Order"> | boolean
+  count_order?: Prisma.BoolFilter<"Order"> | boolean
   balance?: Prisma.IntFilter<"Order"> | number
   height?: Prisma.StringFilter<"Order"> | string
   total_body?: Prisma.IntFilter<"Order"> | number
+  colour_change?: Prisma.ColourChangeListRelationFilter
   advance?: Prisma.AdvanceListRelationFilter
   drawing?: Prisma.DrawingListRelationFilter
   notification?: Prisma.NotificationListRelationFilter
@@ -378,7 +391,8 @@ export type OrderOrderByWithAggregationInput = {
   pi_number?: Prisma.SortOrder
   bill_number?: Prisma.SortOrderInput | Prisma.SortOrder
   fitted_by?: Prisma.SortOrderInput | Prisma.SortOrder
-  colour?: Prisma.SortOrder
+  powder_coating?: Prisma.SortOrder
+  count_order?: Prisma.SortOrder
   balance?: Prisma.SortOrder
   height?: Prisma.SortOrder
   total_body?: Prisma.SortOrder
@@ -404,7 +418,8 @@ export type OrderScalarWhereWithAggregatesInput = {
   pi_number?: Prisma.BoolWithAggregatesFilter<"Order"> | boolean
   bill_number?: Prisma.StringNullableWithAggregatesFilter<"Order"> | string | null
   fitted_by?: Prisma.StringNullableWithAggregatesFilter<"Order"> | string | null
-  colour?: Prisma.StringWithAggregatesFilter<"Order"> | string
+  powder_coating?: Prisma.BoolWithAggregatesFilter<"Order"> | boolean
+  count_order?: Prisma.BoolWithAggregatesFilter<"Order"> | boolean
   balance?: Prisma.IntWithAggregatesFilter<"Order"> | number
   height?: Prisma.StringWithAggregatesFilter<"Order"> | string
   total_body?: Prisma.IntWithAggregatesFilter<"Order"> | number
@@ -421,10 +436,12 @@ export type OrderCreateInput = {
   pi_number?: boolean
   bill_number?: string | null
   fitted_by?: string | null
-  colour: string
+  powder_coating?: boolean
+  count_order?: boolean
   balance: number
   height: string
   total_body: number
+  colour_change?: Prisma.ColourChangeCreateNestedManyWithoutOrderInput
   advance?: Prisma.AdvanceCreateNestedManyWithoutOrderInput
   drawing?: Prisma.DrawingCreateNestedManyWithoutOrderInput
   notification?: Prisma.NotificationCreateNestedManyWithoutOrderInput
@@ -442,12 +459,14 @@ export type OrderUncheckedCreateInput = {
   pi_number?: boolean
   bill_number?: string | null
   fitted_by?: string | null
-  colour: string
+  powder_coating?: boolean
+  count_order?: boolean
   balance: number
   height: string
   total_body: number
   deal_id: string
   quotation_id: number
+  colour_change?: Prisma.ColourChangeUncheckedCreateNestedManyWithoutOrderInput
   advance?: Prisma.AdvanceUncheckedCreateNestedManyWithoutOrderInput
   drawing?: Prisma.DrawingUncheckedCreateNestedManyWithoutOrderInput
   notification?: Prisma.NotificationUncheckedCreateNestedManyWithoutOrderInput
@@ -462,10 +481,12 @@ export type OrderUpdateInput = {
   pi_number?: Prisma.BoolFieldUpdateOperationsInput | boolean
   bill_number?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   fitted_by?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  colour?: Prisma.StringFieldUpdateOperationsInput | string
+  powder_coating?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  count_order?: Prisma.BoolFieldUpdateOperationsInput | boolean
   balance?: Prisma.IntFieldUpdateOperationsInput | number
   height?: Prisma.StringFieldUpdateOperationsInput | string
   total_body?: Prisma.IntFieldUpdateOperationsInput | number
+  colour_change?: Prisma.ColourChangeUpdateManyWithoutOrderNestedInput
   advance?: Prisma.AdvanceUpdateManyWithoutOrderNestedInput
   drawing?: Prisma.DrawingUpdateManyWithoutOrderNestedInput
   notification?: Prisma.NotificationUpdateManyWithoutOrderNestedInput
@@ -483,12 +504,14 @@ export type OrderUncheckedUpdateInput = {
   pi_number?: Prisma.BoolFieldUpdateOperationsInput | boolean
   bill_number?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   fitted_by?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  colour?: Prisma.StringFieldUpdateOperationsInput | string
+  powder_coating?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  count_order?: Prisma.BoolFieldUpdateOperationsInput | boolean
   balance?: Prisma.IntFieldUpdateOperationsInput | number
   height?: Prisma.StringFieldUpdateOperationsInput | string
   total_body?: Prisma.IntFieldUpdateOperationsInput | number
   deal_id?: Prisma.StringFieldUpdateOperationsInput | string
   quotation_id?: Prisma.IntFieldUpdateOperationsInput | number
+  colour_change?: Prisma.ColourChangeUncheckedUpdateManyWithoutOrderNestedInput
   advance?: Prisma.AdvanceUncheckedUpdateManyWithoutOrderNestedInput
   drawing?: Prisma.DrawingUncheckedUpdateManyWithoutOrderNestedInput
   notification?: Prisma.NotificationUncheckedUpdateManyWithoutOrderNestedInput
@@ -504,7 +527,8 @@ export type OrderCreateManyInput = {
   pi_number?: boolean
   bill_number?: string | null
   fitted_by?: string | null
-  colour: string
+  powder_coating?: boolean
+  count_order?: boolean
   balance: number
   height: string
   total_body: number
@@ -521,7 +545,8 @@ export type OrderUpdateManyMutationInput = {
   pi_number?: Prisma.BoolFieldUpdateOperationsInput | boolean
   bill_number?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   fitted_by?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  colour?: Prisma.StringFieldUpdateOperationsInput | string
+  powder_coating?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  count_order?: Prisma.BoolFieldUpdateOperationsInput | boolean
   balance?: Prisma.IntFieldUpdateOperationsInput | number
   height?: Prisma.StringFieldUpdateOperationsInput | string
   total_body?: Prisma.IntFieldUpdateOperationsInput | number
@@ -537,7 +562,8 @@ export type OrderUncheckedUpdateManyInput = {
   pi_number?: Prisma.BoolFieldUpdateOperationsInput | boolean
   bill_number?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   fitted_by?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  colour?: Prisma.StringFieldUpdateOperationsInput | string
+  powder_coating?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  count_order?: Prisma.BoolFieldUpdateOperationsInput | boolean
   balance?: Prisma.IntFieldUpdateOperationsInput | number
   height?: Prisma.StringFieldUpdateOperationsInput | string
   total_body?: Prisma.IntFieldUpdateOperationsInput | number
@@ -560,7 +586,8 @@ export type OrderCountOrderByAggregateInput = {
   pi_number?: Prisma.SortOrder
   bill_number?: Prisma.SortOrder
   fitted_by?: Prisma.SortOrder
-  colour?: Prisma.SortOrder
+  powder_coating?: Prisma.SortOrder
+  count_order?: Prisma.SortOrder
   balance?: Prisma.SortOrder
   height?: Prisma.SortOrder
   total_body?: Prisma.SortOrder
@@ -586,7 +613,8 @@ export type OrderMaxOrderByAggregateInput = {
   pi_number?: Prisma.SortOrder
   bill_number?: Prisma.SortOrder
   fitted_by?: Prisma.SortOrder
-  colour?: Prisma.SortOrder
+  powder_coating?: Prisma.SortOrder
+  count_order?: Prisma.SortOrder
   balance?: Prisma.SortOrder
   height?: Prisma.SortOrder
   total_body?: Prisma.SortOrder
@@ -604,7 +632,8 @@ export type OrderMinOrderByAggregateInput = {
   pi_number?: Prisma.SortOrder
   bill_number?: Prisma.SortOrder
   fitted_by?: Prisma.SortOrder
-  colour?: Prisma.SortOrder
+  powder_coating?: Prisma.SortOrder
+  count_order?: Prisma.SortOrder
   balance?: Prisma.SortOrder
   height?: Prisma.SortOrder
   total_body?: Prisma.SortOrder
@@ -739,6 +768,20 @@ export type OrderUpdateOneRequiredWithoutAdvanceNestedInput = {
   update?: Prisma.XOR<Prisma.XOR<Prisma.OrderUpdateToOneWithWhereWithoutAdvanceInput, Prisma.OrderUpdateWithoutAdvanceInput>, Prisma.OrderUncheckedUpdateWithoutAdvanceInput>
 }
 
+export type OrderCreateNestedOneWithoutColour_changeInput = {
+  create?: Prisma.XOR<Prisma.OrderCreateWithoutColour_changeInput, Prisma.OrderUncheckedCreateWithoutColour_changeInput>
+  connectOrCreate?: Prisma.OrderCreateOrConnectWithoutColour_changeInput
+  connect?: Prisma.OrderWhereUniqueInput
+}
+
+export type OrderUpdateOneRequiredWithoutColour_changeNestedInput = {
+  create?: Prisma.XOR<Prisma.OrderCreateWithoutColour_changeInput, Prisma.OrderUncheckedCreateWithoutColour_changeInput>
+  connectOrCreate?: Prisma.OrderCreateOrConnectWithoutColour_changeInput
+  upsert?: Prisma.OrderUpsertWithoutColour_changeInput
+  connect?: Prisma.OrderWhereUniqueInput
+  update?: Prisma.XOR<Prisma.XOR<Prisma.OrderUpdateToOneWithWhereWithoutColour_changeInput, Prisma.OrderUpdateWithoutColour_changeInput>, Prisma.OrderUncheckedUpdateWithoutColour_changeInput>
+}
+
 export type OrderCreateWithoutNotificationInput = {
   order_number: number
   created_at?: Date | string
@@ -748,10 +791,12 @@ export type OrderCreateWithoutNotificationInput = {
   pi_number?: boolean
   bill_number?: string | null
   fitted_by?: string | null
-  colour: string
+  powder_coating?: boolean
+  count_order?: boolean
   balance: number
   height: string
   total_body: number
+  colour_change?: Prisma.ColourChangeCreateNestedManyWithoutOrderInput
   advance?: Prisma.AdvanceCreateNestedManyWithoutOrderInput
   drawing?: Prisma.DrawingCreateNestedManyWithoutOrderInput
   deal: Prisma.DealCreateNestedOneWithoutOrderInput
@@ -768,12 +813,14 @@ export type OrderUncheckedCreateWithoutNotificationInput = {
   pi_number?: boolean
   bill_number?: string | null
   fitted_by?: string | null
-  colour: string
+  powder_coating?: boolean
+  count_order?: boolean
   balance: number
   height: string
   total_body: number
   deal_id: string
   quotation_id: number
+  colour_change?: Prisma.ColourChangeUncheckedCreateNestedManyWithoutOrderInput
   advance?: Prisma.AdvanceUncheckedCreateNestedManyWithoutOrderInput
   drawing?: Prisma.DrawingUncheckedCreateNestedManyWithoutOrderInput
 }
@@ -803,10 +850,12 @@ export type OrderUpdateWithoutNotificationInput = {
   pi_number?: Prisma.BoolFieldUpdateOperationsInput | boolean
   bill_number?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   fitted_by?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  colour?: Prisma.StringFieldUpdateOperationsInput | string
+  powder_coating?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  count_order?: Prisma.BoolFieldUpdateOperationsInput | boolean
   balance?: Prisma.IntFieldUpdateOperationsInput | number
   height?: Prisma.StringFieldUpdateOperationsInput | string
   total_body?: Prisma.IntFieldUpdateOperationsInput | number
+  colour_change?: Prisma.ColourChangeUpdateManyWithoutOrderNestedInput
   advance?: Prisma.AdvanceUpdateManyWithoutOrderNestedInput
   drawing?: Prisma.DrawingUpdateManyWithoutOrderNestedInput
   deal?: Prisma.DealUpdateOneRequiredWithoutOrderNestedInput
@@ -823,12 +872,14 @@ export type OrderUncheckedUpdateWithoutNotificationInput = {
   pi_number?: Prisma.BoolFieldUpdateOperationsInput | boolean
   bill_number?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   fitted_by?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  colour?: Prisma.StringFieldUpdateOperationsInput | string
+  powder_coating?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  count_order?: Prisma.BoolFieldUpdateOperationsInput | boolean
   balance?: Prisma.IntFieldUpdateOperationsInput | number
   height?: Prisma.StringFieldUpdateOperationsInput | string
   total_body?: Prisma.IntFieldUpdateOperationsInput | number
   deal_id?: Prisma.StringFieldUpdateOperationsInput | string
   quotation_id?: Prisma.IntFieldUpdateOperationsInput | number
+  colour_change?: Prisma.ColourChangeUncheckedUpdateManyWithoutOrderNestedInput
   advance?: Prisma.AdvanceUncheckedUpdateManyWithoutOrderNestedInput
   drawing?: Prisma.DrawingUncheckedUpdateManyWithoutOrderNestedInput
 }
@@ -842,10 +893,12 @@ export type OrderCreateWithoutDealInput = {
   pi_number?: boolean
   bill_number?: string | null
   fitted_by?: string | null
-  colour: string
+  powder_coating?: boolean
+  count_order?: boolean
   balance: number
   height: string
   total_body: number
+  colour_change?: Prisma.ColourChangeCreateNestedManyWithoutOrderInput
   advance?: Prisma.AdvanceCreateNestedManyWithoutOrderInput
   drawing?: Prisma.DrawingCreateNestedManyWithoutOrderInput
   notification?: Prisma.NotificationCreateNestedManyWithoutOrderInput
@@ -862,11 +915,13 @@ export type OrderUncheckedCreateWithoutDealInput = {
   pi_number?: boolean
   bill_number?: string | null
   fitted_by?: string | null
-  colour: string
+  powder_coating?: boolean
+  count_order?: boolean
   balance: number
   height: string
   total_body: number
   quotation_id: number
+  colour_change?: Prisma.ColourChangeUncheckedCreateNestedManyWithoutOrderInput
   advance?: Prisma.AdvanceUncheckedCreateNestedManyWithoutOrderInput
   drawing?: Prisma.DrawingUncheckedCreateNestedManyWithoutOrderInput
   notification?: Prisma.NotificationUncheckedCreateNestedManyWithoutOrderInput
@@ -897,10 +952,12 @@ export type OrderUpdateWithoutDealInput = {
   pi_number?: Prisma.BoolFieldUpdateOperationsInput | boolean
   bill_number?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   fitted_by?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  colour?: Prisma.StringFieldUpdateOperationsInput | string
+  powder_coating?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  count_order?: Prisma.BoolFieldUpdateOperationsInput | boolean
   balance?: Prisma.IntFieldUpdateOperationsInput | number
   height?: Prisma.StringFieldUpdateOperationsInput | string
   total_body?: Prisma.IntFieldUpdateOperationsInput | number
+  colour_change?: Prisma.ColourChangeUpdateManyWithoutOrderNestedInput
   advance?: Prisma.AdvanceUpdateManyWithoutOrderNestedInput
   drawing?: Prisma.DrawingUpdateManyWithoutOrderNestedInput
   notification?: Prisma.NotificationUpdateManyWithoutOrderNestedInput
@@ -917,11 +974,13 @@ export type OrderUncheckedUpdateWithoutDealInput = {
   pi_number?: Prisma.BoolFieldUpdateOperationsInput | boolean
   bill_number?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   fitted_by?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  colour?: Prisma.StringFieldUpdateOperationsInput | string
+  powder_coating?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  count_order?: Prisma.BoolFieldUpdateOperationsInput | boolean
   balance?: Prisma.IntFieldUpdateOperationsInput | number
   height?: Prisma.StringFieldUpdateOperationsInput | string
   total_body?: Prisma.IntFieldUpdateOperationsInput | number
   quotation_id?: Prisma.IntFieldUpdateOperationsInput | number
+  colour_change?: Prisma.ColourChangeUncheckedUpdateManyWithoutOrderNestedInput
   advance?: Prisma.AdvanceUncheckedUpdateManyWithoutOrderNestedInput
   drawing?: Prisma.DrawingUncheckedUpdateManyWithoutOrderNestedInput
   notification?: Prisma.NotificationUncheckedUpdateManyWithoutOrderNestedInput
@@ -936,10 +995,12 @@ export type OrderCreateWithoutDrawingInput = {
   pi_number?: boolean
   bill_number?: string | null
   fitted_by?: string | null
-  colour: string
+  powder_coating?: boolean
+  count_order?: boolean
   balance: number
   height: string
   total_body: number
+  colour_change?: Prisma.ColourChangeCreateNestedManyWithoutOrderInput
   advance?: Prisma.AdvanceCreateNestedManyWithoutOrderInput
   notification?: Prisma.NotificationCreateNestedManyWithoutOrderInput
   deal: Prisma.DealCreateNestedOneWithoutOrderInput
@@ -956,12 +1017,14 @@ export type OrderUncheckedCreateWithoutDrawingInput = {
   pi_number?: boolean
   bill_number?: string | null
   fitted_by?: string | null
-  colour: string
+  powder_coating?: boolean
+  count_order?: boolean
   balance: number
   height: string
   total_body: number
   deal_id: string
   quotation_id: number
+  colour_change?: Prisma.ColourChangeUncheckedCreateNestedManyWithoutOrderInput
   advance?: Prisma.AdvanceUncheckedCreateNestedManyWithoutOrderInput
   notification?: Prisma.NotificationUncheckedCreateNestedManyWithoutOrderInput
 }
@@ -991,10 +1054,12 @@ export type OrderUpdateWithoutDrawingInput = {
   pi_number?: Prisma.BoolFieldUpdateOperationsInput | boolean
   bill_number?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   fitted_by?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  colour?: Prisma.StringFieldUpdateOperationsInput | string
+  powder_coating?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  count_order?: Prisma.BoolFieldUpdateOperationsInput | boolean
   balance?: Prisma.IntFieldUpdateOperationsInput | number
   height?: Prisma.StringFieldUpdateOperationsInput | string
   total_body?: Prisma.IntFieldUpdateOperationsInput | number
+  colour_change?: Prisma.ColourChangeUpdateManyWithoutOrderNestedInput
   advance?: Prisma.AdvanceUpdateManyWithoutOrderNestedInput
   notification?: Prisma.NotificationUpdateManyWithoutOrderNestedInput
   deal?: Prisma.DealUpdateOneRequiredWithoutOrderNestedInput
@@ -1011,12 +1076,14 @@ export type OrderUncheckedUpdateWithoutDrawingInput = {
   pi_number?: Prisma.BoolFieldUpdateOperationsInput | boolean
   bill_number?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   fitted_by?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  colour?: Prisma.StringFieldUpdateOperationsInput | string
+  powder_coating?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  count_order?: Prisma.BoolFieldUpdateOperationsInput | boolean
   balance?: Prisma.IntFieldUpdateOperationsInput | number
   height?: Prisma.StringFieldUpdateOperationsInput | string
   total_body?: Prisma.IntFieldUpdateOperationsInput | number
   deal_id?: Prisma.StringFieldUpdateOperationsInput | string
   quotation_id?: Prisma.IntFieldUpdateOperationsInput | number
+  colour_change?: Prisma.ColourChangeUncheckedUpdateManyWithoutOrderNestedInput
   advance?: Prisma.AdvanceUncheckedUpdateManyWithoutOrderNestedInput
   notification?: Prisma.NotificationUncheckedUpdateManyWithoutOrderNestedInput
 }
@@ -1030,10 +1097,12 @@ export type OrderCreateWithoutQuotationInput = {
   pi_number?: boolean
   bill_number?: string | null
   fitted_by?: string | null
-  colour: string
+  powder_coating?: boolean
+  count_order?: boolean
   balance: number
   height: string
   total_body: number
+  colour_change?: Prisma.ColourChangeCreateNestedManyWithoutOrderInput
   advance?: Prisma.AdvanceCreateNestedManyWithoutOrderInput
   drawing?: Prisma.DrawingCreateNestedManyWithoutOrderInput
   notification?: Prisma.NotificationCreateNestedManyWithoutOrderInput
@@ -1050,11 +1119,13 @@ export type OrderUncheckedCreateWithoutQuotationInput = {
   pi_number?: boolean
   bill_number?: string | null
   fitted_by?: string | null
-  colour: string
+  powder_coating?: boolean
+  count_order?: boolean
   balance: number
   height: string
   total_body: number
   deal_id: string
+  colour_change?: Prisma.ColourChangeUncheckedCreateNestedManyWithoutOrderInput
   advance?: Prisma.AdvanceUncheckedCreateNestedManyWithoutOrderInput
   drawing?: Prisma.DrawingUncheckedCreateNestedManyWithoutOrderInput
   notification?: Prisma.NotificationUncheckedCreateNestedManyWithoutOrderInput
@@ -1085,10 +1156,12 @@ export type OrderUpdateWithoutQuotationInput = {
   pi_number?: Prisma.BoolFieldUpdateOperationsInput | boolean
   bill_number?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   fitted_by?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  colour?: Prisma.StringFieldUpdateOperationsInput | string
+  powder_coating?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  count_order?: Prisma.BoolFieldUpdateOperationsInput | boolean
   balance?: Prisma.IntFieldUpdateOperationsInput | number
   height?: Prisma.StringFieldUpdateOperationsInput | string
   total_body?: Prisma.IntFieldUpdateOperationsInput | number
+  colour_change?: Prisma.ColourChangeUpdateManyWithoutOrderNestedInput
   advance?: Prisma.AdvanceUpdateManyWithoutOrderNestedInput
   drawing?: Prisma.DrawingUpdateManyWithoutOrderNestedInput
   notification?: Prisma.NotificationUpdateManyWithoutOrderNestedInput
@@ -1105,11 +1178,13 @@ export type OrderUncheckedUpdateWithoutQuotationInput = {
   pi_number?: Prisma.BoolFieldUpdateOperationsInput | boolean
   bill_number?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   fitted_by?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  colour?: Prisma.StringFieldUpdateOperationsInput | string
+  powder_coating?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  count_order?: Prisma.BoolFieldUpdateOperationsInput | boolean
   balance?: Prisma.IntFieldUpdateOperationsInput | number
   height?: Prisma.StringFieldUpdateOperationsInput | string
   total_body?: Prisma.IntFieldUpdateOperationsInput | number
   deal_id?: Prisma.StringFieldUpdateOperationsInput | string
+  colour_change?: Prisma.ColourChangeUncheckedUpdateManyWithoutOrderNestedInput
   advance?: Prisma.AdvanceUncheckedUpdateManyWithoutOrderNestedInput
   drawing?: Prisma.DrawingUncheckedUpdateManyWithoutOrderNestedInput
   notification?: Prisma.NotificationUncheckedUpdateManyWithoutOrderNestedInput
@@ -1124,10 +1199,12 @@ export type OrderCreateWithoutAdvanceInput = {
   pi_number?: boolean
   bill_number?: string | null
   fitted_by?: string | null
-  colour: string
+  powder_coating?: boolean
+  count_order?: boolean
   balance: number
   height: string
   total_body: number
+  colour_change?: Prisma.ColourChangeCreateNestedManyWithoutOrderInput
   drawing?: Prisma.DrawingCreateNestedManyWithoutOrderInput
   notification?: Prisma.NotificationCreateNestedManyWithoutOrderInput
   deal: Prisma.DealCreateNestedOneWithoutOrderInput
@@ -1144,12 +1221,14 @@ export type OrderUncheckedCreateWithoutAdvanceInput = {
   pi_number?: boolean
   bill_number?: string | null
   fitted_by?: string | null
-  colour: string
+  powder_coating?: boolean
+  count_order?: boolean
   balance: number
   height: string
   total_body: number
   deal_id: string
   quotation_id: number
+  colour_change?: Prisma.ColourChangeUncheckedCreateNestedManyWithoutOrderInput
   drawing?: Prisma.DrawingUncheckedCreateNestedManyWithoutOrderInput
   notification?: Prisma.NotificationUncheckedCreateNestedManyWithoutOrderInput
 }
@@ -1179,10 +1258,12 @@ export type OrderUpdateWithoutAdvanceInput = {
   pi_number?: Prisma.BoolFieldUpdateOperationsInput | boolean
   bill_number?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   fitted_by?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  colour?: Prisma.StringFieldUpdateOperationsInput | string
+  powder_coating?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  count_order?: Prisma.BoolFieldUpdateOperationsInput | boolean
   balance?: Prisma.IntFieldUpdateOperationsInput | number
   height?: Prisma.StringFieldUpdateOperationsInput | string
   total_body?: Prisma.IntFieldUpdateOperationsInput | number
+  colour_change?: Prisma.ColourChangeUpdateManyWithoutOrderNestedInput
   drawing?: Prisma.DrawingUpdateManyWithoutOrderNestedInput
   notification?: Prisma.NotificationUpdateManyWithoutOrderNestedInput
   deal?: Prisma.DealUpdateOneRequiredWithoutOrderNestedInput
@@ -1199,12 +1280,116 @@ export type OrderUncheckedUpdateWithoutAdvanceInput = {
   pi_number?: Prisma.BoolFieldUpdateOperationsInput | boolean
   bill_number?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   fitted_by?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  colour?: Prisma.StringFieldUpdateOperationsInput | string
+  powder_coating?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  count_order?: Prisma.BoolFieldUpdateOperationsInput | boolean
   balance?: Prisma.IntFieldUpdateOperationsInput | number
   height?: Prisma.StringFieldUpdateOperationsInput | string
   total_body?: Prisma.IntFieldUpdateOperationsInput | number
   deal_id?: Prisma.StringFieldUpdateOperationsInput | string
   quotation_id?: Prisma.IntFieldUpdateOperationsInput | number
+  colour_change?: Prisma.ColourChangeUncheckedUpdateManyWithoutOrderNestedInput
+  drawing?: Prisma.DrawingUncheckedUpdateManyWithoutOrderNestedInput
+  notification?: Prisma.NotificationUncheckedUpdateManyWithoutOrderNestedInput
+}
+
+export type OrderCreateWithoutColour_changeInput = {
+  order_number: number
+  created_at?: Date | string
+  dispatch_at: Date | string
+  status: $Enums.Order_Status
+  po_number?: string | null
+  pi_number?: boolean
+  bill_number?: string | null
+  fitted_by?: string | null
+  powder_coating?: boolean
+  count_order?: boolean
+  balance: number
+  height: string
+  total_body: number
+  advance?: Prisma.AdvanceCreateNestedManyWithoutOrderInput
+  drawing?: Prisma.DrawingCreateNestedManyWithoutOrderInput
+  notification?: Prisma.NotificationCreateNestedManyWithoutOrderInput
+  deal: Prisma.DealCreateNestedOneWithoutOrderInput
+  quotation: Prisma.QuotationCreateNestedOneWithoutOrderInput
+}
+
+export type OrderUncheckedCreateWithoutColour_changeInput = {
+  id?: number
+  order_number: number
+  created_at?: Date | string
+  dispatch_at: Date | string
+  status: $Enums.Order_Status
+  po_number?: string | null
+  pi_number?: boolean
+  bill_number?: string | null
+  fitted_by?: string | null
+  powder_coating?: boolean
+  count_order?: boolean
+  balance: number
+  height: string
+  total_body: number
+  deal_id: string
+  quotation_id: number
+  advance?: Prisma.AdvanceUncheckedCreateNestedManyWithoutOrderInput
+  drawing?: Prisma.DrawingUncheckedCreateNestedManyWithoutOrderInput
+  notification?: Prisma.NotificationUncheckedCreateNestedManyWithoutOrderInput
+}
+
+export type OrderCreateOrConnectWithoutColour_changeInput = {
+  where: Prisma.OrderWhereUniqueInput
+  create: Prisma.XOR<Prisma.OrderCreateWithoutColour_changeInput, Prisma.OrderUncheckedCreateWithoutColour_changeInput>
+}
+
+export type OrderUpsertWithoutColour_changeInput = {
+  update: Prisma.XOR<Prisma.OrderUpdateWithoutColour_changeInput, Prisma.OrderUncheckedUpdateWithoutColour_changeInput>
+  create: Prisma.XOR<Prisma.OrderCreateWithoutColour_changeInput, Prisma.OrderUncheckedCreateWithoutColour_changeInput>
+  where?: Prisma.OrderWhereInput
+}
+
+export type OrderUpdateToOneWithWhereWithoutColour_changeInput = {
+  where?: Prisma.OrderWhereInput
+  data: Prisma.XOR<Prisma.OrderUpdateWithoutColour_changeInput, Prisma.OrderUncheckedUpdateWithoutColour_changeInput>
+}
+
+export type OrderUpdateWithoutColour_changeInput = {
+  order_number?: Prisma.IntFieldUpdateOperationsInput | number
+  created_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  dispatch_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  status?: Prisma.EnumOrder_StatusFieldUpdateOperationsInput | $Enums.Order_Status
+  po_number?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  pi_number?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  bill_number?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  fitted_by?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  powder_coating?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  count_order?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  balance?: Prisma.IntFieldUpdateOperationsInput | number
+  height?: Prisma.StringFieldUpdateOperationsInput | string
+  total_body?: Prisma.IntFieldUpdateOperationsInput | number
+  advance?: Prisma.AdvanceUpdateManyWithoutOrderNestedInput
+  drawing?: Prisma.DrawingUpdateManyWithoutOrderNestedInput
+  notification?: Prisma.NotificationUpdateManyWithoutOrderNestedInput
+  deal?: Prisma.DealUpdateOneRequiredWithoutOrderNestedInput
+  quotation?: Prisma.QuotationUpdateOneRequiredWithoutOrderNestedInput
+}
+
+export type OrderUncheckedUpdateWithoutColour_changeInput = {
+  id?: Prisma.IntFieldUpdateOperationsInput | number
+  order_number?: Prisma.IntFieldUpdateOperationsInput | number
+  created_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  dispatch_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  status?: Prisma.EnumOrder_StatusFieldUpdateOperationsInput | $Enums.Order_Status
+  po_number?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  pi_number?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  bill_number?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  fitted_by?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  powder_coating?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  count_order?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  balance?: Prisma.IntFieldUpdateOperationsInput | number
+  height?: Prisma.StringFieldUpdateOperationsInput | string
+  total_body?: Prisma.IntFieldUpdateOperationsInput | number
+  deal_id?: Prisma.StringFieldUpdateOperationsInput | string
+  quotation_id?: Prisma.IntFieldUpdateOperationsInput | number
+  advance?: Prisma.AdvanceUncheckedUpdateManyWithoutOrderNestedInput
   drawing?: Prisma.DrawingUncheckedUpdateManyWithoutOrderNestedInput
   notification?: Prisma.NotificationUncheckedUpdateManyWithoutOrderNestedInput
 }
@@ -1215,12 +1400,14 @@ export type OrderUncheckedUpdateWithoutAdvanceInput = {
  */
 
 export type OrderCountOutputType = {
+  colour_change: number
   advance: number
   drawing: number
   notification: number
 }
 
 export type OrderCountOutputTypeSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  colour_change?: boolean | OrderCountOutputTypeCountColour_changeArgs
   advance?: boolean | OrderCountOutputTypeCountAdvanceArgs
   drawing?: boolean | OrderCountOutputTypeCountDrawingArgs
   notification?: boolean | OrderCountOutputTypeCountNotificationArgs
@@ -1234,6 +1421,13 @@ export type OrderCountOutputTypeDefaultArgs<ExtArgs extends runtime.Types.Extens
    * Select specific fields to fetch from the OrderCountOutputType
    */
   select?: Prisma.OrderCountOutputTypeSelect<ExtArgs> | null
+}
+
+/**
+ * OrderCountOutputType without action
+ */
+export type OrderCountOutputTypeCountColour_changeArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  where?: Prisma.ColourChangeWhereInput
 }
 
 /**
@@ -1268,12 +1462,14 @@ export type OrderSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = 
   pi_number?: boolean
   bill_number?: boolean
   fitted_by?: boolean
-  colour?: boolean
+  powder_coating?: boolean
+  count_order?: boolean
   balance?: boolean
   height?: boolean
   total_body?: boolean
   deal_id?: boolean
   quotation_id?: boolean
+  colour_change?: boolean | Prisma.Order$colour_changeArgs<ExtArgs>
   advance?: boolean | Prisma.Order$advanceArgs<ExtArgs>
   drawing?: boolean | Prisma.Order$drawingArgs<ExtArgs>
   notification?: boolean | Prisma.Order$notificationArgs<ExtArgs>
@@ -1292,7 +1488,8 @@ export type OrderSelectCreateManyAndReturn<ExtArgs extends runtime.Types.Extensi
   pi_number?: boolean
   bill_number?: boolean
   fitted_by?: boolean
-  colour?: boolean
+  powder_coating?: boolean
+  count_order?: boolean
   balance?: boolean
   height?: boolean
   total_body?: boolean
@@ -1312,7 +1509,8 @@ export type OrderSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.Extensi
   pi_number?: boolean
   bill_number?: boolean
   fitted_by?: boolean
-  colour?: boolean
+  powder_coating?: boolean
+  count_order?: boolean
   balance?: boolean
   height?: boolean
   total_body?: boolean
@@ -1332,7 +1530,8 @@ export type OrderSelectScalar = {
   pi_number?: boolean
   bill_number?: boolean
   fitted_by?: boolean
-  colour?: boolean
+  powder_coating?: boolean
+  count_order?: boolean
   balance?: boolean
   height?: boolean
   total_body?: boolean
@@ -1340,8 +1539,9 @@ export type OrderSelectScalar = {
   quotation_id?: boolean
 }
 
-export type OrderOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "order_number" | "created_at" | "dispatch_at" | "status" | "po_number" | "pi_number" | "bill_number" | "fitted_by" | "colour" | "balance" | "height" | "total_body" | "deal_id" | "quotation_id", ExtArgs["result"]["order"]>
+export type OrderOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "order_number" | "created_at" | "dispatch_at" | "status" | "po_number" | "pi_number" | "bill_number" | "fitted_by" | "powder_coating" | "count_order" | "balance" | "height" | "total_body" | "deal_id" | "quotation_id", ExtArgs["result"]["order"]>
 export type OrderInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  colour_change?: boolean | Prisma.Order$colour_changeArgs<ExtArgs>
   advance?: boolean | Prisma.Order$advanceArgs<ExtArgs>
   drawing?: boolean | Prisma.Order$drawingArgs<ExtArgs>
   notification?: boolean | Prisma.Order$notificationArgs<ExtArgs>
@@ -1361,6 +1561,7 @@ export type OrderIncludeUpdateManyAndReturn<ExtArgs extends runtime.Types.Extens
 export type $OrderPayload<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   name: "Order"
   objects: {
+    colour_change: Prisma.$ColourChangePayload<ExtArgs>[]
     advance: Prisma.$AdvancePayload<ExtArgs>[]
     drawing: Prisma.$DrawingPayload<ExtArgs>[]
     notification: Prisma.$NotificationPayload<ExtArgs>[]
@@ -1377,7 +1578,8 @@ export type $OrderPayload<ExtArgs extends runtime.Types.Extensions.InternalArgs 
     pi_number: boolean
     bill_number: string | null
     fitted_by: string | null
-    colour: string
+    powder_coating: boolean
+    count_order: boolean
     balance: number
     height: string
     total_body: number
@@ -1777,6 +1979,7 @@ readonly fields: OrderFieldRefs;
  */
 export interface Prisma__OrderClient<T, Null = never, ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
   readonly [Symbol.toStringTag]: "PrismaPromise"
+  colour_change<T extends Prisma.Order$colour_changeArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Order$colour_changeArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$ColourChangePayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   advance<T extends Prisma.Order$advanceArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Order$advanceArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$AdvancePayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   drawing<T extends Prisma.Order$drawingArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Order$drawingArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$DrawingPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   notification<T extends Prisma.Order$notificationArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Order$notificationArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$NotificationPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
@@ -1820,7 +2023,8 @@ export interface OrderFieldRefs {
   readonly pi_number: Prisma.FieldRef<"Order", 'Boolean'>
   readonly bill_number: Prisma.FieldRef<"Order", 'String'>
   readonly fitted_by: Prisma.FieldRef<"Order", 'String'>
-  readonly colour: Prisma.FieldRef<"Order", 'String'>
+  readonly powder_coating: Prisma.FieldRef<"Order", 'Boolean'>
+  readonly count_order: Prisma.FieldRef<"Order", 'Boolean'>
   readonly balance: Prisma.FieldRef<"Order", 'Int'>
   readonly height: Prisma.FieldRef<"Order", 'String'>
   readonly total_body: Prisma.FieldRef<"Order", 'Int'>
@@ -2219,6 +2423,30 @@ export type OrderDeleteManyArgs<ExtArgs extends runtime.Types.Extensions.Interna
    * Limit how many Orders to delete.
    */
   limit?: number
+}
+
+/**
+ * Order.colour_change
+ */
+export type Order$colour_changeArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the ColourChange
+   */
+  select?: Prisma.ColourChangeSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the ColourChange
+   */
+  omit?: Prisma.ColourChangeOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.ColourChangeInclude<ExtArgs> | null
+  where?: Prisma.ColourChangeWhereInput
+  orderBy?: Prisma.ColourChangeOrderByWithRelationInput | Prisma.ColourChangeOrderByWithRelationInput[]
+  cursor?: Prisma.ColourChangeWhereUniqueInput
+  take?: number
+  skip?: number
+  distinct?: Prisma.ColourChangeScalarFieldEnum | Prisma.ColourChangeScalarFieldEnum[]
 }
 
 /**

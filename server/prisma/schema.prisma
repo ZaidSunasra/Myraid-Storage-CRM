@@ -8,11 +8,11 @@ datasource db {
 }
 
 model User {
-  id             Int           @id @default(autoincrement())
+  id             Int            @id @default(autoincrement())
   first_name     String
   last_name      String
-  email          String        @unique
-  phone          String        @unique
+  email          String         @unique
+  phone          String         @unique
   password       String
   quotation_code String?
   department     Department
@@ -22,6 +22,7 @@ model User {
   deal           Deal[]
   drawing        Drawing[]
   quotation      Quotation[]
+  colour_change  ColourChange[]
 
   @@index([email])
   @@index([phone])
@@ -242,24 +243,24 @@ model Drawing {
 }
 
 model Quotation {
-  id                 Int                 @id @default(autoincrement())
-  created_at         DateTime            @default(now())
-  quotation_no       String
-  deal_id            String
-  quotation_template Quotation_Template
-  gst                Decimal             @default(0)
-  round_off          Decimal             @default(0)
-  sub_total          Decimal             @default(0)
-  grand_total        Decimal             @default(0)
-  show_body_table    Boolean             @default(true)
-  note               String?
+  id                  Int                 @id @default(autoincrement())
+  created_at          DateTime            @default(now())
+  quotation_no        String
+  deal_id             String
+  quotation_template  Quotation_Template
+  gst                 Decimal             @default(0)
+  round_off           Decimal             @default(0)
+  sub_total           Decimal             @default(0)
+  grand_total         Decimal             @default(0)
+  show_body_table     Boolean             @default(true)
+  note                String?
   terms_and_condition String?
-  specifications String?
-  deal               Deal                @relation(fields: [deal_id], references: [id])
-  quotation_products QuotationProducts[]
-  order              Order?
-  user               User                @relation(fields: [created_by], references: [id])
-  created_by         Int
+  specifications      String?
+  deal                Deal                @relation(fields: [deal_id], references: [id])
+  quotation_products  QuotationProducts[]
+  order               Order?
+  user                User                @relation(fields: [created_by], references: [id])
+  created_by          Int
 
   @@unique([quotation_no])
   @@index([deal_id])
@@ -333,26 +334,28 @@ model BaseProduct {
 }
 
 model Order {
-  id           Int            @id @default(autoincrement())
-  order_number Int            @unique
-  created_at   DateTime       @default(now())
-  dispatch_at  DateTime
-  status       Order_Status
-  po_number    String?
-  pi_number    Boolean        @default(false)
-  bill_number  String?
-  fitted_by    String?
-  colour       String
-  balance      Int
-  height       String
-  total_body   Int
-  advance      Advance[]
-  drawing      Drawing[]
-  notification Notification[]
-  deal_id      String         @unique
-  deal         Deal           @relation(fields: [deal_id], references: [id])
-  quotation_id Int            @unique
-  quotation    Quotation      @relation(fields: [quotation_id], references: [id])
+  id             Int            @id @default(autoincrement())
+  order_number   Int            @unique
+  created_at     DateTime       @default(now())
+  dispatch_at    DateTime
+  status         Order_Status
+  po_number      String?
+  pi_number      Boolean        @default(false)
+  bill_number    String?
+  fitted_by      String?
+  powder_coating Boolean        @default(false)
+  count_order    Boolean        @default(false)
+  balance        Int
+  height         String
+  total_body     Int
+  colour_change  ColourChange[]
+  advance        Advance[]
+  drawing        Drawing[]
+  notification   Notification[]
+  deal_id        String         @unique
+  deal           Deal           @relation(fields: [deal_id], references: [id])
+  quotation_id   Int            @unique
+  quotation      Quotation      @relation(fields: [quotation_id], references: [id])
 
   @@index([deal_id])
   @@index([quotation_id])
@@ -366,6 +369,18 @@ model Advance {
   advance_date   DateTime
   order_id       Int
   order          Order    @relation(fields: [order_id], references: [id])
+
+  @@index([order_id])
+}
+
+model ColourChange {
+  id         Int      @id @default(autoincrement())
+  colour     String
+  changed_on DateTime @default(now())
+  order_id   Int
+  user_id    Int
+  order      Order    @relation(fields: [order_id], references: [id])
+  user       User     @relation(fields: [user_id], references: [id])
 
   @@index([order_id])
 }
@@ -389,6 +404,8 @@ enum Order_Status {
   pending
   in_progress
   dispatched
+  fabrication_ready
+  ready
 }
 
 enum Notification_Type {

@@ -72,6 +72,7 @@ export const ModelName = {
   BaseProduct: 'BaseProduct',
   Order: 'Order',
   Advance: 'Advance',
+  ColourChange: 'ColourChange',
   Permission: 'Permission'
 } as const
 
@@ -358,7 +359,8 @@ export const OrderScalarFieldEnum = {
   pi_number: 'pi_number',
   bill_number: 'bill_number',
   fitted_by: 'fitted_by',
-  colour: 'colour',
+  powder_coating: 'powder_coating',
+  count_order: 'count_order',
   balance: 'balance',
   height: 'height',
   total_body: 'total_body',
@@ -377,6 +379,17 @@ export const AdvanceScalarFieldEnum = {
 } as const
 
 export type AdvanceScalarFieldEnum = (typeof AdvanceScalarFieldEnum)[keyof typeof AdvanceScalarFieldEnum]
+
+
+export const ColourChangeScalarFieldEnum = {
+  id: 'id',
+  colour: 'colour',
+  changed_on: 'changed_on',
+  order_id: 'order_id',
+  user_id: 'user_id'
+} as const
+
+export type ColourChangeScalarFieldEnum = (typeof ColourChangeScalarFieldEnum)[keyof typeof ColourChangeScalarFieldEnum]
 
 
 export const PermissionScalarFieldEnum = {

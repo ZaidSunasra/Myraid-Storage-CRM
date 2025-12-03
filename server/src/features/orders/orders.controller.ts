@@ -3,7 +3,7 @@ import { addOrderSchema, addPaymentSchema, ErrorResponse, GetOrderByIdSuccessRes
 import { addOrderService, addPaymentService, deletePaymentService, editOrderService, editPaymentService, getOrderByIdService, getOrderService } from "./orders.service.js";
 
 export const addOrderController = async (req: Request, res: Response<ErrorResponse | SuccessResponse>): Promise<any> => {
-    const { quotation_no, height, total, total_body, pi_number, po_number, dispatch_at, status, colour, deal_id, fitted_by, bill_number } = req.body;
+    const { quotation_no, height, total, total_body, pi_number, po_number, dispatch_at, status,  deal_id, fitted_by, bill_number, powder_coating, count_order} = req.body;
     const validation = addOrderSchema.safeParse({ ...req.body, dispatch_at: new Date(dispatch_at) });
     if (!validation.success) {
         return res.status(400).json({
@@ -12,7 +12,7 @@ export const addOrderController = async (req: Request, res: Response<ErrorRespon
         })
     }
     try {
-        await addOrderService({ quotation_no, height, total, total_body, pi_number, po_number, dispatch_at, status, colour, deal_id, fitted_by, bill_number });
+        await addOrderService({ quotation_no, height, total, total_body, pi_number, po_number, dispatch_at, status, deal_id, fitted_by, bill_number, powder_coating, count_order});
         return res.status(200).json({
             message: `Order added  successfully`,
         })
@@ -69,7 +69,7 @@ export const getOrderByIdController = async (req: Request, res: Response<GetOrde
 }
 
 export const editOrderController = async (req: Request, res: Response<ErrorResponse | SuccessResponse>): Promise<any> => {
-    const { quotation_no, height, total, total_body, pi_number, po_number, dispatch_at, status, colour, deal_id, fitted_by, bill_number } = req.body;
+    const { quotation_no, height, total, total_body, pi_number, po_number, dispatch_at, status, deal_id, fitted_by, bill_number, powder_coating, count_order } = req.body;
     const id = req.params.id;
     const validation = addOrderSchema.safeParse({ ...req.body, dispatch_at: new Date(dispatch_at) });
     if (!validation.success) {
@@ -79,7 +79,7 @@ export const editOrderController = async (req: Request, res: Response<ErrorRespo
         })
     }
     try {
-        await editOrderService({ quotation_no, height, total, total_body, pi_number, po_number, dispatch_at, status, colour, deal_id, fitted_by, bill_number }, id);
+        await editOrderService({ quotation_no, height, total, total_body, pi_number, po_number, dispatch_at, status, deal_id, fitted_by, bill_number, powder_coating, count_order}, id);
         return res.status(200).json({
             message: `Order edited  successfully`,
         })

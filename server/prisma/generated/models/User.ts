@@ -246,6 +246,7 @@ export type UserWhereInput = {
   deal?: Prisma.DealListRelationFilter
   drawing?: Prisma.DrawingListRelationFilter
   quotation?: Prisma.QuotationListRelationFilter
+  colour_change?: Prisma.ColourChangeListRelationFilter
 }
 
 export type UserOrderByWithRelationInput = {
@@ -263,6 +264,7 @@ export type UserOrderByWithRelationInput = {
   deal?: Prisma.DealOrderByRelationAggregateInput
   drawing?: Prisma.DrawingOrderByRelationAggregateInput
   quotation?: Prisma.QuotationOrderByRelationAggregateInput
+  colour_change?: Prisma.ColourChangeOrderByRelationAggregateInput
 }
 
 export type UserWhereUniqueInput = Prisma.AtLeast<{
@@ -283,6 +285,7 @@ export type UserWhereUniqueInput = Prisma.AtLeast<{
   deal?: Prisma.DealListRelationFilter
   drawing?: Prisma.DrawingListRelationFilter
   quotation?: Prisma.QuotationListRelationFilter
+  colour_change?: Prisma.ColourChangeListRelationFilter
 }, "id" | "email" | "phone">
 
 export type UserOrderByWithAggregationInput = {
@@ -329,6 +332,7 @@ export type UserCreateInput = {
   deal?: Prisma.DealCreateNestedManyWithoutUserInput
   drawing?: Prisma.DrawingCreateNestedManyWithoutUserInput
   quotation?: Prisma.QuotationCreateNestedManyWithoutUserInput
+  colour_change?: Prisma.ColourChangeCreateNestedManyWithoutUserInput
 }
 
 export type UserUncheckedCreateInput = {
@@ -346,6 +350,7 @@ export type UserUncheckedCreateInput = {
   deal?: Prisma.DealUncheckedCreateNestedManyWithoutUserInput
   drawing?: Prisma.DrawingUncheckedCreateNestedManyWithoutUserInput
   quotation?: Prisma.QuotationUncheckedCreateNestedManyWithoutUserInput
+  colour_change?: Prisma.ColourChangeUncheckedCreateNestedManyWithoutUserInput
 }
 
 export type UserUpdateInput = {
@@ -362,6 +367,7 @@ export type UserUpdateInput = {
   deal?: Prisma.DealUpdateManyWithoutUserNestedInput
   drawing?: Prisma.DrawingUpdateManyWithoutUserNestedInput
   quotation?: Prisma.QuotationUpdateManyWithoutUserNestedInput
+  colour_change?: Prisma.ColourChangeUpdateManyWithoutUserNestedInput
 }
 
 export type UserUncheckedUpdateInput = {
@@ -379,6 +385,7 @@ export type UserUncheckedUpdateInput = {
   deal?: Prisma.DealUncheckedUpdateManyWithoutUserNestedInput
   drawing?: Prisma.DrawingUncheckedUpdateManyWithoutUserNestedInput
   quotation?: Prisma.QuotationUncheckedUpdateManyWithoutUserNestedInput
+  colour_change?: Prisma.ColourChangeUncheckedUpdateManyWithoutUserNestedInput
 }
 
 export type UserCreateManyInput = {
@@ -563,6 +570,20 @@ export type UserUpdateOneRequiredWithoutQuotationNestedInput = {
   update?: Prisma.XOR<Prisma.XOR<Prisma.UserUpdateToOneWithWhereWithoutQuotationInput, Prisma.UserUpdateWithoutQuotationInput>, Prisma.UserUncheckedUpdateWithoutQuotationInput>
 }
 
+export type UserCreateNestedOneWithoutColour_changeInput = {
+  create?: Prisma.XOR<Prisma.UserCreateWithoutColour_changeInput, Prisma.UserUncheckedCreateWithoutColour_changeInput>
+  connectOrCreate?: Prisma.UserCreateOrConnectWithoutColour_changeInput
+  connect?: Prisma.UserWhereUniqueInput
+}
+
+export type UserUpdateOneRequiredWithoutColour_changeNestedInput = {
+  create?: Prisma.XOR<Prisma.UserCreateWithoutColour_changeInput, Prisma.UserUncheckedCreateWithoutColour_changeInput>
+  connectOrCreate?: Prisma.UserCreateOrConnectWithoutColour_changeInput
+  upsert?: Prisma.UserUpsertWithoutColour_changeInput
+  connect?: Prisma.UserWhereUniqueInput
+  update?: Prisma.XOR<Prisma.XOR<Prisma.UserUpdateToOneWithWhereWithoutColour_changeInput, Prisma.UserUpdateWithoutColour_changeInput>, Prisma.UserUncheckedUpdateWithoutColour_changeInput>
+}
+
 export type UserCreateWithoutDescriptionInput = {
   first_name: string
   last_name: string
@@ -576,6 +597,7 @@ export type UserCreateWithoutDescriptionInput = {
   deal?: Prisma.DealCreateNestedManyWithoutUserInput
   drawing?: Prisma.DrawingCreateNestedManyWithoutUserInput
   quotation?: Prisma.QuotationCreateNestedManyWithoutUserInput
+  colour_change?: Prisma.ColourChangeCreateNestedManyWithoutUserInput
 }
 
 export type UserUncheckedCreateWithoutDescriptionInput = {
@@ -592,6 +614,7 @@ export type UserUncheckedCreateWithoutDescriptionInput = {
   deal?: Prisma.DealUncheckedCreateNestedManyWithoutUserInput
   drawing?: Prisma.DrawingUncheckedCreateNestedManyWithoutUserInput
   quotation?: Prisma.QuotationUncheckedCreateNestedManyWithoutUserInput
+  colour_change?: Prisma.ColourChangeUncheckedCreateNestedManyWithoutUserInput
 }
 
 export type UserCreateOrConnectWithoutDescriptionInput = {
@@ -623,6 +646,7 @@ export type UserUpdateWithoutDescriptionInput = {
   deal?: Prisma.DealUpdateManyWithoutUserNestedInput
   drawing?: Prisma.DrawingUpdateManyWithoutUserNestedInput
   quotation?: Prisma.QuotationUpdateManyWithoutUserNestedInput
+  colour_change?: Prisma.ColourChangeUpdateManyWithoutUserNestedInput
 }
 
 export type UserUncheckedUpdateWithoutDescriptionInput = {
@@ -639,6 +663,7 @@ export type UserUncheckedUpdateWithoutDescriptionInput = {
   deal?: Prisma.DealUncheckedUpdateManyWithoutUserNestedInput
   drawing?: Prisma.DrawingUncheckedUpdateManyWithoutUserNestedInput
   quotation?: Prisma.QuotationUncheckedUpdateManyWithoutUserNestedInput
+  colour_change?: Prisma.ColourChangeUncheckedUpdateManyWithoutUserNestedInput
 }
 
 export type UserCreateWithoutAsigneeInput = {
@@ -654,6 +679,7 @@ export type UserCreateWithoutAsigneeInput = {
   deal?: Prisma.DealCreateNestedManyWithoutUserInput
   drawing?: Prisma.DrawingCreateNestedManyWithoutUserInput
   quotation?: Prisma.QuotationCreateNestedManyWithoutUserInput
+  colour_change?: Prisma.ColourChangeCreateNestedManyWithoutUserInput
 }
 
 export type UserUncheckedCreateWithoutAsigneeInput = {
@@ -670,6 +696,7 @@ export type UserUncheckedCreateWithoutAsigneeInput = {
   deal?: Prisma.DealUncheckedCreateNestedManyWithoutUserInput
   drawing?: Prisma.DrawingUncheckedCreateNestedManyWithoutUserInput
   quotation?: Prisma.QuotationUncheckedCreateNestedManyWithoutUserInput
+  colour_change?: Prisma.ColourChangeUncheckedCreateNestedManyWithoutUserInput
 }
 
 export type UserCreateOrConnectWithoutAsigneeInput = {
@@ -701,6 +728,7 @@ export type UserUpdateWithoutAsigneeInput = {
   deal?: Prisma.DealUpdateManyWithoutUserNestedInput
   drawing?: Prisma.DrawingUpdateManyWithoutUserNestedInput
   quotation?: Prisma.QuotationUpdateManyWithoutUserNestedInput
+  colour_change?: Prisma.ColourChangeUpdateManyWithoutUserNestedInput
 }
 
 export type UserUncheckedUpdateWithoutAsigneeInput = {
@@ -717,6 +745,7 @@ export type UserUncheckedUpdateWithoutAsigneeInput = {
   deal?: Prisma.DealUncheckedUpdateManyWithoutUserNestedInput
   drawing?: Prisma.DrawingUncheckedUpdateManyWithoutUserNestedInput
   quotation?: Prisma.QuotationUncheckedUpdateManyWithoutUserNestedInput
+  colour_change?: Prisma.ColourChangeUncheckedUpdateManyWithoutUserNestedInput
 }
 
 export type UserCreateWithoutRecipient_listInput = {
@@ -732,6 +761,7 @@ export type UserCreateWithoutRecipient_listInput = {
   deal?: Prisma.DealCreateNestedManyWithoutUserInput
   drawing?: Prisma.DrawingCreateNestedManyWithoutUserInput
   quotation?: Prisma.QuotationCreateNestedManyWithoutUserInput
+  colour_change?: Prisma.ColourChangeCreateNestedManyWithoutUserInput
 }
 
 export type UserUncheckedCreateWithoutRecipient_listInput = {
@@ -748,6 +778,7 @@ export type UserUncheckedCreateWithoutRecipient_listInput = {
   deal?: Prisma.DealUncheckedCreateNestedManyWithoutUserInput
   drawing?: Prisma.DrawingUncheckedCreateNestedManyWithoutUserInput
   quotation?: Prisma.QuotationUncheckedCreateNestedManyWithoutUserInput
+  colour_change?: Prisma.ColourChangeUncheckedCreateNestedManyWithoutUserInput
 }
 
 export type UserCreateOrConnectWithoutRecipient_listInput = {
@@ -779,6 +810,7 @@ export type UserUpdateWithoutRecipient_listInput = {
   deal?: Prisma.DealUpdateManyWithoutUserNestedInput
   drawing?: Prisma.DrawingUpdateManyWithoutUserNestedInput
   quotation?: Prisma.QuotationUpdateManyWithoutUserNestedInput
+  colour_change?: Prisma.ColourChangeUpdateManyWithoutUserNestedInput
 }
 
 export type UserUncheckedUpdateWithoutRecipient_listInput = {
@@ -795,6 +827,7 @@ export type UserUncheckedUpdateWithoutRecipient_listInput = {
   deal?: Prisma.DealUncheckedUpdateManyWithoutUserNestedInput
   drawing?: Prisma.DrawingUncheckedUpdateManyWithoutUserNestedInput
   quotation?: Prisma.QuotationUncheckedUpdateManyWithoutUserNestedInput
+  colour_change?: Prisma.ColourChangeUncheckedUpdateManyWithoutUserNestedInput
 }
 
 export type UserCreateWithoutDealInput = {
@@ -810,6 +843,7 @@ export type UserCreateWithoutDealInput = {
   description?: Prisma.DescriptionCreateNestedManyWithoutUserInput
   drawing?: Prisma.DrawingCreateNestedManyWithoutUserInput
   quotation?: Prisma.QuotationCreateNestedManyWithoutUserInput
+  colour_change?: Prisma.ColourChangeCreateNestedManyWithoutUserInput
 }
 
 export type UserUncheckedCreateWithoutDealInput = {
@@ -826,6 +860,7 @@ export type UserUncheckedCreateWithoutDealInput = {
   description?: Prisma.DescriptionUncheckedCreateNestedManyWithoutUserInput
   drawing?: Prisma.DrawingUncheckedCreateNestedManyWithoutUserInput
   quotation?: Prisma.QuotationUncheckedCreateNestedManyWithoutUserInput
+  colour_change?: Prisma.ColourChangeUncheckedCreateNestedManyWithoutUserInput
 }
 
 export type UserCreateOrConnectWithoutDealInput = {
@@ -857,6 +892,7 @@ export type UserUpdateWithoutDealInput = {
   description?: Prisma.DescriptionUpdateManyWithoutUserNestedInput
   drawing?: Prisma.DrawingUpdateManyWithoutUserNestedInput
   quotation?: Prisma.QuotationUpdateManyWithoutUserNestedInput
+  colour_change?: Prisma.ColourChangeUpdateManyWithoutUserNestedInput
 }
 
 export type UserUncheckedUpdateWithoutDealInput = {
@@ -873,6 +909,7 @@ export type UserUncheckedUpdateWithoutDealInput = {
   description?: Prisma.DescriptionUncheckedUpdateManyWithoutUserNestedInput
   drawing?: Prisma.DrawingUncheckedUpdateManyWithoutUserNestedInput
   quotation?: Prisma.QuotationUncheckedUpdateManyWithoutUserNestedInput
+  colour_change?: Prisma.ColourChangeUncheckedUpdateManyWithoutUserNestedInput
 }
 
 export type UserCreateWithoutDrawingInput = {
@@ -888,6 +925,7 @@ export type UserCreateWithoutDrawingInput = {
   description?: Prisma.DescriptionCreateNestedManyWithoutUserInput
   deal?: Prisma.DealCreateNestedManyWithoutUserInput
   quotation?: Prisma.QuotationCreateNestedManyWithoutUserInput
+  colour_change?: Prisma.ColourChangeCreateNestedManyWithoutUserInput
 }
 
 export type UserUncheckedCreateWithoutDrawingInput = {
@@ -904,6 +942,7 @@ export type UserUncheckedCreateWithoutDrawingInput = {
   description?: Prisma.DescriptionUncheckedCreateNestedManyWithoutUserInput
   deal?: Prisma.DealUncheckedCreateNestedManyWithoutUserInput
   quotation?: Prisma.QuotationUncheckedCreateNestedManyWithoutUserInput
+  colour_change?: Prisma.ColourChangeUncheckedCreateNestedManyWithoutUserInput
 }
 
 export type UserCreateOrConnectWithoutDrawingInput = {
@@ -935,6 +974,7 @@ export type UserUpdateWithoutDrawingInput = {
   description?: Prisma.DescriptionUpdateManyWithoutUserNestedInput
   deal?: Prisma.DealUpdateManyWithoutUserNestedInput
   quotation?: Prisma.QuotationUpdateManyWithoutUserNestedInput
+  colour_change?: Prisma.ColourChangeUpdateManyWithoutUserNestedInput
 }
 
 export type UserUncheckedUpdateWithoutDrawingInput = {
@@ -951,6 +991,7 @@ export type UserUncheckedUpdateWithoutDrawingInput = {
   description?: Prisma.DescriptionUncheckedUpdateManyWithoutUserNestedInput
   deal?: Prisma.DealUncheckedUpdateManyWithoutUserNestedInput
   quotation?: Prisma.QuotationUncheckedUpdateManyWithoutUserNestedInput
+  colour_change?: Prisma.ColourChangeUncheckedUpdateManyWithoutUserNestedInput
 }
 
 export type UserCreateWithoutQuotationInput = {
@@ -966,6 +1007,7 @@ export type UserCreateWithoutQuotationInput = {
   description?: Prisma.DescriptionCreateNestedManyWithoutUserInput
   deal?: Prisma.DealCreateNestedManyWithoutUserInput
   drawing?: Prisma.DrawingCreateNestedManyWithoutUserInput
+  colour_change?: Prisma.ColourChangeCreateNestedManyWithoutUserInput
 }
 
 export type UserUncheckedCreateWithoutQuotationInput = {
@@ -982,6 +1024,7 @@ export type UserUncheckedCreateWithoutQuotationInput = {
   description?: Prisma.DescriptionUncheckedCreateNestedManyWithoutUserInput
   deal?: Prisma.DealUncheckedCreateNestedManyWithoutUserInput
   drawing?: Prisma.DrawingUncheckedCreateNestedManyWithoutUserInput
+  colour_change?: Prisma.ColourChangeUncheckedCreateNestedManyWithoutUserInput
 }
 
 export type UserCreateOrConnectWithoutQuotationInput = {
@@ -1013,6 +1056,7 @@ export type UserUpdateWithoutQuotationInput = {
   description?: Prisma.DescriptionUpdateManyWithoutUserNestedInput
   deal?: Prisma.DealUpdateManyWithoutUserNestedInput
   drawing?: Prisma.DrawingUpdateManyWithoutUserNestedInput
+  colour_change?: Prisma.ColourChangeUpdateManyWithoutUserNestedInput
 }
 
 export type UserUncheckedUpdateWithoutQuotationInput = {
@@ -1029,6 +1073,89 @@ export type UserUncheckedUpdateWithoutQuotationInput = {
   description?: Prisma.DescriptionUncheckedUpdateManyWithoutUserNestedInput
   deal?: Prisma.DealUncheckedUpdateManyWithoutUserNestedInput
   drawing?: Prisma.DrawingUncheckedUpdateManyWithoutUserNestedInput
+  colour_change?: Prisma.ColourChangeUncheckedUpdateManyWithoutUserNestedInput
+}
+
+export type UserCreateWithoutColour_changeInput = {
+  first_name: string
+  last_name: string
+  email: string
+  phone: string
+  password: string
+  quotation_code?: string | null
+  department: $Enums.Department
+  recipient_list?: Prisma.RecipientCreateNestedManyWithoutUserInput
+  asignee?: Prisma.AsigneeCreateNestedManyWithoutUserInput
+  description?: Prisma.DescriptionCreateNestedManyWithoutUserInput
+  deal?: Prisma.DealCreateNestedManyWithoutUserInput
+  drawing?: Prisma.DrawingCreateNestedManyWithoutUserInput
+  quotation?: Prisma.QuotationCreateNestedManyWithoutUserInput
+}
+
+export type UserUncheckedCreateWithoutColour_changeInput = {
+  id?: number
+  first_name: string
+  last_name: string
+  email: string
+  phone: string
+  password: string
+  quotation_code?: string | null
+  department: $Enums.Department
+  recipient_list?: Prisma.RecipientUncheckedCreateNestedManyWithoutUserInput
+  asignee?: Prisma.AsigneeUncheckedCreateNestedManyWithoutUserInput
+  description?: Prisma.DescriptionUncheckedCreateNestedManyWithoutUserInput
+  deal?: Prisma.DealUncheckedCreateNestedManyWithoutUserInput
+  drawing?: Prisma.DrawingUncheckedCreateNestedManyWithoutUserInput
+  quotation?: Prisma.QuotationUncheckedCreateNestedManyWithoutUserInput
+}
+
+export type UserCreateOrConnectWithoutColour_changeInput = {
+  where: Prisma.UserWhereUniqueInput
+  create: Prisma.XOR<Prisma.UserCreateWithoutColour_changeInput, Prisma.UserUncheckedCreateWithoutColour_changeInput>
+}
+
+export type UserUpsertWithoutColour_changeInput = {
+  update: Prisma.XOR<Prisma.UserUpdateWithoutColour_changeInput, Prisma.UserUncheckedUpdateWithoutColour_changeInput>
+  create: Prisma.XOR<Prisma.UserCreateWithoutColour_changeInput, Prisma.UserUncheckedCreateWithoutColour_changeInput>
+  where?: Prisma.UserWhereInput
+}
+
+export type UserUpdateToOneWithWhereWithoutColour_changeInput = {
+  where?: Prisma.UserWhereInput
+  data: Prisma.XOR<Prisma.UserUpdateWithoutColour_changeInput, Prisma.UserUncheckedUpdateWithoutColour_changeInput>
+}
+
+export type UserUpdateWithoutColour_changeInput = {
+  first_name?: Prisma.StringFieldUpdateOperationsInput | string
+  last_name?: Prisma.StringFieldUpdateOperationsInput | string
+  email?: Prisma.StringFieldUpdateOperationsInput | string
+  phone?: Prisma.StringFieldUpdateOperationsInput | string
+  password?: Prisma.StringFieldUpdateOperationsInput | string
+  quotation_code?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  department?: Prisma.EnumDepartmentFieldUpdateOperationsInput | $Enums.Department
+  recipient_list?: Prisma.RecipientUpdateManyWithoutUserNestedInput
+  asignee?: Prisma.AsigneeUpdateManyWithoutUserNestedInput
+  description?: Prisma.DescriptionUpdateManyWithoutUserNestedInput
+  deal?: Prisma.DealUpdateManyWithoutUserNestedInput
+  drawing?: Prisma.DrawingUpdateManyWithoutUserNestedInput
+  quotation?: Prisma.QuotationUpdateManyWithoutUserNestedInput
+}
+
+export type UserUncheckedUpdateWithoutColour_changeInput = {
+  id?: Prisma.IntFieldUpdateOperationsInput | number
+  first_name?: Prisma.StringFieldUpdateOperationsInput | string
+  last_name?: Prisma.StringFieldUpdateOperationsInput | string
+  email?: Prisma.StringFieldUpdateOperationsInput | string
+  phone?: Prisma.StringFieldUpdateOperationsInput | string
+  password?: Prisma.StringFieldUpdateOperationsInput | string
+  quotation_code?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  department?: Prisma.EnumDepartmentFieldUpdateOperationsInput | $Enums.Department
+  recipient_list?: Prisma.RecipientUncheckedUpdateManyWithoutUserNestedInput
+  asignee?: Prisma.AsigneeUncheckedUpdateManyWithoutUserNestedInput
+  description?: Prisma.DescriptionUncheckedUpdateManyWithoutUserNestedInput
+  deal?: Prisma.DealUncheckedUpdateManyWithoutUserNestedInput
+  drawing?: Prisma.DrawingUncheckedUpdateManyWithoutUserNestedInput
+  quotation?: Prisma.QuotationUncheckedUpdateManyWithoutUserNestedInput
 }
 
 
@@ -1043,6 +1170,7 @@ export type UserCountOutputType = {
   deal: number
   drawing: number
   quotation: number
+  colour_change: number
 }
 
 export type UserCountOutputTypeSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
@@ -1052,6 +1180,7 @@ export type UserCountOutputTypeSelect<ExtArgs extends runtime.Types.Extensions.I
   deal?: boolean | UserCountOutputTypeCountDealArgs
   drawing?: boolean | UserCountOutputTypeCountDrawingArgs
   quotation?: boolean | UserCountOutputTypeCountQuotationArgs
+  colour_change?: boolean | UserCountOutputTypeCountColour_changeArgs
 }
 
 /**
@@ -1106,6 +1235,13 @@ export type UserCountOutputTypeCountQuotationArgs<ExtArgs extends runtime.Types.
   where?: Prisma.QuotationWhereInput
 }
 
+/**
+ * UserCountOutputType without action
+ */
+export type UserCountOutputTypeCountColour_changeArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  where?: Prisma.ColourChangeWhereInput
+}
+
 
 export type UserSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
   id?: boolean
@@ -1122,6 +1258,7 @@ export type UserSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = r
   deal?: boolean | Prisma.User$dealArgs<ExtArgs>
   drawing?: boolean | Prisma.User$drawingArgs<ExtArgs>
   quotation?: boolean | Prisma.User$quotationArgs<ExtArgs>
+  colour_change?: boolean | Prisma.User$colour_changeArgs<ExtArgs>
   _count?: boolean | Prisma.UserCountOutputTypeDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["user"]>
 
@@ -1166,6 +1303,7 @@ export type UserInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = 
   deal?: boolean | Prisma.User$dealArgs<ExtArgs>
   drawing?: boolean | Prisma.User$drawingArgs<ExtArgs>
   quotation?: boolean | Prisma.User$quotationArgs<ExtArgs>
+  colour_change?: boolean | Prisma.User$colour_changeArgs<ExtArgs>
   _count?: boolean | Prisma.UserCountOutputTypeDefaultArgs<ExtArgs>
 }
 export type UserIncludeCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {}
@@ -1180,6 +1318,7 @@ export type $UserPayload<ExtArgs extends runtime.Types.Extensions.InternalArgs =
     deal: Prisma.$DealPayload<ExtArgs>[]
     drawing: Prisma.$DrawingPayload<ExtArgs>[]
     quotation: Prisma.$QuotationPayload<ExtArgs>[]
+    colour_change: Prisma.$ColourChangePayload<ExtArgs>[]
   }
   scalars: runtime.Types.Extensions.GetPayloadResult<{
     id: number
@@ -1590,6 +1729,7 @@ export interface Prisma__UserClient<T, Null = never, ExtArgs extends runtime.Typ
   deal<T extends Prisma.User$dealArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.User$dealArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$DealPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   drawing<T extends Prisma.User$drawingArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.User$drawingArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$DrawingPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   quotation<T extends Prisma.User$quotationArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.User$quotationArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$QuotationPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+  colour_change<T extends Prisma.User$colour_changeArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.User$colour_changeArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$ColourChangePayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   /**
    * Attaches callbacks for the resolution and/or rejection of the Promise.
    * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -2156,6 +2296,30 @@ export type User$quotationArgs<ExtArgs extends runtime.Types.Extensions.Internal
   take?: number
   skip?: number
   distinct?: Prisma.QuotationScalarFieldEnum | Prisma.QuotationScalarFieldEnum[]
+}
+
+/**
+ * User.colour_change
+ */
+export type User$colour_changeArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the ColourChange
+   */
+  select?: Prisma.ColourChangeSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the ColourChange
+   */
+  omit?: Prisma.ColourChangeOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.ColourChangeInclude<ExtArgs> | null
+  where?: Prisma.ColourChangeWhereInput
+  orderBy?: Prisma.ColourChangeOrderByWithRelationInput | Prisma.ColourChangeOrderByWithRelationInput[]
+  cursor?: Prisma.ColourChangeWhereUniqueInput
+  take?: number
+  skip?: number
+  distinct?: Prisma.ColourChangeScalarFieldEnum | Prisma.ColourChangeScalarFieldEnum[]
 }
 
 /**

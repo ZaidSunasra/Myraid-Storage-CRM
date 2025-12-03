@@ -123,6 +123,11 @@ export type Order = Prisma.OrderModel
  */
 export type Advance = Prisma.AdvanceModel
 /**
+ * Model ColourChange
+ * 
+ */
+export type ColourChange = Prisma.ColourChangeModel
+/**
  * Model Permission
  * 
  */
