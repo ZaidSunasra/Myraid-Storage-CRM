@@ -17,7 +17,7 @@ import { cn } from "@/shared/lib/utils"
 import { ORDER_STATUS, type AddOrder } from "zs-crm-common"
 import { toTitleCase } from "@/utils/formatData"
 
-const AddOrderDetails = ({ form, context, isSubmitting}: { form: UseFormReturn<AddOrder>; context:  "edit" | "add", isSubmitting: boolean}) => {
+const AddOrderDetails = ({ form, context, isSubmitting}: { form: UseFormReturn<AddOrder>; context: "edit" | "add", isSubmitting: boolean}) => {
 
     const { id } = useParams();
     const { data, isPending, isError } = FetchQuotationByDeal(id as string);
@@ -29,23 +29,23 @@ const AddOrderDetails = ({ form, context, isSubmitting}: { form: UseFormReturn<A
     } = FetchDetailByQuotationNumber(form.watch("quotation_no"));
 
     useEffect(() => {
-        if (quotationData) {
+        if (quotationData && context === "add") {
             form.reset({
-                height: quotationData.quotation.height,
-                total_body: quotationData.quotation.total_body,
-                total: Number(quotationData.quotation.grand_total),
+                height: String(quotationData.quotation.height ?? ""),
+                total_body: Number(quotationData.quotation.total_body ?? 0),
+                total: Number(quotationData.quotation.grand_total ?? 0),
                 quotation_no: form.getValues("quotation_no"),
                 status: "pending",
                 deal_id: id ? String(id) : "",
-                colour: "",
+                powder_coating: false,
+                count_order: false,
                 pi_number: false,
                 po_number: "",
                 fitted_by: "",
                 bill_number: ""
             });
         }
-    }, [quotationData]);
-
+    }, [quotationData, context, id, form]);
 
     if (isPending) return <Skeleton className="h-4/5 w-3xs bg-background" />
     if (isError || quotationError) return <div><ErrorDisplay /></div>
@@ -120,23 +120,6 @@ const AddOrderDetails = ({ form, context, isSubmitting}: { form: UseFormReturn<A
                         <div className="space-y-2">
                             <FormField
                                 control={form.control}
-                                name="colour"
-                                render={({ field }) => (
-                                    <FormItem>
-                                        <div className="space-y-2">
-                                            <FormLabel>Colour*</FormLabel>
-                                            <FormControl>
-                                                <Input id="colour" placeholder="Enter colour" {...field} />
-                                            </FormControl>
-                                            <FormMessage />
-                                        </div>
-                                    </FormItem>
-                                )}
-                            />
-                        </div>
-                        <div className="space-y-2">
-                            <FormField
-                                control={form.control}
                                 name="height"
                                 render={({ field }) => (
                                     <FormItem>
@@ -194,7 +177,10 @@ const AddOrderDetails = ({ form, context, isSubmitting}: { form: UseFormReturn<A
                                 render={({ field }) => (
                                     <FormItem>
                                         <FormLabel>PI Number</FormLabel>
-                                        <Select value={String(field.value)} onValueChange={(val) => field.onChange(val === "true")}>
+                                        <Select
+                                            value={field.value === true ? "true" : field.value === false ? "false" : ""}
+                                            onValueChange={(val) => field.onChange(val === "true")}
+                                        >
                                             <FormControl>
                                                 <SelectTrigger className="w-full">
                                                     <SelectValue placeholder="Select yes/no" />
@@ -210,17 +196,17 @@ const AddOrderDetails = ({ form, context, isSubmitting}: { form: UseFormReturn<A
                                 )}
                             />
                         </div>
-                         <div className="space-y-2">
+                        <div className="space-y-2">
                             <FormField
                                 control={form.control}
                                 name="status"
                                 render={({ field }) => (
                                     <FormItem>
                                         <FormLabel>Status</FormLabel>
-                                        <Select value={String(field.value)} onValueChange={(val) => field.onChange(val)}>
+                                        <Select value={field.value} onValueChange={field.onChange}>
                                             <FormControl>
                                                 <SelectTrigger className="w-full">
-                                                    <SelectValue placeholder="Select yes/no" />
+                                                    <SelectValue placeholder="Select order status" />
                                                 </SelectTrigger>
                                             </FormControl>
                                             <SelectContent>
@@ -308,12 +294,64 @@ const AddOrderDetails = ({ form, context, isSubmitting}: { form: UseFormReturn<A
                                 name="fitted_by"
                                 render={({ field }) => (
                                     <FormItem>
-                                        <FormLabel>Fiited By</FormLabel>
+                                        <FormLabel>Fitted By</FormLabel>
                                         <Input
                                             value={field.value ?? ""}
                                             placeholder="Enter name"
                                             onChange={(e) => field.onChange(e.target.value)}
                                         />
+                                        <FormMessage />
+                                    </FormItem>
+                                )}
+                            />
+                        </div>
+                        <div className="space-y-2">
+                            <FormField
+                                control={form.control}
+                                name="count_order"
+                                render={({ field }) => (
+                                    <FormItem>
+                                        <FormLabel>Count in order?</FormLabel>
+                                        <Select
+                                            value={field.value === true ? "true" : field.value === false ? "false" : ""}
+                                            onValueChange={(val) => field.onChange(val === "true")}
+                                        >
+                                            <FormControl>
+                                                <SelectTrigger className="w-full">
+                                                    <SelectValue placeholder="Select yes/no" />
+                                                </SelectTrigger>
+                                            </FormControl>
+                                            <SelectContent>
+                                                <SelectItem value="true">Yes</SelectItem>
+                                                <SelectItem value="false">No</SelectItem>
+                                            </SelectContent>
+                                        </Select>
+                                        <FormMessage />
+                                    </FormItem>
+                                )}
+                            />
+                        </div>
+                        <div className="space-y-2">
+                            <FormField
+                                control={form.control}
+                                name="powder_coating"
+                                render={({ field }) => (
+                                    <FormItem>
+                                        <FormLabel>Powder Coating</FormLabel>
+                                        <Select
+                                            value={field.value === true ? "true" : field.value === false ? "false" : ""}
+                                            onValueChange={(val) => field.onChange(val === "true")}
+                                        >
+                                            <FormControl>
+                                                <SelectTrigger className="w-full">
+                                                    <SelectValue placeholder="Select yes/no" />
+                                                </SelectTrigger>
+                                            </FormControl>
+                                            <SelectContent>
+                                                <SelectItem value="true">Yes</SelectItem>
+                                                <SelectItem value="false">No</SelectItem>
+                                            </SelectContent>
+                                        </Select>
                                         <FormMessage />
                                     </FormItem>
                                 )}

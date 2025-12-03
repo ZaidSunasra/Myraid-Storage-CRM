@@ -10,13 +10,14 @@ import AddOrderDetails from "../components/AddOrderDetails"
 import { FetchOrderById } from "@/api/orders/orders.queries"
 import EditPageLoader from "@/shared/components/loaders/EditPageLoader"
 import ErrorDisplay from "@/shared/components/ErrorPage"
-import { useEffect } from "react"
+import { useEffect, useState } from "react"
 import { useEditOrder } from "@/api/orders/orders.mutation"
 
 const EditOrderPage = () => {
 
     const { order_id } = useParams();
     const { data, isPending, isError } = FetchOrderById(order_id as string);
+    const [formReady, setFormReady] = useState(false);
     const editOrder = useEditOrder()
 
     const form = useForm<AddOrder>({
@@ -30,7 +31,8 @@ const EditOrderPage = () => {
             po_number: "",
             dispatch_at: undefined,
             status: "pending",
-            colour: "",
+            count_order: false,
+            powder_coating: false,
             deal_id: "",
             fitted_by: "",
             bill_number: ""
@@ -38,7 +40,7 @@ const EditOrderPage = () => {
     });
 
     useEffect(() => {
-        if (data?.order) {
+        if (data?.order && !isPending && !isError) {
             form.reset({
                 quotation_no: "",
                 height: data.order.height,
@@ -48,23 +50,22 @@ const EditOrderPage = () => {
                 po_number: data.order.po_number,
                 dispatch_at: new Date(data.order.dispatch_at),
                 status: data.order.status,
-                colour: data.order.colour,
+                powder_coating: data.order.powder_coating,
+                count_order: data.order.count_order,
                 deal_id: data.order.deal_id,
                 fitted_by: data.order.fitted_by,
                 bill_number: data.order.bill_number
             });
+            setFormReady(true)
         }
-    }, [data, form]);
+    }, [data, form, isPending, isError]);
 
     const onSubmit = (data: AddOrder) => {
-        editOrder.mutate({data, id: order_id as string})
-        console.log(data)
+        editOrder.mutate({ data, id: order_id as string })
     }
 
     if (isPending) return <EditPageLoader showSidebar={false} />
     if (isError) return <ErrorDisplay message="Failed to load data. Refresh or please try again later" fullPage />
-
-    console.log(data)
 
     return <div className="bg-accent min-h-screen">
         <Navbar />
@@ -82,8 +83,10 @@ const EditOrderPage = () => {
                     </div>
                 </div>
                 <Form {...form}>
-                    <form onSubmit={form.handleSubmit(onSubmit, (errors) => console.log(errors))} className="space-y-8">
-                        <AddOrderDetails form={form} context="edit" isSubmitting={editOrder.isPending}/>
+                    <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
+                        {formReady &&
+                            <AddOrderDetails form={form} context="edit" isSubmitting={editOrder.isPending} />
+                        }
                     </form>
                 </Form>
             </div>

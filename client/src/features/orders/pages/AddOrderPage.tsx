@@ -25,7 +25,8 @@ const AddOrderPage = () => {
             po_number: "",
             dispatch_at: undefined, 
             status: "pending",
-            colour: "",
+            count_order: false,
+            powder_coating: false,
             deal_id: id ? String(id) : "",
             fitted_by: "",
             bill_number: ""
@@ -34,7 +35,6 @@ const AddOrderPage = () => {
 
     const onSubmit = (data: AddOrder) => {
         addOrder.mutate({ data })
-        console.log(data)
     }
 
     return <div className="bg-accent min-h-screen">
@@ -53,7 +53,7 @@ const AddOrderPage = () => {
                     </div>
                 </div>
                 <Form {...form}>
-                    <form onSubmit={form.handleSubmit(onSubmit, (errors) => console.log(errors))} className="space-y-8">
+                    <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
                         <AddOrderDetails form={form} context="add" isSubmitting={addOrder.isPending}/>
                     </form>
                 </Form>
