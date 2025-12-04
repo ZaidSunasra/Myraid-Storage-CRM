@@ -368,7 +368,7 @@ model Advance {
   advance_amount Int
   advance_date   DateTime
   order_id       Int
-  order          Order    @relation(fields: [order_id], references: [id])
+  order          Order    @relation(fields: [order_id], references: [id], onDelete: Cascade)
 
   @@index([order_id])
 }
@@ -379,7 +379,7 @@ model ColourChange {
   changed_on DateTime @default(now())
   order_id   Int
   user_id    Int
-  order      Order    @relation(fields: [order_id], references: [id])
+  order      Order    @relation(fields: [order_id], references: [id], onDelete: Cascade)
   user       User     @relation(fields: [user_id], references: [id])
 
   @@index([order_id])

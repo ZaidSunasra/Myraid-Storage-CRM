@@ -18,9 +18,15 @@ export const addOrderSchema = z.object({
     powder_coating: z.boolean(),
     count_order: z.boolean(),
     deal_id: z.string()
-})
+});
 
 export type AddOrder = z.infer<typeof addOrderSchema>
+
+export const addColourSchema = z.object({
+    colour: z.string().min(1, "Colour is required")
+});
+
+export type AddColour = z.infer<typeof addColourSchema>
 
 export const addPaymentSchema = z.object({
     amount: z.number().min(1, "Amount is required"),
@@ -36,13 +42,21 @@ export type Advance = {
     advance_date: Date;
 }
 
-// export type ColourChange = {
-//     id: number
-//     colour: string
-//     changed_on: Date
-//     order_id: number
-//     user_id: number
-// }
+export type ColourChange = {
+    id: number
+    colour: string
+    changed_on: Date
+    order_id: number
+    user_id: number
+}
+
+export type OrderColourChange = ColourChange & {
+  user: {
+    id: number;
+    first_name: string;
+    last_name: string;
+  }
+}
 
 export type Order = {
     id: number;
@@ -65,9 +79,10 @@ export type Order = {
         quotation_no: string
     }
     advance: Advance[];
-    deal : {
-        assigned_to : Assignee[]
-        company : Pick<Company, "name">
+    colour_change: OrderColourChange[]
+    deal: {
+        assigned_to: Assignee[]
+        company: Pick<Company, "name">
     }
 }
 
