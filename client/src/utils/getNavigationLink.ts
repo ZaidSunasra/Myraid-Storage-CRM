@@ -9,7 +9,8 @@ export const getNavigationLink = (notification: Notification) => {
 		drawing_uploaded: notification.order_id ? `/order/${notification.deal_id}/${notification.order_id}?tab=drawing` : `/deal/${notification.deal_id}?tab=drawing`,
 		drawing_approved: notification.order_id ? `/order/${notification.deal_id}/${notification.order_id}?tab=drawing` : `/deal/${notification.deal_id}?tab=drawing`,
 		drawing_rejected: notification.order_id ? `/order/${notification.deal_id}/${notification.order_id}?tab=drawing` : `/deal/${notification.deal_id}?tab=drawing`,
-		color_changed: `/lead/${notification.lead_id}`
+		color_changed: `/order/${notification.deal_id}/${notification.order_id}`,
+		add_quotation: `/deal/${notification.deal_id}`
 	};
 	return navLink[notification.type as reminder_type];
 };

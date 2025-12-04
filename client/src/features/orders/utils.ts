@@ -24,7 +24,7 @@ export const getRowColor = (status: string) => {
         case "fabrication_ready":
             return "bg-blue-200 hover:bg-blue-300";
         case "ready":
-            return "bg-orange-300 hover:bg-orange-400";
+            return "bg-slate-200 hover:bg-slate-300";
         default:
             return "";
     }

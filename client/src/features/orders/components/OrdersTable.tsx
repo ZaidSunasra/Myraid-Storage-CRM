@@ -32,6 +32,9 @@ const OrdersTable = () => {
     const { user } = useUser();
     const { canView } = usePermissions();
 
+    const pendingOrder = data?.orders.filter((order) => order.status === "pending");
+    const restOrder = data?.orders.filter((order) => order.status !== "pending");
+
     useEffect(() => {
         setSearch(debouncedSearch, search);
     }, [debouncedSearch, search, setSearchParams]);
@@ -91,50 +94,126 @@ const OrdersTable = () => {
                     </TableRow>
                 </TableHeader>
                 <TableBody>
-                    {data.orders.map((order: Order) => {
-                        const { remainingBalance } = calculateRemainingBalance(order)
-                        return (
-                            <TableRow key={order.id} onClick={() => navigate(`/order/${order.deal_id}/${order.id}`)} className={getRowColor(order.status)}>
-                                <TableCell className={`font-medium ${order.count_order ? "bg-yellow-300" : ""}`}>
-                                    {order.order_number}
+
+                    {/* In Progress Section */}
+                    {restOrder && restOrder.length > 0 && (
+                        <>
+                            <TableRow>
+                                <TableCell colSpan={12} >
+                                    <h1 className="font-semibold text-lg text-blue-800">
+                                        In Progress Orders:
+                                    </h1>
                                 </TableCell>
-                                <TableCell className={`font-medium ${order.powder_coating ? "bg-amber-800" : ""}`}>
-                                    {toTitleCase(order.status)}
-                                </TableCell>
-                                <TableCell>{format(order.created_at, "dd/MM/yyyy")}</TableCell>
-                                <TableCell>{format(order.dispatch_at, "dd/MM/yyyy")}</TableCell>
-                                {user?.department && user.department !== DEPARTMENTS[2] && <TableCell className={`${order.pi_number ? "bg-purple-400" : ""}`}>
-                                    {order.po_number}
-                                </TableCell>}
-                                {user?.department && user.department !== DEPARTMENTS[2] && <TableCell>
-                                    {order.deal_id.replace(/-/g, "/").replace(/_/g, "-")}
-                                </TableCell>}
-                                {user?.department && user.department !== DEPARTMENTS[2] && <TableCell>
-                                    {remainingBalance}
-                                </TableCell>}
-                                {user?.department && user.department !== DEPARTMENTS[2] && <TableCell>{order.bill_number}</TableCell>}
-                                {user?.department && user.department !== DEPARTMENTS[2] && <TableCell>
-                                    <div className="flex items-center">
-                                        <Building2 className="h-4 w-4 mr-2 " />
-                                        {toTitleCase(order.deal.company.name)}
-                                    </div>
-                                </TableCell>}
-                                <TableCell>
-                                    {order.height}
-                                </TableCell>
-                                <TableCell>
-                                    {order.total_body}
-                                </TableCell>
-                                {user?.department && user.department !== DEPARTMENTS[2] && <TableCell>
-                                    {toTitleCase(order.fitted_by ?? "")}
-                                </TableCell>}
                             </TableRow>
-                        )
-                    })}
+                            {restOrder.map((order: Order) => {
+                                const { remainingBalance } = calculateRemainingBalance(order)
+                                return (
+                                    <TableRow
+                                        key={order.id}
+                                        onClick={() => navigate(`/order/${order.deal_id}/${order.id}`)}
+                                        className={`${getRowColor(order.status)}`}
+                                    >
+                                        <TableCell className={`font-medium ${order.count_order ? "bg-yellow-300" : ""}`}>
+                                            {order.order_number}
+                                        </TableCell>
+                                        <TableCell className={`font-medium ${order.powder_coating ? "bg-amber-800" : ""}`}>
+                                            {toTitleCase(order.status)}
+                                        </TableCell>
+                                        <TableCell>{format(order.created_at, "dd/MM/yyyy")}</TableCell>
+                                        <TableCell>{format(order.dispatch_at, "dd/MM/yyyy")}</TableCell>
+                                        {user?.department && user.department !== DEPARTMENTS[2] && (
+                                            <TableCell className={`${order.pi_number ? "bg-purple-400" : ""}`}>
+                                                {order.po_number}
+                                            </TableCell>
+                                        )}
+                                        {user?.department && user.department !== DEPARTMENTS[2] && (
+                                            <TableCell>{order.deal_id.replace(/-/g, "/").replace(/_/g, "-")}</TableCell>
+                                        )}
+                                        {user?.department && user.department !== DEPARTMENTS[2] && (
+                                            <TableCell>{remainingBalance}</TableCell>
+                                        )}
+                                        {user?.department && user.department !== DEPARTMENTS[2] && (
+                                            <TableCell>{order.bill_number}</TableCell>
+                                        )}
+                                        {user?.department && user.department !== DEPARTMENTS[2] && (
+                                            <TableCell>
+                                                <div className="flex items-center">
+                                                    <Building2 className="h-4 w-4 mr-2" />
+                                                    {toTitleCase(order.deal.company.name)}
+                                                </div>
+                                            </TableCell>
+                                        )}
+                                        <TableCell>{order.height}</TableCell>
+                                        <TableCell>{order.total_body}</TableCell>
+                                        {user?.department && user.department !== DEPARTMENTS[2] && (
+                                            <TableCell>{toTitleCase(order.fitted_by ?? "")}</TableCell>
+                                        )}
+                                    </TableRow>
+                                )
+                            })}
+                        </>
+                    )}
+                    {pendingOrder && pendingOrder.length > 0 && (
+                        <>
+                            <TableRow>
+                                <TableCell colSpan={12}>
+                                    <h1 className="font-semibold text-lg text-blue-800">
+                                        Pending Orders:
+                                    </h1>
+                                </TableCell>
+                            </TableRow>
+                            {pendingOrder.map((order: Order) => {
+                                const { remainingBalance } = calculateRemainingBalance(order)
+                                return (
+                                    <TableRow
+                                        key={order.id}
+                                        onClick={() => navigate(`/order/${order.deal_id}/${order.id}`)}
+                                    >
+                                        <TableCell className={`font-medium ${order.count_order ? "bg-yellow-300" : ""}`}>
+                                            {order.order_number}
+                                        </TableCell>
+                                        <TableCell className={`font-medium ${order.powder_coating ? "bg-amber-800" : ""}`}>
+                                            {toTitleCase(order.status)}
+                                        </TableCell>
+                                        <TableCell>{format(order.created_at, "dd/MM/yyyy")}</TableCell>
+                                        <TableCell>{format(order.dispatch_at, "dd/MM/yyyy")}</TableCell>
+                                        {user?.department && user.department !== DEPARTMENTS[2] && (
+                                            <TableCell className={`${order.pi_number ? "bg-purple-400" : ""}`}>
+                                                {order.po_number}
+                                            </TableCell>
+                                        )}
+                                        {user?.department && user.department !== DEPARTMENTS[2] && (
+                                            <TableCell>{order.deal_id.replace(/-/g, "/").replace(/_/g, "-")}</TableCell>
+                                        )}
+                                        {user?.department && user.department !== DEPARTMENTS[2] && (
+                                            <TableCell>{remainingBalance}</TableCell>
+                                        )}
+                                        {user?.department && user.department !== DEPARTMENTS[2] && (
+                                            <TableCell>{order.bill_number}</TableCell>
+                                        )}
+                                        {user?.department && user.department !== DEPARTMENTS[2] && (
+                                            <TableCell>
+                                                <div className="flex items-center">
+                                                    <Building2 className="h-4 w-4 mr-2" />
+                                                    {toTitleCase(order.deal.company.name)}
+                                                </div>
+                                            </TableCell>
+                                        )}
+                                        <TableCell>{order.height}</TableCell>
+                                        <TableCell>{order.total_body}</TableCell>
+                                        {user?.department && user.department !== DEPARTMENTS[2] && (
+                                            <TableCell>{toTitleCase(order.fitted_by ?? "")}</TableCell>
+                                        )}
+                                    </TableRow>
+                                )
+                            })}
+                        </>
+                    )}
                 </TableBody>
                 {user?.department && canView(user?.department, "total_order_row") && <TableFooter>
                     <TableRow>
                         <TableCell>Total</TableCell>
+                        <TableCell></TableCell>
                         <TableCell></TableCell>
                         <TableCell></TableCell>
                         <TableCell></TableCell>
@@ -152,7 +231,6 @@ const OrdersTable = () => {
             <PaginationControls lastPage={lastPage} />
         </CardContent>
     </Card>
-
 }
 
 export default OrdersTable
