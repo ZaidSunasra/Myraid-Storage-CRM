@@ -5,16 +5,20 @@ import DrawingList from "@/shared/components/DrawingList"
 import DrawingUploads from "@/shared/components/DrawingUploads"
 import ErrorDisplay from "@/shared/components/ErrorPage"
 import DetailedPageLoader from "@/shared/components/loaders/DetailedPageLoader"
+import { Dialog, DialogClose, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle, DialogTrigger } from "@/shared/components/ui/dialog";
 import Navbar from "@/shared/components/Navbar"
 import { Button } from "@/shared/components/ui/button"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/shared/components/ui/tabs"
-import { ArrowLeft, Edit } from "lucide-react"
+import { ArrowLeft, Edit, Trash2 } from "lucide-react"
 import { NavLink, useNavigate, useParams, useSearchParams } from "react-router"
 import OrderPaymentDetail from "../components/OrderPaymentDetail"
 import AddPayment from "../components/AddPayment"
 import { capitalize } from "@/utils/formatData"
 import OrderDetails from "../components/OrderDetails"
 import type { Order } from "zs-crm-common"
+import { useState } from "react"
+import { useDeleteOrder } from "@/api/orders/orders.mutation"
+import ColourDetails from "../components/ColourDetails"
 
 const DetailedOrderPage = () => {
 
@@ -22,9 +26,15 @@ const DetailedOrderPage = () => {
     const [searchParams] = useSearchParams();
     const tab = searchParams.get("tab") || "info";
     const { data, isPending, isError } = FetchOrderById(order_id as string);
+    const [dialog, setDialog] = useState<boolean>(false);
     const { user } = useUser();
     const navigate = useNavigate();
     const { canView } = usePermissions();
+    const deleteOrder = useDeleteOrder()
+
+    const handleDelete = () => {
+        deleteOrder.mutate(order_id as string)
+    }
 
     if (isPending) return <DetailedPageLoader />
     if (isError) return <ErrorDisplay fullPage />
@@ -71,6 +81,7 @@ const DetailedOrderPage = () => {
                         </TabsList>
                         <TabsContent value="info" className="space-y-6">
                             <OrderDetails data={data.order as Order} />
+                            <ColourDetails data={data.order as Order}/>
                         </TabsContent>
                         <TabsContent value="drawing" className="space-y-6">
                             <DrawingUploads context="order" />
@@ -84,9 +95,37 @@ const DetailedOrderPage = () => {
                         }
                     </Tabs>
                 </div>
-                <div className="lg:col-span-1"></div>
+                <div className="lg:col-span-1">
+                    {user?.department && canView(user.department, "delete_order") &&
+                        <div className="w-full">
+                            <Button className=" text-white flex gap-2 px-6 py-2 rounded-xl shadow-md transition w-full hover:bg-red-700" variant="destructive"
+                                onClick={() => setDialog(true)}
+                            >
+                                <Trash2 className="w-4 h-4" />
+                                Delete Order
+                            </Button>
+                        </div>
+                    }
+                </div>
             </div>
         </div>
+        <Dialog open={dialog}  onOpenChange={(open) => setDialog(open)}>
+            <DialogTrigger asChild></DialogTrigger>
+            <DialogContent className="sm:max-w-[425px]">
+                <DialogHeader>
+                    <DialogTitle>Delete Order</DialogTitle>
+                    <DialogDescription>Are you sure you want to delete? This cannot be undone.</DialogDescription>
+                </DialogHeader>
+                <DialogFooter>
+                    <DialogClose asChild>
+                        <Button variant="outline">Cancel</Button>
+                    </DialogClose>
+                    <Button type="submit" variant="destructive" onClick={() => handleDelete()}>
+                        Delete
+                    </Button>
+                </DialogFooter>
+            </DialogContent>
+        </Dialog>
     </div>
 }
 

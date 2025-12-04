@@ -37,12 +37,6 @@ const OrderDetails = ({ data }: { data: Order }) => {
                     </div>
                 </div>
                 <div className="space-y-2">
-                    <Label>Colour</Label>
-                    <div className="space-y-1">
-                        {toTitleCase(data.colour)}
-                    </div>
-                </div>
-                <div className="space-y-2">
                     <Label>Height</Label>
                     <div className="space-y-1">
                         {data.height}
