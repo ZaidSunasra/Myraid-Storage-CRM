@@ -24,7 +24,23 @@ const Include = {
             quotation_no: true
         }
     },
-    advance: true
+    advance: true,
+    colour_change: {
+        select: {
+            id: true,
+            colour: true,
+            changed_on: true,
+            order_id: true,
+            user_id: true,
+            user: {
+                select: {
+                    first_name: true,
+                    last_name: true,
+                    id: true
+                }
+            }
+        },
+    }
 }
 
 export default Include;

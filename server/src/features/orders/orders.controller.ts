@@ -1,6 +1,6 @@
 import { Request, Response } from "express"
-import { addOrderSchema, addPaymentSchema, ErrorResponse, GetOrderByIdSuccessResponse, GetOrderSuccessResponse, SuccessResponse } from "zs-crm-common";
-import { addOrderService, addPaymentService, deletePaymentService, editOrderService, editPaymentService, getOrderByIdService, getOrderService } from "./orders.service.js";
+import { addColourSchema, addOrderSchema, addPaymentSchema, ErrorResponse, GetOrderByIdSuccessResponse, GetOrderSuccessResponse, SuccessResponse } from "zs-crm-common";
+import { addColourService, addOrderService, addPaymentService, deleteOrderService, deletePaymentService, editOrderService, editPaymentService, getOrderByIdService, getOrderService } from "./orders.service.js";
 
 export const addOrderController = async (req: Request, res: Response<ErrorResponse | SuccessResponse>): Promise<any> => {
     const { quotation_no, height, total, total_body, pi_number, po_number, dispatch_at, status,  deal_id, fitted_by, bill_number, powder_coating, count_order} = req.body;
@@ -85,6 +85,47 @@ export const editOrderController = async (req: Request, res: Response<ErrorRespo
         })
     } catch (error) {
         console.log(`Error in editing order`, error);
+        return res.status(500).send({
+            message: "Internal server error",
+            error: error
+        });
+    }
+}
+
+export const deleteOrderController = async (req: Request, res: Response<SuccessResponse | ErrorResponse>): Promise<any> => {
+    const id = req.params.id;
+    try {
+        await deleteOrderService(id);
+        return res.status(200).json({
+            message: `Order deleted successfully`,
+        })
+    } catch (error) {
+        console.log(`Error in deleting order`, error);
+        return res.status(500).send({
+            message: "Internal server error",
+            error: error
+        });
+    }
+}
+
+export const addColourController = async (req: Request, res: Response<SuccessResponse | ErrorResponse>): Promise<any> => {
+    const { colour } = req.body;
+    const order_id = req.params.order_id;
+    const author = res.locals.user;
+    const validation = addColourSchema.safeParse(req.body);
+    if (!validation.success) {
+        return res.status(400).json({
+            message: "Input validation error",
+            error: validation.error.issues
+        })
+    }
+    try {
+        await addColourService({colour}, order_id, author);
+        return res.status(200).json({
+            message: `Colour added successfully`,
+        })
+    } catch (error) {
+        console.log(`Error in adding colour`, error);
         return res.status(500).send({
             message: "Internal server error",
             error: error

@@ -1,4 +1,4 @@
-import type { AddOrder, AddPayment, GetOrderByIdSuccessResponse, GetOrderSuccessResponse, SuccessResponse } from "zs-crm-common";
+import type { AddColour, AddOrder, AddPayment, GetOrderByIdSuccessResponse, GetOrderSuccessResponse, SuccessResponse } from "zs-crm-common";
 import axiosInstance from "../axiosInstance";
 
 export const addOrder = async ({ data }: { data: AddOrder }): Promise<SuccessResponse> => {
@@ -20,6 +20,16 @@ export const editOrder = async ({ data, id }: { data: AddOrder, id : string}): P
     const response = await axiosInstance.put(`/orders/edit/${id}`, data);
     return response.data;
 };
+
+export const deleteOrder = async (id: string) : Promise<SuccessResponse> => {
+    const response = await axiosInstance.delete(`/orders/delete/${id}`);
+    return response.data;
+}
+
+export const addColour = async ({data, order_id} : {data: AddColour, order_id : string}) : Promise<SuccessResponse> => {
+    const response = await axiosInstance.post(`/orders/add/colour/${order_id}`, data);
+    return response.data;
+}
 
 export const addPayment = async ({data, order_id} : {data: AddPayment, order_id : string}) : Promise<SuccessResponse> => {
     const response = await axiosInstance.post(`/orders/add/payment/${order_id}`, data);

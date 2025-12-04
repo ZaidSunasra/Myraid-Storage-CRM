@@ -1,4 +1,4 @@
-import { AddOrder, DEPARTMENTS,   AddPayment, GetOrderOutput, Order } from "zs-crm-common";
+import { AddOrder, DEPARTMENTS, AddPayment, GetOrderOutput, AddColour, Order } from "zs-crm-common";
 import { prisma } from "../../libs/prisma.js";
 import Include from "./constants.js";
 
@@ -18,7 +18,7 @@ export const generateOrderNumber = async (): Promise<number> => {
     return orderLength + 1;
 }
 
-export const addOrderService = async ({ quotation_no, height, total, total_body, pi_number, po_number, dispatch_at, status, deal_id, fitted_by, bill_number, powder_coating, count_order}: AddOrder): Promise<void> => {
+export const addOrderService = async ({ quotation_no, height, total, total_body, pi_number, po_number, dispatch_at, status, deal_id, fitted_by, bill_number, powder_coating, count_order }: AddOrder): Promise<void> => {
     const orderNumber = await generateOrderNumber();
     await prisma.$transaction(async (tx) => {
         const quotation_id = await tx.quotation.findUnique({
@@ -122,7 +122,7 @@ export const getOrderByIdService = async (id: string): Promise<Order | null> => 
     return order;
 }
 
-export const editOrderService = async ({ quotation_no, height, total, total_body, pi_number, po_number, dispatch_at, status, deal_id, fitted_by, bill_number, count_order, powder_coating}: AddOrder, id: string): Promise<void> => {
+export const editOrderService = async ({ quotation_no, height, total, total_body, pi_number, po_number, dispatch_at, status, deal_id, fitted_by, bill_number, count_order, powder_coating }: AddOrder, id: string): Promise<void> => {
     await prisma.$transaction(async (tx) => {
         if (quotation_no) {
             const quotation_id = await tx.quotation.findUnique({
@@ -162,6 +162,91 @@ export const editOrderService = async ({ quotation_no, height, total, total_body
             }
         })
     })
+}
+
+export const deleteOrderService = async (id: string): Promise<void> => {
+    await prisma.$transaction(async (tx) => {
+        const order = await tx.order.delete({
+            where: {
+                id: parseInt(id)
+            },
+            select: {
+                deal_id: true
+            }
+        });
+        await tx.deal.update({
+            where: {
+                id: order.deal_id
+            },
+            data: {
+                deal_status: "negotiation"
+            }
+        })
+    })
+}
+
+export const addColourService = async ({ colour }: AddColour, order_id: string, author: any): Promise<void> => {
+
+    await prisma.$transaction(async (tx) => {
+        const deptUsers = await tx.user.findMany({
+            where: {
+                department: {
+                    in: ["admin", "accounts", "factory"]
+                }
+            },
+            select: { id: true }
+        });
+        const orderData = await tx.order.findFirst({
+            where: { id: parseInt(order_id) },
+            select: {
+                deal: {
+                    select: {
+                        assigned_to: {
+                            select: {
+                                user: {
+                                    select: { id: true }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        });
+
+        const recipientIds = new Set<number>();
+        deptUsers.forEach((u) => recipientIds.add(u.id));
+        const assigned = orderData?.deal.assigned_to ?? [];
+        assigned.forEach((a) => recipientIds.add(a.user.id));
+
+        const recipientsArray = Array.from(recipientIds);
+
+        await tx.colourChange.create({
+            data: {
+                colour,
+                changed_on: new Date(),
+                user_id: author.id,
+                order_id: parseInt(order_id),
+            }
+        });
+        const notification = await tx.notification.create({
+            data: ({
+                order_id: parseInt(order_id),
+                type: "color_changed",
+                title: "Colour Changed",
+                message: `Order ${order_id} colour changed to ${colour}`,
+                created_at: new Date(),
+            }),
+            select: {
+                id: true
+            }
+        })
+        await tx.recipient.createMany({
+            data: recipientsArray.map(id => ({
+                notification_id: notification.id,
+                user_id: id
+            }))
+        })
+    });
 }
 
 export const addPaymentService = async ({ amount, date }: AddPayment, order_id: string): Promise<void> => {

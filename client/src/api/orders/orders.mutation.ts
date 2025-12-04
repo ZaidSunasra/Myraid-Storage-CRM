@@ -1,5 +1,5 @@
 import { useMutation, useQueryClient } from "@tanstack/react-query";
-import { addOrder, addPayment, deletePayment, editOrder, editPayment } from "./orders.api";
+import { addColour, addOrder, addPayment, deleteOrder, deletePayment, editOrder, editPayment } from "./orders.api";
 import type { ErrorResponse, SuccessResponse } from "zs-crm-common";
 import { useNavigate } from "react-router";
 import { toast } from "sonner";
@@ -34,6 +34,36 @@ export const useEditOrder = () => {
 		}
 	});
 };
+
+export const useDeleteOrder = () => {
+	const queryClient = useQueryClient();
+	const navigate = useNavigate();
+	return useMutation({
+		mutationFn: deleteOrder,
+		onSuccess: (data: SuccessResponse) => {
+			(toast.success(data.message));
+			queryClient.invalidateQueries({ queryKey: ['orders'] });
+			navigate("/order")
+		},
+		onError: (error: AxiosError<ErrorResponse>) => {
+			toast.error(error.response?.data.message);
+		}
+	});
+}
+
+export const useAddColour = (id: string) => {
+	const queryClient = useQueryClient();
+	return useMutation({
+		mutationFn: addColour,
+		onSuccess: (data: SuccessResponse) => {
+			(toast.success(data.message));
+			queryClient.invalidateQueries({ queryKey: ['orderById', id] })
+		},
+		onError: (error: AxiosError<ErrorResponse>) => {
+			toast.error(error.response?.data.message);
+		}
+	});
+}
 
 export const useAddPayment = (id: string) => {
 	const queryClient = useQueryClient();
