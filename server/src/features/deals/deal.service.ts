@@ -355,9 +355,11 @@ export const editDealService = async ({ company_id, employee_id, source_id, prod
 export const getDealIdService = async (author: any): Promise<GetOnlyDealIdOutput[]> => {
     const dealIds = await prisma.deal.findMany({
         where: {
-            assigned_to: {
-                some: {
-                    user_id: author.id
+            ...author.department === DEPARTMENTS[1] ? {} : {
+                assigned_to: {
+                    some: {
+                        user_id: author.id
+                    }
                 }
             }
         },

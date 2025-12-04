@@ -201,6 +201,7 @@ export const addColourService = async ({ colour }: AddColour, order_id: string, 
             select: {
                 deal: {
                     select: {
+                        id: true,
                         assigned_to: {
                             select: {
                                 user: {
@@ -231,10 +232,12 @@ export const addColourService = async ({ colour }: AddColour, order_id: string, 
         const notification = await tx.notification.create({
             data: ({
                 order_id: parseInt(order_id),
+                deal_id: orderData?.deal.id,
                 type: "color_changed",
                 title: "Colour Changed",
                 message: `Order ${order_id} colour changed to ${colour}`,
                 created_at: new Date(),
+                send_at: null,
             }),
             select: {
                 id: true
